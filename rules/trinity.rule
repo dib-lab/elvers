@@ -8,7 +8,7 @@ rule trinity:
     output:
         "trinity_out_dir/Trinity.fasta" 
     message:
-        """--- Quality trimming PE read data with Trimmomatic."""
+        """--- Assembling read data with Trinity v2.5.1 --- """
     params:
         outdir="trinity_out_dir",
         cpu="2",

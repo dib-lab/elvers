@@ -21,6 +21,7 @@ def is_single_end(sample, unit, end):
     return units.loc[(sample,unit)]['read_type'] == 'se' 
 
 # build file extensions from suffix info (+ set defaults)
+base = config.get('basename','eelpond')
 experiment_suffix = config.get('experiment', '')
 readfilt = config['read_filtering']
 trim_suffix = readfilt.get('trim_suffix', 'trimmed')
