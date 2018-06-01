@@ -1,0 +1,41 @@
+import os, re
+from os.path import join, dirname
+
+#get_fastq(wildcards):
+    # returns fq1 if se, fq1,fq2 if pe
+#    return units.loc[(wildcards.sample, wildcards.unit), ["fq1","fq2"]].dropna()
+
+#fastqc_zip = "_{}.zip".format(target_suffix)
+#fastqc_html = "_{}.html".format(target_suffix)
+
+#pre_trimming_output = re.sub('\.fq\.gz',target_ext,pre_trimming_input)
+
+#def get_raw(wildcards):
+#    raw1 = units.loc[(wildcards.sample, wildcards.unit), ["fq1"]].dropna()
+#    raw2 = units.loc[(wildcards.sample, wildcards.unit), ["fq2"]].dropna()
+#    raw_fastqc = re.sub('\.fq\.gz',target_ext,pre_trimming_input)
+
+def get_trimmed(wildcards):
+    return expand(join(TRIM_DIR, '{sample}_{unit}_{end}.fq.gz'),**wildcards)
+    
+#rule fastqc_pre_trim:
+#    input:
+#        get_fastq
+#    output:
+#        html=join(qc_dir,'{sample}.html'),
+#        zip=join(qc_dir,'{sample}.zip'),
+#    params: ""
+#    wrapper:
+#        "0.23.1/bio/fastqc"
+
+rule fastqc_post_trim:
+    input:
+        get_trimmed
+    output:
+        html=join(QC_DIR,'{sample}_{unit}_{end}_fastqc.html'),
+        zip=join(QC_DIR,'{sample}_{unit}_{end}_fastqc.zip'),
+    params: ""
+    log: join(LOGS_DIR, 'fastqc/{sample}_{unit}_{end}.log') 
+    wrapper:
+        "0.23.1/bio/fastqc"
+

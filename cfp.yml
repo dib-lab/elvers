@@ -1,0 +1,39 @@
+description: "Read Filtering Walkthrough 1"
+
+user_email: ""
+
+experiment_suffix: ""
+
+basename: "testing"
+
+#url or path to the csv of samples (sample_basename,fq1,fq2,condition)
+samples: units.tsv
+
+diffexp:
+  # contrasts for the deseq2 results method
+  contrasts:
+    treated-vs-untreated:
+      - treated
+      - untreated
+
+read_filtering:
+  trim_suffix: "trimmed"
+  
+  quality_assessment:
+    fastqc_suffix: "_fastqc"
+  
+  qc_dir: 'qc'
+
+  trimmomatic:
+    trim_cmd:  "ILLUMINACLIP:{}:2:40:15 LEADING:20 TRAILING:20 SLIDINGWINDOW:4:15 MINLEN:35"
+    
+  adapter_file:
+    pe_name : "TruSeq3-PE.fa"
+    pe_url  : "https://raw.githubusercontent.com/timflutre/trimmomatic/master/adapters/TruSeq3-PE-2.fa"
+    se_name : "TruSeq3-SE.fa"
+    se_url : "https://raw.githubusercontent.com/timflutre/trimmomatic/master/adapters/TruSeq3-SE.fa"
+
+  interleaving:
+    interleave_suffix: "pe"
+
+  data_type: "pe"
