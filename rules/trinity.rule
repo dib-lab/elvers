@@ -1,0 +1,22 @@
+def get_trimmed(wildcards):
+    return expand(join(TRIM_DIR, '{sample}_{unit}_{end}.fq.gz'),**wildcards)
+
+rule trinity:
+    input:
+        left=expand("reads/{sample}.left.fq.gz", sample=["reads","reads2"]),
+        right=expand("reads/{sample}.right.fq.gz", sample=["reads","reads2"])
+    output:
+        "trinity_out_dir/Trinity.fasta" 
+    message:
+        """--- Quality trimming PE read data with Trimmomatic."""
+    params:
+        outdir="trinity_out_dir",
+        cpu="2",
+        max_memory= '2G',
+        seqtype = 'fq',
+        # optional parameters
+        extra=""
+    log: join(LOGS_DIR, 'trinity/trinity.log')
+    wrapper:
+        #"0.23.1/bio/trinity"
+        "master/bio/trinity" 
