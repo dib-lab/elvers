@@ -1,7 +1,7 @@
 import os
 import numpy as np
 import pandas as pd
-from utils import container_image_is_external, container_image_name
+#from utils import container_image_is_external, container_image_name
 from snakemake.utils import validate, min_version
 min_version("5.1.2") #minimum snakemake version
 
@@ -69,4 +69,12 @@ TARGETS = get_targets(units, TRIM_DIR,QC_DIR, add_fastqc_targs)
 rule all:
     input: TARGETS
 
+##### setup singularity #####
 
+# this container defines the underlying OS for each job when using the workflow
+# with --use-conda --use-singularity
+singularity: "docker://continuumio/miniconda3"
+
+##### setup report #####
+
+report: "report/workflow.rst"
