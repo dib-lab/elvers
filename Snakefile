@@ -31,6 +31,7 @@ OUT_DIR = '{}_out{}'.format(base, experiment_suffix)
 LOGS_DIR = os.path.join(OUT_DIR, 'logs')
 TRIM_DIR = os.path.join(OUT_DIR, trim_suffix)
 QC_DIR = os.path.join(OUT_DIR, 'qc')
+ASSEMBLY_DIR = os.path.join(OUT_DIR, 'assembly')
 
 # workflow rules
 include: os.path.join('rules',"fastqc.rule")
@@ -41,8 +42,9 @@ from rules.trimmomatic_targets import get_targets
 targets_dir = TRIM_DIR
 #include: os.path.join("rules", "trinity.rule")
 #from rules.trinity_targets import get_targets
+#targets_dir = ASSEMBLY_DIR
 
-TARGETS = get_targets(units,targets_dir)
+TARGETS = get_targets(units, base, targets_dir)
 rule all:
     input: TARGETS
 
