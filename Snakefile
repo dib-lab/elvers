@@ -1,7 +1,6 @@
 import os
 import numpy as np
 import pandas as pd
-#from utils import container_image_is_external, container_image_name
 from snakemake.utils import validate, min_version
 min_version("5.1.2") #minimum snakemake version
 
@@ -33,39 +32,17 @@ LOGS_DIR = os.path.join(OUT_DIR, 'logs')
 TRIM_DIR = os.path.join(OUT_DIR, trim_suffix)
 QC_DIR = os.path.join(OUT_DIR, 'qc')
 
-# read filtering workflow rules
+# workflow rules
 include: os.path.join('rules',"fastqc.rule")
-add_fastqc_targs = True
+#from rules.fastqc_targets import get_targets
+#targets_dir = QC_DIR
 include: os.path.join("rules","trimmomatic.rule")
+from rules.trimmomatic_targets import get_targets
+targets_dir = TRIM_DIR
+#include: os.path.join("rules", "trinity.rule")
+#from rules.trinity_targets import get_targets
 
-#temporary get-targs function. move to separate file.
-def get_targets(units, TRIM_DIR, QC_DIR, fastqc_targs = False): 
-    """
-    Use the sample info provided in the tsv file 
-    to generate required targets for each workflow
-    """
-    #pre_trim_fastqc_targets = []
-    post_trim_fastqc_targets = []
-    trim_targets = []
-    for s, u in units.iterrows():
-        sample, unit, read_type = u['sample'],u['unit'],u['read_type']
-        trim_targets.append(os.path.join(TRIM_DIR, '{}_{}_1.trim.fq.gz'.format(sample,unit)))
-        if fastqc_targs:
-            post_trim_fastqc_targets.append(os.path.join(QC_DIR, '{}_{}_1.trim_fastqc.zip'.format(sample,unit)))
-            post_trim_fastqc_targets.append(os.path.join(QC_DIR, '{}_{}_1.trim_fastqc.html'.format(sample,unit)))
-        if read_type == 'pe':
-            trim_targets.append(os.path.join(TRIM_DIR, '{}_{}_2.trim.fq.gz'.format(sample,unit)))
-            if fastqc_targs:
-                post_trim_fastqc_targets.append(os.path.join(QC_DIR, '{}_{}_2.trim_fastqc.zip'.format(sample,unit)))
-                post_trim_fastqc_targets.append(os.path.join(QC_DIR, '{}_{}_2.trim_fastqc.html'.format(sample,unit)))
-    targs = trim_targets + post_trim_fastqc_targets
-    #return targs
-    return post_trim_fastqc_targets
-
-
-
-TARGETS = get_targets(units, TRIM_DIR,QC_DIR, add_fastqc_targs)
-#print(TARGETS)
+TARGETS = get_targets(units,targets_dir)
 rule all:
     input: TARGETS
 
