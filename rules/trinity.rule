@@ -11,7 +11,7 @@ rule trinity:
         left = LEFT,
         right = RIGHT
     output:
-        fasta = "trinity_out_dir/Trinity.fasta" 
+        fasta = join(ASSEMBLY_DIR,"trinity_out_dir/Trinity.fasta")
     message:
         """--- Assembling read data with Trinity v2.5.1 --- """
     params:
@@ -26,6 +26,6 @@ rule rename_trinity_fasta:
     input: rules.trinity.output.fasta
     output: join(ASSEMBLY_DIR, base + '.fasta')
     log: join(LOGS_DIR, 'trinity/cp_assembly.log')
-    shell: ("cp {input} {output} 2&1> {log}") 
+    shell: ("cp {input} {output}") 
 
 

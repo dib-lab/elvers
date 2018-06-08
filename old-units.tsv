@@ -1,0 +1,4 @@
+sample	unit	fq1	fq2
+A	1	test_data/a.chr21.1.fq	test_data/a.chr21.2.fq
+B	1	test_data/b.chr21.1.fq	test_data/b.chr21.2.fq
+B	2	test_data/b.chr21.1.fq
