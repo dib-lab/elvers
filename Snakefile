@@ -38,11 +38,11 @@ include: os.path.join('rules',"fastqc.rule")
 #from rules.fastqc_targets import get_targets
 #targets_dir = QC_DIR
 include: os.path.join("rules","trimmomatic.rule")
-from rules.trimmomatic_targets import get_targets
-targets_dir = TRIM_DIR
-#include: os.path.join("rules", "trinity.rule")
-#from rules.trinity_targets import get_targets
-#targets_dir = ASSEMBLY_DIR
+#from rules.trimmomatic_targets import get_targets
+#targets_dir = TRIM_DIR
+include: os.path.join("rules", "trinity.rule")
+from rules.trinity_targets import get_targets
+targets_dir = ASSEMBLY_DIR
 
 TARGETS = get_targets(units, base, targets_dir)
 rule all:

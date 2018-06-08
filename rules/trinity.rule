@@ -1,38 +1,31 @@
-** IN PROGRESS **
+from os import path
+from trimmomatic_targets import get_targets
 
-#def get_trimmed(wildcards):
-#    return expand(join(TRIM_DIR, '{sample}_{unit}_{end}.fq.gz'),**wildcards)
-
-def get_left(wildcards):
-    return expand(join(TRIM_DIR, '{sample}_{unit}_1.trim.fq.gz'),**wildcards)
-
-def get_right(wildcards):
-#wont work with mixed pe /se samples ...
-    return expand(join(TRIM_DIR, '{sample}_{unit}_2.trim.fq.gz'),**wildcards)
-
-# better to feed in from trimmomatic? BUT then how to make easily interchangeable with other trimmers/no trimming?
-
+all_trimmed = get_targets(units, base, TRIM_DIR)
+LEFT = [x for x in all_trimmed if '_1.trim' in x]
+RIGHT= [x for x in all_trimmed if '_2.trim' in x]
 
 
 rule trinity:
     input:
-        r1= lambda wildcards: units[units['read_type']=='pe'].loc[(wildcards.sample, wildcards.unit), ["fq1"]].dropna(),
-        r2 =lambda wildcards: units[units['read_type']=='pe'].loc[(wildcards.sample, wildcards.unit), ["fq2"]].dropna()
-        
-        #left=expand("reads/{sample}.left.fq.gz", sample=["reads","reads2"]),
-        #right=expand("reads/{sample}.right.fq.gz", sample=["reads","reads2"])
+        left = LEFT,
+        right = RIGHT
     output:
-        "trinity_out_dir/Trinity.fasta" 
+        fasta = "trinity_out_dir/Trinity.fasta" 
     message:
         """--- Assembling read data with Trinity v2.5.1 --- """
     params:
-        outdir="trinity_out_dir",
-        cpu="2",
-        max_memory= '2G',
-        seqtype = 'fq',
         # optional parameters
         extra=""
+    threads: 4
     log: join(LOGS_DIR, 'trinity/trinity.log')
     wrapper:
-        #"0.23.1/bio/trinity"
-        "master/bio/trinity" 
+        "0.24.0/bio/trinity"
+
+rule rename_trinity_fasta:
+    input: rules.trinity.output.fasta
+    output: join(ASSEMBLY_DIR, base + '.fasta')
+    log: join(LOGS_DIR, 'trinity/cp_assembly.log')
+    shell: ("cp {input} {output} 2&1> {log}") 
+
+
