@@ -21,5 +21,4 @@ snakemake --use-conda --configfile cfp.yml
   - Differential Expression
 
 
-* migrated from [dahak-eel-pond](https://github.com/bluegenes/dahak-eel-pond) 
-using ideas from [rna-seq-star example workflow](https://github.com/snakemake-workflows/rna-seq-star-deseq2)
+*snakemake style follows [rna-seq-star example workflow](https://github.com/snakemake-workflows/rna-seq-star-deseq2)*
