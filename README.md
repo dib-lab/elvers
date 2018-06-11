@@ -1,9 +1,7 @@
 # 2018-snakemake-eel-pond
 Snakemake update of the Eel Pond Protocol for *de novo* RNAseq analysis
 
-Install [miniconda](https://conda.io/miniconda.html) :
-
-For Ubuntu 16.04 ([Jetstream image](https://use.jetstream-cloud.org/application/images/107))
+Install [miniconda](https://conda.io/miniconda.html) (for Ubuntu 16.04 [Jetstream image](https://use.jetstream-cloud.org/application/images/107)):
 ```
 wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
 bash Miniconda3-latest-Linux-x86_64.sh -b
