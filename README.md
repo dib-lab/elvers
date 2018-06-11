@@ -1,10 +1,27 @@
 # 2018-snakemake-eel-pond
 Snakemake update of the Eel Pond Protocol for *de novo* RNAseq analysis
 
-run:
+Install [miniconda](https://conda.io/miniconda.html) (for Ubuntu 16.04 [Jetstream image](https://use.jetstream-cloud.org/application/images/107)):
 ```
+wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+bash Miniconda3-latest-Linux-x86_64.sh -b
+echo export PATH="$HOME/miniconda3/bin:$PATH" >> ~/.bash_profile
+source ~/.bash_profile
+```
+
+```
+conda install -c bioconda -c conda-forge -y snakemake
+```
+
+
+Run:
+
+```
+git clone https://github.com/dib-lab/2018-snakemake-eel-pond.git
+cd 2018-snakemake-eel-pond
 snakemake --use-conda --configfile cfp.yml
 ```
+
 
 **References:** 
 * [eel-pond protocol docs](http://eel-pond.readthedocs.io/en/latest/)
