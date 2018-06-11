@@ -1,4 +1,4 @@
 sample	unit	fq1	fq2
-A	1	test_data/readsA_1.fq	test_data/readsA_2.fq
-B	1	test_data/readsB_1.fq	test_data/readsB_2.fq
-B	2	test_data/readsAB_1.fq
+A	1	test_data/readsA_1.fq.gz	test_data/readsA_2.fq.gz
+B	1	test_data/readsB_1.fq.gz	test_data/readsB_2.fq.gz
+B	2	test_data/readsAB_1.fq.gz
