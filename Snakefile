@@ -26,12 +26,13 @@ readfilt = config['read_filtering']
 trim_suffix = readfilt.get('trim_suffix', 'trimmed')
 read_qual = readfilt['quality_assessment']
 
-# build directory info
+# build directory info --> later set all these from config file(s)
 OUT_DIR = '{}_out{}'.format(base, experiment_suffix)
 LOGS_DIR = os.path.join(OUT_DIR, 'logs')
 TRIM_DIR = os.path.join(OUT_DIR, trim_suffix)
 QC_DIR = os.path.join(OUT_DIR, 'qc')
 ASSEMBLY_DIR = os.path.join(OUT_DIR, 'assembly')
+QUANT_DIR = os.path.join(OUT_DIR, 'quant')
 
 # workflow rules
 include: os.path.join('rules',"fastqc.rule")
@@ -43,6 +44,9 @@ include: os.path.join("rules","trimmomatic.rule")
 include: os.path.join("rules", "trinity.rule")
 from rules.trinity_targets import get_targets
 targets_dir = ASSEMBLY_DIR
+#include: os.path.join("rules", "salmon.rule")
+#from rules.salmon_targets import get_targets
+#targets_dir = QUANT_DIR
 
 TARGETS = get_targets(units, base, targets_dir)
 rule all:
