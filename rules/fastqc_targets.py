@@ -1,11 +1,11 @@
 from os import path
 
-def get_targets(units, basename, outdir, extensions = ['.trim_fastqc.zip','.trim_fastqc.html'], se_ext = ['1'], pe_ext = ['1','2']):
+def get_targets(units, basename, outdir, extensions = ['_fastqc.zip','_fastqc.html','.trim_fastqc.zip','.trim_fastqc.html'], se_ext = ['1'], pe_ext = ['1','2']):
+
     """
     Use the sample info provided in the tsv file
     to generate required targets for each workflow
     """
-    # when add pretrimming fastqc, add '_fastqc.zip','_fastqc.html', to extensions
     fastqc_targs = []
     for s, u in units.iterrows():
         sample, unit, read_type = u['sample'],u['unit'],u['read_type']
