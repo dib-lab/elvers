@@ -32,7 +32,7 @@ rule fastqc_post_trim:
         get_trimmed
     output:
         html=join(QC_DIR,'{sample}_{unit}_{end}_trimmed_fastqc.html'),
-        zip=join(QC_DIR,'{sample}_{unit}_{end}_trimmed_fastqçc.zip'),
+        zip=join(QC_DIR,'{sample}_{unit}_{end}_trimmed_fastqc.zip'),
     params: ""
     log: join(LOGS_DIR, 'fastqc/{sample}_{unit}_{end}_trimmed.log') 
     wrapper:
