@@ -1,0 +1,19 @@
+from os.path import join
+
+rule salmon_index:
+    """
+    Index the transcriptome for salmon quantification
+    """
+    input:
+        join(ASSEMBLY_DIR, base + ".fasta")
+    output:
+        join(QUANT_DIR, base + "_salmon")
+    message:
+        """--- Indexing the transcriptome with Salmon ---"""
+    threads: 2
+    params:
+        extra = ''
+    log:
+        qual_log = join(LOGS_DIR, 'salmon/' + base +'_index.log')
+    wrapper:
+        '0.25.0/bio/salmon/index'
