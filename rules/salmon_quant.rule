@@ -1,0 +1,31 @@
+from os.path import join
+
+def get_trimmed(wildcards):
+    readsD = {}
+    if not is_single_end(**wildcards):
+        readsD['r1'] = expand(join(TRIM_DIR, '{sample}_{unit}_1.trim.fq.gz'),**wildcards)
+        readsD['r2'] = expand(join(TRIM_DIR, '{sample}_{unit}_2.trim.fq.gz'),**wildcards)
+        return readsD
+    readsD['r'] = expand(join(TRIM_DIR, '{sample}_{unit}_se.trim.fq.gz'),**wildcards)
+    return readsD
+
+rule salmon_quant_reads:
+    """
+    Quantify transcripts with Salmon
+    """
+    input: 
+        unpack(get_trimmed),
+        index = join(QUANT_DIR, base + "_salmon")
+    output:
+        quant = join(QUANT_DIR, "{sample}_{unit}_x_" + base,"quant.sf"),
+        lib = join(QUANT_DIR, "{sample}_{unit}_x_" + base,"lib_format_counts.json")
+    message:
+        """--- Quantifying transcripts with Salmon ---"""
+    params:
+        libtype= 'A', # maybe set in config file (how to do se vs pe)?
+        extra = '' 
+    threads: 2
+    log:
+        qual_log = join(LOGS_DIR, 'salmon/{sample}_{unit}_x_' + base + '.log')
+    wrapper:
+        '0.25.0/bio/salmon/quant/quant-reads'

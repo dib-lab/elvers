@@ -2,13 +2,21 @@ from os.path import join
 
 trim_params = readfilt["trimmomatic"]
 
+def get_pretrim_pe(wildcards):
+    if not is_single_end(**wildcards):
+        # paired-end sample
+        return dict(zip(['r1','r2'], units.loc[(wildcards.sample, wildcards.unit), ["fq1", "fq2"]].dropna()))
+
+def get_pretrim_se(wildcards):
+    # single end sample
+    return units.loc[(wildcards.sample, wildcards.unit),["fq1"]].dropna()
+
 rule trimmomatic_pe:
     """
     Trim reads from the sequencer by trimming or dropping low-quality reads.
     """
     input:
-        r1= lambda wildcards: units[units['read_type']=='pe'].loc[(wildcards.sample, wildcards.unit), ["fq1"]].dropna(),
-        r2 =lambda wildcards: units[units['read_type']=='pe'].loc[(wildcards.sample, wildcards.unit), ["fq2"]].dropna()
+        unpack(get_pretrim_pe)
     output:
         r1=join(TRIM_DIR, "{sample}_{unit}_1.trim.fq.gz"),
         r2=join(TRIM_DIR, "{sample}_{unit}_2.trim.fq.gz"),
@@ -30,9 +38,9 @@ rule trimmomatic_se:
     Trim reads from the sequencer by trimming or dropping low-quality reads.
     """
     input:
-        r1= lambda wildcards: units[units['read_type']=='se'].loc[(wildcards.sample, wildcards.unit), ["fq1"]].dropna(),
+       get_pretrim_se
     output:
-        r1=join(TRIM_DIR, "{sample}_{unit}_1.trim.fq.gz"),
+        r1=join(TRIM_DIR, "{sample}_{unit}_se.trim.fq.gz"),
     message:
         """--- Quality trimming SE read data with Trimmomatic."""
     params:
