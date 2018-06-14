@@ -1,6 +1,6 @@
 from os import path 
 
-def get_targets(units, basename, outdir, extensions = ['.trim.fq.gz'], se_ext = ['1'], pe_ext = ['1','2']):
+def get_targets(units, basename, outdir, extensions = ['.trim.fq.gz'], se_ext = ['se'], pe_ext = ['1','2']):
     """
     Use the sample info provided in the tsv file
     to generate required targets for trimmomatic

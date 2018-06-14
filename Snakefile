@@ -16,8 +16,8 @@ units['read_type'] = np.where(units['fq2'].isna(), 'se', 'pe') #PE,SE
 #paired = units[units.read_type == 'pe']
 #single = units[units.read_type == 'se']
 
-def is_single_end(sample, unit, end):
-    return units.loc[(sample,unit)]['read_type'] == 'se' 
+def is_single_end(sample, unit, end = ''):
+    return pd.isnull(units.loc[(sample, unit), "fq2"]) #    return units.loc[(sample,unit)]['read_type'] == 'se' 
 
 # build file extensions from suffix info (+ set defaults)
 base = config.get('basename','eelpond')
@@ -36,19 +36,24 @@ QUANT_DIR = os.path.join(OUT_DIR, 'quant')
 
 # workflow rules
 include: os.path.join('rules',"fastqc.rule")
-#from rules.fastqc_targets import get_targets
-#targets_dir = QC_DIR
+from rules.fastqc_targets import get_targets
+targets_dir = QC_DIR
+TARGETS = get_targets(units, base, targets_dir)
+
+
 include: os.path.join("rules","trimmomatic.rule")
 #from rules.trimmomatic_targets import get_targets
 #targets_dir = TRIM_DIR
 include: os.path.join("rules", "trinity.rule")
-from rules.trinity_targets import get_targets
-targets_dir = ASSEMBLY_DIR
-#include: os.path.join("rules", "salmon.rule")
-#from rules.salmon_targets import get_targets
-#targets_dir = QUANT_DIR
+#from rules.trinity_targets import get_targets
+#targets_dir = ASSEMBLY_DIR
+include: os.path.join("rules", "salmon_index.rule")
+include: os.path.join("rules", "salmon_quant.rule")
+from rules.salmon_targets import get_targets
+targets_dir = QUANT_DIR
 
-TARGETS = get_targets(units, base, targets_dir)
+TARGETS = TARGETS + get_targets(units, base, targets_dir)
+print(TARGETS)
 rule all:
     input: TARGETS
 

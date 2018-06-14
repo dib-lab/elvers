@@ -5,7 +5,9 @@ from os.path import join, dirname
 #fastqc_html = "_{}.html".format(target_suffix)
 
 def get_trimmed(wildcards):
-    return expand(join(TRIM_DIR, '{sample}_{unit}_{end}.trim.fq.gz'),**wildcards)
+    if not is_single_end(**wildcards):
+        return expand(join(TRIM_DIR, '{sample}_{unit}_{end}.trim.fq.gz'), end = ['1','2'],**wildcards)
+    return expand(join(TRIM_DIR, '{sample}_{unit}_se.trim.fq.gz'),**wildcards)
 
 def get_pretrim(wildcards):
     if not is_single_end(**wildcards):
