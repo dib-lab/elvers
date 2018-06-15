@@ -1,7 +1,7 @@
-site_name: taco-simple
-site_url: https://dahak-metagenomics.github.io/taco-simple
-repo_name: taco-simple
-repo_url: https://github.com/dahak-metagenomics/taco-simple
+site_name: snakemake-eel-pond
+site_url: http://2018-snakemake-eel-pond.readthedocs.io/
+repo_name: 2018-snakemake-eel-pond.readthedocs.io/
+repo_url: https://github.com/dib-lab/2018-snakemake-eel-pond
 edit_url: ""
 
 copyright: 'Copyright &copy; 2018 <a href="http://ivory.idyll.org/lab/">Lab for Data Intensive Biology</a> at UC Davis'
