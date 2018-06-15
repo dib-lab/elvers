@@ -23,11 +23,11 @@ theme:
   
   # fun logos! see https://material.io/icons/
   logo:
-    icon: 'group_work'
+    icon: 'dns'
 
   font:
-    text: 'Ubuntu'
-    code: 'Ubuntu Mono'
+    text: 'Roboto'
+    code: 'Roboto Mono'
 
 # this will add docs/css/custom.css to all your docs
 extra_css:
