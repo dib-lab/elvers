@@ -12,6 +12,7 @@ Some useful conda, snakemake, workflow hints:
 
  you'll need to work with a local install of that package. 
  Here's how to use conda to install the dependenciesfrom the conda recipe.
+ see also https://conda.io/docs/user-guide/tutorials/build-pkgs.html#building-and-installing
 
  install conda-build  
 
