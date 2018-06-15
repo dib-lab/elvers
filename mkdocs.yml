@@ -1,0 +1,50 @@
+site_name: taco-simple
+site_url: https://dahak-metagenomics.github.io/taco-simple
+repo_name: taco-simple
+repo_url: https://github.com/dahak-metagenomics/taco-simple
+edit_uri: ""
+
+copyright: 'Copyright &copy; 2018 <a href="http://ivory.idyll.org/lab/">Lab for Data Intensive Biology</a> at UC Davis'
+
+# change directory names here
+docs_dir: docs
+site_dir: site
+
+theme:
+
+  # the next 2 lines are required to use the DIB version
+  name: null
+  custom_dir: 'mkdocs-material-dib/material'
+
+  # pretty colors! see https://squidfunk.github.io/mkdocs-material/getting-started/#primary-colors
+  palette:
+    primary: 'blue'
+    accent: 'blue'
+  
+  # fun logos! see https://material.io/icons/
+  logo:
+    icon: 'group_work'
+
+  font:
+    text: 'Ubuntu'
+    code: 'Ubuntu Mono'
+
+# this will add docs/css/custom.css to all your docs
+extra_css:
+  - css/custom.css
+
+# give a title for each page
+pages:
+  - 'Index' : 'index.md'
+  - 'Workflow 1' : 'Workflow1.md'
+  - 'Workflow 2' : 'Workflow2.md'
+  - 'Workflow 3' : 'Workflow3.md'
+  - 'Workflow 4' : 'Workflow4.md'
+
+# Extensions
+markdown_extensions:
+  - admonition
+  - codehilite:
+      guess_lang: false
+  - toc:
+      permalink: true
