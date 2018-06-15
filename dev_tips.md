@@ -13,24 +13,28 @@ Some useful conda, snakemake, workflow hints:
  you'll need to work with a local install of that package. 
  Here's how to use conda to install the dependenciesfrom the conda recipe.
 
- install conda-build
+ install conda-build  
+
     ```
     conda install conda-build
     ```
 
- clone the repo of interest and cd into it
+ clone the repo of interest and cd into it  
+     
      ```
      git clone dammit-repo
      cd dammit-repo
      ```
 
  There should be a folder called recipe. 
- Use conda-build to build it.
+ Use conda-build to build it.  
+    
     ``` 
     conda build recipe
     ```
 
- Install the local code
+ Install the local code  
+    
     ```
     conda install dammit --use-local
     # or, you can use pip:
