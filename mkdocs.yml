@@ -4,6 +4,8 @@ repo_name: 2018-snakemake-eel-pond.readthedocs.io/
 repo_url: https://github.com/dib-lab/2018-snakemake-eel-pond
 edit_url: ""
 
+extra_css: css/custom.css
+
 copyright: 'Copyright &copy; 2018 <a href="http://ivory.idyll.org/lab/">Lab for Data Intensive Biology</a> at UC Davis'
 
 # change directory names here
