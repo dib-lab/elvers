@@ -1,7 +1,9 @@
 from os import path
-from trimmomatic_targets import get_targets
+from trinity_targets import get_trimmed_trinity_input
 
-all_trimmed = get_targets(units, base, TRIM_DIR)
+#include: "trinity_config.yaml"
+
+all_trimmed = get_trimmed_trinity_input(units, base, TRIM_DIR)
 LEFT = [x for x in all_trimmed if '_1.trim' in x]
 RIGHT= [x for x in all_trimmed if '_2.trim' in x]
 SINGLE= [x for x in all_trimmed if 'se.trim' in x]
@@ -18,8 +20,6 @@ def get_trimmed(wildcards):
         readsD['left'] = readsD['left'] + se
     return readsD
 
-
-
 rule trinity:
     input:
         #unpack(get_trimmed)
@@ -30,6 +30,7 @@ rule trinity:
     message:
         """--- Assembling read data with Trinity v2.5.1 --- """
     params:
+        #**config['trinity']
         # optional parameters
         extra=""
     threads: 4

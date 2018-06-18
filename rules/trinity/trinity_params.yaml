@@ -1,0 +1,8 @@
+
+trinity:
+    max_memory : "10G"
+
+
+
+#update_config(config_default, trinity_config)
+#config = config_default
