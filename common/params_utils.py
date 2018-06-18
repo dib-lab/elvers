@@ -9,5 +9,5 @@ def get_params(rule_name, rules_dir='rules'):
             paramsD = yaml.load(stream)
         except yaml.YAMLError as exc:
             print(exc)
-    rule_params= paramsD[rule_name]
+        rule_params= paramsD[rule_name]
     return rule_params
