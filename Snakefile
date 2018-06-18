@@ -40,7 +40,6 @@ from rules.fastqc_targets import get_targets
 targets_dir = QC_DIR
 TARGETS = get_targets(units, base, targets_dir)
 
-
 include: os.path.join("rules","trimmomatic.rule")
 #from rules.trimmomatic_targets import get_targets
 #targets_dir = TRIM_DIR

@@ -1,0 +1,37 @@
+from os.path import join
+
+def get_trimmed(wildcards):
+    readsD = {}
+    if not is_single_end(**wildcards):
+        readsD['r1'] = expand(join(TRIM_DIR, '{sample}_{unit}_1.trim.fq.gz'),**wildcards)
+        readsD['r2'] = expand(join(TRIM_DIR, '{sample}_{unit}_2.trim.fq.gz'),**wildcards)
+        readsD['r1_orphan'] = expand(join(TRIM_DIR, '{sample}_{unit}_1.se.trim.fq.gz'),**wildcards)
+        readsD['r2_orphan'] = expand(join(TRIM_DIR, '{sample}_{unit}_2.se.trim.fq.gz'),**wildcards)
+        return readsD
+    #readsD['r'] = expand(join(TRIM_DIR, '{sample}_{unit}_se.trim.fq.gz'),**wildcards)
+    #return readsD
+
+rule khmer_read_processing_PE:
+    """
+    kmer trim and diginorm with khmer
+    """
+    input:
+        unpack(get_trimmed),
+    output:
+        
+        
+    message:
+        """--- khmer trimming of low-abundance kmers and digital normalization ---"""
+    params:
+        extra = ''
+    threads: 2
+    log:
+        qual_log = join(LOGS_DIR, 'khmer/{sample}_{unit}_x_' + base + '.log')
+    conda: 
+        env-khmer.yaml
+    shell(
+    """(interleave-reads.py {r1} {r2} && zcat {r1_orphan} {r2_orphan})| \\
+           (trim-low-abund.py -V -k 20 -Z 18 -C 3 - -o - -M 4e9 --diginorm --diginorm-coverage=20) | \\
+           (extract-paired-reads.py --gzip -p {}{}.paired.gz -s {}{}.single.gz) > /dev/null
+           """.format(trimdir, SRA, trimdir, SRA, trimdir, diginormdir, SRA, diginormdir, SRA)
+

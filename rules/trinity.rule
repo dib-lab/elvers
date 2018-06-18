@@ -8,7 +8,7 @@ SINGLE= [x for x in all_trimmed if 'se.trim' in x]
 LEFT = LEFT + SINGLE
 
 def get_trimmed(wildcards):
-    readsD = {}
+    readsD = {} # note that this is missing the orphans from paired samples
     if not is_single_end(**wildcards):
         # paired-end sample
         readsD['left'] = expand(join(TRIM_DIR, '{sample}_{unit}_1.trim.fq.gz'),**wildcards)
