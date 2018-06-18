@@ -10,6 +10,13 @@ basename: "testing"
 samples: "samples.tsv"
 units: "units.tsv"
 
+directories:
+ qc_dir: 'qc'
+ trim_dir: 'trimmed'
+ assembly_dir: 'assembly'
+ quant_dir: 'quant'
+
+
 diffexp:
   # contrasts for the deseq2 results method
   contrasts:
@@ -17,15 +24,3 @@ diffexp:
       - treated
       - untreated
 
-read_filtering:
-  trim_suffix: "trimmed"
-  
-  quality_assessment:
-    fastqc_suffix: "_fastqc"
-  
-  qc_dir: 'qc'
-
-  interleaving:
-    interleave_suffix: "pe"
-
-  data_type: "pe"
