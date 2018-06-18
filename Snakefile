@@ -3,6 +3,7 @@ import yaml
 import numpy as np
 import pandas as pd
 from snakemake.utils import validate, min_version
+from common.params_utils import get_params
 min_version("5.1.2") #minimum snakemake version
 #validation template: see https://github.com/snakemake-workflows/rna-seq-star-deseq2
 
