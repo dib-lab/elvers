@@ -1,7 +1,7 @@
-site_name: snakemake-eel-pond
-site_url: http://2018-snakemake-eel-pond.readthedocs.io/
-repo_name: 2018-snakemake-eel-pond.readthedocs.io/
-repo_url: https://github.com/dib-lab/2018-snakemake-eel-pond
+site_name: eelpond
+site_url: http://dib-lab.github.io/eelpond/
+repo_name: eelpond
+repo_url: https://github.com/dib-lab/eelpond
 edit_url: ""
 
 extra_css: css/custom.css
