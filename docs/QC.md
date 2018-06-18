@@ -14,7 +14,7 @@ This pipeline assumes TruSeq3-PE.fa adapters. However, if running this on your o
 
 See excellent paper on trimming parameters by [MacManes 2014](https://www.frontiersin.org/articles/10.3389/fgene.2014.00013/full).
 
-Based on recommendations by MacManes, we use this command in this pipeline:
+Based on these recommendations by MacManes 2014, we use this command in this pipeline:
 
 ```
 TrimmomaticPE ${base}.fastq.gz ${baseR2}.fastq.gz \
