@@ -2,7 +2,7 @@ This is a lightweight protocol for assembling up to a few hundred million mRNAse
 
 Previous versions of this protocol included line-by-line commands that the user could follow along with using a test dataset provided in the instructions. Since the recent development of [snakemake](https://snakemake.readthedocs.io/en/stable/) workflow management tool and [snakemake-wrappers](https://snakemake-wrappers.readthedocs.io/en/stable/) to manage sofware installation of commonly-used bioinformatics tools, we have re-implemented the Eel Pond Protocol to make it easier for users to install software and run a *de novo* transcriptome assembly, annotation, and quick differential expression analysis on a set of short-read Illumina data using a single command.
 
-The software for this protocol can be found here: https://github.com/dib-lab/eelpond
+The software for this protocol can be found [here](https://github.com/dib-lab/eelpond). 
 
 To run the protocol on your own computer system (requires Ubuntu 16.04):
 
@@ -35,13 +35,13 @@ snakemake --use-conda --configfile cfp.yml
 * [SIO-BUG, nonmodel RNAseq workshop, October 2017](http://rnaseq-workshop-2017.readthedocs.io/en/latest/index.html)
 
 **intended workflows:**
-  - Read Quality Trimming and Filtering
-  - Digital Normalization
-  - Assembly
-  - Quality Assessment
-  - Annotation
-  - Transcript Quantification 
-  - Differential Expression
+  - [Read Quality Trimming and Filtering](QC.md)
+  - [Digital Normalization](Diginorm.md)
+  - [Assembly](Assembly.md)
+  - [Quality Assessment](Quality.md)
+  - [Annotation](Annotation.md)
+  - [Transcript Quantification](Quant.md)
+  - [Differential Expression](DE.md)
 
 
 *snakemake style follows [rna-seq-star example workflow](https://github.com/snakemake-workflows/rna-seq-star-deseq2)*
