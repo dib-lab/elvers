@@ -28,7 +28,7 @@ rule khmer_read_processing_PE:
     log:
         qual_log = join(LOGS_DIR, 'khmer/{sample}_{unit}_x_' + base + '.log')
     conda: 
-        env-khmer.yaml
+        envs/env-khmer.yaml
     shell(
     """(interleave-reads.py {r1} {r2} && zcat {r1_orphan} {r2_orphan})| \\
            (trim-low-abund.py -V -k 20 -Z 18 -C 3 - -o - -M 4e9 --diginorm --diginorm-coverage=20) | \\
