@@ -38,10 +38,12 @@ extra_css:
 # give a title for each page
 pages:
   - 'Index' : 'index.md'
-  - 'Workflow 1' : 'Workflow1.md'
-  - 'Workflow 2' : 'Workflow2.md'
-  - 'Workflow 3' : 'Workflow3.md'
-  - 'Workflow 4' : 'Workflow4.md'
+  - 'Read Quality Trimming and Filtering' : 'QC.md'
+  - 'Digital Normalization' : 'Diginorm.md'
+  - 'Assembly' : 'Assembly.md'
+  - 'Quality Assessment': 'Quality.md'
+  - 'Transcript Quantification' : 'Quant.md'
+  - 'Differential Expression' : 'DE.md'
 
 # Extensions
 markdown_extensions:
