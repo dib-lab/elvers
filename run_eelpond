@@ -1,0 +1,80 @@
+#! /usr/bin/env python
+"""
+Execution script for snakemake eelpond.
+"""
+# ref: https://github.com/ctb/2018-snakemake-cli/blob/master/run
+import argparse
+import os.path
+import sys
+import pprint
+import yaml
+import snakemake
+
+def find_Snakefile(workdir):
+    snakefile = os.path.join(workdir, 'Snakefile')
+    assert os.path.exists(snakefile), 'Error: cannot find Snakefile at {}\n'.format(snakefile)
+    print('--------')
+    print('details!')
+    print('\tsnakefile: {}'.format(snakefile))
+    return snakefile
+
+def find_yaml(workdir, configfile, name): # args.configfile
+    # find the workflow config or params file
+    workflowfile = None
+    if os.path.exists(configfile) and not os.path.isdir(configfile):
+        workflowfile = configfile
+    else:
+        for suffix in ('', '.yaml'):
+            tryfile = os.path.join(workdir, configfile + suffix)
+            if os.path.exists(tryfile) and not os.path.isdir(tryfile):
+                sys.stderr.write('Found {} file at {}\n'.format(name, tryfile))
+                workflowfile = tryfile
+                break
+    assert workflowfile, 'Error, cannot find {} file {}\n'.format(name, configfile)
+    print('\t{}: {}'.format(name, workflowfile))
+    return workflowfile
+
+def find_targets(workdir, target_files):
+    # import target functions for each rule?
+    # or keep this within snakefile?
+    targets = ''
+    #print('\ttarget: {}'.format(target))
+    print('--------')
+    return targets
+
+def main(args):
+    # first, find the Snakefile, configfile, and paramfiles
+    thisdir = os.path.abspath(os.path.dirname(__file__))
+    snakefile = find_Snakefile(thisdir)
+    configfile = find_yaml(thisdir, args.config, 'config') 
+    paramsfile = find_yaml(thisdir, args.params, 'params')  #note: might instead want to find many params files and join. 
+    
+    # open workflow config file # which programs to use, etc
+    with open(configfile, 'rt') as fp:
+        workflow_info = yaml.load(fp) 
+
+    target = workflow_info['workflow_target']
+    config = dict() # empty dict of extra configs to pass in?
+
+    # run!!
+    # params file becomes snakemake configfile
+    status = snakemake.snakemake(snakefile, configfile=paramsfile,
+                                 targets=[target], printshellcmds=True,
+                                 dryrun=args.dry_run, config=config)
+
+    if status: # translate "success" into shell exit code of 0
+       return 0
+    return 1
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='run snakemake eelpond', usage='''run_eelpond <workflow> <parameters> [<target>]
+Run snakemake workflows, using the given workflow name & parameters file.
+''')
+
+    parser.add_argument('workflowfile')
+    parser.add_argument('paramsfile')
+    parser.add_argument('-n', '--dry-run', action='store_true')
+    args = parser.parse_args()
+
+    sys.exit(main(args))
