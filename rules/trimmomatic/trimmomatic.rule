@@ -1,16 +1,13 @@
 from os.path import join
 from common.params_utils import get_params
 
-trim_params = get_params('trimmomatic')#readfilt["trimmomatic"]
-import pdb;pdb.set_trace()
+trim_params = get_params('trimmomatic')
 
 def get_pretrim_pe(wildcards):
     if not is_single_end(**wildcards):
-        # paired-end sample
         return dict(zip(['r1','r2'], units.loc[(wildcards.sample, wildcards.unit), ["fq1", "fq2"]].dropna()))
 
 def get_pretrim_se(wildcards):
-    # single end sample
     return units.loc[(wildcards.sample, wildcards.unit),["fq1"]].dropna()
 
 rule trimmomatic_pe:
@@ -27,7 +24,7 @@ rule trimmomatic_pe:
     message:
         """--- Quality trimming PE read data with Trimmomatic."""
     params:
-        trimmer = (trim_params['trim_cmd'].format(readfilt['adapter_file']['pe_name'])).split(' '),
+        trimmer = (trim_params['trim_cmd'].format(trim_params['adapter_file']['pe_name'])).split(' '),
         extra = '' 
     log:
         qual_log = join(LOGS_DIR, 'trimmomatic/{sample}_{unit}.log')
@@ -46,7 +43,7 @@ rule trimmomatic_se:
     message:
         """--- Quality trimming SE read data with Trimmomatic."""
     params:
-        trimmer = (trim_params['trim_cmd'].format(readfilt['adapter_file']['se_name'])).split(' '),
+        trimmer = (trim_params['trim_cmd'].format(trim_params['adapter_file']['se_name'])).split(' '),
         extra = '' 
     log:
         qual_log = join(LOGS_DIR, 'trimmomatic/{sample}_{unit}.log')

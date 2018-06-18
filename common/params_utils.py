@@ -6,7 +6,8 @@ def get_params(rule_name, rules_dir='rules'):
     rule_params = {}
     with open(rule_paramsfile, 'r') as stream:
         try:
-            rule_params = yaml.load(stream)
+            paramsD = yaml.load(stream)
         except yaml.YAMLError as exc:
             print(exc)
+    rule_params= paramsD[rule_name]
     return rule_params
