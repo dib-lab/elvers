@@ -9,6 +9,24 @@ def get_trimmed(wildcards):
     readsD['r'] = expand(join(TRIM_DIR, '{sample}_{unit}_se.trim.fq.gz'),**wildcards)
     return readsD
 
+rule salmon_index:
+    """
+    Index the transcriptome for salmon quantification
+    """
+    input:
+        join(ASSEMBLY_DIR, base + ".fasta")
+    output:
+        join(QUANT_DIR, base + "_salmon")
+    message:
+        """--- Indexing the transcriptome with Salmon ---"""
+    threads: 2
+    params:
+        extra = ''
+    log:
+        qual_log = join(LOGS_DIR, 'salmon/' + base +'_index.log')
+    wrapper:
+        '0.25.0/bio/salmon/index'
+
 rule salmon_quant_reads:
     """
     Quantify transcripts with Salmon

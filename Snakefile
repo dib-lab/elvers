@@ -47,8 +47,7 @@ include: os.path.join("rules","trimmomatic/trimmomatic.rule")
 include: os.path.join("rules", "trinity/trinity.rule")
 from rules.trinity.trinity_targets import get_targets
 #targets_dir = ASSEMBLY_DIR
-include: os.path.join("rules", "salmon/salmon_index.rule")
-include: os.path.join("rules", "salmon/salmon_quant.rule")
+include: os.path.join("rules", "salmon/salmon.rule")
 from rules.salmon.salmon_targets import get_targets
 targets_dir = QUANT_DIR
 
