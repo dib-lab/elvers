@@ -7,7 +7,8 @@ experiment_suffix: ""
 basename: "testing"
 
 #url or path to the csv of samples (sample_basename,fq1,fq2,condition)
-samples: units.tsv
+samples: "samples.tsv"
+units: "units.tsv"
 
 diffexp:
   # contrasts for the deseq2 results method

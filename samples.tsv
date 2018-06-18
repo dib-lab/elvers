@@ -1,3 +1,4 @@
 sample	condition
-A	treated
-B	untreated
+A	untreated
+B	treated
+AB	semitreated

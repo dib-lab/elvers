@@ -3,18 +3,17 @@ import numpy as np
 import pandas as pd
 from snakemake.utils import validate, min_version
 min_version("5.1.2") #minimum snakemake version
+#validation template: see https://github.com/snakemake-workflows/rna-seq-star-deseq2
 
-# add validation. see https://github.com/snakemake-workflows/rna-seq-star-deseq2
+# read in & validate sample info 
 samples = pd.read_table(config["samples"]).set_index("sample", drop=False)
-#validate(samples, schema="schemas/samples.schema.yaml")
-
-units = pd.read_table(config["samples"], dtype=str).set_index(["sample", "unit"], drop=False)
+validate(samples, schema="schema/samples.schema.yaml")
+units = pd.read_table(config["units"], dtype=str).set_index(["sample", "unit"], drop=False)
 units.index = units.index.set_levels([i.astype(str) for i in units.index.levels])  # enforce str in index
-#validate(units, schema="schemas/units.schema.yaml")
+validate(units, schema="schema/units.schema.yaml")
 
+# to do: remove this in favor of is_single_end fn, below
 units['read_type'] = np.where(units['fq2'].isna(), 'se', 'pe') #PE,SE
-#paired = units[units.read_type == 'pe']
-#single = units[units.read_type == 'se']
 
 def is_single_end(sample, unit, end = ''):
     return pd.isnull(units.loc[(sample, unit), "fq2"]) #    return units.loc[(sample,unit)]['read_type'] == 'se' 
