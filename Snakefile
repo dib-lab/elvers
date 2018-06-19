@@ -1,5 +1,4 @@
 import os
-import sys
 from os.path import join
 import yaml
 import numpy as np
