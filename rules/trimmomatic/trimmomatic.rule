@@ -1,7 +1,13 @@
 from os.path import join
 from common.utils import get_params
 
+# default params from paramsfile
 trim_params = get_params('trimmomatic')
+
+# override defaults with snakemake config (main configfile or snakemake --config)
+if 'trimmomatic' in config.keys():
+    trim_params.update(config['trimmomatic']) 
+
 
 def get_pretrim_pe(wildcards):
     if not is_single_end(**wildcards):
@@ -28,7 +34,6 @@ rule trimmomatic_pe:
         extra = '' 
     log:
         qual_log = join(LOGS_DIR, 'trimmomatic/{sample}_{unit}.log')
-    
     wrapper:
         '0.23.1/bio/trimmomatic/pe'
 
