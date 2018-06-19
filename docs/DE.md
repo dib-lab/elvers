@@ -10,7 +10,7 @@ References:
 * [Love et al. 2016](https://www.nature.com/nbt/journal/v34/n12/full/nbt.3682.html)
 
 Additional links:
-* [DE lecture by Jane Khudyakov, July 2017](_static/Jane_differential_expression.pdf)
+* [DE lecture by Jane Khudyakov, July 2017](https://github.com/Open-Data-Science-at-SIO/RNAseq-workshop-2017/blob/master/_static/Jane_differential_expression.pdf)
 * [Example DE analysis from two populations of killifish! (Fundulus heteroclitus MDPL vs. MDPL)](http://htmlpreview.github.io/?https://github.com/ljcohen/Fhet_MDPL_MDPP_salinity_DE/blob/master/Fhet_MDPL_v_MDPP_interactiononly_FW_BW.html)
 
 ## RStudio!
