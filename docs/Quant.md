@@ -42,3 +42,22 @@ TRINITY_DN2231_c0_g1_i1    209    39.409    0.000000    0.000000
 TRINITY_DN2231_c1_g1_i1    334    121.411    0.000000    0.000000
 TRINITY_DN2204_c0_g1_i1    287    84.121    0.000000    0.000000
 ```
+
+There are two commands for salmon, `salmon index` and `salmon quant`. The first command, `salmon index` will index the transcriptome:
+
+```
+salmon index --index nema --transcripts trinity.nema.full.fasta --type quasi
+```
+
+And the second command, `salmon quant` will quantify the trimmed reads (not diginormed) using the transcriptome:
+
+```
+  for R1 in *R1*.fastq.gz
+  do
+    sample=$(basename $R1 extract.fastq.gz)
+    echo sample is $sample, R1 is $R1
+    R2=${R1/R1/R2}
+    echo R2 is $R2
+    salmon quant -i nema -p 2 -l IU -1 <(gunzip -c $R1) -2 <(gunzip -c $R2) -o ${sample}quant
+  done
+```
