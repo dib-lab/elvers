@@ -10,7 +10,7 @@ We will be using Transrate and Busco!
 * Genes that make up the BUSCO sets for each major lineage are selected from orthologous groups with genes present as single-copy orthologs in at least 90% of the species. 
 
 * Useful links:
-  * Website: [http://busco.ezlab.org/](http://busco.ezlab.org/)
+  * Website with additional busco databases: [http://busco.ezlab.org/](http://busco.ezlab.org/)
   * Paper: [Simao et al. 2015](http://bioinformatics.oxfordjournals.org/content/31/19/3210)
   * [User Guide](http://gitlab.com/ezlab/busco/raw/master/BUSCO_v2.0_userguide.pdf)
 
