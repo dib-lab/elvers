@@ -1,9 +1,10 @@
 # Evaluating your transcriptome assembly
 
-We will be using Transrate and Busco!
+We will be using Transrate and BUSCO!
 
 ## BUSCO
 
+* **B**enchmarking **U**niversal **S**ingle **C**opy **O**rthologs
 * Eukaryota database has 303 genes
 * Metazoa database has 978 genes
 * "Complete" lengths are within two standard deviations of the BUSCO group mean length
