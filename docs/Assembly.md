@@ -4,7 +4,7 @@ We use the [Trinity *de novo* transcriptome assembler](https://github.com/trinit
 
 The resulting output assembly fasta file can then be used to align the original, trimmed (not diginorm) short Illumina reads and quantify expression per transcript.
 
-The ID for each transcript is output (version 2.2.0 to current) as follows, where the `c` stands for component, `g` gene and `i` isoform:
+The ID for each transcript is output (version 2.2.0 to current) as follows, where the `TRINITY` is constant, the `DN2202` is an example of a variable contig/transcript ID, `c` stands for component, `g` gene and `i` isoform:
 
 ```
 TRINITY_DN2202_c0_g1_i1
