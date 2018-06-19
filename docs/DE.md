@@ -12,6 +12,7 @@ References:
 Additional links:
 * [DE lecture by Jane Khudyakov, July 2017](https://github.com/Open-Data-Science-at-SIO/RNAseq-workshop-2017/blob/master/_static/Jane_differential_expression.pdf)
 * [Example DE analysis from two populations of killifish! (Fundulus heteroclitus MDPL vs. MDPL)](http://htmlpreview.github.io/?https://github.com/ljcohen/Fhet_MDPL_MDPP_salinity_DE/blob/master/Fhet_MDPL_v_MDPP_interactiononly_FW_BW.html)
+* [A Review of Differential Gene Expression Software for mRNA sequencing](https://github.com/ljcohen/ECE221_final_project/blob/master/Cohen_Li_ECE221_review-differential-gene.pdf)
 
 ## RStudio!
 
