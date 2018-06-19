@@ -1,5 +1,5 @@
 from os.path import join
-from common.params_utils import get_params
+from common.utils import get_params
 
 trim_params = get_params('trimmomatic')
 

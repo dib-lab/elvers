@@ -7,7 +7,7 @@ def get_targets(units, assembly_basename, outdir, extensions = ['/quant.sf', '/l
     """
     salmon_targs = []
     for s, u in units.iterrows():
-        sample, unit, read_type = u['sample'],u['unit'],u['read_type']
+        sample, unit = u['sample'],u['unit']
         salmon_targs = salmon_targs +  ['{}_{}_x_{}'.format(sample,unit, assembly_basename) + i for i in extensions]
 
     return [path.join(outdir, targ) for targ in salmon_targs]

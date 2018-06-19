@@ -1,5 +1,6 @@
 import os, re
 from os.path import join, dirname
+#from utils import is_single_end
 
 #fastqc_zip = "_{}.zip".format(target_suffix)
 #fastqc_html = "_{}.html".format(target_suffix)
