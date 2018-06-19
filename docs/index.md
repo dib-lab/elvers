@@ -1,3 +1,5 @@
+# Eel Pond
+
 This is a lightweight protocol for assembling up to a few hundred million mRNAseq reads, annotating the resulting assembly, and doing differential expression analysis. The input is short-insert paired-end Illumina reads. This protocol can be run in a single command because it uses the snakemake automated workflow management system.
 
 Previous versions of this protocol included line-by-line commands that the user could follow along with using a test dataset provided in the instructions. Since the recent development of [snakemake](https://snakemake.readthedocs.io/en/stable/) workflow management tool and [snakemake-wrappers](https://snakemake-wrappers.readthedocs.io/en/stable/) to manage sofware installation of commonly-used bioinformatics tools, we have re-implemented the Eel Pond Protocol to make it easier for users to install software and run a *de novo* transcriptome assembly, annotation, and quick differential expression analysis on a set of short-read Illumina data using a single command.

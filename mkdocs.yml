@@ -2,7 +2,7 @@ site_name: eelpond
 site_url: http://dib-lab.github.io/eelpond/
 repo_name: eelpond
 repo_url: https://github.com/dib-lab/eelpond
-edit_url: ""
+edit_uri: ""
 
 extra_css: css/custom.css
 
@@ -39,6 +39,7 @@ extra_css:
 pages:
   - 'Index' : 'index.md'
   - 'Read Quality Trimming and Filtering' : 'QC.md'
+  - 'Annotation' : 'Annotation.md'
   - 'Digital Normalization' : 'Diginorm.md'
   - 'Assembly' : 'Assembly.md'
   - 'Quality Assessment': 'Quality.md'
