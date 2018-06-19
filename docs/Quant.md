@@ -17,7 +17,7 @@ The two most interesting files are `salmon_quant.log` and
 `quant.sf`. The latter contains the counts; the former contains the
 log information from running things.
 
-We recommend quantifying using the Trinity transcriptome assembly fasta file, which will give expression values for each contig, like this:
+We recommend quantifying using the Trinity transcriptome assembly fasta file, which will give expression values for each contig, like this in `quant.sf`:
 ```
 Name                  Length    EffectiveLength    TPM    NumReads
 TRINITY_DN2202_c0_g1_i1    210    39.818    2.683835    2.000000
