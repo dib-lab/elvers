@@ -58,12 +58,14 @@ khmer_targs = get_targets(units, base, KHMER_TRIM_DIR)
 include: 'rules/sourmash/sourmash.rule'
 from rules.sourmash.sourmash_targets import get_targets
 sourmash_targs = get_targets(base,SOURMASH_DIR)
+#push_sigs
+include: 'rules/push_sigs.rule'
 
 TARGETS = fastqc_targs + trim_targs + trinity_targs + salmon_targs + sourmash_targs #+ khmer_targs
 print(TARGETS)
 
 rule all:
-    input: TARGETS 
+    input: TARGETS
 
 
 ##### singularity #####
