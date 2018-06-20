@@ -1,0 +1,659 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+      
+        <link rel="canonical" href="http://dib-lab.github.io/eelpond/Annotation/">
+      
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="../">
+      <meta name="generator" content="mkdocs-0.17.4, mkdocs-material-2.7.2">
+    
+    
+      
+        <title>Annotation - eelpond</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/application.8d40d89b.css">
+      
+        <link rel="stylesheet" href="../assets/stylesheets/application-palette.6079476c.css">
+      
+    
+    
+      <script src="../assets/javascripts/modernizr.1aa3b519.js"></script>
+    
+    
+      <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+      
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700|Roboto+Mono">
+        <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
+      
+      <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    
+    
+      <link rel="stylesheet" href="../css/custom.css">
+    
+    
+  </head>
+  
+    
+    
+    <body dir="ltr" data-md-color-primary="purple" data-md-color-accent="purple">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+          <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448"
+    viewBox="0 0 416 448" id="github">
+  <path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19-18.125
+        8.5-18.125-8.5-10.75-19-3.125-20.5 3.125-20.5 10.75-19 18.125-8.5
+        18.125 8.5 10.75 19 3.125 20.5zM320 304q0 10-3.125 20.5t-10.75
+        19-18.125 8.5-18.125-8.5-10.75-19-3.125-20.5 3.125-20.5 10.75-19
+        18.125-8.5 18.125 8.5 10.75 19 3.125 20.5zM360
+        304q0-30-17.25-51t-46.75-21q-10.25 0-48.75 5.25-17.75 2.75-39.25
+        2.75t-39.25-2.75q-38-5.25-48.75-5.25-29.5 0-46.75 21t-17.25 51q0 22 8
+        38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0
+        37.25-1.75t35-7.375 30.5-15 20.25-25.75 8-38.375zM416 260q0 51.75-15.25
+        82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5-41.75
+        1.125q-19.5 0-35.5-0.75t-36.875-3.125-38.125-7.5-34.25-12.875-30.25-20.25-21.5-28.75q-15.5-30.75-15.5-82.75
+        0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25
+        30.875q36.75-8.75 77.25-8.75 37 0 70 8 26.25-20.5
+        46.75-30.25t47.25-9.75q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34
+        99.5z" />
+</svg>
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="drawer"></label>
+    
+      <a href="#annotating-de-novo-transcriptomes-with-dammit" tabindex="1" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="http://dib-lab.github.io/eelpond/" title="eelpond" class="md-header-nav__button md-logo">
+          
+            <i class="md-icon">dns</i>
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            
+              <span class="md-header-nav__topic">
+                eelpond
+              </span>
+              <span class="md-header-nav__topic">
+                Annotation
+              </span>
+            
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          
+            <label class="md-icon md-icon--search md-header-nav__button" for="search"></label>
+            
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+          
+        
+      </div>
+      
+        <div class="md-flex__cell md-flex__cell--shrink">
+          <div class="md-header-nav__source">
+            
+
+
+  
+
+
+  <a href="https://github.com/dib-lab/eelpond" title="Go to repository" class="md-source" data-md-source="github">
+    
+      <div class="md-source__icon">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <use xlink:href="#github" width="24" height="24"></use>
+        </svg>
+      </div>
+    
+    <div class="md-source__repository">
+      eelpond
+    </div>
+  </a>
+
+          </div>
+        </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      <main class="md-main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="drawer">
+    <span class="md-nav__button md-logo">
+      
+        <i class="md-icon">dns</i>
+      
+    </span>
+    eelpond
+  </label>
+  
+    <div class="md-nav__source">
+      
+
+
+  
+
+
+  <a href="https://github.com/dib-lab/eelpond" title="Go to repository" class="md-source" data-md-source="github">
+    
+      <div class="md-source__icon">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <use xlink:href="#github" width="24" height="24"></use>
+        </svg>
+      </div>
+    
+    <div class="md-source__repository">
+      eelpond
+    </div>
+  </a>
+
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href=".." title="Index" class="md-nav__link">
+      Index
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../QC/" title="Read Quality Trimming and Filtering" class="md-nav__link">
+      Read Quality Trimming and Filtering
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="toc">
+        Annotation
+      </label>
+    
+    <a href="./" title="Annotation" class="md-nav__link md-nav__link--active">
+      Annotation
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#database-preparation" title="Database Preparation" class="md-nav__link">
+    Database Preparation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#annotation" title="Annotation" class="md-nav__link">
+    Annotation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parse-dammit-output" title="Parse dammit output" class="md-nav__link">
+    Parse dammit output
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" title="References" class="md-nav__link">
+    References
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../Diginorm/" title="Digital Normalization" class="md-nav__link">
+      Digital Normalization
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../Assembly/" title="Assembly" class="md-nav__link">
+      Assembly
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../Quality/" title="Quality Assessment" class="md-nav__link">
+      Quality Assessment
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../Quant/" title="Transcript Quantification" class="md-nav__link">
+      Transcript Quantification
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../DE/" title="Differential Expression" class="md-nav__link">
+      Differential Expression
+    </a>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#database-preparation" title="Database Preparation" class="md-nav__link">
+    Database Preparation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#annotation" title="Annotation" class="md-nav__link">
+    Annotation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parse-dammit-output" title="Parse dammit output" class="md-nav__link">
+    Parse dammit output
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" title="References" class="md-nav__link">
+    References
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="annotating-de-novo-transcriptomes-with-dammit">Annotating de novo transcriptomes with dammit<a class="headerlink" href="#annotating-de-novo-transcriptomes-with-dammit" title="Permanent link">&para;</a></h1>
+<p>dammit!</p>
+<p><a href="http://www.camillescott.org/dammit/index.html">dammit</a> is an annotation
+pipeline written by <a href="http://www.camillescott.org/">Camille
+Scott</a>. dammit runs a relatively standard annotation
+protocol for transcriptomes: it begins by building gene models with <a href="http://transdecoder.github.io/">Transdecoder</a>,
+and then
+uses the following protein databases as evidence for annotation:
+<a href="http://pfam.xfam.org/">Pfam-A</a>, <a href="http://rfam.xfam.org/">Rfam</a>,
+<a href="http://www.orthodb.org/">OrthoDB</a>,
+<a href="http://www.uniprot.org/help/uniref">uniref90</a> (uniref is optional with
+<code>--full</code>).</p>
+<p>If a protein dataset is available, this can also be supplied to the
+<code>dammit</code> pipeline with <code>--user-databases</code> as optional evidence for
+annotation.</p>
+<p>In addition, <a href="http://busco.ezlab.org/">BUSCO</a> v3 is run, which will compare the gene content in your transcriptome
+with a lineage-specific data set. The output is a proportion of your
+transcriptome that matches with the data set, which can be used as an
+estimate of the completeness of your transcriptome based on evolutionary
+expectation (<a href="http://bioinformatics.oxfordjournals.org/content/31/19/3210.full">Simho et al.
+2015</a>).
+There are several lineage-specific datasets available from the authors
+of BUSCO. We will use the <code>metazoa</code> dataset for this transcriptome.</p>
+<h2 id="database-preparation">Database Preparation<a class="headerlink" href="#database-preparation" title="Permanent link">&para;</a></h2>
+<p>dammit has two major subcommands: <code>dammit databases</code> and <code>dammit annotate</code>. <code>databases</code>
+checks that the databases are installed and prepared, and if run with the <code>--install</code> flag,
+will perform that installation and preparation. If you just run <code>dammit databases</code> on its
+own, you should get a notification that some database tasks are not up-to-date -- we need
+to install them!</p>
+<p>Unless we're running short on time, we're going to do a full run. If you want to run a quick
+version of the pipeline, add a parameter, <code>--quick</code>, to omit OrthoDB, Uniref, Pfam, and Rfam. 
+A "full" run will take longer to install and run, but you'll have access to the full annotation pipeline.</p>
+<pre class="codehilite"><code>dammit databases --install --busco-group metazoa # --quick</code></pre>
+
+
+<p>We used the "metazoa" BUSCO group. We can use any of the BUSCO databases, so long as we install
+them with the <code>dammit databases</code> subcommand. You can see the whole list by running
+<code>dammit databases -h</code>. You should try to match your species as closely as possible for the best
+results. If we want to install another, for example:</p>
+<pre class="codehilite"><code>dammit databases --install --busco-group fungi  # --quick</code></pre>
+
+
+<p>Note: if you have limited space on your instance, you can also install these databases in a different
+location (e.g. on an external volume). You would want to run this command <strong>before</strong> running the database
+installs we just ran.</p>
+<pre class="codehilite"><code>#Run  ONLY if you want to install databases in different location. 
+#To run, remove the `#` from the front of the following command:
+
+# dammit databases --database-dir /path/to/databases</code></pre>
+
+
+<h2 id="annotation">Annotation<a class="headerlink" href="#annotation" title="Permanent link">&para;</a></h2>
+<p>Now we'll download a custom <em>Nematostella vectensis</em> protein database available
+from JGI. Here, somebody has already created a proper database for us [1] (it has a reference proteome
+available through uniprot). If your critter
+is a non-model organism, you will
+likely need to create your own with proteins from closely-related species. This will rely on your
+knowledge of your system!</p>
+<p>Run the command:</p>
+<pre class="codehilite"><code>dammit annotate trinity.nema.fasta --busco-group metazoa --user-databases nema.reference.prot.faa --n_threads 6 # --quick</code></pre>
+
+
+<p>While dammit runs, it will print out which tasks its running to the terminal. dammit is
+written with a library called <a href="../www.pydoit.org">pydoit</a>, which is a python workflow library similar
+to GNU Make. This not only helps organize the underlying workflow, but also means that if we
+interrupt it, it will properly resume! </p>
+<p>After a successful run, you'll have a new directory called <code>trinity.nema.fasta.dammit</code>. If you
+look inside, you'll see a lot of files:</p>
+<pre class="codehilite"><code>ls trinity.nema.fasta.dammit/</code></pre>
+
+
+<pre class="codehilite"><code>    annotate.doit.db                              trinity.nema.fasta.dammit.namemap.csv  trinity.nema.fasta.transdecoder.pep
+    dammit.log                                    trinity.nema.fasta.dammit.stats.json   trinity.nema.fasta.x.nema.reference.prot.faa.crbl.csv
+    run_trinity.nema.fasta.metazoa.busco.results  trinity.nema.fasta.transdecoder.bed    trinity.nema.fasta.x.nema.reference.prot.faa.crbl.gff3
+    tmp                                           trinity.nema.fasta.transdecoder.cds    trinity.nema.fasta.x.nema.reference.prot.faa.crbl.model.csv
+    trinity.nema.fasta                            trinity.nema.fasta.transdecoder_dir    trinity.nema.fasta.x.nema.reference.prot.faa.crbl.model.plot.pdf
+    trinity.nema.fasta.dammit.fasta               trinity.nema.fasta.transdecoder.gff3
+    trinity.nema.fasta.dammit.gff3                trinity.nema.fasta.transdecoder.mRNA</code></pre>
+
+
+<p>The most important files for you are <code>trinity.nema.fasta.dammit.fasta</code>,
+<code>trinity.nema.fasta.dammit.gff3</code>, and <code>trinity.nema.fasta.dammit.stats.json</code>.</p>
+<p>If the above <code>dammit</code> command is run again, there will be a message:
+<code>**Pipeline is already completed!**</code></p>
+<h2 id="parse-dammit-output">Parse dammit output<a class="headerlink" href="#parse-dammit-output" title="Permanent link">&para;</a></h2>
+<p>Cammille wrote dammit in Python, which includes a library to parse gff3 dammit output. To send this output to a useful table, we will need to open the Python environemnt.</p>
+<pre class="codehilite"><code>cd trinity.nema.fasta.dammit
+python</code></pre>
+
+
+<p>Then, using this script, will output a list of gene ID:</p>
+<pre class="codehilite"><code>import pandas as pd
+from dammit.fileio.gff3 import GFF3Parser
+gff_file = &quot;trinity.nema.fasta.dammit.gff3&quot;
+annotations = GFF3Parser(filename=gff_file).read()
+names = annotations.sort_values(by=['seqid', 'score'], ascending=True).query('score &lt; 1e-05').drop_duplicates(subset='seqid')[['seqid', 'Name']]
+new_file = names.dropna(axis=0,how='all')
+new_file.head()
+new_file.to_csv(&quot;nema_gene_name_id.csv&quot;)
+exit()</code></pre>
+
+
+<p>This will output a table of genes with 'seqid' and 'Name' in a .csv file: <code>nema_gene_name_id.csv</code>. Let's take a look at that file:</p>
+<pre class="codehilite"><code>less nema_gene_name_id.csv</code></pre>
+
+
+<p>Notice there are multiple transcripts per gene model prediction. This <code>.csv</code> file can be used in <code>tximport</code> in downstream DE analysis.</p>
+<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Putnam NH, Srivastava M, Hellsten U, Dirks B, Chapman J, Salamov A,
+Terry A, Shapiro H, Lindquist E, Kapitonov VV, Jurka J, Genikhovich G,
+Grigoriev IV, Lucas SM, Steele RE, Finnerty JR, Technau U, Martindale
+MQ, Rokhsar DS. (2007) Sea anemone genome reveals ancestral eumetazoan
+gene repertoire and genomic organization. Science. 317, 86-94.</li>
+</ol>
+                
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../QC/" title="Read Quality Trimming and Filtering" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Read Quality Trimming and Filtering
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../Diginorm/" title="Digital Normalization" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Digital Normalization
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Copyright &copy; 2018 <a href="http://ivory.idyll.org/lab/">Lab for Data Intensive Biology</a> at UC Davis
+          </div>
+        
+        powered by
+        <a href="http://www.mkdocs.org">MkDocs</a>
+        and
+        <a href="https://squidfunk.github.io/mkdocs-material/">
+          Material for MkDocs</a>
+      </div>
+      
+        
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../assets/javascripts/application.0cf9b500.js"></script>
+      
+      <script>app.initialize({version:"0.17.4",url:{base:".."}})</script>
+      
+        <script src="../search/require.js"></script>
+      
+        <script src="../search/search.js"></script>
+      
+    
+    
+      
+    
+  </body>
+</html>

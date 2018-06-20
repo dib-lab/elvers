@@ -11,7 +11,7 @@
       <meta http-equiv="x-ua-compatible" content="ie=edge">
       
       
-        <link rel="canonical" href="http://dib-lab.github.io/eelpond/">
+        <link rel="canonical" href="http://dib-lab.github.io/eelpond/Diginorm/">
       
       
       
@@ -33,22 +33,22 @@
       
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
-      <link rel="shortcut icon" href="./">
+      <link rel="shortcut icon" href="../">
       <meta name="generator" content="mkdocs-0.17.4, mkdocs-material-2.7.2">
     
     
       
-        <title>eelpond</title>
+        <title>Digital Normalization - eelpond</title>
       
     
     
-      <link rel="stylesheet" href="./assets/stylesheets/application.8d40d89b.css">
+      <link rel="stylesheet" href="../assets/stylesheets/application.8d40d89b.css">
       
-        <link rel="stylesheet" href="./assets/stylesheets/application-palette.6079476c.css">
+        <link rel="stylesheet" href="../assets/stylesheets/application-palette.6079476c.css">
       
     
     
-      <script src="./assets/javascripts/modernizr.1aa3b519.js"></script>
+      <script src="../assets/javascripts/modernizr.1aa3b519.js"></script>
     
     
       <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
@@ -59,7 +59,7 @@
       <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     
     
-      <link rel="stylesheet" href="./css/custom.css">
+      <link rel="stylesheet" href="../css/custom.css">
     
     
   </head>
@@ -97,7 +97,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="drawer"></label>
     
-      <a href="#eel-pond" tabindex="1" class="md-skip">
+      <a href="#digital-normalization" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -123,7 +123,7 @@
                 eelpond
               </span>
               <span class="md-header-nav__topic">
-                Index
+                Digital Normalization
               </span>
             
           
@@ -237,20 +237,11 @@
       
       
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="toc">
-    
-      
-    
-    
-    <a href="." title="Index" class="md-nav__link md-nav__link--active">
+  <li class="md-nav__item">
+    <a href=".." title="Index" class="md-nav__link">
       Index
     </a>
-    
   </li>
 
     
@@ -260,7 +251,7 @@
 
 
   <li class="md-nav__item">
-    <a href="QC/" title="Read Quality Trimming and Filtering" class="md-nav__link">
+    <a href="../QC/" title="Read Quality Trimming and Filtering" class="md-nav__link">
       Read Quality Trimming and Filtering
     </a>
   </li>
@@ -272,7 +263,7 @@
 
 
   <li class="md-nav__item">
-    <a href="Annotation/" title="Annotation" class="md-nav__link">
+    <a href="../Annotation/" title="Annotation" class="md-nav__link">
       Annotation
     </a>
   </li>
@@ -282,11 +273,20 @@
       
       
 
+  
 
-  <li class="md-nav__item">
-    <a href="Diginorm/" title="Digital Normalization" class="md-nav__link">
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="toc">
+    
+      
+    
+    
+    <a href="./" title="Digital Normalization" class="md-nav__link md-nav__link--active">
       Digital Normalization
     </a>
+    
   </li>
 
     
@@ -296,7 +296,7 @@
 
 
   <li class="md-nav__item">
-    <a href="Assembly/" title="Assembly" class="md-nav__link">
+    <a href="../Assembly/" title="Assembly" class="md-nav__link">
       Assembly
     </a>
   </li>
@@ -308,7 +308,7 @@
 
 
   <li class="md-nav__item">
-    <a href="Quality/" title="Quality Assessment" class="md-nav__link">
+    <a href="../Quality/" title="Quality Assessment" class="md-nav__link">
       Quality Assessment
     </a>
   </li>
@@ -320,7 +320,7 @@
 
 
   <li class="md-nav__item">
-    <a href="Quant/" title="Transcript Quantification" class="md-nav__link">
+    <a href="../Quant/" title="Transcript Quantification" class="md-nav__link">
       Transcript Quantification
     </a>
   </li>
@@ -332,7 +332,7 @@
 
 
   <li class="md-nav__item">
-    <a href="DE/" title="Differential Expression" class="md-nav__link">
+    <a href="../DE/" title="Differential Expression" class="md-nav__link">
       Differential Expression
     </a>
   </li>
@@ -366,42 +366,24 @@
               
                 
                 
-                <h1 id="eel-pond">Eel Pond<a class="headerlink" href="#eel-pond" title="Permanent link">&para;</a></h1>
-<p>This is a lightweight protocol for assembling up to a few hundred million mRNAseq reads, annotating the resulting assembly, and doing differential expression analysis. The input is short-insert paired-end Illumina reads. This protocol can be run in a single command because it uses the snakemake automated workflow management system.</p>
-<p>Previous versions of this protocol included line-by-line commands that the user could follow along with using a test dataset provided in the instructions. Since the recent development of <a href="https://snakemake.readthedocs.io/en/stable/">snakemake</a> workflow management tool and <a href="https://snakemake-wrappers.readthedocs.io/en/stable/">snakemake-wrappers</a> to manage sofware installation of commonly-used bioinformatics tools, we have re-implemented the Eel Pond Protocol to make it easier for users to install software and run a <em>de novo</em> transcriptome assembly, annotation, and quick differential expression analysis on a set of short-read Illumina data using a single command.</p>
-<p>The software for this protocol can be found <a href="https://github.com/dib-lab/eelpond">here</a>. </p>
-<p>To run the protocol on your own computer system (requires Ubuntu 16.04):</p>
-<p>Install <a href="https://conda.io/miniconda.html">miniconda</a> (for Ubuntu 16.04 <a href="https://use.jetstream-cloud.org/application/images/107">Jetstream image</a>).</p>
-<pre class="codehilite"><code>wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
-bash Miniconda3-latest-Linux-x86_64.sh -b
-echo export PATH=&quot;$HOME/miniconda3/bin:$PATH&quot; &gt;&gt; ~/.bash_profile
-source ~/.bash_profile</code></pre>
+                <h1 id="digital-normalization">Digital Normalization<a class="headerlink" href="#digital-normalization" title="Permanent link">&para;</a></h1>
+<p>In this section, we’ll apply digital normalization and variable-coverage k-mer abundance trimming to the reads prior to assembly using the <a href="http://khmer.readthedocs.io/en/latest/">khmer software package</a> (version 2.1). This has the effect of reducing the computational cost of assembly without negatively affecting the quality of the assembly.</p>
+<p>This is all run in one command, taking the trimmed reads as input, uses the orphaned reads that survived while their mated pair did not during adapter and quality trimming. Then, low-abundance reads are trimmed to a coverage of 18 and normalized to a <em>k</em>-mer (<em>k</em> = 20) coverage of 20. </p>
+<pre class="codehilite"><code>(interleave-reads.py {}{}.trim_1P.fq {}{}.trim_2P.fq &amp;&amp; zcat {}orphans.fq.gz)| \\
+(trim-low-abund.py -V -k 20 -Z 18 -C 2 - -o - -M 4e9 --diginorm --diginorm-coverage=20) | \\
+(extract-paired-reads.py --gzip -p {}{}.paired.gz -s {}{}.single.gz) &gt; /dev/null</code></pre>
 
 
-<p>Then,</p>
-<pre class="codehilite"><code>conda install -c bioconda -c conda-forge -y snakemake</code></pre>
+<p>The output files are the remaining reads, grouped as pairs and singles (orphans). Since the Trinity de novo assembly software expects paired reads, we will split them into left <code>left.fq</code> and <code>right.fq</code> read pair files, including the single orphans in the <code>left.fq</code> file. </p>
+<pre class="codehilite"><code>for file in *.paired.gz
+do
+  split-paired-reads.py ${file}
+done
 
+cat *.1 &gt; left.fq
+cat *.2 &gt; right.fq
 
-<p>And:</p>
-<pre class="codehilite"><code>git clone https://github.com/dib-lab/eelpond.git
-cd eelpond
-snakemake --use-conda --configfile cfp.yml</code></pre>
-
-
-<p><strong>References:</strong> 
-<em> <a href="https://khmer-protocols.readthedocs.io/en/ctb/mrnaseq/">original eel-pond protocol docs, last updated 2015</a>
-</em> <a href="http://eel-pond.readthedocs.io/en/latest/">eel-pond protocol docs, last updated 2016</a>
-<em> <a href="http://dibsi-rnaseq.readthedocs.io/en/latest/">DIBSI, nonmodel RNAseq workshop, July 2017</a>
-</em> <a href="http://rnaseq-workshop-2017.readthedocs.io/en/latest/index.html">SIO-BUG, nonmodel RNAseq workshop, October 2017</a></p>
-<p><strong>intended workflows:</strong>
-  - <a href="QC/">Read Quality Trimming and Filtering</a>
-  - <a href="Diginorm/">Digital Normalization</a>
-  - <a href="Assembly/">Assembly</a>
-  - <a href="Quality/">Quality Assessment</a>
-  - <a href="Annotation/">Annotation</a>
-  - <a href="Quant/">Transcript Quantification</a>
-  - <a href="DE/">Differential Expression</a></p>
-<p><em>snakemake style follows <a href="https://github.com/snakemake-workflows/rna-seq-star-deseq2">rna-seq-star example workflow</a></em></p>
+gunzip -c ../diginorm/single.gz &gt;&gt; left.fq</code></pre>
                 
                   
                 
@@ -422,14 +404,28 @@ snakemake --use-conda --configfile cfp.yml</code></pre>
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
+          <a href="../Annotation/" title="Annotation" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Annotation
+              </span>
+            </div>
+          </a>
         
-          <a href="QC/" title="Read Quality Trimming and Filtering" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+        
+          <a href="../Assembly/" title="Assembly" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
               <span class="md-flex__ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Read Quality Trimming and Filtering
+                Assembly
               </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink">
@@ -463,13 +459,13 @@ snakemake --use-conda --configfile cfp.yml</code></pre>
       
     </div>
     
-      <script src="./assets/javascripts/application.0cf9b500.js"></script>
+      <script src="../assets/javascripts/application.0cf9b500.js"></script>
       
-      <script>app.initialize({version:"0.17.4",url:{base:"."}})</script>
+      <script>app.initialize({version:"0.17.4",url:{base:".."}})</script>
       
-        <script src="./search/require.js"></script>
+        <script src="../search/require.js"></script>
       
-        <script src="./search/search.js"></script>
+        <script src="../search/search.js"></script>
       
     
     
