@@ -1,24 +1,27 @@
 from os.path import join
 
-def get_trimmed(wildcards):
-    readsD = {}
+def get_trimmed_pe(wildcards):
     if not is_single_end(**wildcards):
-        readsD['r1'] = expand(join(TRIM_DIR, '{sample}_{unit}_1.trim.fq.gz'),**wildcards)
-        readsD['r2'] = expand(join(TRIM_DIR, '{sample}_{unit}_2.trim.fq.gz'),**wildcards)
-        readsD['r1_orphan'] = expand(join(TRIM_DIR, '{sample}_{unit}_1.se.trim.fq.gz'),**wildcards)
-        readsD['r2_orphan'] = expand(join(TRIM_DIR, '{sample}_{unit}_2.se.trim.fq.gz'),**wildcards)
+        readsD = {}
+        readsD['r1'] = expand(join(TRIM_DIR, '{sample}_{unit}_1.trim.fq.gz'), **wildcards)[0]
+        readsD['r2'] = expand(join(TRIM_DIR, '{sample}_{unit}_2.trim.fq.gz'), **wildcards)[0]
+        readsD['r1_orphan'] = expand(join(TRIM_DIR, '{sample}_{unit}_1.se.trim.fq.gz'), **wildcards)[0]
+        readsD['r2_orphan'] = expand(join(TRIM_DIR, '{sample}_{unit}_2.se.trim.fq.gz'), **wildcards)[0]
         print(readsD)
         return readsD
-    readsD['r'] = expand(join(TRIM_DIR, '{sample}_{unit}_se.trim.fq.gz'),**wildcards)
-    print(readsD)
-    return readsD
-    
+
+def get_trimmed_se(wildcards):
+    if is_single_end(**wildcards):
+        readsD['r'] = expand(join(TRIM_DIR, '{sample}_{unit}_se.trim.fq.gz'),**wildcards)[0]
+        print(readsD)
+        return readsD
+
 rule khmer_read_processing_pe:
     """
     kmer trim and diginorm with khmer
     """
     input:
-        unpack(get_trimmed)
+        unpack(get_trimmed_pe)
     output: 
         paired=join(KHMER_TRIM_DIR,'{sample}_{unit}_.paired.gz'),
         r1_out=join(KHMER_TRIM_DIR, '{sample}_{unit}_.paired.1.gz'),
@@ -38,7 +41,8 @@ rule khmer_read_processing_pe:
         join(LOGS_DIR, 'khmer/{sample}_{unit}_' + base + '.log')
     conda: 
         'khmer-env.yaml'
-    shell: " (interleave-reads.py {input.r1} {input.r2} && zcat {input.r1_orphan} {input.r2_orphan}) | "
+    #shell: " (interleave-reads.py {input.r1} {input.r2} && zcat {input.r1_orphan} {input.r2_orphan}) | "
+    shell: " (interleave-reads.py {input.r1} {input.r2} | " 
            " (trim-low-abund.py -V -k {params.k} -Z {params.Z} -C {params.C} - -o - -M {params.memory} "
            " --diginorm --diginorm-coverage={params.cov}) | (extract-paired-reads.py --gzip "
            " -p {output.paired} -s {output.single}) > {log}; split-paired-reads.py {output.paired} "
@@ -50,7 +54,7 @@ rule khmer_read_processing_se:
     kmer trim and diginorm with khmer
     """
     input:
-        unpack(get_trimmed)
+        get_trimmed_se
     output:
         single = join(KHMER_TRIM_DIR, '{sample}_{unit}_.se.gz'),
     message:
@@ -68,7 +72,7 @@ rule khmer_read_processing_se:
     conda:
         'khmer-env.yaml'
     shell:
-           "(trim-low-abund.py {input.r} -V -k {params.k} -Z {params.Z} -C {params.C} -o {output.single} "
+           "(trim-low-abund.py {input} -V -k {params.k} -Z {params.Z} -C {params.C} -o {output.single} "
            " -M {params.memory} --diginorm --diginorm-coverage={params.cov} ) "
     
 
