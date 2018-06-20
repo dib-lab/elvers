@@ -1,28 +1,34 @@
 from os.path import join
 
-def get_trimmed(wildcards):
+def get_trimmed_pe(wildcards):
     readsD = {}
     if not is_single_end(**wildcards):
         readsD['r1'] = expand(join(TRIM_DIR, '{sample}_{unit}_1.trim.fq.gz'),**wildcards)
         readsD['r2'] = expand(join(TRIM_DIR, '{sample}_{unit}_2.trim.fq.gz'),**wildcards)
         readsD['r1_orphan'] = expand(join(TRIM_DIR, '{sample}_{unit}_1.se.trim.fq.gz'),**wildcards)
         readsD['r2_orphan'] = expand(join(TRIM_DIR, '{sample}_{unit}_2.se.trim.fq.gz'),**wildcards)
-        return readsD
-    #readsD['r'] = expand(join(TRIM_DIR, '{sample}_{unit}_se.trim.fq.gz'),**wildcards)
-    #return readsD
+    else:
+        readsD['r'] = expand(join(TRIM_DIR, '{sample}_{unit}_se.trim.fq.gz'),**wildcards)
+    return readsD
 
-rule khmer_read_processing_PE:
+rule khmer_read_processing:
     """
     kmer trim and diginorm with khmer
     """
     input:
         unpack(get_trimmed),
-    output:
-        
+    output: 
+        r1 = '{}{}.paired.1.gz',
+        r2 = '{}{}.paired.2.gz',
+        r = '{}{}.single.gz' 
         
     message:
         """--- khmer trimming of low-abundance kmers and digital normalization ---"""
     params:
+        k = '20',
+        Z = '18',
+        C = '3',
+        memory = '4e9',
         extra = ''
     threads: 2
     log:
@@ -30,8 +36,15 @@ rule khmer_read_processing_PE:
     conda: 
         envs/env-khmer.yaml
     shell(
-    """(interleave-reads.py {r1} {r2} && zcat {r1_orphan} {r2_orphan})| \\
-           (trim-low-abund.py -V -k 20 -Z 18 -C 3 - -o - -M 4e9 --diginorm --diginorm-coverage=20) | \\
+    """(interleave-reads.py {r1} {r2} && zcat {r1_orphan} {r2_orphan} {r} ) |
+       (trim-low-abund.py -V -k {params.k} -Z {params.Z} -C {params.C} - -o - -M {params.memory} --diginorm --diginorm-coverage=20) | \\
            (extract-paired-reads.py --gzip -p {}{}.paired.gz -s {}{}.single.gz) > /dev/null
            """.format(trimdir, SRA, trimdir, SRA, trimdir, diginormdir, SRA, diginormdir, SRA)
+
+#my command
+(interleave-reads.py ${base}.q30.fq.gz ${baseR2}.q30.fq.gz && zcat ${base}.orphans.fq.gz)| \
+(trim-low-abund.py --variable-coverage -k 21 -Z 20 -C 4 -M 60e9 - -o - --diginorm --diginorm-coverage=20 --summary-info tsv) | \
+(extract-paired-reads.py --gzip -p $base.paired.gz -s $base.single.gz) > /dev/null
+
+
 
