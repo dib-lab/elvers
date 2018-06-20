@@ -1,4 +1,4 @@
-description: "Read Filtering Walkthrough 1"
+description: "Eel pond mRNAseq de novo assembly pipeline"
 
 user_email: ""
 
@@ -15,7 +15,7 @@ directories:
  trim_dir: 'trimmed'
  assembly_dir: 'assembly'
  quant_dir: 'quant'
-
+ sourmash_dir: 'sourmash'
 
 diffexp:
   # contrasts for the deseq2 results method

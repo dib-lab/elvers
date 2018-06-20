@@ -28,6 +28,7 @@ TRIM_DIR = join(OUT_DIR, 'trimmed')
 QC_DIR = join(OUT_DIR, 'qc')
 ASSEMBLY_DIR = join(OUT_DIR, 'assembly')
 QUANT_DIR = join(OUT_DIR, 'quant')
+SOURMASH_DIR = join(OUT_DIR,'sourmash')
 
 # workflow rules
 
@@ -52,6 +53,10 @@ salmon_targs = get_targets(units, base, QUANT_DIR)
 include: 'rules/khmer/khmer.rule'
 from rules.khmer.khmer_targets import get_targets
 khmer_targs = get_targets(units, base, TRIM_DIR)
+#sourmash
+include: 'rules/sourmash/sourmash.rule'
+from rules.sourmash.sourmash_targets import get_targets
+sourmash_targs = get_targets(base,SOURMASH_DIR)
 
 TARGETS = fastqc_targs + trim_targs + khmer_targs + trinity_targs + salmon_targs
 print(TARGETS)

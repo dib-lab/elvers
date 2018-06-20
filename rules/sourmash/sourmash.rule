@@ -1,0 +1,20 @@
+from os.path import join
+
+rule sourmash_compute:
+    """
+    Computing a MinHash signature of the transcriptome assembly with Sourmash
+    """
+    input:
+        join(ASSEMBLY_DIR, base + ".fasta")
+    output:
+        join(QUANT_DIR, base + ".sig")
+    message:
+        """--- Computing a MinHash signature of the transcriptome with Sourmash ---"""
+    threads: 2
+    params:
+        extra = ''
+    log:
+        qual_log = join(LOGS_DIR, 'sourmash/' + base +'_index.log')
+    wrapper:
+        '0.26.0/bio/sourmash/compute'
+
