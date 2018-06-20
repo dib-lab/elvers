@@ -18,9 +18,9 @@ rule khmer_read_processing_pe:
     input:
         unpack(get_trimmed),
     output: 
-        r1 = '{}_{}.paired.1.gz',
-        r2 = '{}_{}.paired.2.gz',
-        r = '{}_{}.single.gz'
+        r1 = join(TRIM_DIR, '{sample}_{unit}_.paired.1.gz'),
+        r2 = join(TRIM_DIR, '{sample}_{unit}_.paired.2.gz'),
+        r =  join(TRIM_DIR, '{sample}_{unit}_.single.gz')
     message:
         """--- khmer trimming of low-abundance kmers and digital normalization ---"""
     params:
@@ -28,13 +28,13 @@ rule khmer_read_processing_pe:
         Z = '18', #20
         C = '3', #4
         memory = '4e9',#60e9
-        cov = '20'
+        cov = '20',
         extra = ''
     threads: 2
     log:
         qual_log = join(LOGS_DIR, 'khmer/{sample}_{unit}_x_' + base + '.log')
     conda: 
-        env-khmer.yaml
+        'khmer-env.yaml'
     shell:""" 
              (interleave-reads.py {r1} {r2} && zcat {r1_orphan} {r2_orphan}) | 
              (trim-low-abund.py -V -k {params.k} -Z {params.Z} -C {params.C} - -o - 
