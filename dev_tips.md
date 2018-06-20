@@ -1,4 +1,14 @@
-# Notes for Advanced Users
+# Notes for Developers
+
+admin: to rebuild the docs:
+
+rm -rf site/*   # Clean out any existing files
+mkdocs build    # Build the docs in site/
+cd site/
+git add -A .    # Stage every change in the current directory for commit
+git commit -a -m 'upd docs'  # Commit all changes
+git push origin gh-pages
+
 
 Some useful conda, snakemake, workflow hints:
 
