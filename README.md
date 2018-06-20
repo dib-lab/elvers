@@ -23,13 +23,16 @@ snakemake --use-conda --configfile cfp.yml
 ```
 
 
-**References:** 
-* [original eel-pond protocol docs, last updated 2015](https://khmer-protocols.readthedocs.io/en/ctb/mrnaseq/)
-* [eel-pond protocol docs, last updated 2016](http://eel-pond.readthedocs.io/en/latest/)
-* [DIBSI, nonmodel RNAseq workshop, July 2017](http://dibsi-rnaseq.readthedocs.io/en/latest/)
-* [SIO-BUG, nonmodel RNAseq workshop, October 2017](http://rnaseq-workshop-2017.readthedocs.io/en/latest/index.html)
+**References:**  
 
-**intended workflows:**
+  * [original eel-pond protocol docs, last updated 2015](https://khmer-protocols.readthedocs.io/en/ctb/mrnaseq/)
+  * [eel-pond protocol docs, last updated 2016](http://eel-pond.readthedocs.io/en/latest/)
+  * [DIBSI, nonmodel RNAseq workshop, July 2017](http://dibsi-rnaseq.readthedocs.io/en/latest/)
+  * [SIO-BUG, nonmodel RNAseq workshop, October 2017](http://rnaseq-workshop-2017.readthedocs.io/en/latest/index.html)
+
+
+**intended workflows:**  
+
   - Read Quality Trimming and Filtering
   - Digital Normalization
   - Assembly
