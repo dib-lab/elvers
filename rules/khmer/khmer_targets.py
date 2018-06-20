@@ -1,7 +1,7 @@
 from os import path
 from common.utils import is_se
 
-def get_targets(units, basename, outdir, extensions = ['.gz'], se_ext = ['.single'], pe_ext = ['.paired', '.single','.paired.1','.paired.2']):
+def get_targets(units, basename, outdir, extensions = ['.gz'], se_ext = ['.single'], pe_ext = ['.paired', '.single', '.paired.1','.paired.2']):
     """
     Use the sample info provided in the tsv file
     to generate required targets for trimmomatic
