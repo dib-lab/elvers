@@ -42,4 +42,4 @@ snakemake --use-conda --configfile cfp.yml
   - Differential Expression
 
 
-*snakemake style follows [rna-seq-star example workflow](https://github.com/snakemake-workflows/rna-seq-star-deseq2)*
+*snakemake style builds off of [rna-seq-star example workflow](https://github.com/snakemake-workflows/rna-seq-star-deseq2)*

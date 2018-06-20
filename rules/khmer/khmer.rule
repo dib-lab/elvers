@@ -3,13 +3,16 @@ from os.path import join
 def get_trimmed(wildcards):
     readsD = {}
     if not is_single_end(**wildcards):
-        readsD['r1'] = expand(join(TRIM_DIR, '{sample}_{unit}_1.trim.fq.gz'),**wildcards)
-        readsD['r2'] = expand(join(TRIM_DIR, '{sample}_{unit}_2.trim.fq.gz'),**wildcards)
-        readsD['r1_orphan'] = expand(join(TRIM_DIR, '{sample}_{unit}_1.se.trim.fq.gz'),**wildcards)
-        readsD['r2_orphan'] = expand(join(TRIM_DIR, '{sample}_{unit}_2.se.trim.fq.gz'),**wildcards)
+        readsD['r1'] = expand(join(TRIM_DIR, '{sample}_{unit}_1.trim.fq.gz'),**wildcards)[0]
+        readsD['r2'] = expand(join(TRIM_DIR, '{sample}_{unit}_2.trim.fq.gz'),**wildcards)[0]
+        readsD['r1_orphan'] = expand(join(TRIM_DIR, '{sample}_{unit}_1.se.trim.fq.gz'),**wildcards)[0]
+        readsD['r2_orphan'] = expand(join(TRIM_DIR, '{sample}_{unit}_2.se.trim.fq.gz'),**wildcards)[0]
+        print(readsD)
+        return readsD
     else:
-        readsD['r'] = expand(join(TRIM_DIR, '{sample}_{unit}_se.trim.fq.gz'),**wildcards)
-    return readsD
+        readsD['r'] = expand(join(TRIM_DIR, '{sample}_{unit}_se.trim.fq.gz'),**wildcards)[0]
+        print(readsD)
+        return readsD
 
 rule khmer_read_processing_pe:
     """
@@ -18,9 +21,10 @@ rule khmer_read_processing_pe:
     input:
         unpack(get_trimmed),
     output: 
-        r1 = join(TRIM_DIR, '{sample}_{unit}_.paired.1.gz'),
-        r2 = join(TRIM_DIR, '{sample}_{unit}_.paired.2.gz'),
-        r =  join(TRIM_DIR, '{sample}_{unit}_.single.gz')
+        paired = join(TRIM_DIR,'{sample}_{unit}_.paired.gz'),
+        single = join(TRIM_DIR, '{sample}_{unit}_.single.gz'),
+        r1_o = join(TRIM_DIR, '{sample}_{unit}_.paired.1.gz'),
+        r2_o = join(TRIM_DIR, '{sample}_{unit}_.paired.2.gz'),
     message:
         """--- khmer trimming of low-abundance kmers and digital normalization ---"""
     params:
@@ -36,9 +40,8 @@ rule khmer_read_processing_pe:
     conda: 
         'khmer-env.yaml'
     shell:""" 
-             (interleave-reads.py {r1} {r2} && zcat {r1_orphan} {r2_orphan}) | 
-             (trim-low-abund.py -V -k {params.k} -Z {params.Z} -C {params.C} - -o - 
-             -M {params.memory} --diginorm --diginorm-coverage={params.cov} --summary-info tsv ) | 
-             (extract-paired-reads.py --gzip -p {}_{}.paired.gz -s {}{}.single.gz) > /dev/null
+             (interleave-reads.py {input.r1} {input.r2} && zcat {input.r1_orphan} {input.r2_orphan}) | 
+             (trim-low-abund.py -V -k {params.k} -Z {params.Z} -C {params.C} - -o - -M {params.memory} --diginorm --diginorm-coverage={params.cov} --summary-info tsv ) | 
+             (extract-paired-reads.py --gzip -p {output.paired} -s {output.single}) > /dev/null
            """
 
