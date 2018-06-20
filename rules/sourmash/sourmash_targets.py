@@ -1,6 +1,6 @@
 from os import path
 
-def get_targets(assembly_basename,outdir, extensions = ['.sig']):
+def get_targets(assembly_basename, outdir, extensions = ['.sig']):
     """
     Use the assembly_basename 
     to generate required targets for sourmash

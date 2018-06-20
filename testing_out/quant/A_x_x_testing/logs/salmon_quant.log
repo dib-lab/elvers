@@ -1,0 +1,30 @@
+[2018-06-18 14:33:19.500] [jointLog] [info] Fragment incompatibility prior below threshold.  Incompatible fragments will be ignored.
+[2018-06-18 14:33:19.500] [jointLog] [info] parsing read library format
+[2018-06-18 14:33:19.500] [jointLog] [info] There is 1 library.
+[2018-06-18 14:33:19.540] [jointLog] [info] Loading Quasi index
+[2018-06-18 14:33:19.540] [jointLog] [info] Loading 32-bit quasi index
+[2018-06-18 14:33:19.548] [jointLog] [info] done
+[2018-06-18 14:33:19.548] [jointLog] [info] Index contained 81 targets
+[2018-06-18 14:33:20.141] [fileLog] [info] 
+At end of round 0
+==================
+Observed 26741 total fragments (26741 in most recent round)
+
+[2018-06-18 14:33:20.078] [jointLog] [info] Automatically detected most likely library type as ISF
+[2018-06-18 14:33:20.129] [jointLog] [info] Thread saw mini-batch with a maximum of 41.93% zero probability fragments
+[2018-06-18 14:33:20.140] [jointLog] [info] Computed 112 rich equivalence classes for further processing
+[2018-06-18 14:33:20.140] [jointLog] [info] Counted 24289 total reads in the equivalence classes 
+[2018-06-18 14:33:20.141] [jointLog] [warning] Only 24289 fragments were mapped, but the number of burn-in fragments was set to 5000000.
+The effective lengths have been computed using the observed mappings.
+
+[2018-06-18 14:33:20.141] [jointLog] [info] Mapping rate = 90.8306%
+
+[2018-06-18 14:33:20.141] [jointLog] [info] finished quantifyLibrary()
+[2018-06-18 14:33:20.155] [jointLog] [info] Starting optimizer
+[2018-06-18 14:33:20.156] [jointLog] [info] Marked 0 weighted equivalence classes as degenerate
+[2018-06-18 14:33:20.156] [jointLog] [info] iteration = 0 | max rel diff. = 252.774
+[2018-06-18 14:33:20.158] [jointLog] [info] iteration = 100 | max rel diff. = 0.0137943
+[2018-06-18 14:33:20.159] [jointLog] [info] iteration = 128 | max rel diff. = 0.0098724
+[2018-06-18 14:33:20.159] [jointLog] [info] Finished optimizer
+[2018-06-18 14:33:20.159] [jointLog] [info] writing output 
+

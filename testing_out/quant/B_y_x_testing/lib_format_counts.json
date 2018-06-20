@@ -1,0 +1,21 @@
+{
+    "read_files": "( testing_out/trimmed/B_y_1.trim.fq.gz, testing_out/trimmed/B_y_2.trim.fq.gz )",
+    "expected_format": "ISF",
+    "compatible_fragment_ratio": 1.0,
+    "num_compatible_fragments": 48527,
+    "num_assigned_fragments": 48527,
+    "num_frags_with_consistent_mappings": 46986,
+    "num_frags_with_inconsistent_or_orphan_mappings": 1541,
+    "MSF": 0,
+    "OSF": 0,
+    "ISF": 46986,
+    "MSR": 0,
+    "OSR": 0,
+    "ISR": 14,
+    "SF": 871,
+    "SR": 656,
+    "MU": 0,
+    "OU": 0,
+    "IU": 0,
+    "U": 0
+}

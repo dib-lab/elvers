@@ -7,7 +7,7 @@ rule sourmash_compute:
     input:
         join(ASSEMBLY_DIR, base + ".fasta")
     output:
-        join(QUANT_DIR, base + ".sig")
+        join(SOURMASH_DIR, base + ".sig")
     message:
         """--- Computing a MinHash signature of the transcriptome with Sourmash ---"""
     threads: 2

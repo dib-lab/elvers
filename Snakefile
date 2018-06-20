@@ -50,15 +50,15 @@ include: 'rules/salmon/salmon.rule'
 from rules.salmon.salmon_targets import get_targets
 salmon_targs = get_targets(units, base, QUANT_DIR)
 #khmer
-include: 'rules/khmer/khmer.rule'
-from rules.khmer.khmer_targets import get_targets
-khmer_targs = get_targets(units, base, TRIM_DIR)
+#include: 'rules/khmer/khmer.rule'
+#from rules.khmer.khmer_targets import get_targets
+#khmer_targs = get_targets(units, base, TRIM_DIR)
 #sourmash
 include: 'rules/sourmash/sourmash.rule'
 from rules.sourmash.sourmash_targets import get_targets
 sourmash_targs = get_targets(base,SOURMASH_DIR)
 
-TARGETS = fastqc_targs + trim_targs + khmer_targs + trinity_targs + salmon_targs
+TARGETS = fastqc_targs + trim_targs + trinity_targs + salmon_targs + sourmash_targs
 print(TARGETS)
 
 rule all:
