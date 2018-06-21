@@ -1,0 +1,19 @@
+description: "Eel pond mRNAseq de novo assembly pipeline"
+
+user_email: "ljcohen@ucdavis.edu"
+
+experiment_suffix: ""
+
+basename: "LR-Ast"
+
+#url or path to the csv of samples (sample_basename,fq1,fq2,condition)
+samples: "Astrangia_samples.tsv"
+units: "units.tsv"
+
+directories:
+ qc_dir: 'qc'
+ trim_dir: 'trimmed'
+ assembly_dir: 'assembly'
+ quant_dir: 'quant'
+ sourmash_dir: 'sourmash'
+

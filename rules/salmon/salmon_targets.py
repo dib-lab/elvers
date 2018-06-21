@@ -3,7 +3,7 @@ from os import path
 def get_targets(units, assembly_basename, outdir, extensions = ['/quant.sf', '/lib_format_counts.json']):
     """
     Use the sample info provided in the tsv file
-    to generate required targets for trimmomatic
+    to generate required targets for salmon
     """
     salmon_targs = []
     for s, u in units.iterrows():

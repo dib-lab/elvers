@@ -1,0 +1,58 @@
+### salmon (mapping-based) v0.10.0
+### [ program ] => salmon 
+### [ command ] => quant 
+### [ index ] => { testing_out/quant/testing_salmon }
+### [ libType ] => { A }
+### [ unmatedReads ] => { testing_out/trimmed/AB_z_se.trim.fq.gz }
+### [ output ] => { testing_out/quant/AB_z_x_testing }
+### [ threads ] => { 1 }
+Logs will be written to testing_out/quant/AB_z_x_testing/logs
+[2018-06-21 10:50:28.124] [jointLog] [info] Fragment incompatibility prior below threshold.  Incompatible fragments will be ignored.
+[2018-06-21 10:50:28.124] [jointLog] [info] parsing read library format
+[2018-06-21 10:50:28.124] [jointLog] [info] There is 1 library.
+[2018-06-21 10:50:28.240] [jointLog] [info] Loading Quasi index
+[2018-06-21 10:50:28.240] [jointLog] [info] Loading 32-bit quasi index
+[2018-06-21 10:50:28.241] [stderrLog] [info] Loading Suffix Array 
+[2018-06-21 10:50:28.241] [stderrLog] [info] Loading Transcript Info 
+[2018-06-21 10:50:28.242] [stderrLog] [info] Loading Rank-Select Bit Array
+[2018-06-21 10:50:28.242] [stderrLog] [info] There were 90 set bits in the bit array
+[2018-06-21 10:50:28.242] [stderrLog] [info] Computing transcript lengths
+[2018-06-21 10:50:28.242] [stderrLog] [info] Waiting to finish loading hash
+[2018-06-21 10:50:28.252] [jointLog] [info] done
+[2018-06-21 10:50:28.252] [jointLog] [info] Index contained 90 targets
+[2018-06-21 10:50:28.252] [stderrLog] [info] Done loading index
+
+
+
+
+
+
+
+
+
+
+
+
+[2018-06-21 10:50:28.494] [jointLog] [info] Automatically detected most likely library type as SF
+[2018-06-21 10:50:28.818] [jointLog] [info] Thread saw mini-batch with a maximum of 29.36% zero probability fragments
+[2018-06-21 10:50:28.834] [jointLog] [info] Computed 120 rich equivalence classes for further processing
+[2018-06-21 10:50:28.834] [jointLog] [info] Counted 76133 total reads in the equivalence classes 
+[2018-06-21 10:50:28.835] [jointLog] [warning] Only 76133 fragments were mapped, but the number of burn-in fragments was set to 5000000.
+The effective lengths have been computed using the observed mappings.
+
+[2018-06-21 10:50:28.835] [jointLog] [info] Mapping rate = 91.1194%
+
+[2018-06-21 10:50:28.835] [jointLog] [info] finished quantifyLibrary()
+[2018-06-21 10:50:28.851] [jointLog] [info] Starting optimizer
+[2018-06-21 10:50:28.852] [jointLog] [info] Marked 0 weighted equivalence classes as degenerate
+[2018-06-21 10:50:28.852] [jointLog] [info] iteration = 0 | max rel diff. = 1563.25
+[2018-06-21 10:50:28.854] [jointLog] [info] iteration = 100 | max rel diff. = 0.0189904
+[2018-06-21 10:50:28.857] [jointLog] [info] iteration = 200 | max rel diff. = 0.0189111
+[2018-06-21 10:50:28.859] [jointLog] [info] iteration = 300 | max rel diff. = 0.0188864
+[2018-06-21 10:50:28.861] [jointLog] [info] iteration = 400 | max rel diff. = 0.0188824
+[2018-06-21 10:50:28.862] [jointLog] [info] iteration = 500 | max rel diff. = 0.0188817
+[2018-06-21 10:50:28.863] [jointLog] [info] iteration = 600 | max rel diff. = 0.0188816
+[2018-06-21 10:50:28.863] [jointLog] [info] iteration = 610 | max rel diff. = 4.58444e-05
+[2018-06-21 10:50:28.864] [jointLog] [info] Finished optimizer
+[2018-06-21 10:50:28.864] [jointLog] [info] writing output 
+

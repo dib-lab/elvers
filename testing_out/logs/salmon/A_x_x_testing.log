@@ -1,0 +1,55 @@
+### salmon (mapping-based) v0.10.0
+### [ program ] => salmon 
+### [ command ] => quant 
+### [ index ] => { testing_out/quant/testing_salmon }
+### [ libType ] => { A }
+### [ mates1 ] => { testing_out/trimmed/A_x_1.trim.fq.gz }
+### [ mates2 ] => { testing_out/trimmed/A_x_2.trim.fq.gz }
+### [ output ] => { testing_out/quant/A_x_x_testing }
+### [ threads ] => { 1 }
+Logs will be written to testing_out/quant/A_x_x_testing/logs
+[2018-06-21 10:50:30.573] [jointLog] [info] Fragment incompatibility prior below threshold.  Incompatible fragments will be ignored.
+[2018-06-21 10:50:30.573] [jointLog] [info] parsing read library format
+[2018-06-21 10:50:30.573] [jointLog] [info] There is 1 library.
+[2018-06-21 10:50:30.689] [jointLog] [info] Loading Quasi index
+[2018-06-21 10:50:30.689] [jointLog] [info] Loading 32-bit quasi index
+[2018-06-21 10:50:30.690] [stderrLog] [info] Loading Suffix Array 
+[2018-06-21 10:50:30.691] [stderrLog] [info] Loading Transcript Info 
+[2018-06-21 10:50:30.691] [stderrLog] [info] Loading Rank-Select Bit Array
+[2018-06-21 10:50:30.691] [stderrLog] [info] There were 90 set bits in the bit array
+[2018-06-21 10:50:30.692] [stderrLog] [info] Computing transcript lengths
+[2018-06-21 10:50:30.692] [stderrLog] [info] Waiting to finish loading hash
+[2018-06-21 10:50:30.706] [jointLog] [info] done
+[2018-06-21 10:50:30.706] [jointLog] [info] Index contained 90 targets
+[2018-06-21 10:50:30.706] [stderrLog] [info] Done loading index
+
+
+
+
+
+
+
+
+
+
+
+
+[2018-06-21 10:50:31.131] [jointLog] [info] Automatically detected most likely library type as ISF
+[2018-06-21 10:50:31.131] [jointLog] [info] Thread saw mini-batch with a maximum of 0.18% zero probability fragments
+[2018-06-21 10:50:31.155] [jointLog] [info] Computed 132 rich equivalence classes for further processing
+[2018-06-21 10:50:31.155] [jointLog] [info] Counted 25137 total reads in the equivalence classes 
+[2018-06-21 10:50:31.157] [jointLog] [warning] Only 25137 fragments were mapped, but the number of burn-in fragments was set to 5000000.
+The effective lengths have been computed using the observed mappings.
+
+[2018-06-21 10:50:31.157] [jointLog] [info] Mapping rate = 94.0017%
+
+[2018-06-21 10:50:31.157] [jointLog] [info] finished quantifyLibrary()
+[2018-06-21 10:50:31.166] [jointLog] [info] Starting optimizer
+[2018-06-21 10:50:31.167] [jointLog] [info] Marked 0 weighted equivalence classes as degenerate
+[2018-06-21 10:50:31.167] [jointLog] [info] iteration = 0 | max rel diff. = 529.796
+[2018-06-21 10:50:31.169] [jointLog] [info] iteration = 100 | max rel diff. = 0.0325036
+[2018-06-21 10:50:31.171] [jointLog] [info] iteration = 200 | max rel diff. = 0.0309601
+[2018-06-21 10:50:31.172] [jointLog] [info] iteration = 252 | max rel diff. = 0.000469624
+[2018-06-21 10:50:31.172] [jointLog] [info] Finished optimizer
+[2018-06-21 10:50:31.172] [jointLog] [info] writing output 
+
