@@ -22,6 +22,7 @@ experiment_suffix =config.get('experiment', '')
 # build directory info --> later set all these from config file(s)
 #folders = config['directories']
 
+ANIMALS_DIR = "common/animals/"
 OUT_DIR = '{}_out{}'.format(base, experiment_suffix)
 LOGS_DIR = join(OUT_DIR, 'logs')
 TRIM_DIR = join(OUT_DIR, 'trimmed')
@@ -59,9 +60,11 @@ include: 'rules/sourmash/sourmash.rule'
 from rules.sourmash.sourmash_targets import get_targets
 sourmash_targs = get_targets(base,SOURMASH_DIR)
 #push_sigs
-include: 'rules/push_sigs.rule'
+#include: 'rules/push_sigs.rule'
+#print_animal
+include: 'rules/print_animal.rule'
 
-TARGETS = fastqc_targs + trim_targs + trinity_targs + salmon_targs + sourmash_targs #+ khmer_targs
+TARGETS = fastqc_targs #+ trim_targs + trinity_targs + salmon_targs + sourmash_targs #+ khmer_targs
 print(TARGETS)
 
 rule all:

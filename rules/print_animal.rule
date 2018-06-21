@@ -1,0 +1,11 @@
+from os.path import join
+
+rule push_sigs:
+    """
+    prints ascii character marine animal
+    """
+    input:
+        join(ANIMALS_DIR, "octopus")
+    script:
+        "../scripts/print_animal.py"
+        
