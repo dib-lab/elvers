@@ -1,0 +1,8 @@
+[Ksetting num_hashes to 0 because --scaled is set
+[Kcomputing signatures for files: testing_out/assembly/testing.fasta
+[KComputing signature for ksizes: [31]
+[KComputing only DNA (and not protein) signatures.
+[KComputing a total of 1 signature(s).
+[K... reading sequences from testing_out/assembly/testing.fasta
+[K...testing_out/assembly/testing.fasta 91 sequences[Kcalculated 1 signatures for 92 sequences in testing_out/assembly/testing.fasta
+[Ksaved 1 signature(s). Note: signature license is CC0.

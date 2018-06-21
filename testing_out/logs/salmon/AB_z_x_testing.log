@@ -1,0 +1,57 @@
+### salmon (mapping-based) v0.10.0
+### [ program ] => salmon 
+### [ command ] => quant 
+### [ index ] => { testing_out/quant/testing_salmon }
+### [ libType ] => { A }
+### [ unmatedReads ] => { testing_out/trimmed/AB_z_se.trim.fq.gz }
+### [ output ] => { testing_out/quant/AB_z_x_testing }
+### [ threads ] => { 1 }
+Logs will be written to testing_out/quant/AB_z_x_testing/logs
+[2018-06-20 23:51:49.618] [jointLog] [info] Fragment incompatibility prior below threshold.  Incompatible fragments will be ignored.
+[2018-06-20 23:51:49.618] [jointLog] [info] parsing read library format
+[2018-06-20 23:51:49.618] [jointLog] [info] There is 1 library.
+[2018-06-20 23:51:49.740] [stderrLog] [info] Loading Suffix Array 
+[2018-06-20 23:51:49.740] [jointLog] [info] Loading Quasi index
+[2018-06-20 23:51:49.740] [jointLog] [info] Loading 32-bit quasi index
+[2018-06-20 23:51:49.755] [jointLog] [info] done
+[2018-06-20 23:51:49.755] [jointLog] [info] Index contained 92 targets
+[2018-06-20 23:51:49.741] [stderrLog] [info] Loading Transcript Info 
+[2018-06-20 23:51:49.742] [stderrLog] [info] Loading Rank-Select Bit Array
+[2018-06-20 23:51:49.742] [stderrLog] [info] There were 92 set bits in the bit array
+[2018-06-20 23:51:49.742] [stderrLog] [info] Computing transcript lengths
+[2018-06-20 23:51:49.742] [stderrLog] [info] Waiting to finish loading hash
+[2018-06-20 23:51:49.755] [stderrLog] [info] Done loading index
+
+
+
+
+
+
+
+
+
+
+
+
+[2018-06-20 23:51:50.008] [jointLog] [info] Automatically detected most likely library type as U
+[2018-06-20 23:51:50.432] [jointLog] [info] Computed 133 rich equivalence classes for further processing
+[2018-06-20 23:51:50.432] [jointLog] [info] Counted 75051 total reads in the equivalence classes 
+[2018-06-20 23:51:50.435] [jointLog] [warning] Only 75051 fragments were mapped, but the number of burn-in fragments was set to 5000000.
+The effective lengths have been computed using the observed mappings.
+
+[2018-06-20 23:51:50.435] [jointLog] [info] Mapping rate = 89.8244%
+
+[2018-06-20 23:51:50.435] [jointLog] [info] finished quantifyLibrary()
+[2018-06-20 23:51:50.444] [jointLog] [info] Starting optimizer
+[2018-06-20 23:51:50.445] [jointLog] [info] Marked 0 weighted equivalence classes as degenerate
+[2018-06-20 23:51:50.445] [jointLog] [info] iteration = 0 | max rel diff. = 1346.89
+[2018-06-20 23:51:50.447] [jointLog] [info] iteration = 100 | max rel diff. = 0.0291963
+[2018-06-20 23:51:50.449] [jointLog] [info] iteration = 200 | max rel diff. = 0.0383917
+[2018-06-20 23:51:50.452] [jointLog] [info] iteration = 297 | max rel diff. = 0.00826698
+[2018-06-20 23:51:50.452] [jointLog] [info] Finished optimizer
+[2018-06-20 23:51:50.452] [jointLog] [info] writing output 
+
+[2018-06-20 23:51:50.459] [jointLog] [warning] NOTE: Read Lib [testing_out/trimmed/AB_z_se.trim.fq.gz] :
+
+Detected a *potential* strand bias > 1% in an unstranded protocol check the file: testing_out/quant/AB_z_x_testing/lib_format_counts.json for details
+

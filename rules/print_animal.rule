@@ -9,7 +9,4 @@ rule print_animal:
     input:
         join(ANIMALS_DIR, "octopus")
     run:
-        with open({input}) as a:
-            for line in a:
-                print(line.rstrip())
-        
+       shell("cat {input}")
