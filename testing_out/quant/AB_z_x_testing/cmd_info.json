@@ -1,0 +1,9 @@
+{
+    "salmon_version": "0.10.0",
+    "index": "testing_out/quant/testing_salmon",
+    "libType": "A",
+    "unmatedReads": "testing_out/trimmed/AB_z_se.trim.fq.gz",
+    "output": "testing_out/quant/AB_z_x_testing",
+    "threads": "1",
+    "auxDir": "aux_info"
+}

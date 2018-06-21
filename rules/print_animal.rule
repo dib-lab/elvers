@@ -1,11 +1,15 @@
 from os.path import join
 
-rule push_sigs:
+
+
+rule print_animal:
     """
     prints ascii character marine animal
     """
     input:
         join(ANIMALS_DIR, "octopus")
-    script:
-        "../scripts/print_animal.py"
+    run:
+        with open({input}) as a:
+            for line in a:
+                print(line.rstrip())
         

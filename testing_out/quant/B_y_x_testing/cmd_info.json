@@ -1,0 +1,10 @@
+{
+    "salmon_version": "0.10.0",
+    "index": "testing_out/quant/testing_salmon",
+    "libType": "A",
+    "mates1": "testing_out/trimmed/B_y_1.trim.fq.gz",
+    "mates2": "testing_out/trimmed/B_y_2.trim.fq.gz",
+    "output": "testing_out/quant/B_y_x_testing",
+    "threads": "1",
+    "auxDir": "aux_info"
+}

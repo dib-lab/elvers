@@ -63,8 +63,9 @@ sourmash_targs = get_targets(base,SOURMASH_DIR)
 #include: 'rules/push_sigs.rule'
 #print_animal
 include: 'rules/print_animal.rule'
+animal_targs = ["common/animals/octopus"]
 
-TARGETS = fastqc_targs #+ trim_targs + trinity_targs + salmon_targs + sourmash_targs #+ khmer_targs
+TARGETS = animal_targs + fastqc_targs + trim_targs + trinity_targs + salmon_targs + sourmash_targs #+ khmer_targs
 print(TARGETS)
 
 rule all:
