@@ -39,6 +39,10 @@ include: 'rules/common.rule'
 include: 'rules/fastqc/fastqc.rule'
 from rules.fastqc.fastqc_targets import get_targets
 fastqc_targs = get_targets(units, base, QC_DIR)
+#cat reads by unit
+include: 'rules/cat_reads/cat_reads_by_unit.rule'
+from rules.cat_reads.cat_reads_by_unit_targets import get_targets
+cat_targs = get_targets(units,base,TRIM_DIR) 
 #trimmomatic
 include: 'rules/trimmomatic/trimmomatic.rule'
 from rules.trimmomatic.trimmomatic_targets import get_targets
@@ -68,7 +72,7 @@ animal_targs = [ANIMALS_DIR+"octopus",ANIMALS_DIR+"fish"]
 #from rules.deseq2.deseq2_targets import get_targets
 #deseq2_targs = get_targets(units,base,DSEQ2_DIR)
 
-TARGETS = fastqc_targs + trim_targs + trinity_targs + salmon_targs + sourmash_targs #+ deseq2_targs #+ khmer_targs
+TARGETS = fastqc_targs + trim_targs + trinity_targs + salmon_targs + sourmash_targs #+ cat_targs #+ deseq2_targs #+ khmer_targs
 shell('cat {animal_targs[0]}')
 print('-----------------------------------------------------------------')
 print('Welcome to the Eel Pond, de novo transcriptome assembly pipeline.')
