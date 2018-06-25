@@ -7,8 +7,8 @@ experiment_suffix: ""
 basename: "testing"
 
 #url or path to the csv of samples (sample_basename,fq1,fq2,condition)
-samples: "samples.tsv"
-units: "units.tsv"
+samples: "test_data/samples.tsv"
+units: "test_data/units.tsv"
 
 directories:
  qc_dir: 'qc'
