@@ -7,7 +7,7 @@ experiment_suffix: ""
 basename: "LR-Ast"
 
 #url or path to the csv of samples (sample_basename,fq1,fq2,condition)
-samples: "Astrangia_samples.tsv"
+samples: "test_data/Astrangia_samples.tsv"
 units: "units.tsv"
 
 directories:
