@@ -14,37 +14,37 @@ def get_trimmed_se(wildcards):
     if is_single_end(**wildcards):
         return expand(join(TRIM_DIR, '{sample}_{unit}_se.trim.fq.gz'),**wildcards)[0]
 
-#rule khmer_read_processing_pe:
-    #"""
-    #kmer trim and diginorm with khmer
-    #"""
-    #input:
-    #    unpack(get_trimmed_pe)
-    #output: 
-    #    paired=join(KHMER_TRIM_DIR,'{sample}_{unit}_.paired.gz'),
-        #r1_out=join(KHMER_TRIM_DIR, '{sample}_{unit}_.paired.1.gz'),
-        #r2_out=join(KHMER_TRIM_DIR, '{sample}_{unit}_.paired.2.gz'),
-    #    single=join(KHMER_TRIM_DIR,'{sample}_{unit}_.single.gz'),
-    #message:
-    #    """--- khmer trimming of low-abundance kmers and digital normalization ---"""
-    #params:
-    #    k = '20',
-    #    Z = '18', #20
-    #    C = '3', #4
-    #    memory = '4e9',#60e9
-    #    cov = '20',
-    #    extra = ''
-    #threads: 2
-    #log:
-    #    join(LOGS_DIR, 'khmer/{sample}_{unit}_' + base + '.log')
-    #conda: 
-    #    'khmer-env.yaml'
-    #shell: " (interleave-reads.py {input.r1} {input.r2} && zcat {input.r1_orphan} {input.r2_orphan}) | "
+rule khmer_read_processing_pe:
+    """
+    kmer trim and diginorm with khmer
+    """
+    input:
+        unpack(get_trimmed_pe)
+    output: 
+        paired=join(KHMER_TRIM_DIR,'{sample}_{unit}_.paired.gz'),
+        r1_out=join(KHMER_TRIM_DIR, '{sample}_{unit}_.paired.1.gz'),
+        r2_out=join(KHMER_TRIM_DIR, '{sample}_{unit}_.paired.2.gz'),
+        single=join(KHMER_TRIM_DIR,'{sample}_{unit}_.single.gz'),
+    message:
+        """--- khmer trimming of low-abundance kmers and digital normalization ---"""
+    params:
+        k = '20',
+        Z = '18', #20
+        C = '3', #4
+        memory = '4e9',#60e9
+        cov = '20',
+        extra = ''
+    threads: 2
+    log:
+        join(LOGS_DIR, 'khmer/{sample}_{unit}_' + base + '.log')
+    conda: 
+        'khmer-env.yaml'
+    shell: " (interleave-reads.py {input.r1} {input.r2} && zcat {input.r1_orphan} {input.r2_orphan}) | "
     #shell: " (interleave-reads.py {input.r1} {input.r2} | " 
-    #       " (trim-low-abund.py -V -k {params.k} -Z {params.Z} -C {params.C} - -o - -M {params.memory} "
-    #       " --diginorm --diginorm-coverage={params.cov}) | (extract-paired-reads.py --gzip "
-    #       " -p {output.paired} -s {output.single}) > {log} " #  ; split-paired-reads.py {output.paired} "
-    ##       " -1 {output.r1} -2 {output.r2} >> {log}"
+           " (trim-low-abund.py -V -k {params.k} -Z {params.Z} -C {params.C} - -o - -M {params.memory} "
+           " --diginorm --diginorm-coverage={params.cov}) | (extract-paired-reads.py --gzip "
+           " -p {output.paired} -s {output.single}) > {log}; split-paired-reads.py {output.paired} "
+           " -1 {output.r1_out} -2 {output.r2_out} >> {log}"
 
 
 rule khmer_read_processing_se:
