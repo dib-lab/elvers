@@ -73,7 +73,7 @@ animal_targs = [ANIMALS_DIR+"octopus",ANIMALS_DIR+"fish"]
 #from rules.deseq2.deseq2_targets import get_targets
 #deseq2_targs = get_targets(units,base,DSEQ2_DIR)
 
-TARGETS = fastqc_targs + trim_targs + trinity_targs + salmon_targs + sourmash_targs + cat_targs #+ deseq2_targs #+ khmer_targs
+TARGETS = fastqc_targs + trim_targs + trinity_targs + salmon_targs + sourmash_targs #+ khmer_targs #+ cat_targs #+ deseq2_targs #+ khmer_targs
 
 onstart: 
     shell('cat {animal_targs[0]}')

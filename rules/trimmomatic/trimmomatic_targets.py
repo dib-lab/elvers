@@ -11,6 +11,8 @@ def get_targets(units, basename, outdir, extensions = ['.trim.fq.gz'], se_ext = 
         sample, unit = u['sample'],u['unit']
         end = se_ext if is_se(units,sample,unit) else pe_ext
         trim_targs = trim_targs +  ['{}_{}_'.format(sample,unit) + i + j for i in end for j in extensions]
+        #trim_targs = trim_targs +  ['{}_'.format(sample) + i + j for i in end for j in extensions]
 
+    #trim_targs = list(set(trim_targs))
     return [path.join(outdir, targ) for targ in trim_targs]
 
