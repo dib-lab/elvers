@@ -23,3 +23,16 @@ def get_trimmed_trinity_input(units, basename, outdir, extensions = ['.trim.fq.g
         trim_targs = trim_targs +  ['{}_{}_'.format(sample, unit) + i + j for i in end for j in extensions]
     return [join(outdir, targ) for targ in trim_targs]
 
+def get_khmer_trimmed_trinity_input(units, basename, outdir, extensions = ['.gz'], se_ext = ['.se'], pe_ext = ['.paired.1','.paired.2', '.single']):
+
+    """
+    Use the sample info provided in the tsv file
+    to generate required targets for trimmomatic
+    """
+    targs = []
+    for s, u in units.iterrows():
+        sample, unit = u['sample'],u['unit']
+        end = se_ext if is_se(units,sample, unit) else pe_ext
+        targs = targs +  ['{}_{}_'.format(sample, unit) + i + j for i in end for j in extensions]
+    return [join(outdir, targ) for targ in targs]
+

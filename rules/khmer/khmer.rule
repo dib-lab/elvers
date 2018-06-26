@@ -40,7 +40,6 @@ rule khmer_read_processing_pe:
     conda: 
         'khmer-env.yaml'
     shell: " (interleave-reads.py {input.r1} {input.r2} && zcat {input.r1_orphan} {input.r2_orphan}) | "
-    #shell: " (interleave-reads.py {input.r1} {input.r2} | " 
            " (trim-low-abund.py -V -k {params.k} -Z {params.Z} -C {params.C} - -o - -M {params.memory} "
            " --diginorm --diginorm-coverage={params.cov}) | (extract-paired-reads.py --gzip "
            " -p {output.paired} -s {output.single}) > {log}; split-paired-reads.py {output.paired} "
