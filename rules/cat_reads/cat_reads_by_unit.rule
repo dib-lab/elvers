@@ -20,8 +20,8 @@ rule cat_reads:
     input:
         unpack(combine_by_unit_pe)
     output:
-        r1=join(TRIM_DIR, "{sample}_1.fq.gz"),
-        r2=join(TRIM_DIR, "{sample}_2.fq.gz"),
+        r1=join(READS_DIR, "{sample}_1.fq.gz"),
+        r2=join(READS_DIR, "{sample}_2.fq.gz"),
     message:
         """--- Cat files: same sample, different unit ---"""
     log:
@@ -43,7 +43,7 @@ rule cat_reads_se:
     input:
         r = combine_by_unit_se
     output:
-        r = join(TRIM_DIR, "{sample}_se.fq.gz")
+        r = join(READS_DIR, "{sample}_se.fq.gz")
     message:
         """--- Cat files: same sample, different unit ---"""
     log:

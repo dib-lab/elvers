@@ -25,6 +25,7 @@ experiment_suffix =config.get('experiment', '')
 ANIMALS_DIR = "common/animals/"
 OUT_DIR = '{}_out{}'.format(base, experiment_suffix)
 LOGS_DIR = join(OUT_DIR, 'logs')
+READS_DIR = join(OUT_DIR, 'untrimmed')
 TRIM_DIR = join(OUT_DIR, 'trimmed')
 KHMER_TRIM_DIR = join(OUT_DIR, 'khmer')
 QC_DIR = join(OUT_DIR, 'qc')
@@ -42,7 +43,7 @@ fastqc_targs = get_targets(units, base, QC_DIR)
 #cat reads by unit
 include: 'rules/cat_reads/cat_reads_by_unit.rule'
 from rules.cat_reads.cat_reads_by_unit_targets import get_targets
-cat_targs = get_targets(units,base,TRIM_DIR) 
+cat_targs = get_targets(units,base,READS_DIR) 
 #trimmomatic
 include: 'rules/trimmomatic/trimmomatic.rule'
 from rules.trimmomatic.trimmomatic_targets import get_targets
