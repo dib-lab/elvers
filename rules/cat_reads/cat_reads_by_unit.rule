@@ -1,17 +1,17 @@
 from os.path import join
 
 def combine_by_unit_pe(wildcards):
-    r1 = list(units.xs(wildcards.sample)["fq1"])
-    r2 = list(units.xs(wildcards.sample)["fq2"].dropna())
-    if r2: # this could be an issue if paired files are intermixed with se files. Need to maintain pair order! 
-        return dict(zip(['r1','r2'], [r1, r2]))
+    #if not units.xs(wildcards.sample)["fq2"].isnull().values.any():  # pe - se mix: throw err?
+    #sample_units = list(units.xs(wildcards.sample)["unit"])
+    pe_only = units[units['fq2'].notnull()]
+    r1 = list(pe_only.xs(wildcards.sample)["fq1"])
+    r2 = list(pe_only.xs(wildcards.sample)["fq2"]) #.dropna())
+    return dict(zip(['r1','r2'], [r1, r2]))
 
 
 def combine_by_unit_se(wildcards):
-    r1 = list(units.xs(wildcards.sample)["fq1"])
-    r2 = list(units.xs(wildcards.sample)["fq2"].dropna())
-    if not r2: 
-        return r1
+    se_only = units[units['fq2'].isnull()]
+    return list(units.xs(wildcards.sample)["fq1"])
 
 rule cat_reads:
     """
