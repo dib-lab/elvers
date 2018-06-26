@@ -72,7 +72,7 @@ animal_targs = [ANIMALS_DIR+"octopus",ANIMALS_DIR+"fish"]
 #from rules.deseq2.deseq2_targets import get_targets
 #deseq2_targs = get_targets(units,base,DSEQ2_DIR)
 
-TARGETS = fastqc_targs + trim_targs + trinity_targs + salmon_targs + sourmash_targs #+ cat_targs #+ deseq2_targs #+ khmer_targs
+TARGETS = fastqc_targs + trim_targs + trinity_targs + salmon_targs + sourmash_targs + cat_targs #+ deseq2_targs #+ khmer_targs
 shell('cat {animal_targs[0]}')
 print('-----------------------------------------------------------------')
 print('Welcome to the Eel Pond, de novo transcriptome assembly pipeline.')
