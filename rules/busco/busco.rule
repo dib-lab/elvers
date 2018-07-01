@@ -1,0 +1,26 @@
+from os import join
+
+#rule install_busco_dbs:
+#   input:
+#   output:
+#   log:
+#   threads:
+#   params:
+
+rule run_busco:
+    input:
+       join(ASSEMBLY_DIR, base + ".fasta") 
+    output:
+        join(BUSCO_DIR, 'busco', 'run_busco_' + base, "full_table_txome_busco.tsv")
+    log:
+       join(LOGS_DIR, 'busco', base + '_index.log') 
+    threads: 8
+    params:
+        mode="transcriptome",
+        lineage_path="/squid/databases/busco2db/metazoa_odb9",
+        #lineage_path= join(DATABASES_DIR, lineage)
+        # optional parameters
+        extra="" 
+    wrapper:
+        "0.26.1/bio/busco"
+

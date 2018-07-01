@@ -32,6 +32,7 @@ QC_DIR = join(OUT_DIR, 'qc')
 ASSEMBLY_DIR = join(OUT_DIR, 'assembly')
 QUANT_DIR = join(OUT_DIR, 'quant')
 SOURMASH_DIR = join(OUT_DIR,'sourmash')
+BUSCO_DIR = join(OUT_DIR,'busco')
 
 # workflow rules
 
@@ -52,6 +53,10 @@ trim_targs = get_targets(units, base, TRIM_DIR)
 include: 'rules/trinity/trinity.rule'
 from rules.trinity.trinity_targets import get_targets
 trinity_targs = get_targets(units, base, ASSEMBLY_DIR)
+#busco
+include: 'rules/busco/busco.rule'
+from rules.busco.busco_targets import get_targets
+busco_targs = get_targets(units, base, BUSCO_DIR)
 #salmon
 include: 'rules/salmon/salmon.rule'
 from rules.salmon.salmon_targets import get_targets
