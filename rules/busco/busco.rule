@@ -1,4 +1,4 @@
-from os import join
+from os.path import join
 
 #rule install_busco_dbs:
 #   input:
@@ -11,7 +11,8 @@ rule run_busco:
     input:
        join(ASSEMBLY_DIR, base + ".fasta") 
     output:
-        join(BUSCO_DIR, 'busco', 'run_busco_' + base, "full_table_txome_busco.tsv")
+        #join(BUSCO_DIR, 'run_busco_' + base, "full_table_txome_busco.tsv")
+        join('run_busco_' + base, "full_table_txome_busco.tsv")
     log:
        join(LOGS_DIR, 'busco', base + '_index.log') 
     threads: 8
@@ -24,3 +25,10 @@ rule run_busco:
     wrapper:
         "0.26.1/bio/busco"
 
+rule move_busco:
+    input: rules.run_busco.output
+    #input: 'run_busco_' + base
+    #output: join(BUSCO_DIR, os.path.dirname(rules.run_busco.output)) 
+    output: join(BUSCO_DIR, 'run_busco_' + base)
+    log: join(LOGS_DIR, 'busco/move_busco.log')
+    shell: ("mv $(dirname {input})  {BUSCO_DIR} 2> {log}") #; rm -rf $(dirname {input})")
