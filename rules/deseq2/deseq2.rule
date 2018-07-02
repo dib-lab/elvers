@@ -1,8 +1,14 @@
-#init - start from rnaseq-star diffexp.smk 
+from os.path import join
+from common.utils import get_params
+
+# init - start from rnaseq-star diffexp.smk 
 # https://github.com/snakemake-workflows/rna-seq-star-deseq2
+
+# ultimately replace with tximport 
 rule count_matrix:
     input:
-        expand("salmon/{unit.sample}-{unit.unit}/ReadsPerGene.out.tab", unit=units.itertuples())
+        expand(join(QUANT_DIR, "{unit.sample}_{unit.unit}_x_" + base,"quant.sf"), unit=units.itertuples()),
+#        expand("salmon/{unit.sample}_{unit.unit}/quant.sf", unit=units.itertuples())
     output:
         "counts/all.tsv"
     params:
@@ -61,7 +67,7 @@ rule deseq2:
     params:
         contrast=get_contrast
     conda:
-        "../envs/deseq2.yaml"
+        "deseq2-env.yaml"
     log:
         "logs/deseq2/{contrast}.diffexp.log"
     threads: get_deseq2_threads
