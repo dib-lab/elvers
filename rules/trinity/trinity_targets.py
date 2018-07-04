@@ -1,7 +1,7 @@
 from os.path import join
 from common.utils import is_se
 
-def get_targets(units, basename, outdir, extensions = ['.fasta']):
+def get_targets(units, basename, outdir, extensions = ['.fasta', '.fasta.gene_trans_map']):
     """
     Use run basename from config
     to generate Trinity targets
