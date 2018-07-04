@@ -82,6 +82,7 @@ dependencies:
   - r-reshape2 =1.4.2
   - r-rjson =0.2.15
   - r-rlang =0.1.2
+  - r-readr =0.2.2
   - r-rpart =4.1_10
   - r-rsqlite =2.0
   - r-scales =0.4.1

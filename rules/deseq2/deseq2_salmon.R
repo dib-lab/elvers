@@ -3,7 +3,9 @@ sink(log)
 sink(log, type="message")
 
 library("DESeq2")
+library("tximport")
 
+# enable parallel processing if threads > 1
 parallel <- FALSE
 if (snakemake@threads > 1) {
     library("BiocParallel")
@@ -12,6 +14,12 @@ if (snakemake@threads > 1) {
     parallel <- TRUE
 }
 
+## Open pdf file to contain any figure generated below
+#pdf(gsub("rds$", "pdf", outrds))
+
+log <- file(snakemake@log[[1]], open="wt")
+
+# deseq2 portion
 dds <- readRDS(snakemake@input[[1]])
 
 contrast <- c("condition", snakemake@params[["contrast"]])
