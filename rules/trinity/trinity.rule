@@ -17,6 +17,7 @@ LEFT = LEFT + SINGLE
 
 rule trinity:
     input:
+#try something like this: quant = expand(join(QUANT_DIR,"{unit.sample}_{unit.unit}" + base, "quant.sf"), unit=units.itertuples())
         #unpack(get_trimmed)
         left=LEFT,
         right=RIGHT

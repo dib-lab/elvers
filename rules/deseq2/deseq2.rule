@@ -7,22 +7,24 @@ def get_deseq2_threads(wildcards=None):
     few_coeffs = False if wildcards is None else len(get_contrast(wildcards)) < 10
     return 1 if len(samples) < 100 or few_coeffs else 6
 
-rule tx2gene:
-    input:
-        join(ASSEMBLY_DIR, base + '.fasta.gene_trans_map')
-    output:
-        join(QUANT_DIR, base + '.tx2gene')
-    log:
-        join(LOGS_DIR, 'quant', 'generate_tx2gene.txt')
-    shell:
-        """awk '{ print $2 " " $1}' {input} | sed '1 i\Transcript\tGene' | sed 's/ /\t/g' > {output}"""
+#rule tx2gene:
+#    input:
+#        join(ASSEMBLY_DIR, base + '.fasta.gene_trans_map')
+#    output:
+#        join(QUANT_DIR, base + '.tx2gene')
+#    log:
+#        join(LOGS_DIR, 'quant', 'generate_tx2gene.txt')
+#    shell:
+#        """awk '{ print $2 " " $1}' {input} | sed '1 i\Transcript\tGene' | sed 's/ /\t/g' > {output}"""
 
 rule deseq2_init:
     input:
-        quant = expand(join(QUANT_DIR, "{sample}_{unit}_x_" + base,"quant.sf")), 
-        tx2gene = join(QUANT_DIR, base + '.tx2gene'),
+        quant = expand(join(QUANT_DIR,"{unit.sample}_{unit.unit}_x_" + base, "quant.sf"), unit=units.itertuples()),
+#        quant = expand(join(QUANT_DIR, "{sample}_{unit}_x_" + base,"quant.sf")), 
+        #tx2gene = join(QUANT_DIR, base + '.tx2gene'),
+        gene_trans_map = join(ASSEMBLY_DIR, base + '.fasta.gene_trans_map'),
     output:
-        "deseq2/all.rds" #r data object
+        join(DSEQ2_DIR, "all.rds") #r data object
     params:
         samples=config["samples"]
     conda:
