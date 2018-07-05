@@ -37,14 +37,10 @@ stopifnot(all(colnames(txi$counts) %in% sample_info$sample))
 sample_info <- sample_info[match(colnames(txi$counts),sample_info$sample), ]
 row.names(sample_info) <- sample_info$sample
 sample_info$sample <- NULL
-sample_info$condition <- as.factor(sample_info$condition)
-
-print(typeof(sample_info$condition))
+sample_info$condition <- factor(sample_info$condition)
 
 # generate DESeq data set (dds)
 dds <- DESeqDataSetFromTximport(txi, sample_info, ~condition)
-
-
 
 # from rna-seq star example:
 # remove uninformative columns
