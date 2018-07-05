@@ -1,6 +1,13 @@
 from os.path import join
 from common.utils import get_params
 
+# default params from paramsfile
+deseq_params = get_params('deseq2')
+
+# override defaults with snakemake config (main configfile or snakemake --config)
+if 'deseq2' in config.keys():
+    trim_params.update(config['deseq2'])
+
 def get_deseq2_threads(wildcards=None):
     # https://github.com/snakemake-workflows/rna-seq-star-deseq2
     # https://twitter.com/mikelove/status/918770188568363008
@@ -18,8 +25,8 @@ def get_quant(wildcards):
 rule deseq2_init:
     input:
         quant = get_quant,
-#       quant = expand(join(QUANT_DIR,"{unit.sample}_{unit.unit}_x_" + base, "quant.sf"), unit=units.itertuples()),
         gene_trans_map = join(ASSEMBLY_DIR, base + '.fasta.gene_trans_map'),
+#       quant = expand(join(QUANT_DIR,"{unit.sample}_{unit.unit}_x_" + base, "quant.sf"), unit=units.itertuples()),
     output:
         join(DSEQ2_DIR, "all.rds") #r data object
     params:
@@ -33,23 +40,26 @@ rule deseq2_init:
         "deseq2-init.R"
 
 
-#rule pca:
-#    input:
-#        "deseq2/all.rds"
-#    output:
-#        report("results/pca.svg", "../report/pca.rst")
-#    params:
-#        pca_labels=config["pca"]["labels"]
-#    conda:
-#        "../envs/deseq2.yaml"
-#    log:
-#        "logs/pca.log"
-#    script:
-#        "../scripts/plot-pca.R"
+rule pca:
+    input:
+        rules.deseq2_init.output
+    #    join(DSEQ2_DIR, "all.rds")
+    output:
+        #join(DSEQ2_DIR, "pca.svg")
+        join(DSEQ2_DIR, "pca.pdf")
+        #report(join(DSEQ2_DIR, "pca.svg"), "../../report/pca.rst")
+    params:
+        pca_labels=deseq_params["pca"]["labels"]
+    conda:
+        "deseq2-env.yaml"
+    log:
+        join(LOGS_DIR, 'deseq2', "pca.log")
+    script:
+        "plot-pca.R"
 
 
 #def get_contrast(wildcards):
-#    return config["diffexp"]["contrasts"][wildcards.contrast]
+#    return deseq_params["contrasts"][wildcards.contrast]
 
 
 #rule deseq2:

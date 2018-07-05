@@ -17,8 +17,9 @@ def get_targets(units, basename, outdir, extensions = ['.diffexp.tsv', '.ma-plot
     de_targs = []
     #for c in contrast_list: 
     #    de_targs = de_targs +  ['{}'.format(c) + i for i in extensions]
-    #de_targs = de_targs + ['pca.svg']
     de_targs = de_targs + ['all.rds']
+    de_targs = de_targs + ['pca.pdf']
+    #de_targs = de_targs + ['pca.svg']
     return [join(outdir, targ) for targ in de_targs]
 
 # targs from rna-seq-star
