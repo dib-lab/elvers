@@ -46,8 +46,8 @@ rule pca:
     #    join(DSEQ2_DIR, "all.rds")
     output:
         #join(DSEQ2_DIR, "pca.svg")
-        join(DSEQ2_DIR, "pca.pdf")
-        #report(join(DSEQ2_DIR, "pca.svg"), "../../report/pca.rst")
+        #join(DSEQ2_DIR, "pca.pdf"),
+        report(join(DSEQ2_DIR, "pca.pdf"), "../../report/pca.rst")
     params:
         pca_labels=deseq_params["pca"]["labels"]
     conda:
@@ -58,23 +58,26 @@ rule pca:
         "plot-pca.R"
 
 
-#def get_contrast(wildcards):
-#    return deseq_params["contrasts"][wildcards.contrast]
+def get_contrast(wildcards):
+    return deseq_params["contrasts"][wildcards.contrast]
 
 
-#rule deseq2:
-#    input:
-#        "deseq2/all.rds"
-#    output:
-#        table=report("results/diffexp/{contrast}.diffexp.tsv", "../report/diffexp.rst"),
-#        ma_plot=report("results/diffexp/{contrast}.ma-plot.svg", "../report/ma.rst"),
-#    params:
-#        contrast=get_contrast
-#    conda:
-#        "deseq2-env.yaml"
-#    log:
-#        "logs/deseq2/{contrast}.diffexp.log"
-#    threads: get_deseq2_threads
-#    script:
-#        "../scripts/deseq2.R"
+rule deseq2:
+    input:
+        rules.deseq2_init.output
+    #    join(DSEQ2_DIR, "all.rds")
+    output:
+        table=join(DSEQ2_DIR,"{contrast}.diffexp.tsv"), 
+        ma_plot=join(DSEQ2_DIR, "{contrast}.ma-plot.pdf"),
+        #table=report(join(DSEQ2_DIR,"{contrast}.diffexp.tsv", "../../report/diffexp.rst")),
+        #ma_plot=report(join(DSEQ2_DIR, "{contrast}.ma-plot.pdf", "../../report/ma.rst")),
+    params:
+        contrast=get_contrast
+    conda:
+        "deseq2-env.yaml"
+    log:
+        join(LOGS_DIR, 'deseq2', "{contrast}_de.log")
+    threads: get_deseq2_threads
+    script:
+        "deseq2.R"
 

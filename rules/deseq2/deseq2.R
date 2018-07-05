@@ -3,7 +3,6 @@ sink(log)
 sink(log, type="message")
 
 library("DESeq2")
-library("tximport")
 
 # enable parallel processing if threads > 1
 parallel <- FALSE
@@ -32,7 +31,8 @@ res <- res[order(res$padj),]
 
 
 # store results
-svg(snakemake@output[["ma_plot"]])
+#svg(snakemake@output[["ma_plot"]])
+pdf(snakemake@output[["ma_plot"]])
 plotMA(res, ylim=c(-2,2))
 dev.off()
 

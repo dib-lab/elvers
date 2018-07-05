@@ -75,11 +75,11 @@ sourmash_targs = get_targets(base,SOURMASH_DIR)
 #print_animal
 animal_targs = [ANIMALS_DIR+"octopus",ANIMALS_DIR+"fish"]
 #deseq2
-#include: 'rules/deseq2/deseq2.rule'
-#from rules.deseq2.deseq2_targets import get_targets
-#deseq2_targs = get_targets(units,base,DSEQ2_DIR)
+include: 'rules/deseq2/deseq2.rule'
+from rules.deseq2.deseq2_targets import get_targets
+deseq2_targs = get_targets(units,base,DSEQ2_DIR)
 
-TARGETS = fastqc_targs + trim_targs + salmon_targs + sourmash_targs + khmer_targs +trinity_targs #+ deseq2_targs #+ busco_targs #+ cat_targs #+ deseq2_targs 
+TARGETS = fastqc_targs + trim_targs + salmon_targs + sourmash_targs + khmer_targs +trinity_targs + deseq2_targs #+ busco_targs #+ cat_targs #+ deseq2_targs 
 
 onstart: 
     shell('cat {animal_targs[0]}')
