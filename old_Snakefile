@@ -35,72 +35,51 @@ SOURMASH_DIR = join(OUT_DIR,'sourmash')
 BUSCO_DIR = join(OUT_DIR,'busco')
 DSEQ2_DIR = join(OUT_DIR,'deseq2')
 
-read_processing = True
-assembly = True
-assembly_quality = True
-quantification = True
-diffexp = True
-
-#print_animal
-animal_targs = [ANIMALS_DIR+"octopus",ANIMALS_DIR+"fish"]
-
 # workflow rules
-TARGETS = []
+
+#fastqc
 include: 'rules/common.rule'
-
-if read_processing:
-    #fastqc
-    include: 'rules/fastqc/fastqc.rule'
-    from rules.fastqc.fastqc_targets import get_targets
-    fastqc_targs = get_targets(units, base, QC_DIR)
-    TARGETS += fastqc_targs
-    #trimmomatic
-    include: 'rules/trimmomatic/trimmomatic.rule'
-    from rules.trimmomatic.trimmomatic_targets import get_targets
-    trim_targs = get_targets(units, base, TRIM_DIR)
-    TARGETS += trim_targs
-    #khmer
-    include: 'rules/khmer/khmer.rule'
-    from rules.khmer.khmer_targets import get_targets
-    khmer_targs = get_targets(units, base, KHMER_TRIM_DIR)
-    #TARGETS += khmer_targs
-
-if assembly:
-    #trinity
-    include: 'rules/trinity/trinity.rule'
-    from rules.trinity.trinity_targets import get_targets
-    trinity_targs = get_targets(units, base, ASSEMBLY_DIR)
-    TARGETS += trinity_targs
-
-if assembly_quality:
-    #busco
-    include: 'rules/busco/busco.rule'
-    from rules.busco.busco_targets import get_targets
-    busco_targs = get_targets(units, base, BUSCO_DIR)
-    #TARGETS += busco_targs
-    #sourmash
-    include: 'rules/sourmash/sourmash.rule'
-    from rules.sourmash.sourmash_targets import get_targets
-    sourmash_targs = get_targets(base,SOURMASH_DIR)
-    TARGETS += sourmash_targs
-
-if quantification:
-    #salmon
-    include: 'rules/salmon/salmon.rule'
-    from rules.salmon.salmon_targets import get_targets
-    salmon_targs = get_targets(units, base, QUANT_DIR)
-    TARGETS += salmon_targs
-
+include: 'rules/fastqc/fastqc.rule'
+from rules.fastqc.fastqc_targets import get_targets
+fastqc_targs = get_targets(units, base, QC_DIR)
+#cat reads by unit
+include: 'rules/cat_reads/cat_reads_by_unit.rule'
+from rules.cat_reads.cat_reads_by_unit_targets import get_targets
+cat_targs = get_targets(units,base,READS_DIR) 
+#trimmomatic
+include: 'rules/trimmomatic/trimmomatic.rule'
+from rules.trimmomatic.trimmomatic_targets import get_targets
+trim_targs = get_targets(units, base, TRIM_DIR)
+#trinity
+include: 'rules/trinity/trinity.rule'
+from rules.trinity.trinity_targets import get_targets
+trinity_targs = get_targets(units, base, ASSEMBLY_DIR)
+#busco
+include: 'rules/busco/busco.rule'
+from rules.busco.busco_targets import get_targets
+busco_targs = get_targets(units, base, BUSCO_DIR)
+#salmon
+include: 'rules/salmon/salmon.rule'
+from rules.salmon.salmon_targets import get_targets
+salmon_targs = get_targets(units, base, QUANT_DIR)
+#khmer
+include: 'rules/khmer/khmer.rule'
+from rules.khmer.khmer_targets import get_targets
+khmer_targs = get_targets(units, base, KHMER_TRIM_DIR)
+#sourmash
+include: 'rules/sourmash/sourmash.rule'
+from rules.sourmash.sourmash_targets import get_targets
+sourmash_targs = get_targets(base,SOURMASH_DIR)
 #push_sigs
 #include: 'rules/push_sigs.rule'
+#print_animal
+animal_targs = [ANIMALS_DIR+"octopus",ANIMALS_DIR+"fish"]
 #deseq2
-if diffexp:
-    include: 'rules/deseq2/deseq2.rule'
-    from rules.deseq2.deseq2_targets import get_targets
-    deseq2_targs = get_targets(units,base,DSEQ2_DIR)
-    TARGETS += deseq2_targs
+include: 'rules/deseq2/deseq2.rule'
+from rules.deseq2.deseq2_targets import get_targets
+deseq2_targs = get_targets(units,base,DSEQ2_DIR)
 
-#TARGETS = fastqc_targs + trim_targs + salmon_targs + sourmash_targs + khmer_targs +trinity_targs + deseq2_targs #+ busco_targs 
+TARGETS = fastqc_targs + trim_targs + salmon_targs + sourmash_targs + khmer_targs +trinity_targs + deseq2_targs #+ busco_targs #+ cat_targs #+ deseq2_targs 
 
 onstart: 
     shell('cat {animal_targs[0]}')
