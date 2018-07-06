@@ -11,6 +11,7 @@ def get_trimmed(wildcards):
     return readsD
 
 # use these to collapse technical replicates
+#currently gets ALL PE, ALLSE --> need to separate by sample
 def get_trimmed_combined_pe(wildcards):
     readsD = {}
     pe_only = units[units['fq2'].notnull()]
