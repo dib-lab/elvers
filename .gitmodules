@@ -1,3 +1,6 @@
 [submodule "mkdocs-material-dib"]
 	path = mkdocs-material-dib
 	url = https://github.com/dib-lab/mkdocs-material-dib.git
+[submodule "rna_testdata"]
+	path = rna_testdata
+	url = https://github.com/bluegenes/rna_testdata.git
