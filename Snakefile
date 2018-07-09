@@ -63,7 +63,7 @@ if read_processing:
     include: 'rules/khmer/khmer.rule'
     from rules.khmer.khmer_targets import get_targets
     khmer_targs = get_targets(units, base, KHMER_TRIM_DIR)
-    #TARGETS += khmer_targs
+    TARGETS += khmer_targs
 
 if assembly:
     #trinity
