@@ -41,7 +41,7 @@ Run:
 ```
 git clone https://github.com/dib-lab/eelpond.git
 cd eelpond
-snakemake --use-conda --configfile test_data/cfp.yml
+snakemake --use-conda --configfile rna_testdata/nema_config.yaml
 ```
 
 
