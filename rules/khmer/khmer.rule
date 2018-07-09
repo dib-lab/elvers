@@ -22,8 +22,8 @@ rule khmer_read_processing_pe:
         unpack(get_trimmed_pe)
     output: 
         paired=join(KHMER_TRIM_DIR,'{sample}_{unit}_.paired.gz'),
-        r1_out=join(KHMER_TRIM_DIR, '{sample}_{unit}_.paired.1.gz'),
-        r2_out=join(KHMER_TRIM_DIR, '{sample}_{unit}_.paired.2.gz'),
+        r1_out=join(KHMER_TRIM_DIR, '{sample}_{unit}_.paired.1'),
+        r2_out=join(KHMER_TRIM_DIR, '{sample}_{unit}_.paired.2'),
         single=join(KHMER_TRIM_DIR,'{sample}_{unit}_.single.gz'),
     message:
         """--- khmer trimming of low-abundance kmers and digital normalization ---"""
@@ -44,6 +44,22 @@ rule khmer_read_processing_pe:
            " --diginorm --diginorm-coverage={params.cov}) | (extract-paired-reads.py --gzip "
            " -p {output.paired} -s {output.single}) > {log}; split-paired-reads.py {output.paired} "
            " -1 {output.r1_out} -2 {output.r2_out} >> {log}"
+
+
+rule gzip_khmer_output:
+    """
+    gzip the reads that were split from khmer
+    """
+    input:
+        r1=join(KHMER_TRIM_DIR, '{sample}_{unit}_.paired.1'),
+        r2=join(KHMER_TRIM_DIR, '{sample}_{unit}_.paired.2'),
+    output:
+        r1_out=join(KHMER_TRIM_DIR, '{sample}_{unit}_.paired.1.gz'),
+        r2_out=join(KHMER_TRIM_DIR, '{sample}_{unit}_.paired.2.gz'),
+    message:
+        """ gzipping paired khmer output """
+    shell:
+        " gzip -9 {input.r1}; gzip -9 {input.r2}"
 
 
 rule khmer_read_processing_se:
