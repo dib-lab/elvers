@@ -8,6 +8,7 @@ import os.path
 import sys
 import pprint
 import yaml
+import glob
 import snakemake
 
 def find_Snakefile(workdir):
@@ -18,43 +19,53 @@ def find_Snakefile(workdir):
     print('\tsnakefile: {}'.format(snakefile))
     return snakefile
 
-def find_yaml(workdir, configfile, name): # args.configfile
+def find_yaml(workdir, filename, name): # args.configfile
     # find the workflow config or params file
     workflowfile = None
-    if os.path.exists(configfile) and not os.path.isdir(configfile):
-        workflowfile = configfile
+    if os.path.exists(filename) and not os.path.isdir(filename):
+        workflowfile = filename
     else:
-        for suffix in ('', '.yaml'):
-            tryfile = os.path.join(workdir, configfile + suffix)
+        for suffix in ('', '.yaml', '.yml'):
+            tryfile = os.path.join(workdir, filename + suffix)
             if os.path.exists(tryfile) and not os.path.isdir(tryfile):
                 sys.stderr.write('Found {} file at {}\n'.format(name, tryfile))
                 workflowfile = tryfile
                 break
-    assert workflowfile, 'Error, cannot find {} file {}\n'.format(name, configfile)
+    if name == 'params':
+        if not workflowfile:
+            print('\tcannot find params file, attempting to build from rule-specific params files')
+            workflowfile = build_params(workdir)
+    assert workflowfile, 'Error, cannot find {} file {}\n'.format(name, filename)
     print('\t{}: {}'.format(name, workflowfile))
     return workflowfile
 
-def find_targets(workdir, target_files):
-    # import target functions for each rule?
-    # or keep this within snakefile?
-    targets = ''
-    #print('\ttarget: {}'.format(target))
-    print('--------')
-    return targets
+def build_params(workdir):
+    rules_dir = path.join(workdir, 'rules')
+    rule_params_files = glob.glob(path.join(rules_dir,'*/*_params.yaml'))
+    paramsD = {}
+    for f in rule_params_files:
+        with open(f, 'r') as stream:
+            try:
+                paramsD.update(yaml.load(stream))
+            except yaml.YAMLError as exc:
+                print(exc)
+    paramsfile = path.join(workdir,'default_params.yaml')
+    with open(paramsfile, 'w') as params:
+        yaml.dump(paramsD, stream=d_params, indent=2)
+    return paramsfile
 
 def main(args):
     # first, find the Snakefile, configfile, and paramfiles
     thisdir = os.path.abspath(os.path.dirname(__file__))
     snakefile = find_Snakefile(thisdir)
     configfile = find_yaml(thisdir, args.config, 'config') 
-    paramsfile = find_yaml(thisdir, args.params, 'params')  #note: might instead want to find many params files and join. 
+    paramsfile = find_yaml(thisdir, args.params, 'params') 
+    #if not paramsfile:
+    #    paramsfile = build_params(thisdir)
     
     # open workflow config file # which programs to use, etc
-    with open(configfile, 'rt') as fp:
-        workflow_info = yaml.load(fp) 
-
-    target = workflow_info['workflow_target']
-    config = dict() # empty dict of extra configs to pass in?
+#    with open(configfile, 'rt') as fp:
+#        workflow_info = yaml.load(fp) 
 
     # run!!
     # params file becomes snakemake configfile
@@ -74,7 +85,13 @@ Run snakemake workflows, using the given workflow name & parameters file.
 
     parser.add_argument('workflowfile')
     parser.add_argument('paramsfile')
-    parser.add_argument('-n', '--dry-run', action='store_true')
+    #parser.add_argument('-u', '--quantify', action='store_true')
+    #parser.add_argument('-n', '--dry-run', action='store_true')
+    #parser.add_argument('-r', '--read-processing', action='store_true')
+    #parser.add_argument('-a', '--assembly', action='store_true')
+    #parser.add_argument('-q', '--assembly-quality', action='store_true')
+    #parser.add_argument('-u', '--quantify', action='store_true')
+    #parser.add_argument('-d', '--diffexp', action='store_true')
     args = parser.parse_args()
 
     sys.exit(main(args))
