@@ -39,8 +39,13 @@ conda install -c bioconda -c conda-forge -y snakemake
 Run:
 
 ```
+#get eelpond code
 git clone https://github.com/dib-lab/eelpond.git
 cd eelpond
+
+git submodule update --init --recursive #download test data submodule
+
+#run eelpond
 snakemake --use-conda --configfile rna_testdata/nema_config.yaml
 ```
 
