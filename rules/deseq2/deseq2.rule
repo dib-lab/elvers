@@ -6,7 +6,7 @@ deseq_params = get_params('deseq2')
 
 # override defaults with snakemake config (main configfile or snakemake --config)
 if 'deseq2' in config.keys():
-    trim_params.update(config['deseq2'])
+    deseq_params.update(config['deseq2'])
 
 def get_deseq2_threads(wildcards=None):
     # https://github.com/snakemake-workflows/rna-seq-star-deseq2

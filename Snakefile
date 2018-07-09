@@ -97,7 +97,7 @@ if quantification:
 if diffexp:
     include: 'rules/deseq2/deseq2.rule'
     from rules.deseq2.deseq2_targets import get_targets
-    deseq2_targs = get_targets(units,base,DSEQ2_DIR)
+    deseq2_targs = get_targets(units,base,DSEQ2_DIR, conf = config)
     TARGETS += deseq2_targs
 
 #TARGETS = fastqc_targs + trim_targs + salmon_targs + sourmash_targs + khmer_targs +trinity_targs + deseq2_targs #+ busco_targs 

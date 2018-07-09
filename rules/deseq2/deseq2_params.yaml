@@ -8,9 +8,3 @@ deseq2:
     labels:
     # columns of sample sheet to use for PCA
       - condition
-
-  contrasts:
-  # contrasts for the deseq2 results method
-    treated-vs-untreated:
-      - treated
-      - untreated
