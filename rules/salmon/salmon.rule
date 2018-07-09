@@ -10,21 +10,33 @@ def get_trimmed(wildcards):
     readsD['r'] = expand(join(TRIM_DIR, '{sample}_{unit}_se.trim.fq.gz'),**wildcards)
     return readsD
 
-# use these to collapse technical replicates
-#currently gets ALL PE, ALLSE --> need to separate by sample
 def get_trimmed_combined_pe(wildcards):
     readsD = {}
-    pe_only = units[units['fq2'].notnull()]
-    readsD['r1'] = expand(join(TRIM_DIR, "{unit.sample}_{unit.unit}_1.trim.fq.gz"), unit=pe_only.itertuples())
-    readsD['r2'] = expand(join(TRIM_DIR, "{unit.sample}_{unit.unit}_2.trim.fq.gz"), unit=pe_only.itertuples())
-    return readsD
+    r1,r2 = [],[]
+    unit_list = units.groupby(level=0).get_group(wildcards.sample)['unit'].tolist()
+    for unit in unit_list:
+        if not is_single_end(wildcards.sample, unit):
+            r1 += [join(TRIM_DIR, wildcards.sample +'_' + unit + '_1.trim.fq.gz')]
+            r2 += [join(TRIM_DIR, wildcards.sample +'_' + unit + '_2.trim.fq.gz')]
+    if r1:
+        readsD['r1'] = r1
+        readsD['r2'] = r2
+        return readsD
 
 def get_trimmed_combined_se(wildcards):
     readsD = {}
-    se_only = units[units['fq2'].isnull()]
-    readsD['r'] = expand(join(TRIM_DIR, "{unit.sample}_{unit.unit}_se.trim.fq.gz"), unit=se_only.itertuples())
-    return readsD
+    r = []
+    unit_list = units.groupby(level=0).get_group(wildcards.sample)['unit'].tolist()
+    for unit in unit_list:
+        if is_single_end(wildcards.sample, unit):
+            r += [join(TRIM_DIR, wildcards.sample +'_' + unit + '_se.trim.fq.gz')]
+            #r += [join(TRIM_DIR, "{wildcards.sample}_{unit}_se.trim.fq.gz")]
+    if r:
+        readsD['r'] = r
+        return readsD
 
+
+############
 rule salmon_index:
     """
     Index the transcriptome for salmon quantification
