@@ -2,8 +2,12 @@ import os
 import yaml
 import pandas as pd
 
-def is_se(units,sample, unit, end = ''):
-    return pd.isnull(units.loc[(sample, unit), "fq2"])
+def is_se(units,sample, unit = '', end = ''):
+    if unit:
+        return pd.isnull(units.loc[(sample, unit), "fq2"])
+    else:
+        return pd.isnull(units.loc[(sample), "fq2"]) #any nulls? what do we want to return?
+
 
 def get_params(rule_name, rules_dir='rules'):
     rule_paramsfile = os.path.join(rules_dir, rule_name, rule_name + '_params.yaml') # or maybe glob for yaml file in the rule subdir
