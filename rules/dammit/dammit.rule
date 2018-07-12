@@ -1,0 +1,25 @@
+from os.path import join
+from common.utils import get_params
+
+# default params from paramsfile
+annot_params = get_params('dammit')
+
+# override defaults with snakemake config (main configfile or snakemake --config)
+if 'dammit' in config.keys():
+    annot_params.update(config['dammit'])
+
+
+rule dammit_annotate:
+    input: 
+        join(ASSEMBLY_DIR, base + ".fasta")
+    output: 
+        join(ASSEMBLY_DIR, base + ".fasta.dammit")
+    log:join(LOGS_DIR, 'dammit/' + base +'_dammit.log')
+    params:
+        db_dir = annot_params.get('database-dir', 'databases'),
+        db_extra="--quick",
+        busco_group='metazoa',
+        annot_extra="--quick"
+    threads: 4
+    wrapper: 
+        "0.27.0/bio/dammit"

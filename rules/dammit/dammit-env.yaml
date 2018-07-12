@@ -1,0 +1,9 @@
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - python ==3.6
+  - transdecoder ==3.0.1
+  - bioconductor-seqlogo
+  - dammit ==1.0rc2
