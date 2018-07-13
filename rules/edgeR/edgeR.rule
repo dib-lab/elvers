@@ -1,0 +1,83 @@
+from os.path import join
+from common.utils import get_params
+
+# default params from paramsfile
+edgeR_params = get_params('edgeR')
+
+# override defaults with snakemake config (main configfile or snakemake --config)
+if 'edgeR' in config.keys():
+    deseq_params.update(config['edgeR'])
+
+def get_deseq2_threads(wildcards=None):
+    # https://github.com/snakemake-workflows/rna-seq-star-deseq2
+    # https://twitter.com/mikelove/status/918770188568363008
+    few_coeffs = False if wildcards is None else len(get_contrast(wildcards)) < 10
+    return 1 if len(samples) < 100 or few_coeffs else 6
+
+def get_quant(wildcards):
+   pe_only = units[units['fq2'].notnull()] 
+   se_only = units[units['fq2'].isnull()] 
+   pe  = expand(join(TRIM_DIR, "{unit.sample}_pe.trim.fq.gz"), unit=se_only.itertuples())
+   pe_quant = list(set(expand(join(QUANT_DIR, "{unit.sample}_pe_x_" + base, "quant.sf"),unit=pe_only.itertuples())))
+   se_quant = list(set(expand(join(QUANT_DIR, "{unit.sample}_se_x_" + base, "quant.sf"),unit=se_only.itertuples())))
+   return se_quant + pe_quant
+
+rule edgeR_init:
+    input:
+        quant = get_quant,
+        gene_trans_map = join(ASSEMBLY_DIR, base + '.fasta.gene_trans_map'),
+#       quant = expand(join(QUANT_DIR,"{unit.sample}_{unit.unit}_x_" + base, "quant.sf"), unit=units.itertuples()),
+    output:
+        join(EDGER_DIR, "all.rds") #r data object
+    params:
+        samples=config["samples"]
+    conda:
+        "edgeR-env.yaml"
+    log:
+        join(LOGS_DIR,  'edgeR', "init.log")
+    threads: get_deseq2_threads()
+    script:
+        "edgeR-init.R"
+
+
+rule pca:
+    input:
+        rules.edgeR_init.output
+    #    join(DSEQ2_DIR, "all.rds")
+    output:
+        #join(DSEQ2_DIR, "pca.svg")
+        #join(DSEQ2_DIR, "pca.pdf"),
+        report(join(EDGER_DIR, "pca.pdf"), "../../report/pca.rst")
+    params:
+        pca_labels=edgeR_params["pca"]["labels"]
+    conda:
+        "edgeR-env.yaml"
+    log:
+        join(LOGS_DIR, 'edgeR', "pca.log")
+    script:
+        "plot-pca.R"
+
+
+def get_contrast(wildcards):
+    return edgeR_params["contrasts"][wildcards.contrast]
+
+
+rule deseq2:
+    input:
+        rules.edgeR_init.output
+    #    join(DSEQ2_DIR, "all.rds")
+    output:
+        table=join(EDGER_DIR,"{contrast}.diffexp.tsv"), 
+        ma_plot=join(EDGER_DIR, "{contrast}.ma-plot.pdf"),
+        #table=report(join(DSEQ2_DIR,"{contrast}.diffexp.tsv", "../../report/diffexp.rst")),
+        #ma_plot=report(join(DSEQ2_DIR, "{contrast}.ma-plot.pdf", "../../report/ma.rst")),
+    params:
+        contrast=get_contrast
+    conda:
+        "edgeR-env.yaml"
+    log:
+        join(LOGS_DIR, 'edgeR', "{contrast}_de.log")
+    threads: get_deseq2_threads
+    script:
+        "edgeR.R"
+
