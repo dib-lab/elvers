@@ -8,7 +8,6 @@ annot_params = get_params('dammit')
 if 'dammit' in config.keys():
     annot_params.update(config['dammit'])
 
-
 rule dammit_annotate:
     input: 
         join(ASSEMBLY_DIR, base + ".fasta")
@@ -17,9 +16,11 @@ rule dammit_annotate:
     log:join(LOGS_DIR, 'dammit/' + base +'_dammit.log')
     params:
         db_dir = annot_params.get('database-dir', 'databases'),
-        db_extra="--quick",
-        busco_group='metazoa',
-        annot_extra="--quick"
+        db_extra= annot_params.get('db_extra', "--quick"),
+        annot_extra= annot_params.get('annot_extra', "--quick"),
+        busco_group= annot_params.get('busco_group', "metazoa"),
     threads: 4
-    wrapper: 
-        "0.27.0/bio/dammit"
+    conda: "dammit-env.py"
+    script: "wrapper.py"
+    #wrapper: 
+    #    "0.27.0/bio/dammit"

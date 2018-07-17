@@ -1,0 +1,5 @@
+dammit:  
+  db_dir:  "databases"
+  db_extra: " --quick "
+  annot_extra:  " --quick "
+  busco_group:  "metazoa"
