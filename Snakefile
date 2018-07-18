@@ -18,7 +18,6 @@ validate(units, schema="schemas/units.schema.yaml")
 # build file extensions from suffix info (+ set defaults)
 base = config.get('basename','eelpond') 
 experiment_suffix = config.get('experiment_suffix', '')
-print(experiment_suffix)
 
 # build directory info --> later set all these from config file(s)? or just a defaults file?
 #folders = config['directories']
@@ -112,11 +111,12 @@ if assembly_quality:
     sourmash_targs = get_targets(base,SOURMASH_DIR)
     TARGETS += sourmash_targs
 
-#if annotation:
+if annotation:
    #dammit
-   #include: 'rules/dammit/dammit.rule'
-   #dammit_targs = get_targets(units, base, ANNOT_DIR)
-   #TARGETS += dammit_targs
+   include: 'rules/dammit/dammit.rule'
+   from rules.dammit.dammit_targets import get_targets
+   dammit_targs = get_targets(units, base, ANNOT_DIR)
+   TARGETS += dammit_targs
 
 if quantification:
     #salmon
