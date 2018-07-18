@@ -1,23 +1,16 @@
 # Notes for Developers
 
-admin: to rebuild the docs:
+Admin: updating mkdocs documentation
 
 1. update the docs and commit your changes
 2. `mkdocs build` to update the docs
+    * note: if you don't already have mkdocs, install with:
+    `conda install -c conda-forge mkdocs`
 3. if you haven't already, install ghp-import:
     ```
     conda install -c conda-forge ghp-import
     ```
 4. use ghp-import to push the updated to docs to the  gh-pages branch
-
-
-rm -rf site/*   # Clean out any existing files
-mkdocs build    # Build the docs in site/
-cd site/
-git add -A .    # Stage every change in the current directory for commit
-git commit -a -m 'upd docs'  # Commit all changes
-git push origin gh-pages
-
 
 Some useful conda, snakemake, workflow hints:
 
