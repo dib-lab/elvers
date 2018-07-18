@@ -55,7 +55,7 @@ rule deseq2_pca:
     log:
         join(LOGS_DIR, 'deseq2', "pca.log")
     script:
-        "plot-pca.R"
+        "deseq2_plot_pca.R"
 
 
 def get_contrast(wildcards):

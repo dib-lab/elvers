@@ -58,7 +58,11 @@ y <- y[keep, ]
 dge <- DGEList(y, group =sample_info$condition)  #does parallel work here?
 # normalization and preprocessing
 dge <- calcNormFactors(dge)
+
+# this isn't working properly -- might just be the lack of replicates, though...
 design <- model.matrix(~sample_info$condition)
-dge <- estimateDisp(dge,design)
+
+#dge <- estimateDisp(dge, sample_info$condition)
+dge <- estimateDisp(dge)
 
 saveRDS(dge, file=snakemake@output[[1]])

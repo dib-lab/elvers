@@ -40,22 +40,22 @@ rule edgeR_init:
         "edgeR-init.R"
 
 
-rule edgeR_pca:
+rule edgeR_mds:
     input:
         rules.edgeR_init.output
     #    join(DSEQ2_DIR, "all.rds")
     output:
         #join(DSEQ2_DIR, "pca.svg")
         #join(DSEQ2_DIR, "pca.pdf"),
-        report(join(EDGER_DIR, "pca.pdf"), "../../report/pca.rst")
+        report(join(EDGER_DIR, "mds.pdf"), "../../report/pca.rst")
     params:
-        pca_labels=edgeR_params["pca"]["labels"]
+        mds_labels=edgeR_params["mds"]["labels"]
     conda:
         "edgeR-env.yaml"
     log:
-        join(LOGS_DIR, 'edgeR', "pca.log")
+        join(LOGS_DIR, 'edgeR', "mds.log")
     script:
-        "plot-pca.R"
+        "edgeR_plot_mds.R"
 
 
 def get_contrast(wildcards):
