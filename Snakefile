@@ -34,6 +34,7 @@ QUANT_DIR = join(OUT_DIR, 'quant')
 SOURMASH_DIR = join(OUT_DIR,'sourmash')
 BUSCO_DIR = join(OUT_DIR,'busco')
 DSEQ2_DIR = join(OUT_DIR,'deseq2')
+EDGER_DIR = join(OUT_DIR, 'edgeR')
 ANNOT_DIR = join(OUT_DIR,'annotation')
 
 flow = config.get('workflow', 'full')
@@ -131,6 +132,10 @@ if diffexp:
     from rules.deseq2.deseq2_targets import get_targets
     deseq2_targs = get_targets(units,base,DSEQ2_DIR, conf = config)
     TARGETS += deseq2_targs
+    include: 'rules/edgeR/edgeR.rule'
+    from rules.edgeR.edgeR_targets import get_targets
+    edgeR_targs = get_targets(units,base,EDGER_DIR, conf = config)
+    #TARGETS += edgeR_targs
 
 #push_sigs
 #include: 'rules/push_sigs.rule'
