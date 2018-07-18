@@ -6,7 +6,7 @@ edgeR_params = get_params('edgeR')
 
 # override defaults with snakemake config (main configfile or snakemake --config)
 if 'edgeR' in config.keys():
-    deseq_params.update(config['edgeR'])
+    edgeR_params.update(config['edgeR'])
 
 def get_deseq2_threads(wildcards=None):
     # https://github.com/snakemake-workflows/rna-seq-star-deseq2
@@ -40,7 +40,7 @@ rule edgeR_init:
         "edgeR-init.R"
 
 
-rule pca:
+rule edgeR_pca:
     input:
         rules.edgeR_init.output
     #    join(DSEQ2_DIR, "all.rds")
@@ -62,22 +62,22 @@ def get_contrast(wildcards):
     return edgeR_params["contrasts"][wildcards.contrast]
 
 
-rule deseq2:
-    input:
-        rules.edgeR_init.output
-    #    join(DSEQ2_DIR, "all.rds")
-    output:
-        table=join(EDGER_DIR,"{contrast}.diffexp.tsv"), 
-        ma_plot=join(EDGER_DIR, "{contrast}.ma-plot.pdf"),
+#rule edgeR:
+#    input:
+#        rules.edgeR_init.output
+    #    join(EDGER_DIR, "all.rds")
+#    output:
+#        table=join(EDGER_DIR,"{contrast}.diffexp.tsv"), 
+#        ma_plot=join(EDGER_DIR, "{contrast}.ma-plot.pdf"),
         #table=report(join(DSEQ2_DIR,"{contrast}.diffexp.tsv", "../../report/diffexp.rst")),
-        #ma_plot=report(join(DSEQ2_DIR, "{contrast}.ma-plot.pdf", "../../report/ma.rst")),
-    params:
-        contrast=get_contrast
-    conda:
-        "edgeR-env.yaml"
-    log:
-        join(LOGS_DIR, 'edgeR', "{contrast}_de.log")
-    threads: get_deseq2_threads
-    script:
-        "edgeR.R"
+#        #ma_plot=report(join(DSEQ2_DIR, "{contrast}.ma-plot.pdf", "../../report/ma.rst")),
+#    params:
+#        contrast=get_contrast
+#    conda:
+#        "edgeR-env.yaml"
+#    log:
+#        join(LOGS_DIR, 'edgeR', "{contrast}_de.log")
+#    threads: get_deseq2_threads
+#    script:
+#        "edgeR.R"
 

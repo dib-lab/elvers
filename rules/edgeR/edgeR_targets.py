@@ -16,8 +16,8 @@ def get_targets(units, basename, outdir, conf = '', extensions = ['.diffexp.tsv'
     contrast_list = contrast_info['contrasts']
     # build targets
     de_targs = []
-    for c in contrast_list:
-        de_targs = de_targs +  ['{}'.format(c) + i for i in extensions]
+ #   for c in contrast_list:
+ #       de_targs = de_targs +  ['{}'.format(c) + i for i in extensions]
     de_targs = de_targs + ['all.rds']
     de_targs = de_targs + ['pca.pdf']
     #de_targs = de_targs + ['pca.svg']

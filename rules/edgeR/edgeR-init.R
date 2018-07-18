@@ -55,10 +55,10 @@ y <- y[keep, ]
 # y is now ready for estimate dispersion functions see edgeR User's Guide
 
 # edgeR dataset (dge)
-dge <- DGEList(y, group =condition)  #does parallel work here?
+dge <- DGEList(y, group =sample_info$condition)  #does parallel work here?
 # normalization and preprocessing
 dge <- calcNormFactors(dge)
-design <- model.matrix(~condition)
+design <- model.matrix(~sample_info$condition)
 dge <- estimateDisp(dge,design)
 
 saveRDS(dge, file=snakemake@output[[1]])

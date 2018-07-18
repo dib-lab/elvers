@@ -40,7 +40,7 @@ rule deseq2_init:
         "deseq2-init.R"
 
 
-rule pca:
+rule deseq2_pca:
     input:
         rules.deseq2_init.output
     #    join(DSEQ2_DIR, "all.rds")
