@@ -2,6 +2,15 @@
 
 admin: to rebuild the docs:
 
+1. update the docs and commit your changes
+2. `mkdocs build` to update the docs
+3. if you haven't already, install ghp-import:
+    ```
+    conda install -c conda-forge ghp-import
+    ```
+4. use ghp-import to push the updated to docs to the  gh-pages branch
+
+
 rm -rf site/*   # Clean out any existing files
 mkdocs build    # Build the docs in site/
 cd site/
