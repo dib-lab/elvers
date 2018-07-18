@@ -7,10 +7,11 @@ Admin: updating mkdocs documentation
     * note: if you don't already have mkdocs, install with:
     `conda install -c conda-forge mkdocs`
 3. if you haven't already, install ghp-import:
-    ```
-    conda install -c conda-forge ghp-import
-    ```
+    ` conda install -c conda-forge ghp-import`
 4. use ghp-import to push the updated to docs to the  gh-pages branch
+    ```
+    ghp-import site -p
+    ```
 
 Some useful conda, snakemake, workflow hints:
 
