@@ -15,6 +15,12 @@ units = pd.read_table(config["units"], dtype=str).set_index(["sample", "unit"], 
 units.index = units.index.set_levels([i.astype(str) for i in units.index.levels])  # enforce str in index
 validate(units, schema="schemas/units.schema.yaml")
 
+# check for replicates
+replicates = True
+num_reps = samples['condition'].value_counts().tolist()
+if any(x < 2 for x in num_reps):
+    replicates = False
+
 # build file extensions from suffix info (+ set defaults)
 base = config.get('basename','eelpond') 
 experiment_suffix = config.get('experiment_suffix', '')
@@ -127,15 +133,21 @@ if quantification:
     TARGETS += salmon_targs
 
 if diffexp:
-    #deseq2
-    include: 'rules/deseq2/deseq2.rule'
-    from rules.deseq2.deseq2_targets import get_targets
-    deseq2_targs = get_targets(units,base,DSEQ2_DIR, conf = config)
-    TARGETS += deseq2_targs
-    include: 'rules/edgeR/edgeR.rule'
-    from rules.edgeR.edgeR_targets import get_targets
-    edgeR_targs = get_targets(units,base,EDGER_DIR, conf = config)
-    #TARGETS += edgeR_targs
+    if replicates:
+        #deseq2
+        include: 'rules/deseq2/deseq2.rule'
+        from rules.deseq2.deseq2_targets import get_targets
+        deseq2_targs = get_targets(units,base,DSEQ2_DIR, conf = config)
+        TARGETS += deseq2_targs
+        #include: 'rules/edgeR/edgeR.rule'
+        #from rules.edgeR.edgeR_targets import get_targets
+        #edgeR_targs = get_targets(units,base,EDGER_DIR, conf = config)
+        #TARGETS += edgeR_targs
+    #else:
+        #include: 'rules/edgeR/edgeR_no_replicates.rule'
+        #from rules.edgeR.edgeR_targets import get_targets
+        #edgeR_targs = get_targets(units,base,EDGER_DIR, conf = config)
+        #TARGETS += edgeR_targs
 
 #push_sigs
 #include: 'rules/push_sigs.rule'
