@@ -42,9 +42,10 @@ sample_info$condition <- factor(sample_info$condition)
 # generate DESeq data set (dds)
 dds <- DESeqDataSetFromTximport(txi, sample_info, ~condition)
 
-# from rna-seq star example:
-# remove uninformative columns
-dds <- dds[ rowSums(counts(dds)) > 1, ]
+#pre-filter low count genes
+keep <- rowSums(counts(dds)) >= 10 # just reduce dataset size. More stringent independent filtering happens later within DESeq function.
+dds <- dds[keep,]
+
 # normalization and preprocessing
 dds <- DESeq(dds, parallel=parallel)
 
