@@ -27,7 +27,9 @@ res <- results(dds, contrast=contrast, parallel=parallel)
 res <- lfcShrink(dds, contrast=contrast, res=res)
 # sort by p-value
 res <- res[order(res$padj),]
-# TODO explore IHW usage
+# signif results
+
+sigRes <- subset(res, padj < 0.1)
 
 
 # store results
@@ -37,3 +39,4 @@ plotMA(res, ylim=c(-2,2))
 dev.off()
 
 write.table(as.data.frame(res), file=snakemake@output[["table"]])
+write.table(as.data.frame(res), file=snakemake@output[["sigTable"]])
