@@ -67,7 +67,8 @@ rule deseq2:
         rules.deseq2_init.output
     #    join(DSEQ2_DIR, "all.rds")
     output:
-        table=join(DSEQ2_DIR,"{contrast}.diffexp.tsv"), 
+        table=join(DSEQ2_DIR,"{contrast}.diffexp.tsv"),
+        sigTable=join(DSEQ2_DIR,"{contrast}.padj_0.1.diffexp.tsv"),
         ma_plot=join(DSEQ2_DIR, "{contrast}.ma-plot.pdf"),
         #table=report(join(DSEQ2_DIR,"{contrast}.diffexp.tsv", "../../report/diffexp.rst")),
         #ma_plot=report(join(DSEQ2_DIR, "{contrast}.ma-plot.pdf", "../../report/ma.rst")),
