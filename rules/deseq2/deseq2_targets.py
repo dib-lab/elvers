@@ -2,7 +2,7 @@ from os.path import join
 from common.utils import get_params
 
 
-def get_targets(units, basename, outdir, conf = '', extensions = ['.diffexp.tsv', '.ma-plot.pdf', ], se_ext = ['se'], pe_ext = ['1','2']):
+def get_targets(units, basename, outdir, conf = '', extensions = ['.diffexp.tsv', '.padj_0.1.diffexp.tsv', '.ma-plot.pdf', ], se_ext = ['se'], pe_ext = ['1','2']):
     """
     generate contrasts from deseq2 configfile #not best soln - think more.
     """
