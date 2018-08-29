@@ -42,9 +42,10 @@ BUSCO_DIR = join(OUT_DIR,'busco')
 DSEQ2_DIR = join(OUT_DIR,'deseq2')
 EDGER_DIR = join(OUT_DIR, 'edgeR')
 ANNOT_DIR = join(OUT_DIR,'annotation')
+BT2_DIR = join(OUT_DIR,'bowtie2')
 
 flow = config.get('workflow', 'full')
-read_processing,assembly,assembly_quality,annotation,quantification,diffexp,input_assembly = [False]*7 
+read_processing,assembly,assembly_quality,annotation,quantification,diffexp,input_assembly,bt2_map = [False]*8 
 
 if flow == 'full': 
     read_processing = True
@@ -67,6 +68,9 @@ else:
         read_processing = True
         quantification = True
         diffexp = True
+    if flow == 'bowtie2':
+        read_processing = True
+        bt2_map = True
 
 #print_animal
 animal_targs = [ANIMALS_DIR+"octopus",ANIMALS_DIR+"fish"]
@@ -131,6 +135,13 @@ if quantification:
     from rules.salmon.salmon_targets import get_targets
     salmon_targs = get_targets(units, base, QUANT_DIR)
     TARGETS += salmon_targs
+
+if bt2_map:
+    #bowtie2
+    include: 'rules/bowtie2/bowtie2.rule'
+    from rules.bowtie2.bowtie2_targets import get_targets
+    bowtie2_targs = get_targets(units, base, BT2_DIR)
+    TARGETS += bowtie2_targs
 
 if diffexp:
     if replicates:
