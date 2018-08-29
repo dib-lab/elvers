@@ -26,7 +26,7 @@ rule fastqc_pre_trim:
     params: ""
     log: join(LOGS_DIR, 'fastqc/{sample}_{unit}_{end}.log')
     wrapper:
-        "0.23.1/bio/fastqc"
+        "0.27.1/bio/fastqc"
 
 rule fastqc_post_trim:
     input:
@@ -37,5 +37,5 @@ rule fastqc_post_trim:
     params: ""
     log: join(LOGS_DIR, 'fastqc/{sample}_{unit}_{end}_trimmed.log') 
     wrapper:
-        "0.23.1/bio/fastqc"
+        "0.27.1/bio/fastqc"
 
