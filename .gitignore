@@ -2,3 +2,6 @@ __pycache__
 rules/*/__pycache__
 .snakemake
 site/
+*_out/
+*fasta
+
