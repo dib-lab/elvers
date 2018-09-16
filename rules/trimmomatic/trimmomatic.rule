@@ -47,8 +47,10 @@ rule trimmomatic_pe:
     log:
        join(LOGS_DIR, 'trimmomatic/{sample}_{unit}_pe.log')
        #join(LOGS_DIR, 'trimmomatic/{sample}_pe.log')
-    wrapper:
-        '0.23.1/bio/trimmomatic/pe'
+    conda: "trimmomatic-env.yaml"
+	script: "trimmomatic-pe.py"
+#    wrapper:
+#        '0.27.1/bio/trimmomatic/pe'
 
 rule trimmomatic_se:
     """
@@ -68,7 +70,9 @@ rule trimmomatic_se:
     log:
         join(LOGS_DIR, 'trimmomatic/{sample}_{unit}_se.log')
         #qual_log = join(LOGS_DIR, 'trimmomatic/{sample}_se.log')
+    conda: "trimmomatic-env.yaml"
+	script: "trimmomatic-se.py"
     
-    wrapper:
-        '0.23.1/bio/trimmomatic/se'
+    #wrapper:
+    #    '0.27.1/bio/trimmomatic/se'
 
