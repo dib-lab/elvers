@@ -25,7 +25,7 @@ rule trinity:
         fasta = join(ASSEMBLY_DIR,"trinity_out_dir/Trinity.fasta"),
         gene_trans_map = join(ASSEMBLY_DIR,"trinity_out_dir/Trinity.fasta.gene_trans_map"),
     message:
-        """--- Assembling read data with Trinity v2.5.1 --- """
+        """--- Assembling read data with Trinity --- """
     params:
         #**config['trinity']
         # optional parameters
@@ -33,8 +33,10 @@ rule trinity:
         extra=""
     threads: 4
     log: join(LOGS_DIR, 'trinity/trinity.log')
-    wrapper:
-        "0.24.0/bio/trinity"
+    conda: "trinity-env.yaml"
+	script: "wrapper.py"
+    #wrapper:
+    #    "0.27.1/bio/trinity"
 
 rule rename_trinity_fasta:
     input: rules.trinity.output.fasta
