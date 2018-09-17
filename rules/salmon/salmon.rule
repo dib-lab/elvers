@@ -52,8 +52,10 @@ rule salmon_index:
         extra = ''
     log:
         qual_log = join(LOGS_DIR, 'salmon/' + base +'_index.log')
-    wrapper:
-        '0.25.0/bio/salmon/index'
+    conda: "salmon-env.yaml"
+	script: "index-wrapper.py"
+	#wrapper:
+    #    '0.25.0/bio/salmon/index'
 
 rule salmon_quant_reads_pe:
     """
@@ -73,8 +75,10 @@ rule salmon_quant_reads_pe:
     threads: 2
     log:
         qual_log = join(LOGS_DIR, 'salmon/{sample}_pe_x_' + base + '.log')
-    wrapper:
-        '0.25.0/bio/salmon/quant/quant-reads'
+    conda: "salmon-env.yaml"
+    script: "quant-wrapper.py"
+	#wrapper:
+    #    '0.25.0/bio/salmon/quant/quant-reads'
 
 rule salmon_quant_reads_se:
     """
@@ -94,6 +98,8 @@ rule salmon_quant_reads_se:
     threads: 2
     log:
         qual_log = join(LOGS_DIR, 'salmon/{sample}_se_x_' + base + '.log')
-    wrapper:
-        '0.25.0/bio/salmon/quant/quant-reads'
+    conda: "salmon-env.yaml"
+    script: "quant-wrapper.py"
+	#wrapper:
+    #    '0.25.0/bio/salmon/quant/quant-reads'
 
