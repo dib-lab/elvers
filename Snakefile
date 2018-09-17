@@ -15,10 +15,15 @@ units = pd.read_table(config["units"], dtype=str).set_index(["sample", "unit"], 
 units.index = units.index.set_levels([i.astype(str) for i in units.index.levels])  # enforce str in index
 validate(units, schema="schemas/units.schema.yaml")
 
+# check for replicates
+replicates = True
+num_reps = samples['condition'].value_counts().tolist()
+if any(x < 2 for x in num_reps):
+    replicates = False
+
 # build file extensions from suffix info (+ set defaults)
 base = config.get('basename','eelpond') 
 experiment_suffix = config.get('experiment_suffix', '')
-print(experiment_suffix)
 
 # build directory info --> later set all these from config file(s)? or just a defaults file?
 #folders = config['directories']
@@ -35,10 +40,12 @@ QUANT_DIR = join(OUT_DIR, 'quant')
 SOURMASH_DIR = join(OUT_DIR,'sourmash')
 BUSCO_DIR = join(OUT_DIR,'busco')
 DSEQ2_DIR = join(OUT_DIR,'deseq2')
+EDGER_DIR = join(OUT_DIR, 'edgeR')
 ANNOT_DIR = join(OUT_DIR,'annotation')
+BT2_DIR = join(OUT_DIR,'bowtie2')
 
 flow = config.get('workflow', 'full')
-read_processing,assembly,assembly_quality,annotation,quantification,diffexp,input_assembly = [False]*7 
+read_processing,assembly,assembly_quality,annotation,quantification,diffexp,input_assembly,bt2_map = [False]*8 
 
 if flow == 'full': 
     read_processing = True
@@ -61,6 +68,9 @@ else:
         read_processing = True
         quantification = True
         diffexp = True
+    if flow == 'bowtie2':
+        read_processing = True
+        bt2_map = True
 
 #print_animal
 animal_targs = [ANIMALS_DIR+"octopus",ANIMALS_DIR+"fish"]
@@ -112,11 +122,12 @@ if assembly_quality:
     sourmash_targs = get_targets(base,SOURMASH_DIR)
     TARGETS += sourmash_targs
 
-#if annotation:
+if annotation:
    #dammit
-   #include: 'rules/dammit/dammit.rule'
-   #dammit_targs = get_targets(units, base, ANNOT_DIR)
-   #TARGETS += dammit_targs
+   include: 'rules/dammit/dammit.rule'
+   from rules.dammit.dammit_targets import get_targets
+   dammit_targs = get_targets(units, base, ANNOT_DIR)
+   TARGETS += dammit_targs
 
 if quantification:
     #salmon
@@ -125,12 +136,29 @@ if quantification:
     salmon_targs = get_targets(units, base, QUANT_DIR)
     TARGETS += salmon_targs
 
+if bt2_map:
+    #bowtie2
+    include: 'rules/bowtie2/bowtie2.rule'
+    from rules.bowtie2.bowtie2_targets import get_targets
+    bowtie2_targs = get_targets(units, base, BT2_DIR)
+    TARGETS += bowtie2_targs
+
 if diffexp:
-    #deseq2
-    include: 'rules/deseq2/deseq2.rule'
-    from rules.deseq2.deseq2_targets import get_targets
-    deseq2_targs = get_targets(units,base,DSEQ2_DIR, conf = config)
-    TARGETS += deseq2_targs
+    if replicates:
+        #deseq2
+        include: 'rules/deseq2/deseq2.rule'
+        from rules.deseq2.deseq2_targets import get_targets
+        deseq2_targs = get_targets(units,base,DSEQ2_DIR, conf = config)
+        TARGETS += deseq2_targs
+        #include: 'rules/edgeR/edgeR.rule'
+        #from rules.edgeR.edgeR_targets import get_targets
+        #edgeR_targs = get_targets(units,base,EDGER_DIR, conf = config)
+        #TARGETS += edgeR_targs
+    #else:
+        #include: 'rules/edgeR/edgeR_no_replicates.rule'
+        #from rules.edgeR.edgeR_targets import get_targets
+        #edgeR_targs = get_targets(units,base,EDGER_DIR, conf = config)
+        #TARGETS += edgeR_targs
 
 #push_sigs
 #include: 'rules/push_sigs.rule'

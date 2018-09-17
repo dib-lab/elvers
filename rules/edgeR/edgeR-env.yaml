@@ -5,7 +5,7 @@ channels:
   - defaults
 dependencies:
   - r-base =3.4.1
-  - bioconductor-edgeR #VERSION!
+  - bioconductor-edgeR =3.20.7
   - bioconductor-annotate =1.56.0
   - bioconductor-annotationdbi =1.40.0
   - bioconductor-biobase =2.38.0

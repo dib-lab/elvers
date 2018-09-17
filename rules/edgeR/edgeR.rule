@@ -6,7 +6,7 @@ edgeR_params = get_params('edgeR')
 
 # override defaults with snakemake config (main configfile or snakemake --config)
 if 'edgeR' in config.keys():
-    deseq_params.update(config['edgeR'])
+    edgeR_params.update(config['edgeR'])
 
 def get_deseq2_threads(wildcards=None):
     # https://github.com/snakemake-workflows/rna-seq-star-deseq2
@@ -40,44 +40,44 @@ rule edgeR_init:
         "edgeR-init.R"
 
 
-rule pca:
+rule edgeR_mds:
     input:
         rules.edgeR_init.output
     #    join(DSEQ2_DIR, "all.rds")
     output:
         #join(DSEQ2_DIR, "pca.svg")
         #join(DSEQ2_DIR, "pca.pdf"),
-        report(join(EDGER_DIR, "pca.pdf"), "../../report/pca.rst")
+        report(join(EDGER_DIR, "mds.pdf"), "../../report/pca.rst")
     params:
-        pca_labels=edgeR_params["pca"]["labels"]
+        mds_labels=edgeR_params["mds"]["labels"]
     conda:
         "edgeR-env.yaml"
     log:
-        join(LOGS_DIR, 'edgeR', "pca.log")
+        join(LOGS_DIR, 'edgeR', "mds.log")
     script:
-        "plot-pca.R"
+        "edgeR_plot_mds.R"
 
 
 def get_contrast(wildcards):
     return edgeR_params["contrasts"][wildcards.contrast]
 
 
-rule deseq2:
-    input:
-        rules.edgeR_init.output
-    #    join(DSEQ2_DIR, "all.rds")
-    output:
-        table=join(EDGER_DIR,"{contrast}.diffexp.tsv"), 
-        ma_plot=join(EDGER_DIR, "{contrast}.ma-plot.pdf"),
+#rule edgeR:
+#    input:
+#        rules.edgeR_init.output
+    #    join(EDGER_DIR, "all.rds")
+#    output:
+#        table=join(EDGER_DIR,"{contrast}.diffexp.tsv"), 
+#        ma_plot=join(EDGER_DIR, "{contrast}.ma-plot.pdf"),
         #table=report(join(DSEQ2_DIR,"{contrast}.diffexp.tsv", "../../report/diffexp.rst")),
-        #ma_plot=report(join(DSEQ2_DIR, "{contrast}.ma-plot.pdf", "../../report/ma.rst")),
-    params:
-        contrast=get_contrast
-    conda:
-        "edgeR-env.yaml"
-    log:
-        join(LOGS_DIR, 'edgeR', "{contrast}_de.log")
-    threads: get_deseq2_threads
-    script:
-        "edgeR.R"
+#        #ma_plot=report(join(DSEQ2_DIR, "{contrast}.ma-plot.pdf", "../../report/ma.rst")),
+#    params:
+#        contrast=get_contrast
+#    conda:
+#        "edgeR-env.yaml"
+#    log:
+#        join(LOGS_DIR, 'edgeR', "{contrast}_de.log")
+#    threads: get_deseq2_threads
+#    script:
+#        "edgeR.R"
 
