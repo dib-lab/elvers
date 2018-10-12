@@ -50,7 +50,11 @@ Some useful conda, snakemake, workflow hints:
  Install the local code  
     
     ```
-    conda install dammit --use-local
+    ## not working conda install dammit --use-local
     # or, you can use pip:
     # pip install -e . —no-deps
+    # NOW, use:
+    conda develop .
+    pip install -e .
+    
     ```
