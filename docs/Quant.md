@@ -2,7 +2,7 @@
 
 We will use [Salmon](http://salmon.readthedocs.org/en/latest/) to
 quantify expression. Salmon is a new breed of software for quantifying RNAseq reads that is both really fast and takes
-transcript length into consideration ([Patro et al. 2015](http://dx.doi.org/10.1038/nmeth.4197)).
+transcript length into consideration ([Patro et al. 2015](https://doi.org/10.1038/nmeth.4197)).
 
 For further reading, see
 
