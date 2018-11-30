@@ -8,35 +8,55 @@ from common.utils import get_params
 
 min_version("5.1.2") #minimum snakemake version
 
-# read in & validate sample info 
-samples = pd.read_table(config["samples"]).set_index("sample", drop=False)
-validate(samples, schema="schemas/samples.schema.yaml")
-units = pd.read_table(config["units"], dtype=str).set_index(["sample", "unit"], drop=False)
-units.index = units.index.set_levels([i.astype(str) for i in units.index.levels])  # enforce str in index
-validate(units, schema="schemas/units.schema.yaml")
+# read in sample info
+samples = pd.read_table(config["samples"],dtype=str).set_index(["sample", "unit"], drop=False)
+SAMPLES = (samples['sample'] + '_' + samples['unit']).tolist()
+validate(samples, schema="schemas/samples_v2.schema.yaml") # new version
 
-# check for replicates
+#util functions
+def is_single_end(sample, unit, end = ''):
+    return pd.isnull(samples.loc[(sample, unit), "fq2"])
+
+def generate_data_targs(outdir, samples, extensions, ends = ["_1", "_2"]):
+    target_list = []
+    # to do: add paired vs single end check here to generate `ends`
+    exts = [x+y for x in ends for y in extensions]
+    for s in samples:
+        target_list = target_list + [join(outdir, s + e) for e in exts]
+    return target_list
+
+def generate_base_targs(outdir, basename, extensions):
+    target_list = []
+    target_list = [join(outdir, basename + e) for e in extensions]
+    return target_list
+
+# set up dirs, basename
+BASE = config.get('basename','eelpond')
+experiment_suffix = config.get('experiment_suffix')
+
+if experiment_suffix:
+    OUT_DIR = BASE + "_out_" + experiment_suffix
+else:
+    OUT_DIR = BASE + '_out'
+
+# check for replicates ** need to change with new samples scheme
 replicates = True
 num_reps = samples['condition'].value_counts().tolist()
 if any(x < 2 for x in num_reps):
     replicates = False
 
-# build file extensions from suffix info (+ set defaults)
-base = config.get('basename','eelpond') 
-experiment_suffix = config.get('experiment_suffix', '')
-
-# build directory info --> later set all these from config file(s)? or just a defaults file?
-#folders = config['directories']
-
-ANIMALS_DIR = "common/animals/"
-OUT_DIR = '{}_out{}'.format(base, experiment_suffix)
+#dirs = config['directories']
+RULES_DIR = 'rules'
 LOGS_DIR = join(OUT_DIR, 'logs')
+DATA_DIR = config.get('data_directory', join(OUT_DIR, 'data'))
+ANIMALS_DIR = "common/animals/"
 READS_DIR = join(OUT_DIR, 'untrimmed')
+
 TRIM_DIR = join(OUT_DIR, 'trimmed')
-KHMER_TRIM_DIR = join(OUT_DIR, 'khmer')
 QC_DIR = join(OUT_DIR, 'qc')
 ASSEMBLY_DIR = join(OUT_DIR, 'assembly')
 QUANT_DIR = join(OUT_DIR, 'quant')
+KHMER_TRIM_DIR = join(OUT_DIR, 'khmer')
 SOURMASH_DIR = join(OUT_DIR,'sourmash')
 BUSCO_DIR = join(OUT_DIR,'busco')
 DSEQ2_DIR = join(OUT_DIR,'deseq2')
@@ -44,8 +64,10 @@ EDGER_DIR = join(OUT_DIR, 'edgeR')
 ANNOT_DIR = join(OUT_DIR,'annotation')
 BT2_DIR = join(OUT_DIR,'bowtie2')
 
+# determine workflow
 flow = config.get('workflow', 'full')
 read_processing,assembly,assembly_quality,annotation,quantification,diffexp,input_assembly,bt2_map = [False]*8 
+
 
 if flow == 'full': 
     read_processing = True
@@ -82,65 +104,87 @@ include: 'rules/common.rule'
 
 if read_processing:
     #fastqc
-    include: 'rules/fastqc/fastqc.rule'
-    from rules.fastqc.fastqc_targets import get_targets
-    fastqc_targs = get_targets(units, base, QC_DIR)
-    TARGETS += fastqc_targs
-    #trimmomatic
-    include: 'rules/trimmomatic/trimmomatic.rule'
-    from rules.trimmomatic.trimmomatic_targets import get_targets
-    trim_targs = get_targets(units, base, TRIM_DIR)
-    TARGETS += trim_targs
+    include: join(RULES_DIR,'fastqc/fastqc.rule')
+    fastqc_pretrim_ext =  ['_fastqc.zip','_fastqc.html']
+    fastqc_trim_ext =  ['_trimmed_fastqc.zip','_trimmed_fastqc.html']
+    fastqc_pretrim_targs = generate_data_targs(QC_DIR, SAMPLES, fastqc_pretrim_ext)
+    fastqc_trim_targs = generate_data_targs(QC_DIR, SAMPLES, fastqc_trim_ext)
+    fastqc_targs = fastqc_pretrim_targs + fastqc_trim_targs
+    #TARGETS += fastqc_targs
+    
+	#trimmomatic
+	include: join(RULES_DIR, 'trimmomatic', 'trimmomatic.rule')
+    trim_ext = [".trim.fq.gz", ".se.trim.fq.gz"]
+    trim_targs = generate_data_targs(TRIM_DIR, SAMPLES, trim_ext)
+    #from rules.trimmomatic.trimmomatic_targets import get_targets
+    #trim_targs = get_targets(units, BASE, TRIM_DIR)
+    #TARGETS += trim_targs
 
 if assembly:
-    #khmer
-    include: 'rules/khmer/khmer.rule'
-    from rules.khmer.khmer_targets import get_targets
-    khmer_targs = get_targets(units, base, KHMER_TRIM_DIR)
-    TARGETS += khmer_targs
+    # read processing options
+	kmer_trim = config.get('kmer_trim', True)
+    diginorm = config.get('diginorm', True)
+    
+	if kmer_trim:
+        #khmer
+		if not diginorm:
+		    include: join(RULES_DIR, 'khmer','khmer_no_diginorm.rule'
+	    else:
+            include: join(RULES_DIR, 'khmer','khmer.rule')
+        
+		khmer_pe_ext = ['_1.khmer.fq.gz', '_2.khmer.fq.gz', '.paired.khmer.fq.gz', '.single.khmer.fq.gz']
+        khmer_targs = generate_data_targs(KHMER_TRIM_DIR, SAMPLES, khmer_pe_ext, ends = [""])
+		#from rules.khmer.khmer_targets import get_targets
+        #khmer_targs = get_targets(units, BASE, KHMER_TRIM_DIR)
+        TARGETS += khmer_targs
     #trinity
-    include: 'rules/trinity/trinity.rule'
-    from rules.trinity.trinity_targets import get_targets
-    trinity_targs = get_targets(units, base, ASSEMBLY_DIR)
+    #assemblies=[]
+	include: join(RULES_DIR, 'trinity', 'trinity.rule')
+    trinity_ext = ['_trinity.fasta', '_trinity.fasta.gene_trans_map']
+    trinity_targs = generate_base_targs(ASSEMBLY_DIR, BASE, trinity_ext)
+    #assemblies+=['trinity']
+    #include: 'rules/trinity/trinity.rule'
+    #from rules.trinity.trinity_targets import get_targets
+    #trinity_targs = get_targets(units, BASE, ASSEMBLY_DIR)
     TARGETS += trinity_targs
 
 if input_assembly:
     include: 'rules/assemblyinput/assemblyinput.rule'
     from rules.assemblyinput.assemblyinput_targets import get_targets
-    assemblyinput_targs = get_targets(units, base, ASSEMBLY_DIR)
+    assemblyinput_targs = get_targets(units, BASE, ASSEMBLY_DIR)
     TARGETS += assemblyinput_targs
 
 if assembly_quality:
     #busco
     include: 'rules/busco/busco.rule'
     from rules.busco.busco_targets import get_targets
-    busco_targs = get_targets(units, base, BUSCO_DIR)
+    busco_targs = get_targets(units, BASE, BUSCO_DIR)
     #TARGETS += busco_targs
     #sourmash
     include: 'rules/sourmash/sourmash.rule'
     from rules.sourmash.sourmash_targets import get_targets
-    sourmash_targs = get_targets(base,SOURMASH_DIR)
+    sourmash_targs = get_targets(BASE,SOURMASH_DIR)
     TARGETS += sourmash_targs
 
 if annotation:
    #dammit
    include: 'rules/dammit/dammit.rule'
    from rules.dammit.dammit_targets import get_targets
-   dammit_targs = get_targets(units, base, ANNOT_DIR)
+   dammit_targs = get_targets(units, BASE, ANNOT_DIR)
    TARGETS += dammit_targs
 
 if quantification:
     #salmon
     include: 'rules/salmon/salmon.rule'
     from rules.salmon.salmon_targets import get_targets
-    salmon_targs = get_targets(units, base, QUANT_DIR)
+    salmon_targs = get_targets(units, BASE, QUANT_DIR)
     TARGETS += salmon_targs
 
 if bt2_map:
     #bowtie2
     include: 'rules/bowtie2/bowtie2.rule'
     from rules.bowtie2.bowtie2_targets import get_targets
-    bowtie2_targs = get_targets(units, base, BT2_DIR)
+    bowtie2_targs = get_targets(units, BASE, BT2_DIR)
     TARGETS += bowtie2_targs
 
 if diffexp:
@@ -148,16 +192,16 @@ if diffexp:
         #deseq2
         include: 'rules/deseq2/deseq2.rule'
         from rules.deseq2.deseq2_targets import get_targets
-        deseq2_targs = get_targets(units,base,DSEQ2_DIR, conf = config)
+        deseq2_targs = get_targets(units,BASE,DSEQ2_DIR, conf = config)
         TARGETS += deseq2_targs
         #include: 'rules/edgeR/edgeR.rule'
         #from rules.edgeR.edgeR_targets import get_targets
-        #edgeR_targs = get_targets(units,base,EDGER_DIR, conf = config)
+        #edgeR_targs = get_targets(units,BASE,EDGER_DIR, conf = config)
         #TARGETS += edgeR_targs
     #else:
         #include: 'rules/edgeR/edgeR_no_replicates.rule'
         #from rules.edgeR.edgeR_targets import get_targets
-        #edgeR_targs = get_targets(units,base,EDGER_DIR, conf = config)
+        #edgeR_targs = get_targets(units,BASE,EDGER_DIR, conf = config)
         #TARGETS += edgeR_targs
 
 #push_sigs

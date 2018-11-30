@@ -42,9 +42,8 @@ rule khmer_read_processing_pe:
     conda: 
         'khmer-env.yaml'
     shell: " (interleave-reads.py {input.r1} {input.r2} && zcat {input.r1_orphan} {input.r2_orphan}) | "
-           " (trim-low-abund.py -V -k {params.k} -Z {params.Z} -C {params.C} - -o - -M {params.memory} "
-           " --diginorm --diginorm-coverage={params.cov}) | (extract-paired-reads.py --gzip "
-           " -p {output.paired} -s {output.single}) > {log}"
+           " (trim-low-abund.py -V -k {params.k} -Z {params.Z} -C {params.C} - -o - -M {params.memory}) | "
+		   " (extract-paired-reads.py --gzip -p {output.paired} -s {output.single}) > {log}"
 
 rule khmer_split_paired:
     input: join(TRIM_DIR,'{sample}_{unit}.paired.khmer.fq.gz'),
@@ -80,6 +79,6 @@ rule khmer_read_processing_se:
         'khmer-env.yaml'
     shell:
            "(trim-low-abund.py {input} -V -k {params.k} -Z {params.Z} -C {params.C} -o {output} "
-           " -M {params.memory} --diginorm --diginorm-coverage={params.cov} ) "
+           " -M {params.memory}) "
     
 
