@@ -16,24 +16,29 @@ echo export PATH="$HOME/miniconda3/bin:$PATH" >> ~/.bash_profile
 source ~/.bash_profile
 ```
 
-Then,
+Then install snakemake:
 
 ```
 conda install -c bioconda -c conda-forge -y snakemake
 ```
 
-And:
+And finally, grab the eelpond code and test data
 
 ```
 git clone https://github.com/dib-lab/eelpond.git
 cd eelpond
 
 git submodule update --init --recursive #download test data submodule
+```
 
+Now, run the tiny test data, to make sure things are working:
+```
 #run eelpond
 snakemake --use-conda --configfile rna_testdata/nema_config.yaml
-
 ```
+
+Each step of the pipeline is highly customizable via the configuration file: see [Configuration](Configuration.md).
+
 
 **References:** 
 * [original eel-pond protocol docs, last updated 2015](https://khmer-protocols.readthedocs.io/en/ctb/mrnaseq/)
