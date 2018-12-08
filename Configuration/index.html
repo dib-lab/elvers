@@ -11,7 +11,7 @@
       <meta http-equiv="x-ua-compatible" content="ie=edge">
       
       
-        <link rel="canonical" href="http://dib-lab.github.io/eelpond/Assembly/">
+        <link rel="canonical" href="http://dib-lab.github.io/eelpond/Configuration/">
       
       
       
@@ -38,7 +38,7 @@
     
     
       
-        <title>Assembly - eelpond</title>
+        <title>Configuring the pipeline - eelpond</title>
       
     
     
@@ -102,7 +102,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="../#transcriptome-assembly" tabindex="1" class="md-skip">
+      <a href="../#configuring-the-pipeline" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -128,7 +128,7 @@
                 eelpond
               </span>
               <span class="md-header-nav__topic">
-                Assembly
+                Configuring the pipeline
               </span>
             
           
@@ -278,56 +278,11 @@
       
       
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-      
-    
-    
-      <label class="md-nav__link md-nav__link--active" for="__toc">
-        Assembly
-      </label>
-    
-    <a href="./" title="Assembly" class="md-nav__link md-nav__link--active">
+  <li class="md-nav__item">
+    <a href="../Assembly/" title="Assembly" class="md-nav__link">
       Assembly
     </a>
-    
-      
-<nav class="md-nav md-nav--secondary">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">Table of contents</label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#kmer-trimming" title="Kmer Trimming" class="md-nav__link">
-    Kmer Trimming
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#assembling-with-trinity" title="Assembling with Trinity" class="md-nav__link">
-    Assembling with Trinity
-  </a>
-  
-</li>
-      
-      
-      
-      
-      
-    </ul>
-  
-</nav>
-    
   </li>
 
     
@@ -384,29 +339,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">Table of contents</label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#kmer-trimming" title="Kmer Trimming" class="md-nav__link">
-    Kmer Trimming
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#assembling-with-trinity" title="Assembling with Trinity" class="md-nav__link">
-    Assembling with Trinity
-  </a>
-  
-</li>
-      
-      
-      
-      
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -418,44 +350,9 @@
               
                 
                 
-                <h1 id="transcriptome-assembly">Transcriptome Assembly<a class="headerlink" href="#transcriptome-assembly" title="Permanent link">&para;</a></h1>
-<h2 id="kmer-trimming">Kmer Trimming<a class="headerlink" href="#kmer-trimming" title="Permanent link">&para;</a></h2>
-<p>Before running transcriptome assembly, we recommend doing some kmer spectral error trimming on your dataset, and if you have lots of reads, also performing digital normalization. We use <a href="https://khmer.readthedocs.io/en/v2.1.1/">khmer</a> for both of these tasks.</p>
-<p>You can choose whether or not to use khmer diginal normalization with <code>--no-diginorm</code>. Note that you can also conduct diginorm with the Trinity assembler.</p>
-<p>The commands are as follows:</p>
-<p>With digital normalizition:</p>
-<div class="codehilite"><pre><span></span>&quot; (interleave-reads.py {input.r1} {input.r2} &amp;&amp; zcat {input.r1_orphan} {input.r2_orphan}) | &quot;
-&quot; (trim-low-abund.py -V -k {params.k} -Z {params.Z} -C {params.C} - -o - -M {params.memory} &quot;
-&quot; --diginorm --diginorm-coverage={params.cov}) | (extract-paired-reads.py --gzip &quot;
-&quot; -p {output.paired} -s {output.single}) &gt; {log}; split-paired-reads.py {output.paired} &quot;
-&quot; -1 {output.r1_out} -2 {output.r2_out} &gt;&gt; {log}&quot;
-</pre></div>
-
-
-<p>Without digital normalization:</p>
-<div class="codehilite"><pre><span></span>&quot; (interleave-reads.py {input.r1} {input.r2} &amp;&amp; zcat {input.r1_orphan} {input.r2_orphan}) | &quot;
-&quot; (trim-low-abund.py -V -k {params.k} -Z {params.Z} -C {params.C} - -o - -M {params.memory} &quot;
-&quot;| (extract-paired-reads.py --gzip  -p {output.paired} -s {output.single}) &gt; {log}; 
-&quot; split-paired-reads.py {output.paired} -1 {output.r1_out} -2 {output.r2_out} &gt;&gt; {log}&quot;
-</pre></div>
-
-
-<h2 id="assembling-with-trinity">Assembling with Trinity<a class="headerlink" href="#assembling-with-trinity" title="Permanent link">&para;</a></h2>
-<p>We use the <a href="https://github.com/trinityrnaseq/trinityrnaseq/wiki">Trinity <em>de novo</em> transcriptome assembler</a> to take short, trimmed/diginorm Illumina reads data and assemble (predict) full-length transcripts into a single fasta file output. Each contig in the fasta assembly file represents one unique transcript. The default <em>k</em>-mer size for the Trinity assembler is <em>k</em> = 25.</p>
-<p>The resulting output assembly fasta file can then be used to align the original, trimmed (not diginorm) short Illumina reads and quantify expression per transcript.</p>
-<p>The ID for each transcript is output (version 2.2.0 to current) as follows, where the <code>TRINITY</code> is constant, the <code>DN2202</code> is an example of a variable contig/transcript ID, <code>c</code> stands for component, <code>g</code> gene and <code>i</code> isoform:</p>
-<div class="codehilite"><pre><span></span>TRINITY_DN2202_c0_g1_i1
-</pre></div>
-
-
-<p>This snakemake pipeline will run the following command:</p>
-<div class="codehilite"><pre><span></span>Trinity --left left.fq \
-  --right right.fq --seqType fq --max_memory 10G \
-  --CPU 4
-</pre></div>
-
-
-<p>Note, the current version of Trininty (after 2.3.2) is configured to diginorm the input reads before assembly begins. Since we have already applied diginorm to our reads, the result will be a negligible decrease in read counts prior to the assembly. Applying diginorm twice is fine. For data sets with large numbers of reads, applying diginorm as a separate step as we have here may decrease the memory requirements needed by the Trinity pipeline.</p>
+                <h1 id="configuring-the-pipeline">Configuring the pipeline<a class="headerlink" href="#configuring-the-pipeline" title="Permanent link">&para;</a></h1>
+<p>Each step of this pipeline is highly configurable via the yaml configuration file.</p>
+<p>More info coming soon.</p>
                 
                   
                 
@@ -473,41 +370,6 @@
         
 <footer class="md-footer">
   
-  
-    <div class="md-footer-nav">
-      <nav class="md-footer-nav__inner md-grid">
-        
-          <a href="../Diginorm/" title="Digital Normalization" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
-            <div class="md-flex__cell md-flex__cell--shrink">
-              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
-            </div>
-            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
-              <span class="md-flex__ellipsis">
-                <span class="md-footer-nav__direction">
-                  Previous
-                </span>
-                Digital Normalization
-              </span>
-            </div>
-          </a>
-        
-        
-          <a href="../Quality/" title="Quality Assessment" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
-            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
-              <span class="md-flex__ellipsis">
-                <span class="md-footer-nav__direction">
-                  Next
-                </span>
-                Quality Assessment
-              </span>
-            </div>
-            <div class="md-flex__cell md-flex__cell--shrink">
-              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
-            </div>
-          </a>
-        
-      </nav>
-    </div>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
