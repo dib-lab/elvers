@@ -1,0 +1,15 @@
+samples: "nema.tsv"
+
+basename: 'nema_v2'
+
+workflow: "assembly"
+#workflow: "mapping"
+
+trimmomatic:
+  trim_cmd:  "ILLUMINACLIP:{}:2:40:15 LEADING:20 TRAILING:20 SLIDINGWINDOW:4:15 MINLEN:35"
+
+  adapter_file:
+    pe_name: "TruSeq3-PE.fa"
+    pe_url: "https://raw.githubusercontent.com/timflutre/trimmomatic/master/adapters/TruSeq3-PE-2.fa"
+    se_name: "TruSeq3-SE.fa"
+    se_url: "https://raw.githubusercontent.com/timflutre/trimmomatic/master/adapters/TruSeq3-SE.fa"

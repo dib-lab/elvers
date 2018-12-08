@@ -22,6 +22,7 @@ def generate_data_targs(outdir, samples, extensions, ends = ["_1", "_2"]):
     # to do: add paired vs single end check here to generate `ends`
     exts = [x+y for x in ends for y in extensions]
     for s in samples:
+        #if is_single_end(s, u):
         target_list = target_list + [join(outdir, s + e) for e in exts]
     return target_list
 
@@ -105,22 +106,18 @@ include: 'rules/common.rule'
 if read_processing:
     #fastqc
     include: join(RULES_DIR,'fastqc/fastqc.rule')
-    fastqc_pretrim_ext =  ['_fastqc.zip','_fastqc.html']
-    fastqc_trim_ext =  ['_trimmed_fastqc.zip','_trimmed_fastqc.html']
-    fastqc_pretrim_targs = generate_data_targs(QC_DIR, SAMPLES, fastqc_pretrim_ext)
-    fastqc_trim_targs = generate_data_targs(QC_DIR, SAMPLES, fastqc_trim_ext)
-    fastqc_targs = fastqc_pretrim_targs + fastqc_trim_targs
+    fastqc_ext =  ['_fastqc.zip','_fastqc.html', '_trimmed_fastqc.zip','_trimmed_fastqc.html']
+    fastqc_targs = generate_data_targs(QC_DIR, SAMPLES, fastqc_ext)
     #TARGETS += fastqc_targs
     
 	#trimmomatic
 	include: join(RULES_DIR, 'trimmomatic', 'trimmomatic.rule')
     trim_ext = [".trim.fq.gz", ".se.trim.fq.gz"]
     trim_targs = generate_data_targs(TRIM_DIR, SAMPLES, trim_ext)
-    #from rules.trimmomatic.trimmomatic_targets import get_targets
-    #trim_targs = get_targets(units, BASE, TRIM_DIR)
     #TARGETS += trim_targs
 
 if assembly:
+    assemblies=[]
     # read processing options
 	kmer_trim = config.get('kmer_trim', True)
     diginorm = config.get('diginorm', True)
@@ -131,61 +128,61 @@ if assembly:
 		    include: join(RULES_DIR, 'khmer','khmer_no_diginorm.rule'
 	    else:
             include: join(RULES_DIR, 'khmer','khmer.rule')
-        
+        # add se khmer option back in 
 		khmer_pe_ext = ['_1.khmer.fq.gz', '_2.khmer.fq.gz', '.paired.khmer.fq.gz', '.single.khmer.fq.gz']
         khmer_targs = generate_data_targs(KHMER_TRIM_DIR, SAMPLES, khmer_pe_ext, ends = [""])
-		#from rules.khmer.khmer_targets import get_targets
-        #khmer_targs = get_targets(units, BASE, KHMER_TRIM_DIR)
-        TARGETS += khmer_targs
+        #TARGETS += khmer_targs
+    
     #trinity
-    #assemblies=[]
-	include: join(RULES_DIR, 'trinity', 'trinity.rule')
-    trinity_ext = ['_trinity.fasta', '_trinity.fasta.gene_trans_map']
-    trinity_targs = generate_base_targs(ASSEMBLY_DIR, BASE, trinity_ext)
-    #assemblies+=['trinity']
-    #include: 'rules/trinity/trinity.rule'
-    #from rules.trinity.trinity_targets import get_targets
-    #trinity_targs = get_targets(units, BASE, ASSEMBLY_DIR)
-    TARGETS += trinity_targs
+	if config.get('assembly_program', '').lower() == 'trinity': # enable list of assembly programs?
+    
+        include: join(RULES_DIR, 'trinity', 'trinity.rule')
+        trinity_ext = ['_trinity.fasta', '_trinity.fasta.gene_trans_map']
+        trinity_targs = generate_base_targs(ASSEMBLY_DIR, BASE, trinity_ext)
+        assemblies+=['trinity']
+        #TARGETS += trinity_targs
 
 if input_assembly:
     include: 'rules/assemblyinput/assemblyinput.rule'
-    from rules.assemblyinput.assemblyinput_targets import get_targets
-    assemblyinput_targs = get_targets(units, BASE, ASSEMBLY_DIR)
-    TARGETS += assemblyinput_targs
+    assemblyinput_ext = ['.fasta', '.fasta.gene_trans_map']
+    assemblyinput_targs = generate_base_targs(ASSEMBLY_DIR, BASE, assemb_input_ext)
+    #TARGETS += assemblyinput_targs
 
 if assembly_quality:
     #busco
-    include: 'rules/busco/busco.rule'
-    from rules.busco.busco_targets import get_targets
-    busco_targs = get_targets(units, BASE, BUSCO_DIR)
+    include: join(RULES_DIR, 'busco', 'busco.rule'
+    busco_ext = ['']
+    busco_targs = generate_base_targs(BUSCO_DIR, 'run_busco_' + BASE, busco_ext)
     #TARGETS += busco_targs
     #sourmash
     include: 'rules/sourmash/sourmash.rule'
-    from rules.sourmash.sourmash_targets import get_targets
-    sourmash_targs = get_targets(BASE,SOURMASH_DIR)
-    TARGETS += sourmash_targs
+    sourmash_ext = ['.sig'] 
+    sourmash_targs = generate_base_targs(SOURMASH_DIR, BASE, sourmash_ext)
+    #TARGETS += sourmash_targs
 
 if annotation:
    #dammit
-   include: 'rules/dammit/dammit.rule'
-   from rules.dammit.dammit_targets import get_targets
-   dammit_targs = get_targets(units, BASE, ANNOT_DIR)
+   include: join(RULES_DIR, 'dammit/dammit.rule')
+   dammit_ext = ['.fasta.dammit.gff3', '.fasta.dammit.fasta']
+   #from rules.dammit.dammit_targets import get_targets
+   #dammit_targs = get_targets(units, BASE, ANNOT_DIR)
    TARGETS += dammit_targs
 
 if quantification:
     #salmon
-    include: 'rules/salmon/salmon.rule'
-    from rules.salmon.salmon_targets import get_targets
-    salmon_targs = get_targets(units, BASE, QUANT_DIR)
-    TARGETS += salmon_targs
+    include: join(RULES_DIR, 'salmon', 'salmon.rule'
+    #from rules.salmon.salmon_targets import get_targets
+    salmon_ext = ['/quant.sf', '/lib_format_counts.json']
+    salmon_targs = generate_data_targs(QUANT_DIR, BASE, salmon_ext, ends = [''])
+    #TARGETS += salmon_targs
 
 if bt2_map:
     #bowtie2
-    include: 'rules/bowtie2/bowtie2.rule'
-    from rules.bowtie2.bowtie2_targets import get_targets
-    bowtie2_targs = get_targets(units, BASE, BT2_DIR)
-    TARGETS += bowtie2_targs
+    include: join(RULES_DIR, 'bowtie2', 'bowtie2.rule'
+    bt2_ext = ['.bam'] 
+    #from rules.bowtie2.bowtie2_targets import get_targets
+    bt2_targs = generate_data_targs(BT2_DIR, BASE, bt2_ext, ends = [''])
+    #TARGETS += bt2_targs
 
 if diffexp:
     if replicates:
