@@ -1,0 +1,139 @@
+#! /usr/bin/env python
+"""
+Execution script for snakemake eelpond.
+"""
+# ref: https://github.com/ctb/2018-snakemake-cli/blob/master/run
+import argparse
+import os
+import sys
+import pprint
+import yaml
+import glob
+import snakemake
+
+def find_Snakefile(workdir):
+    snakefile = os.path.join(workdir, 'Snakefile')
+    assert os.path.exists(snakefile), 'Error: cannot find Snakefile at {}\n'.format(snakefile)
+    return snakefile
+
+def find_yaml(workdir, filename, name): 
+    # find the workflow config file
+    workflowfile = None
+    if os.path.exists(filename) and not os.path.isdir(filename):
+        workflowfile = filename
+    else:
+        for suffix in ('', '.yaml', '.yml'):
+            tryfile = os.path.join(workdir, filename + suffix)
+            if os.path.exists(tryfile) and not os.path.isdir(tryfile):
+                sys.stderr.write('Found {} file at {}\n'.format(name, tryfile))
+                workflowfile = tryfile
+                break
+    assert workflowfile, 'Error, cannot find specified {} file {}\n'.format(name, filename)
+    print('\t{}: {}'.format(name, workflowfile))
+    return workflowfile
+
+def build_params(workdir):
+    rule_params_files = glob.glob(os.path.join(workdir, 'rules','*/*_params.yaml'))
+    paramsD = {}
+    for f in rule_params_files:
+        with open(f, 'r') as stream:
+            try:
+                paramsD.update(yaml.load(stream))
+            except yaml.YAMLError as exc:
+                print(exc)
+    return paramsD
+
+def read_yaml(filename):
+    with open(filename, 'r') as stream:
+        try:
+            yamlD = yaml.load(stream)
+        except yaml.YAMLError as exc:
+            print(exc)
+    return yamlD
+
+def write_yaml(yamlD, paramsfile):
+    with open(paramsfile, 'w') as params:
+        yaml.dump(yamlD, stream=params, indent=2,  default_flow_style=False)
+
+def check_input_assembly(configfile):
+    assert config['assembly_input']['assembly'] is not None, "chosen workflow requires transcriptome assembly as input"
+    assert config['assembly_input']['gene_trans_map'] is not None, "chosen workflow requires transcriptome gene transcript map as input"
+
+
+def main(args):
+    # first, find the Snakefile and configfile
+    thisdir = os.path.abspath(os.path.dirname(__file__))
+    snakefile = find_Snakefile(thisdir)
+    configfile = find_yaml(thisdir, args.configfile, 'configfile') # find configfile
+    if not configfile:
+        sys.stderr.write('Error: cannot find configfile {}\n'.format(args.configfile))
+        sys.exit(-1)
+    
+    # next, grab default parameters from the *_params.yaml files
+    print('\tadding default parameters from rule-specific params files')
+    configD = read_yaml(configfile)
+    paramsD = build_params(thisdir)
+    paramsD.update(configD) # configD takes priority over default params
+    
+    # Note: Passing a configfile allows nested yaml/dictionary format. 
+    # Passing these params in via `config` would require a flat dictionary.
+    paramsfile = os.path.join(os.path.dirname(configfile), '.ep_' + os.path.basename(configfile))
+    write_yaml(paramsD, paramsfile)
+
+    print('--------')
+    print('details!')
+    print('\tsnakefile: {}'.format(snakefile))
+    print('\tconfig: {}'.format(configfile))
+    print('\tparams: {}'.format(paramsfile))
+    print('\ttargets: {}'.format(repr(args.targets)))
+    print('--------')
+
+    # run!!
+    # params file becomes snakemake config
+    status = snakemake.snakemake(snakefile, configfile=paramsfile, use_conda=True, 
+                                 targets=args.targets, printshellcmds=True,
+                                 dryrun=args.dry_run, lock=not args.nolock,
+                                 verbose=args.verbose, debug_dag=args.debug)
+    
+    if status: # translate "success" into shell exit code of 0
+       return 0
+    return 1
+
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='run snakemake eelpond', usage='''run_eelpond <configfile.yaml>  [<target> ...]
+
+Run eelpond snakemake workflows, using the given configfile.
+
+Targets:
+
+   full             - run full workflow (default)
+   quality_trim     - preprocess reads (fastqc, trimmomatic)
+   kmer_trim        - kmer trim preprocessed reads
+   assemble         - transcriptome assembly 
+   annotate         - annotate transcriptome assembly
+   quantify         - read quantification 
+   quality          - assess assembly quality (busco, transrate)
+   diff_expression  - differential expression analysis
+   clean            - remove target dirs 
+
+For a quickstart, run this:
+
+   conf/run_eelpond nema-test full
+
+from the main eelpond directory.
+
+''')
+
+    parser.add_argument('configfile')
+    parser.add_argument('targets', nargs='*', default=['full'])
+    parser.add_argument('-n', '--dry-run', action='store_true')
+    parser.add_argument('-v', '--verbose', action='store_true')
+    parser.add_argument('-d', '--debug', action='store_true')
+    parser.add_argument('--nolock', action='store_true')
+    parser.add_argument('--unlock', action='store_true')
+    parser.add_argument('--experiment', default=None)
+    args = parser.parse_args()
+
+    sys.exit(main(args))

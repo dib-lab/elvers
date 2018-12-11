@@ -18,15 +18,15 @@ def get_quant(wildcards):
    pe_only = units[units['fq2'].notnull()] 
    se_only = units[units['fq2'].isnull()] 
    pe  = expand(join(TRIM_DIR, "{unit.sample}_pe.trim.fq.gz"), unit=se_only.itertuples())
-   pe_quant = list(set(expand(join(QUANT_DIR, "{unit.sample}_pe_x_" + base, "quant.sf"),unit=pe_only.itertuples())))
-   se_quant = list(set(expand(join(QUANT_DIR, "{unit.sample}_se_x_" + base, "quant.sf"),unit=se_only.itertuples())))
+   pe_quant = list(set(expand(join(QUANT_DIR, "{unit.sample}_pe_x_" + BASE, "quant.sf"),unit=pe_only.itertuples())))
+   se_quant = list(set(expand(join(QUANT_DIR, "{unit.sample}_se_x_" + BASE, "quant.sf"),unit=se_only.itertuples())))
    return se_quant + pe_quant
 
 rule deseq2_init:
     input:
         quant = get_quant,
-        gene_trans_map = join(ASSEMBLY_DIR, base + '.fasta.gene_trans_map'),
-#       quant = expand(join(QUANT_DIR,"{unit.sample}_{unit.unit}_x_" + base, "quant.sf"), unit=units.itertuples()),
+        gene_trans_map = join(ASSEMBLY_DIR, BASE + '.fasta.gene_trans_map'),
+#       quant = expand(join(QUANT_DIR,"{unit.sample}_{unit.unit}_x_" + BASE, "quant.sf"), unit=units.itertuples()),
     output:
         join(DSEQ2_DIR, "all.rds") #r data object
     params:

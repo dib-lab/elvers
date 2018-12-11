@@ -42,16 +42,16 @@ rule salmon_index:
     Index the transcriptome for salmon quantification
     """
     input:
-        join(ASSEMBLY_DIR, base + ".fasta")
+        join(ASSEMBLY_DIR, BASE + ".fasta")
     output:
-        directory(join(QUANT_DIR, base + "_salmon"))
+        directory(join(QUANT_DIR, BASE + "_salmon"))
     message:
         """--- Indexing the transcriptome with Salmon ---"""
     threads: 2
     params:
         extra = ''
     log:
-        qual_log = join(LOGS_DIR, 'salmon/' + base +'_index.log')
+        qual_log = join(LOGS_DIR, 'salmon/' + BASE +'_index.log')
     conda: "salmon-env.yaml"
 	script: "index-wrapper.py"
 	#wrapper:
@@ -61,24 +61,22 @@ rule salmon_quant_reads_pe:
     """
     Quantify transcripts with Salmon
     """
-    input: 
+    input:
         unpack(get_trimmed_combined_pe),
-        index = join(QUANT_DIR, base + "_salmon")
+        index = join(QUANT_DIR, "{assembly}", "{assembly}_salmon")
     output:
-        quant = join(QUANT_DIR, "{sample}_pe_x_" + base,"quant.sf"),
-        lib = join(QUANT_DIR, "{sample}_pe_x_" + base,"lib_format_counts.json")
+        quant = join(QUANT_DIR,"{assembly}", "{sample}_{unit}","quant.sf"),
+        lib = join(QUANT_DIR, "{assembly}", "{sample}_{unit}","lib_format_counts.json")
     message:
         """--- Quantifying transcripts with Salmon ---"""
     params:
-        libtype= 'A', # maybe set in config file 
-        extra = '' 
+        libtype= 'A', # maybe set in config file
+        extra = ''
     threads: 2
-    log:
-        qual_log = join(LOGS_DIR, 'salmon/{sample}_pe_x_' + base + '.log')
+    log: join(LOGS_DIR, 'salmon/{sample}_{unit}_x_{assembly}.log')
     conda: "salmon-env.yaml"
     script: "quant-wrapper.py"
-	#wrapper:
-    #    '0.25.0/bio/salmon/quant/quant-reads'
+
 
 rule salmon_quant_reads_se:
     """
@@ -86,10 +84,10 @@ rule salmon_quant_reads_se:
     """
     input: 
         unpack(get_trimmed_combined_se),
-        index = join(QUANT_DIR, base + "_salmon")
+        index = join(QUANT_DIR, BASE + "_salmon")
     output:
-        quant = join(QUANT_DIR, "{sample}_se_x_" + base,"quant.sf"),
-        lib = join(QUANT_DIR, "{sample}_se_x_" + base,"lib_format_counts.json")
+        quant = join(QUANT_DIR, "{sample}_se_x_" + BASE,"quant.sf"),
+        lib = join(QUANT_DIR, "{sample}_se_x_" + BASE,"lib_format_counts.json")
     message:
         """--- Quantifying transcripts with Salmon ---"""
     params:
@@ -97,7 +95,7 @@ rule salmon_quant_reads_se:
         extra = '' 
     threads: 2
     log:
-        qual_log = join(LOGS_DIR, 'salmon/{sample}_se_x_' + base + '.log')
+        qual_log = join(LOGS_DIR, 'salmon/{sample}_se_x_' + BASE + '.log')
     conda: "salmon-env.yaml"
     script: "quant-wrapper.py"
 	#wrapper:

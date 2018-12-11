@@ -45,16 +45,16 @@ rule bowtie2_index:
     Index the transcriptome for salmon quantification
     """
     input:
-        join(ASSEMBLY_DIR, base + ".fasta")
+        join(ASSEMBLY_DIR, BASE + ".fasta")
     output:
-        index = join(BT2_DIR, base + "_bowtie2.1.bt2")
+        index = join(BT2_DIR, BASE + "_bowtie2.1.bt2")
     message:
         """--- Indexing the transcriptome with Bowtie2 ---"""
     threads: 2
     params:
         extra = ''
     log:
-        join(LOGS_DIR, 'bowtie2', base +'_index.log')
+        join(LOGS_DIR, 'bowtie2', BASE +'_index.log')
     conda: 
         'bowtie2-env.yaml'
     script:
@@ -67,13 +67,13 @@ rule bowtie2_index:
 rule bowtie2_map:
     input:
         unpack(get_trimmed_combined_pe), 
-        index = rules.bowtie2_index.output.index, #join(BT2_DIR, base + "_bowtie2"),
+        index = rules.bowtie2_index.output.index, #join(BT2_DIR, BASE + "_bowtie2"),
     output:
-        join(BT2_DIR, "{sample}_pe_x_" + base + ".bam")
+        join(BT2_DIR, "{sample}_pe_x_" + BASE + ".bam")
     log:
         "logs/bowtie2/{sample}.log"
     params:
-        index = join(BT2_DIR, base + "_bowtie2"),
+        index = join(BT2_DIR, BASE + "_bowtie2"),
         # index="index/genome",  # prefix of reference genome index (built with bowtie2-build)
         extra=" --local "  # optional parameters
     threads: 8

@@ -1,0 +1,25 @@
+from os.path import join
+
+trim_params = config['trimmomatic']
+
+rule trimmomatic_pe:
+    """
+    Trim reads from the sequencer by trimming or dropping low-quality reads.
+    """
+    input:
+        r1= lambda wildcards: join(DATA_DIR, '{}_{}_1.fq.gz'.format(wildcards.sample,wildcards.unit)), #unpack(get_pretrim_pe)
+        r2= lambda wildcards: join(DATA_DIR, '{}_{}_2.fq.gz'.format(wildcards.sample,wildcards.unit))
+    output:
+        r1=join(TRIM_DIR, "{sample}_{unit}_1.trim.fq.gz"),
+        r2=join(TRIM_DIR, "{sample}_{unit}_2.trim.fq.gz"),
+        r1_unpaired=join(TRIM_DIR, "{sample}_{unit}_1.se.trim.fq.gz"),
+        r2_unpaired=join(TRIM_DIR, "{sample}_{unit}_2.se.trim.fq.gz"),
+    message:
+        """--- Quality trimming PE read data with Trimmomatic."""
+    threads: 4
+    params:
+        trimmer = (trim_params['trim_cmd'].format(trim_params['adapter_file']['pe_name'])).split(' '),
+        extra = ''
+    log: join(LOGS_DIR, 'trimmomatic/{sample}_{unit}_pe.log')
+    conda: "trimmomatic-env.yaml"
+    script: "trimmomatic-pe.py"

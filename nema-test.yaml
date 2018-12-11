@@ -1,9 +1,6 @@
-samples: "nema.tsv"
+samples: "nema_samples_v2.tsv"
 
 basename: 'nema_v2'
-
-workflow: "assembly"
-#workflow: "mapping"
 
 trimmomatic:
   trim_cmd:  "ILLUMINACLIP:{}:2:40:15 LEADING:20 TRAILING:20 SLIDINGWINDOW:4:15 MINLEN:35"

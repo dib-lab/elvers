@@ -9,11 +9,11 @@ if 'dammit' in config.keys():
 
 rule dammit_annotate:
     input: 
-        join(ASSEMBLY_DIR, base + ".fasta")
+        join(ASSEMBLY_DIR, BASE + ".fasta")
     output: 
-        join(ANNOT_DIR, base + ".fasta.dammit", base + ".fasta.dammit.gff3"),
-        join(ANNOT_DIR, base + ".fasta.dammit", base + ".fasta.dammit.fasta"),
-    log:join(LOGS_DIR, 'dammit/' + base +'_dammit.log')
+        join(ANNOT_DIR, BASE + ".fasta.dammit", BASE + ".fasta.dammit.gff3"),
+        join(ANNOT_DIR, BASE + ".fasta.dammit", BASE + ".fasta.dammit.fasta"),
+    log:join(LOGS_DIR, 'dammit/' + BASE +'_dammit.log')
     params:
         db_dir = annot_params.get('db_dir', 'databases'),
         db_extra= annot_params.get('db_extra', "--quick"),
