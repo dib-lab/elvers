@@ -3,16 +3,19 @@ from os.path import join
 #def get_trimmed_pe(wildcards):
 #    readsD = {}
 #    if not is_single_end(**wildcards):
-#        readsD['r1'] = expand(join(TRIM_DIR, '{sample}_{unit}_1.trim.fq.gz'), **wildcards)[0]
-#        readsD['r2'] = expand(join(TRIM_DIR, '{sample}_{unit}_2.trim.fq.gz'), **wildcards)[0]
-#        readsD['r1_orphan'] = expand(join(TRIM_DIR, '{sample}_{unit}_1.se.trim.fq.gz'), **wildcards)[0]
-#        readsD['r2_orphan'] = expand(join(TRIM_DIR, '{sample}_{unit}_2.se.trim.fq.gz'), **wildcards)[0]
+#        readsD['r1'] = expand(join(trim_dir, '{sample}_{unit}_1.trim.fq.gz'), **wildcards)[0]
+#        readsD['r2'] = expand(join(trim_dir, '{sample}_{unit}_2.trim.fq.gz'), **wildcards)[0]
+#        readsD['r1_orphan'] = expand(join(trim_dir, '{sample}_{unit}_1.se.trim.fq.gz'), **wildcards)[0]
+#        readsD['r2_orphan'] = expand(join(trim_dir, '{sample}_{unit}_2.se.trim.fq.gz'), **wildcards)[0]
         #import pdb; pdb.set_trace()
 #        return readsD
 
 #def get_trimmed_se(wildcards):
 #    if is_single_end(**wildcards):
-#        return expand(join(TRIM_DIR, '{sample}_{unit}_se.trim.fq.gz'),**wildcards)[0]
+#        return expand(join(trim_dir, '{sample}_{unit}_se.trim.fq.gz'),**wildcards)[0]
+
+trim_dir = config['trimmomatic']['eelpond_dirname']
+khmer_dir = config['khmer']['eelpond_dirname']
 
 rule khmer_read_processing_pe:
     """
@@ -20,13 +23,13 @@ rule khmer_read_processing_pe:
     """
     input:
         #unpack(get_trimmed_pe)
-        r1= lambda wildcards: join(TRIM_DIR, '{}_{}_1.trim.fq.gz'.format(wildcards.sample,wildcards.unit)),
-        r2= lambda wildcards: join(TRIM_DIR, '{}_{}_2.trim.fq.gz'.format(wildcards.sample,wildcards.unit)),
-        r1_orphan= lambda wildcards: join(TRIM_DIR, '{}_{}_1.se.trim.fq.gz'.format(wildcards.sample,wildcards.unit)),
-        r2_orphan= lambda wildcards: join(TRIM_DIR, '{}_{}_2.se.trim.fq.gz'.format(wildcards.sample,wildcards.unit)),
+        r1= lambda wildcards: join(trim_dir, '{}_{}_1.trim.fq.gz'.format(wildcards.sample,wildcards.unit)),
+        r2= lambda wildcards: join(trim_dir, '{}_{}_2.trim.fq.gz'.format(wildcards.sample,wildcards.unit)),
+        r1_orphan= lambda wildcards: join(trim_dir, '{}_{}_1.se.trim.fq.gz'.format(wildcards.sample,wildcards.unit)),
+        r2_orphan= lambda wildcards: join(trim_dir, '{}_{}_2.se.trim.fq.gz'.format(wildcards.sample,wildcards.unit)),
     output: 
-        paired=join(TRIM_DIR,'{sample}_{unit}.paired.khmer.fq.gz'),
-        single=join(TRIM_DIR,'{sample}_{unit}.single.khmer.fq.gz'),
+        paired=join(khmer_dir,'{sample}_{unit}.paired.khmer.fq.gz'),
+        single=join(khmer_dir,'{sample}_{unit}.single.khmer.fq.gz'),
     message:
         """--- khmer trimming of low-abundance kmers and digital normalization ---"""
     params:
@@ -47,10 +50,10 @@ rule khmer_read_processing_pe:
            " -p {output.paired} -s {output.single}) > {log}"
 
 rule khmer_split_paired:
-    input: join(TRIM_DIR,'{sample}_{unit}.paired.khmer.fq.gz'),
+    input: join(khmer_dir,'{sample}_{unit}.paired.khmer.fq.gz'),
     output:
-        r1=join(TRIM_DIR, '{sample}_{unit}_1.khmer.fq.gz'),
-        r2=join(TRIM_DIR, '{sample}_{unit}_2.khmer.fq.gz'),
+        r1=join(khmer_dir, '{sample}_{unit}_1.khmer.fq.gz'),
+        r2=join(khmer_dir, '{sample}_{unit}_2.khmer.fq.gz'),
     conda: "khmer-env.yaml"
     threads: 2 
     log: join(LOGS_DIR, 'khmer/{sample}_{unit}_split_paired' + BASE + '.log') 
@@ -62,8 +65,8 @@ rule khmer_read_processing_se:
     """
     kmer trim and diginorm with khmer
     """
-    input: lambda wildcards: join(TRIM_DIR, '{}_{}.se.trim.fq.gz'.format(wildcards.sample,wildcards.unit)), #get_trimmed_se
-    output: join(TRIM_DIR, '{sample}_{unit}.se.khmer.fq.gz'),
+    input: lambda wildcards: join(trim_dir, '{}_{}.se.trim.fq.gz'.format(wildcards.sample,wildcards.unit)), #get_trimmed_se
+    output: join(khmer_dir, '{sample}_{unit}.se.khmer.fq.gz'),
     message:
         """--- khmer trimming of low-abundance kmers and digital normalization ---"""
     params:

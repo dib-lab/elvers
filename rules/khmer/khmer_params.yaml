@@ -1,0 +1,10 @@
+khmer:
+  eelpond_dirname: 'khmer'
+
+  extensions:
+    read:
+      - '_1.khmer.fq.gz'
+      - '_2.khmer.fq.gz'
+      - '.paired.khmer.fq.gz'
+      - '.single.khmer.fq.gz'
+

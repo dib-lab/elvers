@@ -1,0 +1,7 @@
+sourmash:
+  extensions: 
+    base:
+      - '.sig'
+    reads:
+      - '.sig'
+  eelpond_dirname: 'sourmash'

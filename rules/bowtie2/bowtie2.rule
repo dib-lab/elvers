@@ -3,16 +3,19 @@ from os.path import join
 # need to modify for "sample" not "r1/r2/r"
 #sample = [r1,r2] or sample = [r] gets passed in
 
+trim_dir = config['trimmomatic']['eelpond_dirname']
+bt2_params = config['bowtie2']
+bt2_dir = bt2_params['eelpond_dirname']
 
 # use if you don't want to collapse technical replicates ("units" column; deseq2 not supported)
 def get_trimmed(wildcards):
     readsD = {}
     if not is_single_end(**wildcards):
-#        readsD['r1'] = expand(join(TRIM_DIR, '{sample}_{unit}_1.trim.fq.gz'),**wildcards)
-#        readsD['r2'] = expand(join(TRIM_DIR, '{sample}_{unit}_2.trim.fq.gz'),**wildcards)
-         readsD['sample'] = expand([join(TRIM_DIR, '{sample}_{unit}_1.trim.fq.gz'), join(TRIM_DIR, '{sample}_{unit}_2.trim.fq.gz')],**wildcards)
+#        readsD['r1'] = expand(join(trim_dir, '{sample}_{unit}_1.trim.fq.gz'),**wildcards)
+#        readsD['r2'] = expand(join(trim_dir, '{sample}_{unit}_2.trim.fq.gz'),**wildcards)
+         readsD['sample'] = expand([join(trim_dir, '{sample}_{unit}_1.trim.fq.gz'), join(trim_dir, '{sample}_{unit}_2.trim.fq.gz')],**wildcards)
          return readsD
-    readsD['sample'] = expand(join(TRIM_DIR, '{sample}_{unit}_se.trim.fq.gz'),**wildcards)
+    readsD['sample'] = expand(join(trim_dir, '{sample}_{unit}_se.trim.fq.gz'),**wildcards)
     return readsD
 
 def get_trimmed_combined_pe(wildcards):
@@ -21,8 +24,8 @@ def get_trimmed_combined_pe(wildcards):
     unit_list = units.groupby(level=0).get_group(wildcards.sample)['unit'].tolist()
     for unit in unit_list:
         if not is_single_end(wildcards.sample, unit):
-            r1 += [join(TRIM_DIR, wildcards.sample +'_' + unit + '_1.trim.fq.gz')]
-            r2 += [join(TRIM_DIR, wildcards.sample +'_' + unit + '_2.trim.fq.gz')]
+            r1 += [join(trim_dir, wildcards.sample +'_' + unit + '_1.trim.fq.gz')]
+            r2 += [join(trim_dir, wildcards.sample +'_' + unit + '_2.trim.fq.gz')]
     if r1:
         readsD['sample'] = r1 + r2 # hacky - only works without multiple units
         print(readsD)
@@ -34,8 +37,8 @@ def get_trimmed_combined_se(wildcards):
     unit_list = units.groupby(level=0).get_group(wildcards.sample)['unit'].tolist()
     for unit in unit_list:
         if is_single_end(wildcards.sample, unit):
-            sample += [join(TRIM_DIR, wildcards.sample +'_' + unit + '_se.trim.fq.gz')]
-            #r += [join(TRIM_DIR, "{wildcards.sample}_{unit}_se.trim.fq.gz")]
+            sample += [join(trim_dir, wildcards.sample +'_' + unit + '_se.trim.fq.gz')]
+            #r += [join(trim_dir, "{wildcards.sample}_{unit}_se.trim.fq.gz")]
     if r:
         readsD['sample'] = r
         return readsD
@@ -47,7 +50,7 @@ rule bowtie2_index:
     input:
         join(ASSEMBLY_DIR, BASE + ".fasta")
     output:
-        index = join(BT2_DIR, BASE + "_bowtie2.1.bt2")
+        index = join(bt2_dir, BASE + "_bowtie2.1.bt2")
     message:
         """--- Indexing the transcriptome with Bowtie2 ---"""
     threads: 2
@@ -67,13 +70,13 @@ rule bowtie2_index:
 rule bowtie2_map:
     input:
         unpack(get_trimmed_combined_pe), 
-        index = rules.bowtie2_index.output.index, #join(BT2_DIR, BASE + "_bowtie2"),
+        index = rules.bowtie2_index.output.index, #join(bt2_dir, BASE + "_bowtie2"),
     output:
-        join(BT2_DIR, "{sample}_pe_x_" + BASE + ".bam")
+        join(bt2_dir, "{sample}_pe_x_" + BASE + ".bam")
     log:
         "logs/bowtie2/{sample}.log"
     params:
-        index = join(BT2_DIR, BASE + "_bowtie2"),
+        index = join(bt2_dir, BASE + "_bowtie2"),
         # index="index/genome",  # prefix of reference genome index (built with bowtie2-build)
         extra=" --local "  # optional parameters
     threads: 8

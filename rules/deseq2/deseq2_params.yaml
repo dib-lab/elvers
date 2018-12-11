@@ -1,4 +1,8 @@
 deseq2:
+  extensions:
+    base:
+      - "_all.rds"
+  eelpond_dirname: 'diffexp'
   # contrasts for the deseq2 results method
   contrasts:
     treated-vs-untreated:

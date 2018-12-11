@@ -2,11 +2,16 @@ from os.path import join
 from common.utils import get_params
 
 # default params from paramsfile
-deseq_params = get_params('deseq2')
+#deseq_params = get_params('deseq2')
 
 # override defaults with snakemake config (main configfile or snakemake --config)
-if 'deseq2' in config.keys():
-    deseq_params.update(config['deseq2'])
+#if 'deseq2' in config.keys():
+#    deseq_params.update(config['deseq2'])
+
+deseq_params = config['deseq2']
+deseq_dir = deseq_params['eelpond_dirname']
+trim_dir = config['trimmomatic']['eelpond_dirname']
+quant_dir = config['salmon']['eelpond_dirname']
 
 def get_deseq2_threads(wildcards=None):
     # https://github.com/snakemake-workflows/rna-seq-star-deseq2
@@ -17,9 +22,9 @@ def get_deseq2_threads(wildcards=None):
 def get_quant(wildcards):
    pe_only = units[units['fq2'].notnull()] 
    se_only = units[units['fq2'].isnull()] 
-   pe  = expand(join(TRIM_DIR, "{unit.sample}_pe.trim.fq.gz"), unit=se_only.itertuples())
-   pe_quant = list(set(expand(join(QUANT_DIR, "{unit.sample}_pe_x_" + BASE, "quant.sf"),unit=pe_only.itertuples())))
-   se_quant = list(set(expand(join(QUANT_DIR, "{unit.sample}_se_x_" + BASE, "quant.sf"),unit=se_only.itertuples())))
+   pe  = expand(join(trim_dir, "{unit.sample}_pe.trim.fq.gz"), unit=se_only.itertuples())
+   pe_quant = list(set(expand(join(quant_dir, "{unit.sample}_pe_x_" + BASE, "quant.sf"),unit=pe_only.itertuples())))
+   se_quant = list(set(expand(join(quant_dir, "{unit.sample}_se_x_" + BASE, "quant.sf"),unit=se_only.itertuples())))
    return se_quant + pe_quant
 
 rule deseq2_init:
@@ -28,7 +33,7 @@ rule deseq2_init:
         gene_trans_map = join(ASSEMBLY_DIR, BASE + '.fasta.gene_trans_map'),
 #       quant = expand(join(QUANT_DIR,"{unit.sample}_{unit.unit}_x_" + BASE, "quant.sf"), unit=units.itertuples()),
     output:
-        join(DSEQ2_DIR, "all.rds") #r data object
+        join(deseq_dir, BASE + "_all.rds") #r data object
     params:
         samples=config["samples"]
     conda:
@@ -43,11 +48,11 @@ rule deseq2_init:
 rule deseq2_pca:
     input:
         rules.deseq2_init.output
-    #    join(DSEQ2_DIR, "all.rds")
+    #    join(deseq_dir, "all.rds")
     output:
-        #join(DSEQ2_DIR, "pca.svg")
-        #join(DSEQ2_DIR, "pca.pdf"),
-        report(join(DSEQ2_DIR, "pca.pdf"), "../../report/pca.rst")
+        #join(deseq_dir, "pca.svg")
+        #join(deseq_dir, "pca.pdf"),
+        report(join(deseq_dir, "pca.pdf"), "../../report/pca.rst")
     params:
         pca_labels=deseq_params["pca"]["labels"]
     conda:
@@ -65,13 +70,13 @@ def get_contrast(wildcards):
 rule deseq2:
     input:
         rules.deseq2_init.output
-    #    join(DSEQ2_DIR, "all.rds")
+    #    join(deseq_dir, "all.rds")
     output:
-        table=join(DSEQ2_DIR,"{contrast}.diffexp.tsv"),
-        sigTable=join(DSEQ2_DIR,"{contrast}.padj_0.1.diffexp.tsv"),
-        ma_plot=join(DSEQ2_DIR, "{contrast}.ma-plot.pdf"),
-        #table=report(join(DSEQ2_DIR,"{contrast}.diffexp.tsv", "../../report/diffexp.rst")),
-        #ma_plot=report(join(DSEQ2_DIR, "{contrast}.ma-plot.pdf", "../../report/ma.rst")),
+        table=join(deseq_dir,"{contrast}.diffexp.tsv"),
+        sigTable=join(deseq_dir,"{contrast}.padj_0.1.diffexp.tsv"),
+        ma_plot=join(deseq_dir, "{contrast}.ma-plot.pdf"),
+        #table=report(join(deseq_dir,"{contrast}.diffexp.tsv", "../../report/diffexp.rst")),
+        #ma_plot=report(join(deseq_dir, "{contrast}.ma-plot.pdf", "../../report/ma.rst")),
     params:
         contrast=get_contrast
     conda:

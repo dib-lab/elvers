@@ -2,13 +2,13 @@ import os, re
 from os.path import join, dirname
 #from utils import is_single_end
 
-#fastqc_zip = "_{}.zip".format(target_suffix)
-#fastqc_html = "_{}.html".format(target_suffix)
+trim_dir = config['trimmomatic']['eelpond_dirname']
+qc_dir = config['fastqc']['eelpond_dirname']
 
 def get_trimmed(wildcards):
     if not is_single_end(**wildcards): # this also ignores orphans
-        return expand(join(TRIM_DIR, '{sample}_{unit}_{end}.trim.fq.gz'), end = ['1','2'],**wildcards)
-    return expand(join(TRIM_DIR, '{sample}_{unit}_se.trim.fq.gz'),**wildcards)
+        return expand(join(trim_dir, '{sample}_{unit}_{end}.trim.fq.gz'), end = ['1','2'],**wildcards)
+    return expand(join(trim_dir, '{sample}_{unit}_se.trim.fq.gz'),**wildcards)
 
 def get_pretrim(wildcards):
     if not is_single_end(**wildcards):
@@ -21,8 +21,8 @@ rule fastqc_pre_trim:
     input:
         get_pretrim
     output:
-        html=join(QC_DIR,'{sample}_{unit}_{end}_fastqc.html'),
-        zip=join(QC_DIR,'{sample}_{unit}_{end}_fastqc.zip'),
+        html=join(qc_dir,'{sample}_{unit}_{end}_fastqc.html'),
+        zip=join(qc_dir,'{sample}_{unit}_{end}_fastqc.zip'),
     params: ""
     log: join(LOGS_DIR, 'fastqc/{sample}_{unit}_{end}.log')
     conda: "fastqc-env.yaml"
@@ -34,8 +34,8 @@ rule fastqc_post_trim:
     input:
         get_trimmed
     output:
-        html=join(QC_DIR,'{sample}_{unit}_{end}_trimmed_fastqc.html'),
-        zip=join(QC_DIR,'{sample}_{unit}_{end}_trimmed_fastqc.zip'),
+        html=join(qc_dir,'{sample}_{unit}_{end}_trimmed_fastqc.html'),
+        zip=join(qc_dir,'{sample}_{unit}_{end}_trimmed_fastqc.zip'),
     params: ""
     log: join(LOGS_DIR, 'fastqc/{sample}_{unit}_{end}_trimmed.log') 
     wrapper:

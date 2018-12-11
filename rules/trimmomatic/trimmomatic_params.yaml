@@ -1,4 +1,5 @@
 trimmomatic:
+  eelpond_dirname: 'trimmed'
   trim_cmd:  "ILLUMINACLIP:{}:2:40:15 LEADING:20 TRAILING:20 SLIDINGWINDOW:4:15 MINLEN:35"
 
   adapter_file:
@@ -6,3 +7,8 @@ trimmomatic:
     pe_url: "https://raw.githubusercontent.com/timflutre/trimmomatic/master/adapters/TruSeq3-PE-2.fa"
     se_name: "TruSeq3-SE.fa"
     se_url: "https://raw.githubusercontent.com/timflutre/trimmomatic/master/adapters/TruSeq3-SE.fa"
+
+  extensions:
+    read:
+      - ".trim.fq.gz"
+      - ".se.trim.fq.gz"

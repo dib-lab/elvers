@@ -1,5 +1,8 @@
 from os.path import join
 
+salmon_params = config['salmon']
+quant_dir = salmon_params['eelpond_dirname']
+
 # use if you don't want to collapse technical replicates ("units" column; deseq2 not supported)
 def get_trimmed(wildcards):
     readsD = {}
@@ -44,7 +47,7 @@ rule salmon_index:
     input:
         join(ASSEMBLY_DIR, BASE + ".fasta")
     output:
-        directory(join(QUANT_DIR, BASE + "_salmon"))
+        directory(join(quant_dir, BASE + "_salmon"))
     message:
         """--- Indexing the transcriptome with Salmon ---"""
     threads: 2
@@ -63,10 +66,10 @@ rule salmon_quant_reads_pe:
     """
     input:
         unpack(get_trimmed_combined_pe),
-        index = join(QUANT_DIR, "{assembly}", "{assembly}_salmon")
+        index = join(quant_dir, "{assembly}", "{assembly}_salmon")
     output:
-        quant = join(QUANT_DIR,"{assembly}", "{sample}_{unit}","quant.sf"),
-        lib = join(QUANT_DIR, "{assembly}", "{sample}_{unit}","lib_format_counts.json")
+        quant = join(quant_dir,"{assembly}", "{sample}_{unit}","quant.sf"),
+        lib = join(quant_dir, "{assembly}", "{sample}_{unit}","lib_format_counts.json")
     message:
         """--- Quantifying transcripts with Salmon ---"""
     params:
@@ -84,10 +87,10 @@ rule salmon_quant_reads_se:
     """
     input: 
         unpack(get_trimmed_combined_se),
-        index = join(QUANT_DIR, BASE + "_salmon")
+        index = join(quant_dir, BASE + "_salmon")
     output:
-        quant = join(QUANT_DIR, "{sample}_se_x_" + BASE,"quant.sf"),
-        lib = join(QUANT_DIR, "{sample}_se_x_" + BASE,"lib_format_counts.json")
+        quant = join(quant_dir, "{sample}_se_x_" + BASE,"quant.sf"),
+        lib = join(quant_dir, "{sample}_se_x_" + BASE,"lib_format_counts.json")
     message:
         """--- Quantifying transcripts with Salmon ---"""
     params:

@@ -9,6 +9,7 @@ import sys
 import pprint
 import yaml
 import glob
+import collections
 import snakemake
 
 def find_Snakefile(workdir):
@@ -54,10 +55,53 @@ def write_yaml(yamlD, paramsfile):
     with open(paramsfile, 'w') as params:
         yaml.dump(yamlD, stream=params, indent=2,  default_flow_style=False)
 
+
+def update_nested_dict(d, other):
+# Can't just update at top level, need to update nested params
+#https://code.i-harness.com/en/q/3154af
+    for k, v in other.items():
+        if isinstance(v, collections.Mapping):
+            d_v = d.get(k)
+            if isinstance(d_v, collections.Mapping):
+                update_nested_dict(d_v, v)
+            else:
+                d[k] = v.copy()
+        else:
+            d[k] = v
+
+def build_dirs(workdir, params):
+    # set up dirs, basename
+    # defaults
+    params['rules_dir'] = os.path.join(workdir, 'rules')
+    params['animals_dir'] = os.path.join(workdir, "common", "animals")
+    # basename
+    if not params['basename']:
+        params['basename'] = 'eelpond'
+    basename = params['basename']
+    # outdir, logsdir, assemblydir
+    if params.get('experiment'):
+        outdir = basename + "_out_" + params['experiment']
+    else:
+        outdir = basename + '_out'
+    params['out_dir'] = outdir
+    params['logs_dir'] =  os.path.join(outdir, 'logs')
+    params['assembly_dir'] =  os.path.join(outdir, 'assembly')
+    #build dir structure from default params
+    for prog, prog_params in params.items():
+        if isinstance(prog_params, dict):
+            prog_dirname = prog_params.get('eelpond_dirname', prog)
+            params[prog]['eelpond_dirname'] = os.path.join(outdir, prog_dirname)
+    return params
+
+
+### check link data vs ftp data ### !!!
+
+
 def main(args):
     # first, find the Snakefile and configfile
     print('\n--------')
     print('checking for required files:')
+    print('--------\n')
     
     thisdir = os.path.abspath(os.path.dirname(__file__))
     snakefile = find_Snakefile(thisdir)
@@ -70,7 +114,8 @@ def main(args):
     configD = read_yaml(configfile)
     # next, grab default parameters from the *_params.yaml files. 
     paramsD = build_params(thisdir) 
-    paramsD.update(configD) # configD takes priority over default params
+    update_nested_dict(paramsD,configD) # configD takes priority over default params 
+    paramsD = build_dirs(thisdir, paramsD) # build dir structure
     
     if paramsD['assembly_input']['assembly']:
         assemblyfile = paramsD['assembly_input']['assembly']

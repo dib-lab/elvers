@@ -7,6 +7,8 @@ from os.path import join
 #   threads:
 #   params:
 
+busco_dir = config['busco']['eelpond_dirname']
+
 rule run_busco:
     input:
        join(ASSEMBLY_DIR, BASE + ".fasta") 
@@ -29,6 +31,6 @@ rule move_busco:
     input: rules.run_busco.output
     #input: 'run_busco_' + BASE
     #output: join(BUSCO_DIR, os.path.dirname(rules.run_busco.output)) 
-    output: join(BUSCO_DIR, 'run_busco_' + BASE)
+    output: join(busco_dir, 'run_busco_' + BASE)
     log: join(LOGS_DIR, 'busco/move_busco.log')
     shell: ("mv $(dirname {input})  {BUSCO_DIR} 2> {log}") #; rm -rf $(dirname {input})")

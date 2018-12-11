@@ -1,0 +1,5 @@
+busco:
+  eelpond_dirname: 'assembly_quality'
+  extensions:
+    base:
+      - ''

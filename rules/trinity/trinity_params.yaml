@@ -1,8 +1,8 @@
-
 trinity:
-    max_memory : "10G"
+  extensions:
+    base:
+      - '_trinity.fasta'
+      - '_trinity.fasta.gene_trans_map'
+  eelpond_dirname: 'assembly'
+  max_memory : "30G"
 
-
-
-#update_config(config_default, trinity_config)
-#config = config_default

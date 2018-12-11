@@ -1,4 +1,5 @@
 fastqc:
+  eelpond_dirname: 'qc'
   extensions: 
     read:
       - '_fastqc.zip'
