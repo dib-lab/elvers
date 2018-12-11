@@ -66,23 +66,24 @@ def main(args):
         sys.stderr.write('Error: cannot find configfile {}\n'.format(args.configfile))
         sys.exit(-1)
     
-    # next, grab default parameters from the *_params.yaml files
+    # grab all params in user config file 
     configD = read_yaml(configfile)
-    paramsD = build_params(thisdir)
+    # next, grab default parameters from the *_params.yaml files. 
+    paramsD = build_params(thisdir) 
     paramsD.update(configD) # configD takes priority over default params
     
-    if 'assembly_input' in paramsD.keys():
-        assert paramsD['assembly_input']['assembly'] is not None, "chosen workflow requires transcriptome assembly as input"
-        assert paramsD['assembly_input']['gene_trans_map'] is not None, "chosen workflow requires transcriptome gene transcript map as input"
+    if paramsD['assembly_input']['assembly']:
         assemblyfile = paramsD['assembly_input']['assembly']
         assert os.path.exists(assemblyfile), 'Error: cannot find input assembly at {}\n'.format(assemblyfile) 
-        #gtmap = paramsD['assembly_input']['gene_trans_map']
-        #assert os.path.exists(gtmap), 'Error: cannot find input assembly at {}\n'.format(gtmap) 
-
+        sys.stderr.write('\tFound input assembly at {}\n'.format(assemblyfile))
+        gtmap = paramsD['assembly_input']['gene_trans_map']
+        assert os.path.exists(gtmap), 'Error: cannot find assembly gene_trans_map at {}\n'.format(gtmap) 
+        sys.stderr.write('\tFound input assembly gene-transcript map at {}\n'.format(gtmap))
+        
     # Note: Passing a configfile allows nested yaml/dictionary format. 
     # Passing these params in via `config` would require a flat dictionary.
     paramsfile = os.path.join(os.path.dirname(configfile), '.ep_' + os.path.basename(configfile))
-    sys.stderr.write('\tAdded default parameters from rule-specific params files.\n\tWriting full config to {}\n'.format(paramsfile))
+    sys.stderr.write('\tAdded default parameters from rule-specific params files.\n\tWriting full params to {}\n'.format(paramsfile))
     write_yaml(paramsD, paramsfile)
 
     print('--------')
@@ -139,6 +140,8 @@ from the main eelpond directory.
     parser.add_argument('--nolock', action='store_true')
     parser.add_argument('--unlock', action='store_true')
     parser.add_argument('--experiment', default=None)
+    ### to do: enable the option below
+    parser.add_argument('--build_paramsfile', action='store_true', help='just build the default parameter file')
     args = parser.parse_args()
 
     sys.exit(main(args))
