@@ -25,11 +25,10 @@ def find_yaml(workdir, filename, name):
         for suffix in ('', '.yaml', '.yml'):
             tryfile = os.path.join(workdir, filename + suffix)
             if os.path.exists(tryfile) and not os.path.isdir(tryfile):
-                sys.stderr.write('Found {} file at {}\n'.format(name, tryfile))
+                sys.stderr.write('\tFound {} file at {}\n'.format(name, tryfile))
                 workflowfile = tryfile
                 break
     assert workflowfile, 'Error, cannot find specified {} file {}\n'.format(name, filename)
-    print('\t{}: {}'.format(name, workflowfile))
     return workflowfile
 
 def build_params(workdir):
@@ -55,13 +54,11 @@ def write_yaml(yamlD, paramsfile):
     with open(paramsfile, 'w') as params:
         yaml.dump(yamlD, stream=params, indent=2,  default_flow_style=False)
 
-def check_input_assembly(configfile):
-    assert config['assembly_input']['assembly'] is not None, "chosen workflow requires transcriptome assembly as input"
-    assert config['assembly_input']['gene_trans_map'] is not None, "chosen workflow requires transcriptome gene transcript map as input"
-
-
 def main(args):
     # first, find the Snakefile and configfile
+    print('\n--------')
+    print('checking for required files:')
+    
     thisdir = os.path.abspath(os.path.dirname(__file__))
     snakefile = find_Snakefile(thisdir)
     configfile = find_yaml(thisdir, args.configfile, 'configfile') # find configfile
@@ -70,14 +67,22 @@ def main(args):
         sys.exit(-1)
     
     # next, grab default parameters from the *_params.yaml files
-    print('\tadding default parameters from rule-specific params files')
     configD = read_yaml(configfile)
     paramsD = build_params(thisdir)
     paramsD.update(configD) # configD takes priority over default params
     
+    if 'assembly_input' in paramsD.keys():
+        assert paramsD['assembly_input']['assembly'] is not None, "chosen workflow requires transcriptome assembly as input"
+        assert paramsD['assembly_input']['gene_trans_map'] is not None, "chosen workflow requires transcriptome gene transcript map as input"
+        assemblyfile = paramsD['assembly_input']['assembly']
+        assert os.path.exists(assemblyfile), 'Error: cannot find input assembly at {}\n'.format(assemblyfile) 
+        #gtmap = paramsD['assembly_input']['gene_trans_map']
+        #assert os.path.exists(gtmap), 'Error: cannot find input assembly at {}\n'.format(gtmap) 
+
     # Note: Passing a configfile allows nested yaml/dictionary format. 
     # Passing these params in via `config` would require a flat dictionary.
     paramsfile = os.path.join(os.path.dirname(configfile), '.ep_' + os.path.basename(configfile))
+    sys.stderr.write('\tAdded default parameters from rule-specific params files.\n\tWriting full config to {}\n'.format(paramsfile))
     write_yaml(paramsD, paramsfile)
 
     print('--------')
