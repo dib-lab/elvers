@@ -1,0 +1,5 @@
+salmon:
+  extensions: 
+    read:
+      - '/quant.sf'
+      - '/lib_format_counts.json'

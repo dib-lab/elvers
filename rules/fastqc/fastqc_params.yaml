@@ -1,0 +1,7 @@
+fastqc:
+  extensions: 
+    read:
+      - '_fastqc.zip'
+      - '_fastqc.html'
+      - '_trimmed_fastqc.zip'
+      - '_trimmed_fastqc.html'

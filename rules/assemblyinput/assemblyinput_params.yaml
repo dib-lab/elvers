@@ -1,0 +1,4 @@
+assemblyinput:
+  extensions:
+    - '.fasta'
+    - '.fasta.gene_trans_map'

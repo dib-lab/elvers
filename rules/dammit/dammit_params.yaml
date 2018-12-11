@@ -3,3 +3,7 @@ dammit:
   db_extra: " --quick "
   annot_extra:  " --quick "
   busco_group:  "metazoa"
+  extensions: 
+     base: 
+       - '.fasta.dammit.gff3'
+       - '.fasta.dammit.fasta'
