@@ -44,10 +44,14 @@ rule khmer_read_processing_pe:
         join(LOGS_DIR, 'khmer/{sample}_{unit}_' + BASE + '.log')
     conda: 
         'khmer-env.yaml'
-    shell: " (interleave-reads.py {input.r1} {input.r2} && zcat {input.r1_orphan} {input.r2_orphan}) | "
+    shell: " (interleave-reads.py {input.r1} {input.r2} )| "
            " (trim-low-abund.py -V -k {params.k} -Z {params.Z} -C {params.C} - -o - -M {params.memory} "
            " --diginorm --diginorm-coverage={params.cov}) | (extract-paired-reads.py --gzip "
            " -p {output.paired} -s {output.single}) > {log}"
+    #shell: " (interleave-reads.py {input.r1} {input.r2} && zcat {input.r1_orphan} {input.r2_orphan}) | "
+    #       " (trim-low-abund.py -V -k {params.k} -Z {params.Z} -C {params.C} - -o - -M {params.memory} "
+    #       " --diginorm --diginorm-coverage={params.cov}) | (extract-paired-reads.py --gzip "
+    #       " -p {output.paired} -s {output.single}) > {log}"
 
 rule khmer_split_paired:
     input: join(khmer_dir,'{sample}_{unit}.paired.khmer.fq.gz'),

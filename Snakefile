@@ -96,6 +96,9 @@ khmer_targs = generate_targs(config['khmer'], samples, BASE, ends = [""])
     #    khmer_targs = generate_data_targs(KHMER_TRIM_DIR, SAMPLES, khmer_pe_ext, ends = [""])
         #TARGETS += khmer_targs
 
+rule kmer_trim:
+    input: khmer_targs
+
 
 if config['assembly_input']['assembly']:
     include: join(RULES_DIR, 'utils', 'assemblyinput.rule')
