@@ -32,11 +32,11 @@ source ~/.bash_profile
 ```
 
 ```
-conda install -c bioconda -c conda-forge -y snakemake
+conda install -c bioconda -c conda-forge -y snakemake yaml
 ```
 
 
-Run:
+Run Eelpond:
 
 ```
 #get eelpond code
@@ -46,8 +46,23 @@ cd eelpond
 git submodule update --init --recursive #download test data submodule
 
 #run eelpond
-snakemake --use-conda --configfile rna_testdata/nema_config.yaml
+./run_eelpond nema-test
 ```
+
+This will run a small set of _Nematostella vectensis_ test data (from [Tulin et al., 2013](https://evodevojournal.biomedcentral.com/articles/10.1186/2041-9139-4-16))
+
+**Running your own data:**
+
+To run your own data, you'll need to create two files, a `tsv` file containing 
+your sample info, and a `yaml` file containing basic configuration info. To start,
+copy the test data files so you can modify them.
+
+```
+cp nema-test.yaml <my_data_name.yaml>
+cp nema_samples_v2.tsv <my-tsv-name.tsv>
+```
+
+Then, modify as necessary. Be sure to specify the new name of your `tsv` file within the `yaml` configuration file.
 
 
 **References:**  
@@ -58,15 +73,16 @@ snakemake --use-conda --configfile rna_testdata/nema_config.yaml
   * [SIO-BUG, nonmodel RNAseq workshop, October 2017](http://rnaseq-workshop-2017.readthedocs.io/en/latest/index.html)
 
 
-**intended workflows:**  
+**available workflows:**  
 
-  - Read Quality Trimming and Filtering
-  - Digital Normalization
-  - Assembly
-  - Quality Assessment
-  - Annotation
-  - Transcript Quantification 
-  - Differential Expression
+  - preprocess: Read Quality Trimming and Filtering (fastqc, trimmomatic)
+  - ktrim: Kmer Trimming and/or Digital Normalization (khmer)
+  - assembly: Transcriptome Assembly (trinity)
+  - assembly_quality: Assess Assembly Quality (busco, sourmash, transrate) 
+  - annotation : Annotate the transcriptome (dammit)
+  - quantification: Quantify transcripts (salmon) 
+
+  _in progress_
+  - diffexp: Basic differential expression analyses (deseq2)
 
 
-*snakemake style builds off of [rna-seq-star example workflow](https://github.com/snakemake-workflows/rna-seq-star-deseq2)*
