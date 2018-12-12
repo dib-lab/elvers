@@ -36,8 +36,8 @@ extra_css:
   - css/custom.css
 
 # give a title for each page
-pages:
-  - 'Index' : 'index.md'
+nav:
+  - 'About' : 'index.md'
   - 'Read Quality Trimming and Filtering' : 'QC.md'
   - 'Annotation' : 'Annotation.md'
   - 'Digital Normalization' : 'Diginorm.md'
@@ -45,6 +45,8 @@ pages:
   - 'Quality Assessment': 'Quality.md'
   - 'Transcript Quantification' : 'Quant.md'
   - 'Differential Expression' : 'DE.md'
+  - 'For Developers':
+    - 'dev_tips.md'
 
 # Extensions
 markdown_extensions:
