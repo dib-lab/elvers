@@ -2,30 +2,34 @@ from os.path import join
 from common.utils import get_params
 
 # default params from paramsfile
-trim_params = get_params('trimmomatic')
+#trim_params = get_params('trimmomatic')
+data_dir    = config['raw_data']['eelpond_dirname']
+trim_params = config['trimmomatic']
+trim_dir    = trim_params['eelpond_dirname']
+
 
 # override defaults with snakemake config (main configfile or snakemake --config)
-if 'trimmomatic' in config.keys():
-    trim_params.update(config['trimmomatic']) 
+#if 'trimmomatic' in config.keys():
+#    trim_params.update(config['trimmomatic']) 
 
 def get_pretrim_pe(wildcards):
     if not is_single_end(**wildcards):
-        return dict(zip(['r1','r2'], units.loc[(wildcards.sample, wildcards.unit), ["fq1", "fq2"]].dropna()))
+        return dict(zip(['r1','r2'], samples.loc[(wildcards.sample, wildcards.unit), ["fq1", "fq2"]].dropna()))
 
 def get_pretrim_se(wildcards):
-    return units.loc[(wildcards.sample, wildcards.unit),["fq1"]].dropna()
+    return samples.loc[(wildcards.sample, wildcards.unit),["fq1"]].dropna()
 
 def get_pretrim_combined_pe(wildcards):
     readsD = {}
-    pe_only = units[units['fq2'].notnull()]
+    pe_only = samples[samples['fq2'].notnull()]
     if not is_single_end(**wildcards):
-        readsD['r1'] = expand(join(READS_DIR, '{sample}_1.fq.gz'),**wildcards)
-        readsD['r2'] = expand(join(READS_DIR, '{sample}_2.fq.gz'),**wildcards)
+        readsD['r1'] = expand(join(data_dir, '{sample}_1.fq.gz'),**wildcards)
+        readsD['r2'] = expand(join(data_dir, '{sample}_2.fq.gz'),**wildcards)
         return readsD
 
 def get_pretrim_combined_se(wildcards):
     if is_single_end(**wildcards):
-        return expand(join(READS_DIR, '{sample}_se.fq.gz'),**wildcards)
+        return expand(join(data_dir, '{sample}_se.fq.gz'),**wildcards)
 
 rule trimmomatic_pe:
     """
@@ -35,10 +39,10 @@ rule trimmomatic_pe:
         unpack(get_pretrim_pe)
     #    unpack(get_pretrim_combined_pe)
     output:
-        r1=join(TRIM_DIR, "{sample}_{unit}_1.trim.fq.gz"),
-        r2=join(TRIM_DIR, "{sample}_{unit}_2.trim.fq.gz"),
-        r1_unpaired=join(TRIM_DIR, "{sample}_{unit}_1.se.trim.fq.gz"),
-        r2_unpaired=join(TRIM_DIR, "{sample}_{unit}_2.se.trim.fq.gz"),
+        r1=join(trim_dir, "{sample}_{unit}_1.trim.fq.gz"),
+        r2=join(trim_dir, "{sample}_{unit}_2.trim.fq.gz"),
+        r1_unpaired=join(trim_dir, "{sample}_{unit}_1.se.trim.fq.gz"),
+        r2_unpaired=join(trim_dir, "{sample}_{unit}_2.se.trim.fq.gz"),
     message:
         """--- Quality trimming PE read data with Trimmomatic."""
     params:
@@ -60,8 +64,8 @@ rule trimmomatic_se:
        get_pretrim_se
       #get_pretrim_combined_se
     output:
-        r1=join(TRIM_DIR, "{sample}_{unit}_se.trim.fq.gz"),
-        #r1=join(TRIM_DIR, "{sample}_se.trim.fq.gz"),
+        r1=join(trim_dir, "{sample}_{unit}_se.trim.fq.gz"),
+        #r1=join(trim_dir, "{sample}_se.trim.fq.gz"),
     message:
         """--- Quality trimming SE read data with Trimmomatic."""
     params:

@@ -9,7 +9,9 @@ from trinity_targets import get_khmer_trimmed_trinity_input
 #RIGHT= [x for x in all_trimmed if '_2.trim' in x]
 #SINGLE= [x for x in all_trimmed if 'se' in x]
 
-khmer_trimmed = get_khmer_trimmed_trinity_input(units, base, KHMER_TRIM_DIR)
+khmer_dir = config['khmer']['eelpond_dirname']
+
+khmer_trimmed = get_khmer_trimmed_trinity_input(samples, base, khmer_dir)
 LEFT = [x for x in khmer_trimmed if 'paired.1' in x]
 RIGHT= [x for x in khmer_trimmed if 'paired.2' in x]
 SINGLE= [x for x in khmer_trimmed if any(['se' in x, 'single' in x])]

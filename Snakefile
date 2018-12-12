@@ -11,6 +11,7 @@ import numpy as np
 import pandas as pd
 from snakemake.utils import validate, min_version
 from common.utils import * 
+import glob
 
 min_version("5.1.2") #minimum snakemake version
 
@@ -20,37 +21,51 @@ samples = pd.read_table(config["samples"],dtype=str).set_index(["sample", "unit"
 #SAMPLES = (samples['sample'] + '_' + samples['unit']).tolist()
 validate(samples, schema="schemas/samples_v2.schema.yaml") # new version
 
+# check for replicates ** need to change with new samples scheme
+# change this replicate check to work with single samples file
+#replicates = True
+#num_reps = samples['condition'].value_counts().tolist()
+#if any(x < 2 for x in num_reps):
+#    replicates = False
+
 # grab dirs, basename built in run_eelpond
-RULES_DIR = config['rules_dir']
 BASE = config['basename']
 OUT_DIR = config['out_dir']
 LOGS_DIR = config['logs_dir']
-ANIMALS_DIR = config['animals_dir']
-ASSEMBLY_DIR = config['animals_dir']
+ASSEMBLY_DIR = config['assembly_dir']
 
 #get ascii  animals
-animal_targs = [join(ANIMALS_DIR,"octopus"),join(ANIMALS_DIR,"fish")]
-
-# check for replicates ** need to change with new samples scheme
-# change this replicate check to work with single samples file
-replicates = True
-num_reps = samples['condition'].value_counts().tolist()
-if any(x < 2 for x in num_reps):
-    replicates = False
+#animal_targs = [join(config['animals_dir'],"octopus"),join(config['animals_dir'],"fish")]
+animal_targs = glob.glob(join(config['animals_dir'], '*')) # get all ascii animals
+animalsD = {os.path.basename(x): x for x in animal_targs}
+octopus = animalsD['octopus']
+fish = animalsD['fish']
+#print(animalsD.keys())
 
 #### snakemake ####
+# include rule files
+#rules = glob.glob(join(config['rules_dir'], '*/*.rule'))
+#print(rules)
+#for r in rules:
+#    include: r
+
+
 onstart: 
-    shell('cat {join(ANIMALS_DIR,"octopus")')
+    shell('cat {octopus}')
     print('-----------------------------------------------------------------')
     print('Welcome to the Eel Pond, de novo transcriptome assembly pipeline.')
     print('-----------------------------------------------------------------')
 
 onsuccess:
     print("\n--- Eel Pond Workflow executed successfully! ---\n")
-    shell('cat {animal_targs[1]}')
+    shell('cat {fish}')
 
 ### include program rules ##
+RULES_DIR = config['rules_dir']
 include: join(RULES_DIR, 'utils', 'common.rule') # might not need this anymore?
+
+
+
 
 # PREPROCESS RULES
 if config.get('download_data', False):

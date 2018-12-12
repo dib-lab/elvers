@@ -140,7 +140,7 @@ def main(args):
     print('--------')
 
     # run!!
-    # params file becomes snakemake config
+    # params file becomes snakemake configfile
     status = snakemake.snakemake(snakefile, configfile=paramsfile, use_conda=True, 
                                  targets=args.targets, printshellcmds=True,
                                  dryrun=args.dry_run, lock=not args.nolock,
@@ -160,12 +160,12 @@ Run eelpond snakemake workflows, using the given configfile.
 Targets:
 
    full             - run full workflow (default)
-   quality_trim     - preprocess reads (fastqc, trimmomatic)
+   quality_trim     - preprocess reads 
    kmer_trim        - kmer trim preprocessed reads
    assemble         - transcriptome assembly 
    annotate         - annotate transcriptome assembly
    quantify         - read quantification 
-   quality          - assess assembly quality (busco, transrate)
+   quality          - assess assembly quality 
    diff_expression  - differential expression analysis
    clean            - remove target dirs 
 
