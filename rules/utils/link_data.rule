@@ -1,6 +1,6 @@
 import os
 
-data_dir = config['raw_data']['eelpond_dirname']
+data_dir = config['eelpond_directories']['outdirs']['data']
 
 rule link_fq1:
     input: lambda wildcards:"{}".format(samples.loc[(wildcards.sample,wildcards.unit), "fq1"])

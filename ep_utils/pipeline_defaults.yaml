@@ -1,0 +1,68 @@
+basename: 'eelpond'
+eelpond_directories:
+  rules: rules
+  animals: animals
+  logs: logs
+  outdirs:
+    data: input_data
+    download_data: input_data
+    link_data: input_data
+    preprocess: preprocess
+    kmer_trim: preprocess
+    assembly: assembly
+    annotation: annotation
+    quantification: quant
+    diffexp: diffexp
+
+eelpond_pipeline:
+  download_data:
+    rules:
+      - ftp 
+    targets:
+      - ftp
+  link_data:
+    rules:
+      - link_data 
+    targets:
+      - link_data
+  preprocess:
+    rules:
+      - link_data
+      - fastqc
+      - trimmomatic
+    targets:
+      - fastqc
+      - trimmomatic
+  kmer_trim:
+    rules:
+      - trimmomatic
+      - khmer
+    targets:
+      - khmer
+  assembly:
+    rules:
+      - trinity
+    targets:
+      - trinity
+  annotation:
+    rules:
+      - dammit
+    targets:
+      - dammit
+  assembly_quality:
+    rules:
+      - busco
+      - sourmash
+    targets:
+      - busco
+      - sourmash
+  quantification:
+    rules:
+      - salmon
+    targets:
+      - salmon
+  diffexp:
+    rules:
+      - deseq2
+    targets:
+      - deseq2

@@ -1,0 +1,5 @@
+ftp_data:
+  eelpond_dirname: 'input_data'
+  extensions:
+    read:
+      - ".fq.gz"

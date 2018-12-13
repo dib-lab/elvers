@@ -32,16 +32,31 @@ def find_yaml(workdir, filename, name):
     assert workflowfile, 'Error, cannot find specified {} file {}\n'.format(name, filename)
     return workflowfile
 
-def build_params(workdir):
-    rule_params_files = glob.glob(os.path.join(workdir, 'rules','*/*_params.yaml'))
-    paramsD = {}
-    for f in rule_params_files:
-        with open(f, 'r') as stream:
-            try:
-                paramsD.update(yaml.load(stream))
-            except yaml.YAMLError as exc:
-                print(exc)
-    return paramsD
+def build_default_params(workdir, targets):
+    defaultParams = {}
+    # first, figure out which parts of the pipeline are being run, and get those defaults
+    pipeline_defaultsFile = find_yaml(workdir, os.path.join('ep_utils', 'pipeline_defaults'), 'pipeline_defaults')
+    pipeline_defaults = read_yaml(pipeline_defaultsFile)
+    # add all directories
+    defaultParams['eelpond_directories'] = pipeline_defaults['eelpond_directories']
+    # grab targets, and subset by input target
+    pipelineTargets = pipeline_defaults['eelpond_pipeline']
+    subsetPipelineD = {k: pipelineTargets[k] for k in pipelineTargets.keys() & targets}
+    defaultParams['eelpond_pipeline'] = subsetPipelineD
+    # next, get defaults for the included rules
+    targetRules = []
+    for targD in subsetPipelineD.values():
+        targetRules+= targD.get('rules', [])
+    ruleParamsFiles = []
+    includeRules = []
+    rules_dir = defaultParams['eelpond_directories']['rules']    
+    for rule in targetRules:
+        ruleParamsFiles+= glob.glob(os.path.join(workdir, rules_dir, '*', rule + '_params.yaml'))
+        includeRules+= glob.glob(os.path.join(workdir, rules_dir, '*', rule + '.rule'))
+    for f in ruleParamsFiles:
+        defaultParams.update(read_yaml(f))
+    defaultParams['include_rules'] = includeRules
+    return defaultParams
 
 def read_yaml(filename):
     with open(filename, 'r') as stream:
@@ -69,32 +84,39 @@ def update_nested_dict(d, other):
         else:
             d[k] = v
 
-def build_dirs(workdir, params):
-    # set up dirs, basename
-    # defaults
-    params['rules_dir'] = os.path.join(workdir, 'rules')
-    params['animals_dir'] = os.path.join(workdir, "common", "animals")
-    # basename
-    if not params['basename']:
-        params['basename'] = 'eelpond'
+def build_dirs(workdir, params, targets):
+    #build eelpond dir info
+    ep_dirs = params['eelpond_directories']
+    for d in ep_dirs:
+        if 'outdirs' not in d:
+            ep_dirs[d] = os.path.join(workdir, d)
+        if 'animals' in d:
+            ep_dirs[d] = os.path.join(workdir, 'ep_utils', d)
+    params['eelpond_directories'] = ep_dirs
+    
+    #build out dirs for target workflows 
     basename = params['basename']
-    # outdir, logsdir, assemblydir
     if params.get('experiment'):
         outdir = basename + "_out_" + params['experiment']
     else:
         outdir = basename + '_out'
-    params['out_dir'] = outdir
-    params['logs_dir'] =  os.path.join(outdir, 'logs')
-    params['assembly_dir'] =  os.path.join(outdir, 'assembly')
-    #build dir structure from default params
-    for prog, prog_params in params.items():
-        if isinstance(prog_params, dict):
-            prog_dirname = prog_params.get('eelpond_dirname', prog)
-            params[prog]['eelpond_dirname'] = os.path.join(outdir, prog_dirname)
+    params['eelpond_directories']['out_dir'] = outdir
+    
+    outDirs = params['eelpond_directories']['outdirs']
+    for targ, outD in outDirs.items():
+        outDirs[targ] = os.path.join(outdir, outD)
+    params['eelpond_directories']['outdirs'] = outDirs
+    
+    # build program-specific dirs 
+    for targ in targets:
+        tools = params['eelpond_pipeline'][targ]['rules']
+        targ_dir = outDirs[targ]
+        for prog in tools:
+            prog_params = params[prog]
+            if isinstance(prog_params, dict):
+                prog_dirname = prog_params.get('eelpond_dirname', prog)
+                params[prog]['eelpond_dirname'] = os.path.join(targ_dir, prog_dirname)
     return params
-
-
-### check link data vs ftp data ### !!!
 
 
 def main(args):
@@ -109,15 +131,20 @@ def main(args):
     if not configfile:
         sys.stderr.write('Error: cannot find configfile {}\n'.format(args.configfile))
         sys.exit(-1)
-    
-    # grab all params in user config file 
+   
+    # grab defaults, including rule-specific default parameters (*_params.yaml files) 
+    paramsD = build_default_params(thisdir, args.targets)
+
+    # next, grab all params in user config file 
     configD = read_yaml(configfile)
-    # next, grab default parameters from the *_params.yaml files. 
-    paramsD = build_params(thisdir) 
+
+    # update defaults with user-specified parameters
     update_nested_dict(paramsD,configD) # configD takes priority over default params 
-    paramsD = build_dirs(thisdir, paramsD) # build dir structure
+    # use params to build directory structure
+    paramsD = build_dirs(thisdir, paramsD, args.targets)
     
-    if paramsD['assembly_input']['assembly']:
+    assembInput = paramsD.get('assembly_input')
+    if assembInput.get('assembly', None):
         assemblyfile = paramsD['assembly_input']['assembly']
         assert os.path.exists(assemblyfile), 'Error: cannot find input assembly at {}\n'.format(assemblyfile) 
         sys.stderr.write('\tFound input assembly at {}\n'.format(assemblyfile))
