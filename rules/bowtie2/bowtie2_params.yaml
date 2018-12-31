@@ -1,5 +1,4 @@
 bowtie2:
-  eelpond_dirname: 'mapping'
   extensions:
     read:
       - '.bam'

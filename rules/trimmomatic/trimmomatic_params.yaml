@@ -1,5 +1,4 @@
 trimmomatic:
-  eelpond_dirname: 'trimmed'
   trim_cmd:  "ILLUMINACLIP:{}:2:40:15 LEADING:20 TRAILING:20 SLIDINGWINDOW:4:15 MINLEN:35"
 
   adapter_file:

@@ -1,5 +1,4 @@
 salmon:
-  eelpond_dirname: 'quant'
   extensions: 
     read:
       - '/quant.sf'

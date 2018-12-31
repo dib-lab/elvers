@@ -35,13 +35,21 @@ def generate_targs(configD, samples, basename, ends = ["_1", "_2"]):
     outdir = configD['eelpond_dirname']
     exts = configD['extensions']
     targets = []
-    if exts.get('read', None):
+    if exts.get('read', None): # here, probably best to use pe, se read targs, defined in yaml files.
         targets+=generate_data_targs(outdir, samples, exts.get('read'), ends)
     if exts.get('base', None):
         targets+=generate_base_targs(outdir, basename, exts.get('base'))
     return targets
 
-
+def generate_mult_targs(configD, workflow, samples):
+    # pass full config, program names. Call generate_targs to build all
+    target_rules = configD['eelpond_pipeline'][workflow]['targets']
+    base = configD['basename']
+    targs = []
+    for r in target_rules:
+        targs += generate_targs(configD[r], samples, base)
+    return targs
+            
 # don't need this anymore: just building full config via run_eelpond
 def get_params(rule_name, rules_dir='rules'):
     rule_paramsfile = os.path.join(rules_dir, rule_name, rule_name + '_params.yaml') 

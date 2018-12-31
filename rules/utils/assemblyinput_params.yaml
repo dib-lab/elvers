@@ -1,5 +1,4 @@
 assembly_input:
-  eelpond_dirname: assembly
   extensions:
     base:
       - '.fasta'

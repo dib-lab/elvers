@@ -4,13 +4,14 @@ eelpond_directories:
   animals: animals
   logs: logs
   outdirs:
-    data: input_data
+    input_data: input_data
     download_data: input_data
     link_data: input_data
     preprocess: preprocess
     kmer_trim: preprocess
-    assembly: assembly
+    assemble: assembly
     annotation: annotation
+    mapping: mapping 
     quantification: quant
     diffexp: diffexp
 
@@ -31,15 +32,15 @@ eelpond_pipeline:
       - fastqc
       - trimmomatic
     targets:
-      - fastqc
       - trimmomatic
   kmer_trim:
     rules:
+      - link_data
       - trimmomatic
       - khmer
     targets:
       - khmer
-  assembly:
+  assemble:
     rules:
       - trinity
     targets:

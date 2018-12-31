@@ -34,16 +34,14 @@ dirs = config['eelpond_directories']
 
 OUT_DIR = dirs['out_dir']
 LOGS_DIR = dirs['logs']
-assembly_dir = dirs['outdirs']['assembly']
+assembly_dir = dirs['outdirs']['assemble']
 animals_dir = dirs['animals']
 
 #get ascii  animals
-#animal_targs = [join(config['animals_dir'],"octopus"),join(config['animals_dir'],"fish")]
 animal_targs = glob.glob(join(animals_dir, '*')) # get all ascii animals
 animalsD = {os.path.basename(x): x for x in animal_targs}
 octopus = animalsD['octopus']
 fish = animalsD['fish']
-#print(animalsD.keys())
 
 #### snakemake ####
 # include rule files
@@ -62,13 +60,13 @@ onsuccess:
     shell('cat {fish}')
 
 # PREPROCESS
-data_targs = generate_targs(config['link_data'], samples, BASE) 
-fastqc_targs = generate_targs(config['fastqc'], samples, BASE)
-trim_targs = generate_targs(config['trimmomatic'], samples, BASE)
+#data_targs = generate_targs(config['link_data'], samples, BASE) 
+#fastqc_targs = generate_targs(config['fastqc'], samples, BASE)
+#trim_targs = generate_targs(config['trimmomatic'], samples, BASE)
 
 # preprocess targeting rule
 rule preprocess:
-    input: trim_targs #fastqc_targs + trim_targs
+    input: generate_mult_targs(config, 'preprocess', samples)  #generate_targs(config['trimmomatic'], samples, BASE) + generate_targs(config['fastqc'], samples, BASE) #fastqc_targs + trim_targs
 
 ## ASSEMBLY RULES
 
@@ -76,12 +74,8 @@ rule preprocess:
 #    include: join(RULES_DIR, 'khmer','khmer.rule')
 #else:
 #    include: join(RULES_DIR, 'khmer','khmer_no_diginorm.rule')
-	#if kmer_trim:
-	#	khmer_pe_ext = ['_1.khmer.fq.gz', '_2.khmer.fq.gz', '.paired.khmer.fq.gz', '.single.khmer.fq.gz']
-    #    khmer_targs = generate_data_targs(KHMER_TRIM_DIR, SAMPLES, khmer_pe_ext, ends = [""])
-        #TARGETS += khmer_targs
-
 #khmer_targs = generate_targs(config['khmer'], samples, BASE, ends = [""])
+
 #rule kmer_trim:
 #    input: generate_targs(config['khmer'], samples, BASE, ends = [""])
 

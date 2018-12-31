@@ -114,8 +114,8 @@ def build_dirs(workdir, params, targets):
         for prog in tools:
             prog_params = params[prog]
             if isinstance(prog_params, dict):
-                prog_dirname = prog_params.get('eelpond_dirname', prog)
-                params[prog]['eelpond_dirname'] = os.path.join(targ_dir, prog_dirname)
+                #prog_dirname = prog_params.get('eelpond_dirname', prog)
+                params[prog]['eelpond_dirname'] = targ_dir #os.path.join(targ_dir, prog_dirname)
     return params
 
 
@@ -187,7 +187,7 @@ Run eelpond snakemake workflows, using the given configfile.
 Targets:
 
    full             - run full workflow (default)
-   quality_trim     - preprocess reads 
+   preprocess       - preprocess reads 
    kmer_trim        - kmer trim preprocessed reads
    assemble         - transcriptome assembly 
    annotate         - annotate transcriptome assembly
@@ -198,7 +198,7 @@ Targets:
 
 For a quickstart, run this:
 
-   conf/run_eelpond nema-test full
+   run_eelpond nema-test full
 
 from the main eelpond directory.
 

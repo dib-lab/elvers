@@ -4,4 +4,3 @@ sourmash:
       - '.sig'
     reads:
       - '.sig'
-  eelpond_dirname: 'sourmash'

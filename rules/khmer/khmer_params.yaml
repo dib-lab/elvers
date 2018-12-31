@@ -1,6 +1,4 @@
 khmer:
-  eelpond_dirname: 'khmer'
-
   extensions:
     read:
       - '_1.khmer.fq.gz'

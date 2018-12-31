@@ -3,6 +3,5 @@ trinity:
     base:
       - '_trinity.fasta'
       - '_trinity.fasta.gene_trans_map'
-  eelpond_dirname: 'assembly'
   max_memory : "30G"
 
