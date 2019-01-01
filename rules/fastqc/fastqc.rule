@@ -1,43 +1,42 @@
 import os, re
 from os.path import join, dirname
-#from utils import is_single_end
 
+data_dir = config['eelpond_directories']['outdirs']['input_data']
 trim_dir = config['trimmomatic']['eelpond_dirname']
-qc_dir = config['fastqc']['eelpond_dirname']
+qc_dir   = config['fastqc']['eelpond_dirname']
 
 def get_trimmed(wildcards):
-    if not is_single_end(**wildcards): # this also ignores orphans
-        return expand(join(trim_dir, '{sample}_{unit}_{end}.trim.fq.gz'), end = ['1','2'],**wildcards)
-    return expand(join(trim_dir, '{sample}_{unit}_se.trim.fq.gz'),**wildcards)
+    if not is_single_end(**wildcards): 
+        return expand(join(trim_dir, '{sample}_{unit}_{end}.fq.gz'), **wildcards) 
+    return expand(join(trim_dir, '{sample}_{unit}_{end}.fq.gz'), **wildcards)
 
 def get_pretrim(wildcards):
-    if not is_single_end(**wildcards):
-        # paired-end sample
-        return units.loc[(wildcards.sample, wildcards.unit), ["fq1", "fq2"]].dropna()
-    # single end sample
-    return units.loc[(wildcards.sample, wildcards.unit),["fq1"]].dropna() 
+    if not is_single_end(**wildcards): 
+        return expand(join(data_dir, '{sample}_{unit}_{end}.fq.gz'), **wildcards)
+    return expand(join(data_dir, '{sample}_{unit}_{end}.fq.gz'), **wildcards)
 
-rule fastqc_pre_trim:
+rule fastqc_trimmed:
+    input:
+       get_trimmed
+    output:
+        html=join(qc_dir,'{sample}_{unit}_{end}.fastqc.html'),
+        zip=join(qc_dir,'{sample}_{unit}_{end}.fastqc.zip'),
+    params: ""
+    log: join(LOGS_DIR, 'fastqc/{sample}_{unit}_{end}.log')
+    #conda: "fastqc-env.yaml"
+	#script: "wrapper.py"
+	wrapper: "0.27.1/bio/fastqc"
+
+rule fastqc_pretrim:
     input:
         get_pretrim
     output:
-        html=join(qc_dir,'{sample}_{unit}_{end}_fastqc.html'),
-        zip=join(qc_dir,'{sample}_{unit}_{end}_fastqc.zip'),
+        html=join(qc_dir,'{sample}_{unit}_{end}.fastqc.html'),
+        zip=join(qc_dir,'{sample}_{unit}_{end}.fastqc.zip'),
     params: ""
-    log: join(LOGS_DIR, 'fastqc/{sample}_{unit}_{end}.log')
-    conda: "fastqc-env.yaml"
-	script: "wrapper.py"
-	#wrapper:
-        #0.27.1/bio/fastqc"
-
-rule fastqc_post_trim:
-    input:
-        get_trimmed
-    output:
-        html=join(qc_dir,'{sample}_{unit}_{end}_trimmed_fastqc.html'),
-        zip=join(qc_dir,'{sample}_{unit}_{end}_trimmed_fastqc.zip'),
-    params: ""
-    log: join(LOGS_DIR, 'fastqc/{sample}_{unit}_{end}_trimmed.log') 
+ #   conda: "fastqc-env.yaml"
+    log: join(LOGS_DIR, 'fastqc/{sample}_{unit}_{end}.log') 
+#	script: "wrapper.py"
     wrapper:
         "0.27.1/bio/fastqc"
 

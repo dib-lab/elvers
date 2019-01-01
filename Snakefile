@@ -21,7 +21,9 @@ validate(samples, schema="schemas/samples_v2.schema.yaml") # new version
 samples['name'] = samples["sample"].map(str) + '_' + samples["unit"].map(str)
 # to do:  add check for unit values (ignore all units if no unit values) 
 #SAMPLES = (samples['sample'] + '_' + samples['unit']).tolist()
-
+# sample checks
+def is_single_end(sample, unit, end = ''):
+    return pd.isnull(samples.loc[(sample, unit), "fq2"])
 # check for replicates ** need to change with new samples scheme
 # change this replicate check to work with single samples file
 #replicates = True
@@ -73,6 +75,9 @@ rule preprocess:
 
 rule assemble:
     input: generate_mult_targs(config, 'assemble', samples)
+
+rule read_qc:
+    input: generate_mult_targs(config, 'readqc', samples)
 
 ## ASSEMBLY RULES
 
