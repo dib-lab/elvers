@@ -1,4 +1,7 @@
 bowtie2:
   extensions:
     read:
-      - '.bam'
+      pe:
+        - '.pe.bam'
+      se:
+        - '.se.bam'

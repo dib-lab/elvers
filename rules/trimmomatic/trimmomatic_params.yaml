@@ -9,5 +9,10 @@ trimmomatic:
 
   extensions:
     read:
-      - ".trim.fq.gz"
-      - ".se.trim.fq.gz"
+      pe:
+        - "_1.trim.fq.gz"
+        - "_2.trim.fq.gz"
+        - "_1.se.trim.fq.gz"
+        - "_2.se.trim.fq.gz"
+      se:
+        - ".se.trim.fq.gz"

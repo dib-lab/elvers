@@ -1,5 +1,10 @@
 salmon:
   extensions: 
     read:
-      - '/quant.sf'
-      - '/lib_format_counts.json'
+      pe:
+        - '/quant.sf'
+        - '/lib_format_counts.json'
+      se:
+        - '/quant.sf'
+        - '/lib_format_counts.json'
+

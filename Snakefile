@@ -17,9 +17,10 @@ min_version("5.1.2") #minimum snakemake version
 
 # read in sample info 
 samples = pd.read_table(config["samples"],dtype=str).set_index(["sample", "unit"], drop=False)
+validate(samples, schema="schemas/samples_v2.schema.yaml") # new version
+samples['name'] = samples["sample"].map(str) + '_' + samples["unit"].map(str)
 # to do:  add check for unit values (ignore all units if no unit values) 
 #SAMPLES = (samples['sample'] + '_' + samples['unit']).tolist()
-validate(samples, schema="schemas/samples_v2.schema.yaml") # new version
 
 # check for replicates ** need to change with new samples scheme
 # change this replicate check to work with single samples file
@@ -59,25 +60,29 @@ onsuccess:
     print("\n--- Eel Pond Workflow executed successfully! ---\n")
     shell('cat {fish}')
 
-# PREPROCESS
-#data_targs = generate_targs(config['link_data'], samples, BASE) 
-#fastqc_targs = generate_targs(config['fastqc'], samples, BASE)
-#trim_targs = generate_targs(config['trimmomatic'], samples, BASE)
+
+
+## targeting rules
+
+rule kmer_trim:
+    input: generate_mult_targs(config, 'kmer_trim', samples)  
 
 # preprocess targeting rule
 rule preprocess:
-    input: generate_mult_targs(config, 'preprocess', samples)  #generate_targs(config['trimmomatic'], samples, BASE) + generate_targs(config['fastqc'], samples, BASE) #fastqc_targs + trim_targs
+    input: generate_mult_targs(config, 'preprocess', samples)  
+
+rule assemble:
+    input: generate_mult_targs(config, 'assemble', samples)
 
 ## ASSEMBLY RULES
+
+# move this to run_eelpond? Or just generate different rules?
 
 #if config.get('diginorm', True):
 #    include: join(RULES_DIR, 'khmer','khmer.rule')
 #else:
 #    include: join(RULES_DIR, 'khmer','khmer_no_diginorm.rule')
 #khmer_targs = generate_targs(config['khmer'], samples, BASE, ends = [""])
-
-#rule kmer_trim:
-#    input: generate_targs(config['khmer'], samples, BASE, ends = [""])
 
 #assmeb_input
 #if config['assembly_input']['assembly']:

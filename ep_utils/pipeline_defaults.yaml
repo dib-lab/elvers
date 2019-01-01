@@ -1,4 +1,4 @@
-basename: 'eelpond'
+basename: eelpond
 eelpond_directories:
   rules: rules
   animals: animals
@@ -32,6 +32,7 @@ eelpond_pipeline:
       - fastqc
       - trimmomatic
     targets:
+      - fastqc
       - trimmomatic
   kmer_trim:
     rules:

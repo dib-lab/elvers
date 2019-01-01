@@ -1,4 +1,8 @@
 ftp_data:
   extensions:
     read:
-      - ".fq.gz"
+      pe:
+        - "_1.fq.gz"
+        - "_2.fq.gz"
+      se:
+        - ".se.fq.gz"
