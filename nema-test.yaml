@@ -2,9 +2,10 @@ samples: "nema_samples_v2.tsv"
 
 basename: 'nema-test'
 
-assembly_input: 
+assemblyinput: 
   assembly: 'rna_testdata/nema.fasta' 
   gene_trans_map:  'rna_testdata/nema.fasta.gene_trans_map'
+  assembly_extension: '_trinity'
 
 trimmomatic:
   trim_cmd:  "ILLUMINACLIP:{}:2:40:15 LEADING:20 TRAILING:20 SLIDINGWINDOW:4:15 MINLEN:35"

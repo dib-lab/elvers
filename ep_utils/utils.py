@@ -48,26 +48,20 @@ def generate_data_targs(outdir, samples, extensions = {}):
     se_ext = extensions.get('se', None)
     se_names = samples.loc[samples["fq2"].isnull(), 'name'].tolist()
     pe_names = samples.loc[samples["fq2"].notnull(), 'name'].tolist()
-    print(se_names)
     if se_ext and len(se_names)>0:
-        print('se')
         targs+=[join(outdir, name + e) for e in se_ext for name in se_names]
     if pe_ext and len(pe_names) > 0:
         targs+=[join(outdir, name + e) for e in pe_ext for name in pe_names]
     return targs
     
-    #SAMPLES = (samples['sample'] + '_' + samples['unit']).tolist()
-    #for s in SAMPLES:
-        #if is_single_end(s, u):
-     #   target_list = target_list + [join(outdir, s + e) for e in exts]
-    #return target_list
-
-def generate_base_targs(outdir, basename, extensions):
+def generate_base_targs(outdir, basename, extensions, assembly_extensions):
     target_list = []
-    target_list = [join(outdir, basename + e) for e in extensions]
+    for ext in assembly_extensions:
+        assemblyname = basename + ext
+        target_list += [join(outdir, assemblyname + e) for e in extensions]
     return target_list
 
-def generate_program_targs(configD, samples, basename):
+def generate_program_targs(configD, samples, basename, assembly_exts):
     # given configD from each program, build targets
     outdir = configD['eelpond_dirname']
     exts = configD['extensions']
@@ -75,18 +69,19 @@ def generate_program_targs(configD, samples, basename):
     if exts.get('read', None): 
         targets+=generate_data_targs(outdir, samples, exts.get('read'))
     if exts.get('base', None):
-        targets+=generate_base_targs(outdir, basename, exts.get('base'))
+        targets+=generate_base_targs(outdir, basename, exts.get('base'), assembly_exts)
     return targets
 
 def generate_mult_targs(configD, workflow, samples):
-    # pass full config, program names. Call generate_targs to build all
+    # pass full config, program names. Call generate_program_targs to build each
     workflows = configD['eelpond_pipeline']
     targs = []
     base = configD['basename']
+    assembly_exts = configD.get('assembly_extensions', [""])
     if workflows.get(workflow, None):
         target_rules = configD['eelpond_pipeline'][workflow]['targets']
         for r in target_rules:
-            targs += generate_program_targs(configD[r], samples, base)
+            targs += generate_program_targs(configD[r], samples, base, assembly_exts)
     return targs
             
 # don't need this anymore: just building full config via run_eelpond

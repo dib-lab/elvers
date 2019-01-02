@@ -1,15 +1,16 @@
 from os.path import join
 
-assembly_dir= config['eelpond_directories']['outdirs']['assemble']
+assembly_dir=config['eelpond_directories']['outdirs']['assemble']
+assemblyname = BASE + config['assemblyinput'].get('assembly_extension', "")  # allow extension to assemblyname, e.g. BASE_trinity.fasta instead of BASE.fasta
 
 rule cp_input_assembly:
     input: config['assemblyinput']['assembly']
-    output: join(assembly_dir, BASE + '.fasta')
+    output: join(assembly_dir, assemblyname + '.fasta')
     log: join(LOGS_DIR, 'assemblyinput/cp_assembly.log')
     shell: ("cp {input} {output}")
 
 rule cp_input_gene_trans_map:
     input: config['assemblyinput']['gene_trans_map'] 
-    output: join(assembly_dir, BASE + '.fasta.gene_trans_map')
+    output: join(assembly_dir, assemblyname + '.fasta.gene_trans_map')
     log: join(LOGS_DIR, 'assemblyinput/cp_gt_map.log')
     shell: ("cp {input} {output}")

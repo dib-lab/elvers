@@ -39,6 +39,9 @@ def build_default_params(workdir, targets):
     # first, figure out which parts of the pipeline are being run, and get those defaults
     pipeline_defaultsFile = find_yaml(workdir, os.path.join('ep_utils', 'pipeline_defaults'), 'pipeline_defaults')
     pipeline_defaults = read_yaml(pipeline_defaultsFile)
+    # grab general defaults
+    defaultParams['basename'] = pipeline_defaults['basename']
+    defaultParams['assembly_extensions'] = pipeline_defaults['assembly_extensions']
     # add all directories
     defaultParams['eelpond_directories'] = pipeline_defaults['eelpond_directories']
     # grab targets, and subset by input target
@@ -127,6 +130,10 @@ def main(args):
         gtmap = paramsD['assemblyinput']['gene_trans_map']
         assert os.path.exists(gtmap), 'Error: cannot find assembly gene_trans_map at {}\n'.format(gtmap) 
         sys.stderr.write('\tFound input assembly gene-transcript map at {}\n'.format(gtmap))
+        input_assembly_extension = paramsD['assemblyinput'].get('assembly_extension', None)
+        if input_assembly_extension:
+            exts =  paramsD.get('assembly_extensions', [""])
+            paramsD['assembly_extensions'] = exts + [input_assembly_extension]
         
     # Note: Passing a configfile allows nested yaml/dictionary format. 
     # Passing these params in via `config` would require a flat dictionary.

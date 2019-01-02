@@ -1,9 +1,15 @@
+# default settings: do not change these lightly! 
+
+#general settings
 basename: eelpond
+assembly_extensions:
+  - _trinity
+
 eelpond_directories:
   rules: rules
   animals: animals
   logs: logs
-  outdirs:
+  outdirs: #target_rule: dirname
     input_data: input_data
     download_data: input_data
     link_data: input_data
@@ -15,6 +21,9 @@ eelpond_directories:
     quantification: quant
     diffexp: diffexp
 
+# programs to be run at each step of the pipeline
+# change these if you're sure you have new program 
+# params and targets right.
 eelpond_pipeline:
   download_data:
     rules:
@@ -43,16 +52,20 @@ eelpond_pipeline:
       - khmer
   assemble:
     rules:
+      - trimmomatic
+      - khmer
       - trinity
     targets:
       - trinity
   annotation:
     rules:
+      - assemblyinput
       - dammit
     targets:
       - dammit
   assembly_quality:
     rules:
+      - assemblyinput
       - busco
       - sourmash
     targets:
@@ -60,6 +73,9 @@ eelpond_pipeline:
       - sourmash
   quantification:
     rules:
+      - assemblyinput
+      - link_data
+      - trimmomatic
       - salmon
     targets:
       - salmon
@@ -68,3 +84,11 @@ eelpond_pipeline:
       - deseq2
     targets:
       - deseq2
+  mapping:
+    rules:
+      - assemblyinput
+      - link_data
+      - trimmomatic
+      - bowtie2
+    targets:
+      - bowtie2
