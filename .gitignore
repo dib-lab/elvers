@@ -5,4 +5,5 @@ site/
 *_out/
 *fasta
 .ep_*yaml
+databases/
 
