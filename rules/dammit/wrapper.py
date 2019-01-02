@@ -23,9 +23,19 @@ log = snakemake.log_fmt_shell(stdout=True, stderr=True)
 outdir = path.dirname(snakemake.output[0])
 annot_extra = snakemake.params.get("annot_extra", "")
 
+# get original output location
+assembly_name = path.basename(snakemake.input)
+dammit_dir =  path.join(outdir, assembly_name + '.dammit')
+dammit_fasta = path.join(dammit_dir, assembly_name + '.dammit.fasta')
+dammit_gff3 = path.join(dammit_dir, assembly_name + '.dammit.fasta')
+
 # install databases
 shell("dammit databases {db_cmd} {busco_cmd} --install --n_threads {snakemake.threads} {db_extra} {log}")
 
 if not db_only:
 # run annotation
     shell("dammit annotate {snakemake.input} {db_cmd} --n_threads {snakemake.threads} --output-dir {outdir} {annot_extra} {log}")
+
+shell("cp {dammit_fasta} {snakemake.output.fasta}") 
+shell("cp {dammit_gff3} {snakemake.output.gff3}") 
+

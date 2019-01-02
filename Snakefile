@@ -19,11 +19,11 @@ min_version("5.1.2") #minimum snakemake version
 samples = pd.read_table(config["samples"],dtype=str).set_index(["sample", "unit"], drop=False)
 validate(samples, schema="schemas/samples_v2.schema.yaml") # new version
 samples['name'] = samples["sample"].map(str) + '_' + samples["unit"].map(str)
-# to do:  add check for unit values (ignore all units if no unit values) 
-#SAMPLES = (samples['sample'] + '_' + samples['unit']).tolist()
-# sample checks
+
+# note, this function *needs* to be in this file, or added somewhere it can be accessed by all rules
 def is_single_end(sample, unit, end = ''):
     return pd.isnull(samples.loc[(sample, unit), "fq2"])
+
 # check for replicates ** need to change with new samples scheme
 # change this replicate check to work with single samples file
 #replicates = True
@@ -31,16 +31,12 @@ def is_single_end(sample, unit, end = ''):
 #if any(x < 2 for x in num_reps):
 #    replicates = False
 
-# grab dirs, basename built in run_eelpond
+# Set up directories 
 BASE = config['basename']
-dirs = config['eelpond_directories']
-
-OUT_DIR = dirs['out_dir']
-LOGS_DIR = dirs['logs']
-assembly_dir = dirs['outdirs']['assemble']
-animals_dir = dirs['animals']
+LOGS_DIR = config['eelpond_directories']['logs']
 
 #get ascii  animals
+animals_dir = config['eelpond_directories']['animals']
 animal_targs = glob.glob(join(animals_dir, '*')) # get all ascii animals
 animalsD = {os.path.basename(x): x for x in animal_targs}
 octopus = animalsD['octopus']
@@ -62,8 +58,6 @@ onsuccess:
     print("\n--- Eel Pond Workflow executed successfully! ---\n")
     shell('cat {fish}')
 
-
-
 ## targeting rules
 
 rule kmer_trim:
@@ -76,77 +70,27 @@ rule preprocess:
 rule assemble:
     input: generate_mult_targs(config, 'assemble', samples)
 
-rule read_qc:
-    input: generate_mult_targs(config, 'readqc', samples)
+rule annotation:
+    input: generate_mult_targs(config, 'annotation', samples)
 
-## ASSEMBLY RULES
+rule quantification:
+    input: generate_mult_targs(config, 'quantification', samples)
 
-# move this to run_eelpond? Or just generate different rules?
+rule assembly_quality:
+    input: generate_mult_targs(config, 'assembly_quality', samples)
 
-#if config.get('diginorm', True):
-#    include: join(RULES_DIR, 'khmer','khmer.rule')
-#else:
-#    include: join(RULES_DIR, 'khmer','khmer_no_diginorm.rule')
-#khmer_targs = generate_targs(config['khmer'], samples, BASE, ends = [""])
+rule mapping:
+    input: generate_mult_targs(config, 'mapping', samples)
 
-#assmeb_input
-#if config['assembly_input']['assembly']:
-#    include: join(RULES_DIR, 'utils', 'assemblyinput.rule')
-#    assemblyinput_targs = generate_targs(config['assembly_input'], samples, BASE)
+rule diff_expression:
+    input: generate_mult_targs(config, 'diffexp', samples)
 
-#assembly_targs=[]
-#assemblies=[]
-#if config.get('assembly_program', '').lower() == 'trinity': # enable list of assembly programs?
-#trinity_targs = generate_targs(config['trinity'], samples, BASE)
-
-#assemblies+=['trinity']
-#assembly_targs+=trinity_targs
-
-#rule assemble:
-#    input: generate_targs(config['trinity'], samples, BASE)
-
-## ANNOTATION
-#dammit_targs = generate_targs(config['dammit'], samples, BASE)
-#rule annotation:
-#    input: generate_targs(config['dammit'], samples, BASE)
-
-## QUALITY 
-#sourmash_targs = generate_targs(config['sourmash'], samples, BASE)
-#busco_targs = generate_targs(config['busco'], samples, 'run_busco_' + BASE)
-#push_targs = generate_targs(config['push_sigs'], samples, BASE)
-#rule assembly_quality:
-#    input: busco_targs + sourmash_targs
-
-## MAPPING AND QUANTIFICATION 
-#bowtie2_targs = generate_targs(config['bowtie2'], samples, BASE, ends=[''])
-#rule bt_map:
-#    input: bowtie2_targs
-
-#salmon_targs = generate_targs(config['salmon'], samples, BASE, ends = [''])
-#rule quantification:
-#    input: salmon_targs
-
-## DIFFEXP
-
-#deseq2_targs = generate_targs(config['deseq2'], samples, BASE)
-#rule diffexpression:
-#    input: deseq2_targs
-
-#rule full:
-#    input: assembly_targs
-
-
-#include: join(RULES_DIR, 'edgeR', 'edgeR.rule')
-#edgeR_targs = generate_targs(config['edger'], samples, BASE)
-        #include: 'rules/edgeR/edgeR_no_replicates.rule'
-        #from rules.edgeR.edgeR_targets import get_targets
-        #edgeR_targs = get_targets(units,BASE,EDGER_DIR, conf = config)
-        #TARGETS += edgeR_targs
-
+rule full:
+    input:  generate_mult_targs(config, 'full', samples)
 
 
 ##### report #####
-
 #report: "report/workflow.rst"
+
 shell('cat {animal_targs[1]}')
 

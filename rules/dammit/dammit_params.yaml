@@ -5,5 +5,5 @@ dammit:
   busco_group:  "metazoa"
   extensions: 
      base: 
-       - '.fasta.dammit.gff3'
-       - '.fasta.dammit.fasta'
+       - '.dammit.gff3'
+       - '.dammit.fasta'

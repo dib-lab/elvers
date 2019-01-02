@@ -1,4 +1,4 @@
-assembly_input:
+assemblyinput:
   extensions:
     base:
       - '.fasta'

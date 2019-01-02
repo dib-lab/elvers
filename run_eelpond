@@ -119,12 +119,12 @@ def main(args):
     # use params to build directory structure
     paramsD = build_dirs(thisdir, paramsD, args.targets)
     
-    assembInput = paramsD.get('assembly_input')
+    assembInput = paramsD.get('assemblyinput')
     if assembInput.get('assembly', None):
-        assemblyfile = paramsD['assembly_input']['assembly']
+        assemblyfile = paramsD['assemblyinput']['assembly']
         assert os.path.exists(assemblyfile), 'Error: cannot find input assembly at {}\n'.format(assemblyfile) 
         sys.stderr.write('\tFound input assembly at {}\n'.format(assemblyfile))
-        gtmap = paramsD['assembly_input']['gene_trans_map']
+        gtmap = paramsD['assemblyinput']['gene_trans_map']
         assert os.path.exists(gtmap), 'Error: cannot find assembly gene_trans_map at {}\n'.format(gtmap) 
         sys.stderr.write('\tFound input assembly gene-transcript map at {}\n'.format(gtmap))
         

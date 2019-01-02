@@ -1,29 +1,23 @@
 from os.path import join
-from common.utils import get_params
-
-# default params from paramsfile
-#annot_params = get_params('dammit')
-# override defaults with snakemake config (main configfile or snakemake --config)
-#if 'dammit' in config.keys():
-#    annot_params.update(config['dammit'])
 
 dammit_params = config['dammit']
-assembly_dir = config['assembly_dir']
+assembly_dir= config['eelpond_directories']['outdirs']['assemble']
 dammit_dir = dammit_params['eelpond_dirname']
 
 rule dammit_annotate:
     input: 
-        join(assembly_dir, BASE + ".fasta")
+        join(assembly_dir, "{assembly}.fasta")
     output: 
-        join(dammit_dir, BASE + ".fasta.dammit", BASE + ".fasta.dammit.gff3"),
-        join(dammit_dir, BASE + ".fasta.dammit", BASE + ".fasta.dammit.fasta"),
-    log:join(LOGS_DIR, 'dammit', BASE +'_dammit.log')
+        gff3 = join(dammit_dir, "{assembly}.dammit.gff3"),
+        fasta = join(dammit_dir, "{assembly}.dammit.fasta"),
+    log:
+        join(LOGS_DIR, 'dammit', '{assembly}_dammit.log')
     params:
         db_dir = dammit_params.get('db_dir', 'databases'),
         db_extra= dammit_params.get('db_extra', "--quick"),
         annot_extra= dammit_params.get('annot_extra', "--quick"),
         busco_group= dammit_params.get('busco_group', "metazoa"),
-    threads: 4
+    threads: 32
     conda: "dammit-env.yaml"
     script: "wrapper.py"
     #wrapper: 
