@@ -1,38 +1,41 @@
 from os import path
-from trinity_targets import get_trimmed_trinity_input
-from trinity_targets import get_khmer_trimmed_trinity_input
 
-#include: "trinity_config.yaml"
+assembly_dir= config['eelpond_directories']['outdirs']['assemble']
+trinity_params = config['trinity']
+assembly_params =  trinity_params['assembly_params']
 
-#all_trimmed = get_trimmed_trinity_input(units, base, TRIM_DIR)
-#LEFT = [x for x in all_trimmed if '_1.trim' in x]
-#RIGHT= [x for x in all_trimmed if '_2.trim' in x]
-#SINGLE= [x for x in all_trimmed if 'se' in x]
-
-khmer_dir = config['khmer']['eelpond_dirname']
-
-khmer_trimmed = get_khmer_trimmed_trinity_input(samples, base, khmer_dir)
-LEFT = [x for x in khmer_trimmed if 'paired.1' in x]
-RIGHT= [x for x in khmer_trimmed if 'paired.2' in x]
-SINGLE= [x for x in khmer_trimmed if any(['se' in x, 'single' in x])]
-LEFT = LEFT + SINGLE
+def get_assembly_input(w):
+    r1,r2,single =[],[],[]
+    readsD = {}
+    ext =  trinity_params['input_pattern']
+    input_dirname =  trinity_params['input_dir']
+    input_dir = config['eelpond_directories']['outdirs'][input_dirname]
+    for s, u in samples.iterrows():
+        sample, unit = u['sample'],u['unit']
+        if is_single_end(sample, unit):
+            single+=[join(input_dir, f"{sample}_{unit}{ext}")]
+        else:
+            r1+= [join(input_dir, f"{sample}_{unit}_1{ext}")]
+            r2+= [join(input_dir, f"{sample}_{unit}_2{ext}")]
+    add_single = trinity_params.get('add_single_to_paired', None)
+    if add_single == True:
+        r1 = r1 + single
+    readsD['left'] = r1
+    readsD['right'] = r2
+    return readsD
 
 rule trinity:
     input:
-#try something like this: quant = expand(join(QUANT_DIR,"{unit.sample}_{unit.unit}" + base, "quant.sf"), unit=units.itertuples())
-        #unpack(get_trimmed)
-        left=LEFT,
-        right=RIGHT
+        unpack(get_assembly_input)
     output:
-        fasta = join(ASSEMBLY_DIR,"trinity_out_dir/Trinity.fasta"),
-        gene_trans_map = join(ASSEMBLY_DIR,"trinity_out_dir/Trinity.fasta.gene_trans_map"),
+        fasta = join(assembly_dir,"trinity_out_dir/Trinity.fasta"),
+        gene_trans_map = join(assembly_dir,"trinity_out_dir/Trinity.fasta.gene_trans_map"),
     message:
         """--- Assembling read data with Trinity --- """
     params:
-        #**config['trinity']
         # optional parameters
-        seqtype='fq',
-        extra=""
+        seqtype=assembly_params.get('seqtype', 'fq'),
+        extra=assembly_params.get('extra', '')
     threads: 4
     log: join(LOGS_DIR, 'trinity/trinity.log')
     conda: "trinity-env.yaml"
@@ -42,14 +45,12 @@ rule trinity:
 
 rule rename_trinity_fasta:
     input: rules.trinity.output.fasta
-    output: join(ASSEMBLY_DIR, base + '.fasta')
+    output: join(assembly_dir, BASE + '_trinity.fasta')
     log: join(LOGS_DIR, 'trinity/cp_assembly.log')
     shell: ("cp {input} {output}") 
 
 rule rename_trinity_gene_trans_map:
     input: rules.trinity.output.gene_trans_map
-    output: join(ASSEMBLY_DIR, base + '.fasta.gene_trans_map')
+    output: join(assembly_dir, BASE + '_trinity.fasta.gene_trans_map')
     log: join(LOGS_DIR, 'trinity/cp_gt_map.log')
     shell: ("cp {input} {output}") 
-
-

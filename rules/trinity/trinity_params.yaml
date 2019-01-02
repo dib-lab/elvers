@@ -1,7 +1,12 @@
 trinity:
+  input_pattern: .khmer.fq.gz
+  input_dir: preprocess
+  add_single_to_paired: False
   extensions:
     base:
-      - '_trinity.fasta'
-      - '_trinity.fasta.gene_trans_map'
-  max_memory : "30G"
+      - _trinity.fasta
+      - _trinity.fasta.gene_trans_map
+  assembly_params:
+    max_memory : 30G
+    seqtype: fq
 
