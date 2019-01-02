@@ -1,8 +1,9 @@
 from os import path
 
-assembly_dir= config['eelpond_directories']['outdirs']['assemble']
 trinity_params = config['trinity']
+assembly_dir = trinity_params['eelpond_dirname']
 assembly_params =  trinity_params['assembly_params']
+assembly_extension = trinity_params['extensions']['assembly_extensions'][0] # should only be a single entry here, default: '_trinity'
 
 def get_assembly_input(w):
     r1,r2,single =[],[],[]
@@ -48,12 +49,12 @@ rule trinity:
 
 rule rename_trinity_fasta:
     input: rules.trinity.output.fasta
-    output: join(assembly_dir, BASE + '_trinity.fasta')
+    output: join(assembly_dir, BASE + assembly_extension + '.fasta')
     log: join(LOGS_DIR, 'trinity/cp_assembly.log')
     shell: ("cp {input} {output}") 
 
 rule rename_trinity_gene_trans_map:
     input: rules.trinity.output.gene_trans_map
-    output: join(assembly_dir, BASE + '_trinity.fasta.gene_trans_map')
+    output: join(assembly_dir, BASE + assembly_extension + '.fasta.gene_trans_map')
     log: join(LOGS_DIR, 'trinity/cp_gt_map.log')
     shell: ("cp {input} {output}") 

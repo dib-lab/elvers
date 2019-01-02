@@ -69,6 +69,8 @@ def generate_program_targs(configD, samples, basename, assembly_exts):
     if exts.get('read', None): 
         targets+=generate_data_targs(outdir, samples, exts.get('read'))
     if exts.get('base', None):
+        if exts.get('assembly_extensions'): # this program is an assembler or only works with specific assemblies
+            assembly_exts = exts.get('assembly_extensions') # override generals with rule-specific assembly extensions
         targets+=generate_base_targs(outdir, basename, exts.get('base'), assembly_exts)
     return targets
 

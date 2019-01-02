@@ -122,18 +122,19 @@ def main(args):
     # use params to build directory structure
     paramsD = build_dirs(thisdir, paramsD, args.targets)
     
-    assembInput = paramsD.get('assemblyinput')
-    if assembInput.get('assembly', None):
-        assemblyfile = paramsD['assemblyinput']['assembly']
-        assert os.path.exists(assemblyfile), 'Error: cannot find input assembly at {}\n'.format(assemblyfile) 
-        sys.stderr.write('\tFound input assembly at {}\n'.format(assemblyfile))
-        gtmap = paramsD['assemblyinput']['gene_trans_map']
-        assert os.path.exists(gtmap), 'Error: cannot find assembly gene_trans_map at {}\n'.format(gtmap) 
-        sys.stderr.write('\tFound input assembly gene-transcript map at {}\n'.format(gtmap))
-        input_assembly_extension = paramsD['assemblyinput'].get('assembly_extension', None)
-        if input_assembly_extension:
-            exts =  paramsD.get('assembly_extensions', [""])
-            paramsD['assembly_extensions'] = exts + [input_assembly_extension]
+    assembInput = paramsD.get('assemblyinput', None)
+    if assembInput:
+        if assembInput.get('assembly', None):
+            assemblyfile = paramsD['assemblyinput']['assembly']
+            assert os.path.exists(assemblyfile), 'Error: cannot find input assembly at {}\n'.format(assemblyfile) 
+            sys.stderr.write('\tFound input assembly at {}\n'.format(assemblyfile))
+            gtmap = paramsD['assemblyinput']['gene_trans_map']
+            assert os.path.exists(gtmap), 'Error: cannot find assembly gene_trans_map at {}\n'.format(gtmap) 
+            sys.stderr.write('\tFound input assembly gene-transcript map at {}\n'.format(gtmap))
+            input_assembly_extension = paramsD['assemblyinput'].get('assembly_extension', None)
+            if input_assembly_extension:
+                exts =  paramsD.get('assembly_extensions', [""])
+                paramsD['assembly_extensions'] = list(set(exts + [input_assembly_extension]))
         
     # Note: Passing a configfile allows nested yaml/dictionary format. 
     # Passing these params in via `config` would require a flat dictionary.

@@ -1,11 +1,18 @@
 trinity:
+  # determine inputs
   input_pattern: .khmer.fq.gz
   input_dir: preprocess
+  # do we want to assemble the single reads with pe reads?
   add_single_to_paired: False
+  # output files
   extensions:
+    # use this extension only for all output of this assembler
+    assembly_extensions: 
+      - _trinity
     base:
-      - _trinity.fasta
-      - _trinity.fasta.gene_trans_map
+      - .fasta
+      - .fasta.gene_trans_map
+  # assembly parameters
   assembly_params:
     max_memory : 30G
     seqtype: fq
