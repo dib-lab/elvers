@@ -3,7 +3,23 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - python ==3.6
-  - transdecoder ==3.0.1
+  - python
+  - numpy 
+  - pandas 
+  - numexpr  >=2.3.1 
+  - khmer  >=2.1 
+  - sphinx_rtd_theme>=0.1.9 
+  - pytest 
+  - pytest-runner 
+  - doit  >=0.29.0 
+  - matplotlib 
+  - shmlast 
+  - infernal 
+  - hmmer 
+  - transdecoder ==3.0.1 
+  - last 
+  - busco=3.0.2 
+  - parallel 
   - bioconductor-seqlogo
-  - dammit ==1.0rc2
+  - pip:
+    - git+https://github.com/dib-lab/dammit
