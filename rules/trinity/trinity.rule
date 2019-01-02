@@ -17,11 +17,14 @@ def get_assembly_input(w):
         else:
             r1+= [join(input_dir, f"{sample}_{unit}_1{ext}")]
             r2+= [join(input_dir, f"{sample}_{unit}_2{ext}")]
-    add_single = trinity_params.get('add_single_to_paired', None)
-    if add_single == True:
-        r1 = r1 + single
-    readsD['left'] = r1
-    readsD['right'] = r2
+    add_single = trinity_params.get('add_single_to_paired', False)
+    if len(r1) > 0:
+        if add_single == True:
+            r1 = r1 + single
+        readsD['left'] = r1
+        readsD['right'] = r2
+    else:
+        readsD['left'] = single
     return readsD
 
 rule trinity:
