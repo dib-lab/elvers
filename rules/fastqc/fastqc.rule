@@ -23,9 +23,8 @@ rule fastqc_trimmed:
         zip=join(qc_dir,'{sample}_{unit}_{end}.fastqc.zip'),
     params: ""
     log: join(LOGS_DIR, 'fastqc/{sample}_{unit}_{end}.log')
-    #conda: "fastqc-env.yaml"
-	#script: "wrapper.py"
-	wrapper: "0.27.1/bio/fastqc"
+    conda: "fastqc-env.yaml"
+	script: "wrapper.py"
 
 rule fastqc_pretrim:
     input:
@@ -34,9 +33,7 @@ rule fastqc_pretrim:
         html=join(qc_dir,'{sample}_{unit}_{end}.fastqc.html'),
         zip=join(qc_dir,'{sample}_{unit}_{end}.fastqc.zip'),
     params: ""
- #   conda: "fastqc-env.yaml"
     log: join(LOGS_DIR, 'fastqc/{sample}_{unit}_{end}.log') 
-#	script: "wrapper.py"
-    wrapper:
-        "0.27.1/bio/fastqc"
+    conda: "fastqc-env.yaml"
+	script: "wrapper.py"
 

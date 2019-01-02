@@ -1,4 +1,12 @@
 khmer:
+  ktrim_params:
+    ksize: 20
+    Z: 18
+    C: 3
+    memory: 20e9
+    coverage: 20
+    extra: ""
+  
   extensions:
     read:
       pe:
@@ -7,5 +15,5 @@ khmer:
         - '.paired.khmer.fq.gz'
         - '.single.khmer.fq.gz'
       se:
-        - '.single.khmer.fq.gz'
+        - '.se.khmer.fq.gz'
 
