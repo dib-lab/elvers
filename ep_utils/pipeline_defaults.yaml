@@ -51,10 +51,15 @@ eelpond_pipeline:
       - trinity
     targets:
       - trinity
+  assemblyinput:
+    outdir: assembly
+    rules:
+      - assemblyinput
+    targets:
+      - assemblyinput
   annotate:
     outdir: annotation
     rules:
-      - assemblyinput
       - dammit
       - sourmash
     targets:
@@ -63,7 +68,6 @@ eelpond_pipeline:
   quantify:
     outdir: quant
     rules:
-      - assemblyinput
       - link_data
       - trimmomatic
       - salmon

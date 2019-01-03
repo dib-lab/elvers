@@ -1,8 +1,8 @@
 from os.path import join
 
 data_dir    = config['eelpond_directories']['outdirs']['link_data']
-trim_params = config['trimmomatic']
-trim_dir    = trim_params['eelpond_dirname']
+trim_params = config['trimmomatic']['program_params']
+trim_dir    = config['trimmomatic']['eelpond_params']['outdir']
 
 def get_pretrim(w):
     readsD = {}

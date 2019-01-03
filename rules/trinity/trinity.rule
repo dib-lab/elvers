@@ -1,15 +1,16 @@
 from os import path
 
-trinity_params = config['trinity']
-assembly_dir = trinity_params['eelpond_dirname']
-assembly_params =  trinity_params['assembly_params']
-assembly_extension = trinity_params['extensions']['assembly_extensions'][0] # should only be a single entry here, default: '_trinity'
+ep_params = config['trinity']['eelpond_params']
+assembly_params = config['trinity']['program_params']
+
+assembly_dir = ep_params['outdir']
+assembly_extension = ep_params['extensions']['assembly_extensions'][0] # should only be a single entry here, default: '_trinity'
 
 def get_assembly_input(w):
     r1,r2,single =[],[],[]
     readsD = {}
-    ext =  trinity_params['input_pattern']
-    input_dirname =  trinity_params['input_dir']
+    ext =  ep_params['input_pattern']
+    input_dirname =  ep_params['input_dir']
     input_dir = config['eelpond_directories']['outdirs'][input_dirname]
     for s, u in samples.iterrows():
         sample, unit = u['sample'],u['unit']
@@ -18,7 +19,7 @@ def get_assembly_input(w):
         else:
             r1+= [join(input_dir, f"{sample}_{unit}_1{ext}")]
             r2+= [join(input_dir, f"{sample}_{unit}_2{ext}")]
-    add_single = trinity_params.get('add_single_to_paired', False)
+    add_single = assembly_params.get('add_single_to_paired', False)
     if len(r1) > 0:
         if add_single == True:
             r1 = r1 + single

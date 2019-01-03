@@ -62,7 +62,7 @@ def generate_targs(outdir, basename, samples, assembly_exts=[''], base_exts = No
 
 def generate_program_targs(configD, samples, basename, assembly_exts):
     # given configD from each program, build targets
-    outdir = configD['eelpond_dirname']
+    outdir = configD['outdir']
     exts = configD['extensions']
     if exts.get('assembly_extensions'): # this program is an assembler or only works with specific assemblies
         assembly_exts = exts.get('assembly_extensions') # override generals with rule-specific assembly extensions
@@ -78,7 +78,7 @@ def generate_mult_targs(configD, workflow, samples):
     if workflows.get(workflow, None):
         target_rules = configD['eelpond_pipeline'][workflow]['targets']
         for r in target_rules:
-            targs += generate_program_targs(configD[r], samples, base, assembly_exts)
+            targs += generate_program_targs(configD[r]['eelpond_params'], samples, base, assembly_exts)
     return targs
             
 # don't need this anymore: just building full config via run_eelpond

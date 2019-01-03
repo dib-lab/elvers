@@ -1,9 +1,13 @@
 import os, re
-from os.path import join, dirname
+from os.path import join
 
+#input dirs
 data_dir = config['eelpond_directories']['outdirs']['link_data']
 trim_dir = config['eelpond_directories']['outdirs']['preprocess']
-qc_dir   = config['fastqc']['eelpond_dirname']
+#outdir
+qc_dir   = config['fastqc']['eelpond_params']['outdir']
+# program params
+fastqc_params = config['fastqc']['program_params']
 
 def get_trimmed(wildcards):
     if not is_single_end(**wildcards): 
@@ -20,9 +24,10 @@ rule fastqc_trimmed:
        get_trimmed
     output:
         html=join(qc_dir,'{sample}_{unit}_{end}.fastqc.html'),
-        zip=join(qc_dir,'{sample}_{unit}_{end}.fastqc.zip'),
-    params: ""
-    log: join(LOGS_DIR, 'fastqc/{sample}_{unit}_{end}.log')
+        zip=join(qc_dir,'{sample}_{unit}_{end}.fastqc.zip')
+    params: fastqc_params.get('extra', "")
+    log: 
+        join(LOGS_DIR, 'fastqc/{sample}_{unit}_{end}.log')
     conda: "fastqc-env.yaml"
 	script: "wrapper.py"
 
@@ -31,9 +36,9 @@ rule fastqc_pretrim:
         get_pretrim
     output:
         html=join(qc_dir,'{sample}_{unit}_{end}.fastqc.html'),
-        zip=join(qc_dir,'{sample}_{unit}_{end}.fastqc.zip'),
-    params: ""
-    log: join(LOGS_DIR, 'fastqc/{sample}_{unit}_{end}.log') 
+        zip=join(qc_dir,'{sample}_{unit}_{end}.fastqc.zip')
+    params: fastqc_params.get('extra', "")
+    log: 
+        join(LOGS_DIR, 'fastqc/{sample}_{unit}_{end}.log') 
     conda: "fastqc-env.yaml"
 	script: "wrapper.py"
-

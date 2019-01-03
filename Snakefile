@@ -68,6 +68,9 @@ rule kmer_trim:
 rule assemble:
     input: generate_mult_targs(config, 'assemble', samples)
 
+rule assemblyinput:
+    input: generate_mult_targs(config, 'assemblyinput', samples)
+
 rule annotate:
     input: generate_mult_targs(config, 'annotate', samples)
 

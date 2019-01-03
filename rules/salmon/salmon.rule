@@ -1,13 +1,18 @@
 from os.path import join
 
-salmon_params = config['salmon']
+salmon_params = config['salmon']['program_params']
+ep_params = config['salmon']['eelpond_params']
 
+# get inputs
 assembly_dir  = config['eelpond_directories']['outdirs']['assemble']
-input_dirname = salmon_params['input_dir']
+input_dirname = ep_params['input_dir']
 input_dir     = config['eelpond_directories']['outdirs'][input_dirname]
-quant_dir     = salmon_params['eelpond_dirname']
-ext           =  salmon_params['input_pattern']
-combine_units = salmon_params['extensions']['read']['combine_units']
+ext           = ep_params['input_pattern']
+combine_units = ep_params['extensions']['read']['combine_units']
+
+# get outdir
+quant_dir     = ep_params['outdir']
+
 
 # use if you don't want to collapse technical replicates ("units" column; deseq2 not supported)
 def get_sample_no_combine(w):

@@ -2,8 +2,8 @@ from os.path import join
 
 
 assembly_dir= config['eelpond_directories']['outdirs']['assemble']
-sourmash_params = config['sourmash']
-sourmash_dir = sourmash_params['eelpond_dirname']
+sourmash_params = config['sourmash']['program_params']
+sourmash_dir = config['sourmash']['eelpond_params']['outdir']
 
 rule sourmash_compute:
     """
@@ -17,7 +17,7 @@ rule sourmash_compute:
         """--- Computing a MinHash signature of the transcriptome with Sourmash ---"""
     threads: 2
     params:
-        extra = ''
+        extra = sourmash_params.get('extra', '')
     log: 
         join(LOGS_DIR, 'sourmash', '{assembly}.log')
     conda: 

@@ -1,8 +1,9 @@
 from os.path import join
 
-dammit_params = config['dammit']
 assembly_dir= config['eelpond_directories']['outdirs']['assemble']
-dammit_dir = dammit_params['eelpond_dirname']
+dammit_dir = config['dammit']['eelpond_params']['outdir']
+
+dammit_params = config['dammit']['program_params']
 
 rule dammit_annotate:
     input: 

@@ -1,7 +1,7 @@
 from os.path import join
 
 assembly_dir=config['eelpond_directories']['outdirs']['assemble']
-assemblyname = BASE + config['assemblyinput'].get('assembly_extension', "")  # allow extension to assemblyname, e.g. BASE_trinity.fasta instead of BASE.fasta
+assemblyname = BASE + config['assemblyinput']['eelpond_params']['extensions'].get('assembly_extension', "")  # allow extension to assemblyname, e.g. BASE_trinity.fasta instead of BASE.fasta
 
 rule cp_input_assembly:
     input: config['assemblyinput']['assembly']

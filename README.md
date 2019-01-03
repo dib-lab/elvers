@@ -43,12 +43,12 @@ Run Eelpond:
 git clone https://github.com/dib-lab/eelpond.git
 cd eelpond
 
-git submodule update --init --recursive #download test data submodule
+# see the help:
+./run_eelpond -h
 
-#run eelpond
+#run test data
 ./run_eelpond nema-test
 ```
-
 This will run a small set of _Nematostella vectensis_ test data (from [Tulin et al., 2013](https://evodevojournal.biomedcentral.com/articles/10.1186/2041-9139-4-16))
 
 **Running your own data:**
@@ -58,11 +58,21 @@ your sample info, and a `yaml` file containing basic configuration info. To star
 copy the test data files so you can modify them.
 
 ```
-cp nema-test.yaml <my_data_name.yaml>
-cp nema_samples_v2.tsv <my-tsv-name.tsv>
+cp nema_samples.tsv <my-tsv-name.tsv>
 ```
 
-Then, modify as necessary. Be sure to specify the new name of your `tsv` file within the `yaml` configuration file.
+Next, build a configfile to edit:
+
+```
+./run_eelpond config_name --build_config
+
+```
+This configfile will contain all the default paramters for each step of the pipeline you target.
+If you don't specify any targets, it will default to the "full" pipeline, which executes read
+preprocessing, assembly, annotation, and quantification.
+
+Then, modify this configfile as necessary. 
+The essential component is the `samples.tsv` file, which points `eelpond` to your sample files.
 
 
 **References:**  
@@ -76,13 +86,12 @@ Then, modify as necessary. Be sure to specify the new name of your `tsv` file wi
 **available workflows:**  
 
   - preprocess: Read Quality Trimming and Filtering (fastqc, trimmomatic)
-  - ktrim: Kmer Trimming and/or Digital Normalization (khmer)
-  - assembly: Transcriptome Assembly (trinity)
-  - assembly_quality: Assess Assembly Quality (busco, sourmash, transrate) 
-  - annotation : Annotate the transcriptome (dammit)
-  - quantification: Quantify transcripts (salmon) 
+  - kmer_trim: Kmer Trimming and/or Digital Normalization (khmer)
+  - assemble: Transcriptome Assembly (trinity)
+  - assemblyinput: Specify assembly for downstream steps
+  - annotate : Annotate the transcriptome (dammit, sourmash)
+  - quantify: Quantify transcripts (salmon) 
+  - full: preprocess, kmer_trim, assemble, annotate, quantify 
 
-  _in progress_
-  - diffexp: Basic differential expression analyses (deseq2)
 
 
