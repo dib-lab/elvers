@@ -1,4 +1,6 @@
 khmer:
+  diginorm: False
+
   ktrim_params:
     ksize: 20
     Z: 18

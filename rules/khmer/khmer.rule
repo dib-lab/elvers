@@ -3,6 +3,7 @@ from os.path import join
 trim_dir    = config['eelpond_directories']['outdirs']['preprocess']
 khmer_dir = config['khmer']['eelpond_dirname']
 ktrim_params = config['khmer']['ktrim_params']
+diginorm = config['khmer'].get('diginorm', True)
 
 def get_trimmed(w):
     readsD = {}
@@ -15,37 +16,104 @@ def get_trimmed(w):
     return expand(join(data_dir, '{sample}_{unit}.se.trim.fq.gz'), **w)
 
 
-rule khmer_read_processing_pe:
-    """
-    kmer trim and diginorm with khmer
-    """
-    input:
-        unpack(get_trimmed)
-    output: 
-        paired=join(khmer_dir,'{sample}_{unit}.paired.khmer.fq.gz'),
-        single=join(khmer_dir,'{sample}_{unit}.single.khmer.fq.gz'),
-    message:
-        """--- khmer trimming of low-abundance kmers and digital normalization ---"""
-    params:
-        k = ktrim_params['ksize'],
-        Z = ktrim_params['Z'], 
-        C = ktrim_params['C'], 
-        memory = ktrim_params['memory'],
-        cov = ktrim_params['coverage'],
-        extra = ktrim_params['extra']
-    threads: 10
-    log:
-        join(LOGS_DIR, 'khmer/{sample}_{unit}_' + BASE + '.log')
-    conda: 
-        'khmer-env.yaml'
-    shell: " (interleave-reads.py {input.r1} {input.r2} )| "
-           " (trim-low-abund.py -V -k {params.k} -Z {params.Z} -C {params.C} - -o - -M {params.memory} "
-           " --diginorm --diginorm-coverage={params.cov}) | (extract-paired-reads.py --gzip "
-           " -p {output.paired} -s {output.single}) > {log}"
-    #shell: " (interleave-reads.py {input.r1} {input.r2} && zcat {input.r1_orphan} {input.r2_orphan}) | "
-    #       " (trim-low-abund.py -V -k {params.k} -Z {params.Z} -C {params.C} - -o - -M {params.memory} "
-    #       " --diginorm --diginorm-coverage={params.cov}) | (extract-paired-reads.py --gzip "
-    #       " -p {output.paired} -s {output.single}) > {log}"
+if diginorm:
+    rule khmer_pe_diginorm:
+        """
+        kmer trim and diginorm with khmer
+        """
+        input:
+            unpack(get_trimmed)
+        output: 
+            paired=join(khmer_dir,'{sample}_{unit}.paired.khmer.fq.gz'),
+            single=join(khmer_dir,'{sample}_{unit}.single.khmer.fq.gz'),
+        message:
+            """--- khmer trimming of low-abundance kmers and digital normalization ---"""
+        params:
+            k = ktrim_params.get('ksize', 20),
+            Z = ktrim_params.get('Z', 18), 
+            C = ktrim_params.get('C', 3), 
+            memory = ktrim_params.get('memory', 20e9),
+            cov = ktrim_params.get('coverage', 20),
+            extra = ktrim_params.get('extra', '')
+        threads: 10
+        log: join(LOGS_DIR, 'khmer/{sample}_{unit}.pe.diginorm.log')
+        conda:  'khmer-env.yaml'
+        shell: " (interleave-reads.py {input.r1} {input.r2} )| "
+               " (trim-low-abund.py -V -k {params.k} -Z {params.Z} -C {params.C} - -o - -M {params.memory} "
+               " --diginorm --diginorm-coverage={params.cov}) | (extract-paired-reads.py --gzip "
+               " -p {output.paired} -s {output.single}) > {log}"
+            #shell: " (interleave-reads.py {input.r1} {input.r2} && zcat {input.r1_orphan} {input.r2_orphan}) | "
+            #       " (trim-low-abund.py -V -k {params.k} -Z {params.Z} -C {params.C} - -o - -M {params.memory} "
+            #       " --diginorm --diginorm-coverage={params.cov}) | (extract-paired-reads.py --gzip "
+            #       " -p {output.paired} -s {output.single}) > {log}"
+
+    rule khmer_se_diginorm:
+        """
+        kmer trim and diginorm with khmer
+        """
+        input:  get_trimmed #lambda wildcards: join(trim_dir, '{}_{}.se.trim.fq.gz'.format(wildcards.sample,wildcards.unit)), #get_trimmed_se
+        output: join(khmer_dir, '{sample}_{unit}.se.khmer.fq.gz'),
+        message:
+            """--- khmer trimming of low-abundance kmers and digital normalization ---"""
+        params:
+            k = ktrim_params['ksize'],
+            Z = ktrim_params['Z'],
+            C = ktrim_params['C'],
+            memory = ktrim_params['memory'],
+            cov = ktrim_params['coverage'],
+            extra = ktrim_params['extra']
+        threads: 2
+        log: join(LOGS_DIR, 'khmer/{sample}_{unit}.se.diginorm.log')
+        conda: 'khmer-env.yaml'
+        shell:
+               "(trim-low-abund.py {input} -V -k {params.k} -Z {params.Z} -C {params.C} -o {output} "
+               " -M {params.memory} --diginorm --diginorm-coverage={params.cov} ) "
+    
+else:
+    rule khmer_pe_no_diginorm:
+        """
+        kmer trim with khmer, no diginorm
+        """
+        input:unpack(get_trimmed)
+        output: 
+            paired=join(khmer_dir,'{sample}_{unit}.paired.khmer.fq.gz'),
+            single=join(khmer_dir,'{sample}_{unit}.single.khmer.fq.gz'),
+        message: """--- khmer trimming of low-abundance kmers ---"""
+        params:
+            k = ktrim_params.get('ksize', 20),
+            Z = ktrim_params.get('Z', 18), 
+            C = ktrim_params.get('C', 3), 
+            memory = ktrim_params.get('memory', 20e9),
+            extra = ktrim_params.get('extra', '')
+        threads: 10
+        log: join(LOGS_DIR, 'khmer/{sample}_{unit}.pe.log')
+        conda:  'khmer-env.yaml'
+        shell: " (interleave-reads.py {input.r1} {input.r2} )| "
+               " (trim-low-abund.py -V -k {params.k} -Z {params.Z} -C {params.C} - -o - -M {params.memory})"
+               " | (extract-paired-reads.py --gzip -p {output.paired} -s {output.single}) > {log}"
+
+    rule khmer_se_no_diginorm:
+        """
+        khmer trim se, no diginorm
+        """
+        input:  get_trimmed 
+        output: join(khmer_dir, '{sample}_{unit}.se.khmer.fq.gz'),
+        message:
+            """--- khmer trimming of low-abundance kmers ---"""
+        params:
+            k = ktrim_params['ksize'],
+            Z = ktrim_params['Z'],
+            C = ktrim_params['C'],
+            memory = ktrim_params['memory'],
+            extra = ktrim_params['extra']
+        threads: 2
+        log: join(LOGS_DIR, 'khmer/{sample}_{unit}.se.log')
+        conda: 'khmer-env.yaml'
+        shell:
+               "(trim-low-abund.py {input} -V -k {params.k} -Z {params.Z} -C {params.C} -o {output} "
+               " -M {params.memory}) "
+
+
 
 rule khmer_split_paired:
     input: join(khmer_dir,'{sample}_{unit}.paired.khmer.fq.gz'),
@@ -59,28 +127,4 @@ rule khmer_split_paired:
         split-paired-reads.py {input} --gzip -1 {output.r1} -2 {output.r2} >> {log}
         """
 
-rule khmer_read_processing_se:
-    """
-    kmer trim and diginorm with khmer
-    """
-    input:  get_trimmed #lambda wildcards: join(trim_dir, '{}_{}.se.trim.fq.gz'.format(wildcards.sample,wildcards.unit)), #get_trimmed_se
-    output: join(khmer_dir, '{sample}_{unit}.se.khmer.fq.gz'),
-    message:
-        """--- khmer trimming of low-abundance kmers and digital normalization ---"""
-    params:
-        k = ktrim_params['ksize'],
-        Z = ktrim_params['Z'],
-        C = ktrim_params['C'],
-        memory = ktrim_params['memory'],
-        cov = ktrim_params['coverage'],
-        extra = ktrim_params['extra']
-    threads: 2
-    log:
-        join(LOGS_DIR, 'khmer/{sample}_{unit}_se_' + BASE + '.log')
-    conda:
-        'khmer-env.yaml'
-    shell:
-           "(trim-low-abund.py {input} -V -k {params.k} -Z {params.Z} -C {params.C} -o {output} "
-           " -M {params.memory} --diginorm --diginorm-coverage={params.cov} ) "
-    
 
