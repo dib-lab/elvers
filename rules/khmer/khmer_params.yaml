@@ -1,5 +1,5 @@
 khmer:
-  diginorm: False
+  diginorm: True
 
   ktrim_params:
     ksize: 20

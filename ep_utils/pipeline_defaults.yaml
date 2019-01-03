@@ -19,7 +19,6 @@ eelpond_directories:
     kmer_trim: preprocess
     assemble: assembly
     annotation: annotation
-    mapping: mapping 
     quantification: quant
     diffexp: diffexp
 
@@ -75,16 +74,8 @@ eelpond_pipeline:
       - salmon
     targets:
       - salmon
-  diffexp:
-    rules:
-      - deseq2
-    targets:
-      - deseq2
-  mapping:
-    rules:
-      - assemblyinput
-      - link_data
-      - trimmomatic
-      - bowtie2
-    targets:
-      - bowtie2
+  #diffexp:
+  #  rules:
+  #    - deseq2
+  #  targets:
+  #    - deseq2

@@ -59,13 +59,11 @@ onsuccess:
     shell('cat {fish}')
 
 ## targeting rules
+rule preprocess:
+    input: generate_mult_targs(config, 'preprocess', samples)  
 
 rule kmer_trim:
     input: generate_mult_targs(config, 'kmer_trim', samples)  
-
-# preprocess targeting rule
-rule preprocess:
-    input: generate_mult_targs(config, 'preprocess', samples)  
 
 rule assemble:
     input: generate_mult_targs(config, 'assemble', samples)
@@ -76,18 +74,8 @@ rule annotation:
 rule quantification:
     input: generate_mult_targs(config, 'quantification', samples)
 
-rule assembly_quality:
-    input: generate_mult_targs(config, 'assembly_quality', samples)
-
-rule mapping:
-    input: generate_mult_targs(config, 'mapping', samples)
-
-rule diff_expression:
-    input: generate_mult_targs(config, 'diffexp', samples)
-
-rule full:
-    input:  generate_mult_targs(config, 'full', samples)
-
+#rule diff_expression:
+#    input: generate_mult_targs(config, 'diffexp', samples)
 
 ##### report #####
 #report: "report/workflow.rst"

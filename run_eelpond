@@ -112,15 +112,16 @@ def main(args):
         sys.exit(-1)
    
     # grab defaults, including rule-specific default parameters (*_params.yaml files) 
-    paramsD = build_default_params(thisdir, args.targets)
-
+    targs = args.targets
+    if 'full' in targs:
+        targs = ['preprocess', 'kmer_trim', 'assemble', 'annotation', 'quantification']
+    paramsD = build_default_params(thisdir, targs)
     # next, grab all params in user config file 
     configD = read_yaml(configfile)
-
     # update defaults with user-specified parameters
     update_nested_dict(paramsD,configD) # configD takes priority over default params 
     # use params to build directory structure
-    paramsD = build_dirs(thisdir, paramsD, args.targets)
+    paramsD = build_dirs(thisdir, paramsD, targs)
     
     assembInput = paramsD.get('assemblyinput', None)
     if assembInput:
@@ -147,13 +148,13 @@ def main(args):
     print('\tsnakefile: {}'.format(snakefile))
     print('\tconfig: {}'.format(configfile))
     print('\tparams: {}'.format(paramsfile))
-    print('\ttargets: {}'.format(repr(args.targets)))
+    print('\ttargets: {}'.format(repr(targs)))
     print('--------')
 
     # run!!
     # params file becomes snakemake configfile
     status = snakemake.snakemake(snakefile, configfile=paramsfile, use_conda=True, 
-                                 targets=args.targets, printshellcmds=True,
+                                 targets=targs, printshellcmds=True,
                                  dryrun=args.dry_run, lock=not args.nolock,
                                  verbose=args.verbose, debug_dag=args.debug)
     
@@ -170,15 +171,13 @@ Run eelpond snakemake workflows, using the given configfile.
 
 Targets:
 
-   full             - run full workflow (default)
-   preprocess       - preprocess reads 
-   kmer_trim        - kmer trim preprocessed reads
-   assemble         - transcriptome assembly 
-   annotate         - annotate transcriptome assembly
-   quantify         - read quantification 
-   quality          - assess assembly quality 
-   diff_expression  - differential expression analysis
-   clean            - remove target dirs 
+   full               - run full workflow (default)
+   preprocess         - preprocess reads 
+   kmer_trim          - kmer trim preprocessed reads
+   assemble           - transcriptome assembly 
+   annotation         - annotate transcriptome assembly
+   quantififcation    - read quantification 
+   clean              - remove target dirs ** not enabled yet! **
 
 For a quickstart, run this:
 
