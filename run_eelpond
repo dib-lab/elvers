@@ -161,6 +161,9 @@ def main(args):
         if assembInput:
             targs+=['assemblyinput']
             configD = handle_assemblyInput(assembInput, configD)
+        if 'assemblyinput' in targs and not assembInput:
+            sys.stderr.write("\n\tError: trying to run `assemblyinput` workflow, but there's no assembly file specified in your configfile. Please fix.\n\n")
+            sys.exit(-1)
         # next, grab all eelpond defaults, including rule-specific default parameters (*_params.yaml files) 
         paramsD = build_default_params(thisdir, targs)
         # update defaults with user-specified parameters
