@@ -9,7 +9,9 @@ eelpond_directories:
   rules: rules
   animals: animals
   logs: logs
-  outdirs: #target_rule: dirname
+  outdirs: 
+    # each target rule must have a dirname
+    # target_rule: dirname
     input_data: input_data
     download_data: input_data
     link_data: input_data
@@ -61,15 +63,9 @@ eelpond_pipeline:
     rules:
       - assemblyinput
       - dammit
-    targets:
-      - dammit
-  assembly_quality:
-    rules:
-      - assemblyinput
-      - busco
       - sourmash
     targets:
-      - busco
+      - dammit
       - sourmash
   quantification:
     rules:

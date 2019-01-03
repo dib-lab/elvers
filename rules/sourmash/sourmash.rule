@@ -1,22 +1,27 @@
 from os.path import join
 
-sourmash_dir = config['sourmash']['eelpond_dirname']
+
+assembly_dir= config['eelpond_directories']['outdirs']['assemble']
+sourmash_params = config['sourmash']
+sourmash_dir = sourmash_params['eelpond_dirname']
 
 rule sourmash_compute:
     """
     Computing a MinHash signature of the transcriptome assembly with Sourmash
     """
     input:
-        join(ASSEMBLY_DIR, BASE + ".fasta")
+        join(assembly_dir, "{assembly}.fasta")
     output:
-        join(sourmash_dir, BASE + ".sig")
+        join(sourmash_dir, "{assembly}.sig")
     message:
         """--- Computing a MinHash signature of the transcriptome with Sourmash ---"""
     threads: 2
     params:
         extra = ''
-    log:
-        qual_log = join(LOGS_DIR, 'sourmash', BASE +'_index.log')
-    wrapper:
-        '0.26.0/bio/sourmash/compute'
+    log: 
+        join(LOGS_DIR, 'sourmash', '{assembly}.log')
+    conda: 
+        'sourmash-env.yaml'
+    script: 
+        'sourmash-wrapper.py'
 

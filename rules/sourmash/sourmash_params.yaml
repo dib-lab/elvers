@@ -1,9 +1,9 @@
 sourmash:
   extensions: 
     base:
-      - '.sig'
-    read:
-      pe:
-        - '.pe.sig'
-      se:
-        - '.se.sig'
+      - .sig
+    #read:
+    #  pe:
+    #    - .pe.sig
+    #  se:
+    #    - .se.sig
