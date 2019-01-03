@@ -6,3 +6,4 @@ site/
 *fasta
 .ep_*yaml
 databases/
+.DS_Store
