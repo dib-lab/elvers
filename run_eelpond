@@ -217,7 +217,7 @@ Targets:
 
 For a quickstart, run this:
 
-   run_eelpond nema-test full
+   ./run_eelpond nema-test full
 
 from the main eelpond directory.
 
