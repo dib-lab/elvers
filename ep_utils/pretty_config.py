@@ -34,13 +34,16 @@ def write_config(paramsD, targets, out):
         yaml.dump(generalP, stream=outConfig, indent=2,  default_flow_style=False)
         
         # write program-specific parameters
+        seen_rules = []
         for targ in targets:
             # grab all rules, their params for target pipeliness
             rules = paramsD['eelpond_pipeline'][targ]['rules']
             targ_params = {}
             for r in rules:
-                if paramsD[r].get('program_params', None):
-                    targ_params[r] = paramsD[r]['program_params']
+                if r not in seen_rules:
+                    seen_rules+=[r]
+                    if paramsD[r].get('program_params', None):
+                        targ_params[r] = paramsD[r]['program_params']
             # write to file
             outConfig.write((pretty_name(targ)))
             yaml.dump(targ_params, stream=outConfig, indent=2,  default_flow_style=False)
