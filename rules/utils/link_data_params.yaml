@@ -1,0 +1,9 @@
+link_data:
+  eelpond_params:
+    extensions:
+      read:
+        pe:
+          - "_1.fq.gz"
+          - "_2.fq.gz"
+        se:
+          - ".se.fq.gz" 

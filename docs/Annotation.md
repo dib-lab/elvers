@@ -81,7 +81,7 @@ dammit annotate trinity.nema.fasta --busco-group metazoa --user-databases nema.r
 ```
 
 While dammit runs, it will print out which tasks its running to the terminal. dammit is
-written with a library called [pydoit](www.pydoit.org), which is a python workflow library similar
+written with a library called [pydoit](http://www.pydoit.org), which is a python workflow library similar
 to GNU Make. This not only helps organize the underlying workflow, but also means that if we
 interrupt it, it will properly resume! 
 

@@ -1,8 +1,18 @@
-
 trinity:
-    max_memory : "10G"
+  eelpond_params:
+    extensions:
+      assembly_extensions: # use this extension only for all output of this assembler 
+        - _trinity
+      base:
+        - .fasta
+        - .fasta.gene_trans_map
+  program_params:
+    # input kmer-trimmed reads
+    input_kmer_trimmed: True
+    # input trimmed-reads
+    input_trimmomatic_trimmed: False
+    # do we want to assemble the single reads with pe reads?
+    add_single_to_paired: False
+    max_memory : 30G
+    seqtype: fq
 
-
-
-#update_config(config_default, trinity_config)
-#config = config_default

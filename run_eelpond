@@ -1,26 +1,28 @@
 #! /usr/bin/env python
+
 """
 Execution script for snakemake eelpond.
 """
 # ref: https://github.com/ctb/2018-snakemake-cli/blob/master/run
 import argparse
-import os.path
+import os
 import sys
 import pprint
 import yaml
 import glob
+import collections
 import snakemake
+
+from ep_utils.utils import *
+from ep_utils.pretty_config import pretty_name, write_config
 
 def find_Snakefile(workdir):
     snakefile = os.path.join(workdir, 'Snakefile')
     assert os.path.exists(snakefile), 'Error: cannot find Snakefile at {}\n'.format(snakefile)
-    print('--------')
-    print('details!')
-    print('\tsnakefile: {}'.format(snakefile))
     return snakefile
 
-def find_yaml(workdir, filename, name): # args.configfile
-    # find the workflow config or params file
+def find_yaml(workdir, filename, name): 
+    # find the workflow config file
     workflowfile = None
     if os.path.exists(filename) and not os.path.isdir(filename):
         workflowfile = filename
@@ -28,70 +30,207 @@ def find_yaml(workdir, filename, name): # args.configfile
         for suffix in ('', '.yaml', '.yml'):
             tryfile = os.path.join(workdir, filename + suffix)
             if os.path.exists(tryfile) and not os.path.isdir(tryfile):
-                sys.stderr.write('Found {} file at {}\n'.format(name, tryfile))
+                if name != 'pipeline_defaults':
+                    sys.stderr.write('\tFound {} file at {}\n'.format(name, tryfile))
                 workflowfile = tryfile
                 break
-    if name == 'params':
-        if not workflowfile:
-            print('\tcannot find params file, attempting to build from rule-specific params files')
-            workflowfile = build_params(workdir)
-    assert workflowfile, 'Error, cannot find {} file {}\n'.format(name, filename)
-    print('\t{}: {}'.format(name, workflowfile))
+    assert workflowfile, f'Error, cannot find specified {name} file {filename}\n\n\n   Use option "--build_config" to build a default {name} at {filename}.\n'
     return workflowfile
 
-def build_params(workdir):
-    rules_dir = path.join(workdir, 'rules')
-    rule_params_files = glob.glob(path.join(rules_dir,'*/*_params.yaml'))
-    paramsD = {}
-    for f in rule_params_files:
-        with open(f, 'r') as stream:
-            try:
-                paramsD.update(yaml.load(stream))
-            except yaml.YAMLError as exc:
-                print(exc)
-    paramsfile = path.join(workdir,'default_params.yaml')
-    with open(paramsfile, 'w') as params:
-        yaml.dump(paramsD, stream=d_params, indent=2)
-    return paramsfile
+def build_default_params(workdir, targets):
+    defaultParams = {}
+    # first, figure out which parts of the pipeline are being run, and get those defaults
+    pipeline_defaultsFile = find_yaml(workdir, os.path.join('ep_utils', 'pipeline_defaults'), 'pipeline_defaults')
+    pipeline_defaults = read_yaml(pipeline_defaultsFile)
+    # grab general defaults
+    defaultParams['basename'] = pipeline_defaults['basename']
+    defaultParams['assembly_extensions'] = pipeline_defaults['assembly_extensions']
+    # add main directories
+    defaultParams['eelpond_directories'] = pipeline_defaults['eelpond_directories']
+    # add outdir name for all potential rules
+    all_rules = pipeline_defaults['eelpond_pipeline']
+    outdirs = {}
+    for rule, info in all_rules.items():
+        outdirs[rule] = info.get('outdir', rule) # default to rule name if no outdir provided
+    defaultParams['eelpond_directories']['outdirs'] = outdirs
+    # grab targets, and subset by input target
+    pipelineTargets = pipeline_defaults['eelpond_pipeline']
+    subsetPipelineD = {k: pipelineTargets[k] for k in pipelineTargets.keys() & targets}
+    defaultParams['eelpond_pipeline'] = subsetPipelineD
+    # next, get defaults for the included rules
+    targetRules = []
+    for targD in subsetPipelineD.values():
+        targetRules+= targD.get('rules', [])
+    ruleParamsFiles = []
+    includeRules = []
+    rules_dir = defaultParams['eelpond_directories']['rules']    
+    for rule in targetRules:
+        ruleParamsFiles+= glob.glob(os.path.join(workdir, rules_dir, '*', rule + '_params.yaml'))
+        includeRules+= glob.glob(os.path.join(workdir, rules_dir, '*', rule + '.rule'))
+    for f in ruleParamsFiles:
+        defaultParams.update(read_yaml(f))
+    defaultParams['include_rules'] = includeRules
+    return defaultParams
+
+def build_dirs(workdir, params, targets):
+    #build eelpond dir info
+    ep_dirs = params['eelpond_directories']
+    for d in ep_dirs:
+        if 'outdirs' not in d:
+            ep_dirs[d] = os.path.join(workdir, d)
+        if 'animals' in d:
+            ep_dirs[d] = os.path.join(workdir, 'ep_utils', d)
+    params['eelpond_directories'] = ep_dirs
+    
+    #build out dirs for target workflows 
+    basename = params['basename']
+    if params.get('experiment'):
+        outdir = basename + "_out_" + params['experiment']
+    else:
+        outdir = basename + '_out'
+    params['eelpond_directories']['out_dir'] = outdir
+    # main directory structure 
+    outDirs = params['eelpond_directories']['outdirs']
+    for targ, outD in outDirs.items():
+        outDirs[targ] = os.path.join(outdir, outD)
+    # add target rule: outdir mapping
+    params['eelpond_directories']['outdirs'] = outDirs
+    
+    # build program-specific dirs 
+    for targ in targets:
+        targ_dir = params['eelpond_pipeline'][targ].get('outdir', targ) # default to rule name if no outdir provided
+        if targ_dir not in outDirs:
+            outDirs[targ] = os.path.join(outdir, targ_dir)
+        targ_dir = outDirs[targ]
+        tools = params['eelpond_pipeline'][targ]['rules']
+        for prog in tools:
+            prog_params = params[prog]['eelpond_params']
+            if isinstance(prog_params, dict):
+                params[prog]['eelpond_params']['outdir'] = targ_dir #os.path.join(targ_dir, prog_dirname)
+    return params
+
+def handle_assemblyInput(assembInput, config):
+    # find files
+    assemblyfile = config['assemblyinput'].get('assembly', None)
+    assert os.path.exists(assemblyfile), 'Error: cannot find input assembly at {}\n'.format(assemblyfile)
+    sys.stderr.write('\tFound input assembly at {}\n'.format(assemblyfile))
+    gtmap = config['assemblyinput'].get('gene_trans_map', None)
+    assert os.path.exists(gtmap), 'Error: cannot find assembly gene_trans_map at {}\n'.format(gtmap)
+    sys.stderr.write('\tFound input assembly gene-transcript map at {}\n'.format(gtmap))
+    # grab user-input assembly extension
+    input_assembly_extension = config['assemblyinput'].get('assembly_extension', '')
+    # build eelpond_params in order to add user extension to the assemblyinput params info 
+    eelpond_params = {}
+    eelpond_params['extensions'] = {}
+    eelpond_params['extensions']['assembly_extension'] = input_assembly_extension
+    config['assemblyinput']['eelpond_params'] = eelpond_params
+    # add extension to overall assembly_extensions info
+    exts =  config.get('assembly_extensions', [])
+    config['assembly_extensions'] = list(set(exts + [input_assembly_extension]))
+    return config
+
 
 def main(args):
-    # first, find the Snakefile, configfile, and paramfiles
+    # first, find the Snakefile and configfile
+    print('\n--------')
+    print('checking for required files:')
+    print('--------\n')
+    
     thisdir = os.path.abspath(os.path.dirname(__file__))
     snakefile = find_Snakefile(thisdir)
-    configfile = find_yaml(thisdir, args.config, 'config') 
-    paramsfile = find_yaml(thisdir, args.params, 'params') 
-    #if not paramsfile:
-    #    paramsfile = build_params(thisdir)
     
-    # open workflow config file # which programs to use, etc
-#    with open(configfile, 'rt') as fp:
-#        workflow_info = yaml.load(fp) 
+    # handle "full" target:
+    targs = args.targets
+    if 'full' in targs:
+        targs = ['preprocess', 'kmer_trim', 'assemble', 'annotate', 'quantify']
+    if args.build_config:
+        if not '.yaml' in args.configfile:
+            args.configfile = args.configfile + '.yaml'
+        default_params = build_default_params(thisdir, targs)
+        write_config(default_params, targs, args.configfile)
+        sys.exit(0)
+    else: 
+        configfile = find_yaml(thisdir, args.configfile, 'configfile') # find configfile
+        if not configfile:
+            sys.stderr.write('Error: cannot find configfile {}\n.'.format(args.configfile))
+            sys.exit(-1)
+        # first, grab all params in user config file
+        configD = read_yaml(configfile)
+        # build info for assemblyInput
+        assembInput = configD.get('assemblyinput', None)
+        if assembInput:
+            targs+=['assemblyinput']
+            configD = handle_assemblyInput(assembInput, configD)
+        if 'assemblyinput' in targs and not assembInput:
+            sys.stderr.write("\n\tError: trying to run `assemblyinput` workflow, but there's no assembly file specified in your configfile. Please fix.\n\n")
+            sys.exit(-1)
+        # next, grab all eelpond defaults, including rule-specific default parameters (*_params.yaml files) 
+        paramsD = build_default_params(thisdir, targs)
+        # update defaults with user-specified parameters
+        update_nested_dict(paramsD,configD) # configD takes priority over default params 
+        # use params to build directory structure
+        paramsD = build_dirs(thisdir, paramsD, targs)
+        # Note: Passing a configfile allows nested yaml/dictionary format. 
+        # Passing these params in via `config` would require a flat dictionary.
+        paramsfile = os.path.join(os.path.dirname(configfile), '.ep_' + os.path.basename(configfile))
+        sys.stderr.write('\tAdded default parameters from rule-specific params files.\n\tWriting full params to {}\n'.format(paramsfile))
+        write_yaml(paramsD, paramsfile)
 
-    # run!!
-    # params file becomes snakemake configfile
-    status = snakemake.snakemake(snakefile, configfile=paramsfile,
-                                 targets=[target], printshellcmds=True,
-                                 dryrun=args.dry_run, config=config)
+        print('--------')
+        print('details!')
+        print('\tsnakefile: {}'.format(snakefile))
+        print('\tconfig: {}'.format(configfile))
+        print('\tparams: {}'.format(paramsfile))
+        print('\ttargets: {}'.format(repr(targs)))
+        print('--------')
 
-    if status: # translate "success" into shell exit code of 0
-       return 0
-    return 1
+        # run!!
+        # params file becomes snakemake configfile
+        status = snakemake.snakemake(snakefile, configfile=paramsfile, use_conda=True, 
+                                 targets=targs, printshellcmds=True,
+                                 dryrun=args.dry_run, lock=not args.nolock,
+                                 verbose=args.verbose, debug_dag=args.debug)
+    
+        if status: # translate "success" into shell exit code of 0
+           return 0
+        return 1
+
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='run snakemake eelpond', usage='''run_eelpond <workflow> <parameters> [<target>]
-Run snakemake workflows, using the given workflow name & parameters file.
+    parser = argparse.ArgumentParser(description='run snakemake eelpond', usage='''run_eelpond <configfile.yaml>  [<target> ...]
+
+Run eelpond snakemake workflows, using the given configfile.
+
+Targets:
+
+   full               - run full workflow (default)
+   preprocess         - preprocess reads 
+   kmer_trim          - kmer trim preprocessed reads
+   assemble           - transcriptome assembly 
+   annotate           - annotate transcriptome assembly
+   quantify           - read quantification 
+
+   ## not enabled yet: ##
+   diffexp            - conduct differential expression
+   clean              - remove target dirs
+
+For a quickstart, run this:
+
+   run_eelpond nema-test full
+
+from the main eelpond directory.
+
 ''')
 
-    parser.add_argument('workflowfile')
-    parser.add_argument('paramsfile')
-    #parser.add_argument('-u', '--quantify', action='store_true')
-    #parser.add_argument('-n', '--dry-run', action='store_true')
-    #parser.add_argument('-r', '--read-processing', action='store_true')
-    #parser.add_argument('-a', '--assembly', action='store_true')
-    #parser.add_argument('-q', '--assembly-quality', action='store_true')
-    #parser.add_argument('-u', '--quantify', action='store_true')
-    #parser.add_argument('-d', '--diffexp', action='store_true')
+    parser.add_argument('configfile')
+    parser.add_argument('targets', nargs='*', default=['full'])
+    parser.add_argument('-n', '--dry-run', action='store_true')
+    parser.add_argument('-v', '--verbose', action='store_true')
+    parser.add_argument('-d', '--debug', action='store_true')
+    parser.add_argument('--nolock', action='store_true')
+    parser.add_argument('--unlock', action='store_true')
+    parser.add_argument('--build_config', action='store_true', help='just build the default parameter file')
     args = parser.parse_args()
 
     sys.exit(main(args))

@@ -1,0 +1,33 @@
+description: "Eel pond mRNAseq de novo assembly pipeline"
+
+user_email: ""
+
+experiment_suffix: "exp"
+
+basename: "nema"
+
+# options: full, prep-reads, assembly, assembly-quality, diffexpression
+workflow: "expression"
+
+assembly_input:
+  assembly: 'nema_out/assembly/nema.fasta'
+  gene_trans_map: 'nema_out/assembly/nema.fasta.gene_trans_map'
+
+
+# url or path to the csv of samples (sample_basename,fq1,fq2,condition)
+samples: "rna_testdata/nema_samples.tsv"
+units: "rna_testdata/nema_units.tsv"
+
+directories:
+ qc_dir: 'qc'
+ trim_dir: 'trimmed'
+ assembly_dir: 'assembly'
+ quant_dir: 'quant'
+ sourmash_dir: 'sourmash'
+
+deseq2:
+  # contrasts for the deseq2 results method
+  contrasts:
+    hour0-vs-hour6:
+      - time0
+      - time6

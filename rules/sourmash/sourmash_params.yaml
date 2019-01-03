@@ -1,0 +1,12 @@
+sourmash:
+  eelpond_params:
+    extensions: 
+      base:
+        - .sig
+      #read:
+      #  pe:
+      #    - .pe.sig
+      #  se:
+      #    - .se.sig
+  program_params:
+    extra: ''

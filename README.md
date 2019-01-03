@@ -32,22 +32,47 @@ source ~/.bash_profile
 ```
 
 ```
-conda install -c bioconda -c conda-forge -y snakemake
+conda install -c bioconda -c conda-forge -y snakemake yaml
 ```
 
 
-Run:
+Run Eelpond:
 
 ```
 #get eelpond code
 git clone https://github.com/dib-lab/eelpond.git
 cd eelpond
 
-git submodule update --init --recursive #download test data submodule
+# see the help:
+./run_eelpond -h
 
-#run eelpond
-snakemake --use-conda --configfile rna_testdata/nema_config.yaml
+#run test data
+./run_eelpond nema-test
 ```
+This will run a small set of _Nematostella vectensis_ test data (from [Tulin et al., 2013](https://evodevojournal.biomedcentral.com/articles/10.1186/2041-9139-4-16))
+
+**Running your own data:**
+
+To run your own data, you'll need to create two files, a `tsv` file containing 
+your sample info, and a `yaml` file containing basic configuration info. To start,
+copy the test data files so you can modify them.
+
+```
+cp nema_samples.tsv <my-tsv-name.tsv>
+```
+
+Next, build a configfile to edit:
+
+```
+./run_eelpond config_name --build_config
+
+```
+This configfile will contain all the default paramters for each step of the pipeline you target.
+If you don't specify any targets, it will default to the "full" pipeline, which executes read
+preprocessing, assembly, annotation, and quantification.
+
+Then, modify this configfile as necessary. 
+The essential component is the `samples.tsv` file, which points `eelpond` to your sample files.
 
 
 **References:**  
@@ -58,15 +83,15 @@ snakemake --use-conda --configfile rna_testdata/nema_config.yaml
   * [SIO-BUG, nonmodel RNAseq workshop, October 2017](http://rnaseq-workshop-2017.readthedocs.io/en/latest/index.html)
 
 
-**intended workflows:**  
+**available workflows:**  
 
-  - Read Quality Trimming and Filtering
-  - Digital Normalization
-  - Assembly
-  - Quality Assessment
-  - Annotation
-  - Transcript Quantification 
-  - Differential Expression
+  - preprocess: Read Quality Trimming and Filtering (fastqc, trimmomatic)
+  - kmer_trim: Kmer Trimming and/or Digital Normalization (khmer)
+  - assemble: Transcriptome Assembly (trinity)
+  - assemblyinput: Specify assembly for downstream steps
+  - annotate : Annotate the transcriptome (dammit, sourmash)
+  - quantify: Quantify transcripts (salmon) 
+  - full: preprocess, kmer_trim, assemble, annotate, quantify 
 
 
-*snakemake style builds off of [rna-seq-star example workflow](https://github.com/snakemake-workflows/rna-seq-star-deseq2)*
+

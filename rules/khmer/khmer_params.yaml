@@ -1,0 +1,19 @@
+khmer:
+  eelpond_params:
+    extensions:
+      read:
+        pe:
+          - '_1.khmer.fq.gz'
+          - '_2.khmer.fq.gz'
+          - '.paired.khmer.fq.gz'
+          - '.single.khmer.fq.gz'
+        se:
+          - '.se.khmer.fq.gz'
+  program_params:
+    diginorm: True
+    ksize: 20
+    Z: 18
+    C: 3
+    memory: 20e9
+    coverage: 20
+    extra: ""

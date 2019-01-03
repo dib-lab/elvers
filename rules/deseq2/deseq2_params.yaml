@@ -1,10 +1,15 @@
 deseq2:
-  # contrasts for the deseq2 results method
-  contrasts:
-    treated-vs-untreated:
-      - treated
-      - untreated
-  pca:
-    labels:
-    # columns of sample sheet to use for PCA
-      - condition
+  eelpond_params:
+    extensions:
+      base:
+        - "_all.rds"
+  program_params:
+    # contrasts for the deseq2 results method
+    contrasts:
+      treated-vs-untreated:
+        - treated
+        - untreated
+    pca:
+      labels:
+      # columns of sample sheet to use for PCA
+        - condition

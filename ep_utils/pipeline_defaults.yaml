@@ -1,0 +1,81 @@
+# default settings: do not change these lightly! 
+
+#general settings
+basename: eelpond
+assembly_extensions:
+  - _trinity
+
+eelpond_directories:
+  rules: rules
+  animals: animals
+  logs: logs
+
+# programs to be run at each step of the pipeline
+# change these if you're sure you have new program 
+# params and targets right.
+eelpond_pipeline:
+  download_data:
+    outdir: input_data
+    rules:
+      - ftp 
+    targets:
+      - ftp
+  link_data:
+    outdir: input_data
+    rules:
+      - link_data 
+    targets:
+      - link_data
+  preprocess:
+    outdir: preprocess
+    rules:
+      - link_data
+      - fastqc
+      - trimmomatic
+    targets:
+      - fastqc
+      - trimmomatic
+  kmer_trim:
+    outdir: preprocess
+    rules:
+      - link_data
+      - trimmomatic
+      - khmer
+    targets:
+      - khmer
+  assemble:
+    outdir: assembly
+    rules:
+      - trimmomatic
+      - khmer
+      - trinity
+    targets:
+      - trinity
+  assemblyinput:
+    outdir: assembly
+    rules:
+      - assemblyinput
+    targets:
+      - assemblyinput
+  annotate:
+    outdir: annotation
+    rules:
+      - dammit
+      - sourmash
+    targets:
+      - dammit
+      - sourmash
+  quantify:
+    outdir: quant
+    rules:
+      - link_data
+      - trimmomatic
+      - salmon
+    targets:
+      - salmon
+  #diffexp:
+  #  outdir: diffexp
+  #  rules:
+  #    - deseq2
+  #  targets:
+  #    - deseq2

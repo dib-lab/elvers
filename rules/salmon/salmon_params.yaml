@@ -1,0 +1,21 @@
+salmon:
+  eelpond_params:
+    input_pattern: .trim.fq.gz
+    input_dir: preprocess
+    extensions: 
+      read:
+        combine_units: True
+        pe:
+          - _x___assembly__.salmon/quant.sf
+          - _x___assembly__.salmon/lib_format_counts.json
+        se:
+          - _x___assembly__.salmon/quant.sf
+          - _x___assembly__.salmon/lib_format_counts.json
+      base:
+          - .salmonindex
+  program_params:
+    index_params:
+      extra: '' # extra info for the program
+    quant_params:
+      libtype: A
+      extra: ''

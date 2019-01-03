@@ -1,0 +1,20 @@
+fastqc:
+  eelpond_params:
+    extensions: 
+      read:
+        pe:
+          - '_1.fastqc.zip'
+          - '_1.fastqc.html'
+          - '_1.trim.fastqc.zip'
+          - '_1.trim.fastqc.html'
+          - '_2.fastqc.zip'
+          - '_2.fastqc.html'
+          - '_2.trim.fastqc.zip'
+          - '_2.trim.fastqc.html'
+        se:
+          - '_se.fastqc.zip'
+          - '_se.fastqc.html'
+          - '_se.trim.fastqc.zip'
+          - '_se.trim.fastqc.html'
+  program_params:
+    extra: ''

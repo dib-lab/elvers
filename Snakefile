@@ -1,196 +1,87 @@
+# Snakemake configuration file for running eelpond pipelines.
+#
+# see script 'run_eelpond' in this directory for a convenient entry point.
+#
+# Quickstart: `conf/run dory-test full`
+#
+
 import os
 from os.path import join
-import yaml
 import numpy as np
 import pandas as pd
 from snakemake.utils import validate, min_version
-from common.utils import get_params
+from ep_utils.utils import * 
+import glob
 
 min_version("5.1.2") #minimum snakemake version
 
-# read in & validate sample info 
-samples = pd.read_table(config["samples"]).set_index("sample", drop=False)
-validate(samples, schema="schemas/samples.schema.yaml")
-units = pd.read_table(config["units"], dtype=str).set_index(["sample", "unit"], drop=False)
-units.index = units.index.set_levels([i.astype(str) for i in units.index.levels])  # enforce str in index
-validate(units, schema="schemas/units.schema.yaml")
+# read in sample info 
+samples = pd.read_table(config["samples"],dtype=str).set_index(["sample", "unit"], drop=False)
+validate(samples, schema="schemas/samples_v2.schema.yaml") # new version
+samples['name'] = samples["sample"].map(str) + '_' + samples["unit"].map(str)
 
-# check for replicates
-replicates = True
-num_reps = samples['condition'].value_counts().tolist()
-if any(x < 2 for x in num_reps):
-    replicates = False
+# note, this function *needs* to be in this file, or added somewhere it can be accessed by all rules
+def is_single_end(sample, unit, end = '', assembly = ''):
+    return pd.isnull(samples.loc[(sample, unit), "fq2"])
 
-# build file extensions from suffix info (+ set defaults)
-base = config.get('basename','eelpond') 
-experiment_suffix = config.get('experiment_suffix', '')
+# check for replicates ** need to change with new samples scheme
+# change this replicate check to work with single samples file
+#replicates = True
+#num_reps = samples['condition'].value_counts().tolist()
+#if any(x < 2 for x in num_reps):
+#    replicates = False
 
-# build directory info --> later set all these from config file(s)? or just a defaults file?
-#folders = config['directories']
+# Set up directories 
+BASE = config['basename']
+LOGS_DIR = config['eelpond_directories']['logs']
 
-ANIMALS_DIR = "common/animals/"
-OUT_DIR = '{}_out{}'.format(base, experiment_suffix)
-LOGS_DIR = join(OUT_DIR, 'logs')
-READS_DIR = join(OUT_DIR, 'untrimmed')
-TRIM_DIR = join(OUT_DIR, 'trimmed')
-KHMER_TRIM_DIR = join(OUT_DIR, 'khmer')
-QC_DIR = join(OUT_DIR, 'qc')
-ASSEMBLY_DIR = join(OUT_DIR, 'assembly')
-QUANT_DIR = join(OUT_DIR, 'quant')
-SOURMASH_DIR = join(OUT_DIR,'sourmash')
-BUSCO_DIR = join(OUT_DIR,'busco')
-DSEQ2_DIR = join(OUT_DIR,'deseq2')
-EDGER_DIR = join(OUT_DIR, 'edgeR')
-ANNOT_DIR = join(OUT_DIR,'annotation')
-BT2_DIR = join(OUT_DIR,'bowtie2')
+#get ascii  animals
+animals_dir = config['eelpond_directories']['animals']
+animal_targs = glob.glob(join(animals_dir, '*')) # get all ascii animals
+animalsD = {os.path.basename(x): x for x in animal_targs}
+octopus = animalsD['octopus']
+fish = animalsD['fish']
 
-flow = config.get('workflow', 'full')
-read_processing,assembly,assembly_quality,annotation,quantification,diffexp,input_assembly,bt2_map = [False]*8 
-
-if flow == 'full': 
-    read_processing = True
-    assembly = True
-    assembly_quality = True
-    annotation = True
-    quantification = True
-    diffexp = True
-elif flow =='assembly':
-    read_processing = True
-    assembly = True
-    quality = True
-else: 
-    input_assembly = True
-    assert config['assembly_input']['assembly'] is not None, "chosen workflow requires transcriptome assembly as input" 
-    assert config['assembly_input']['gene_trans_map'] is not None, "chosen workflow requires transcriptome gene transcript map as input" 
-    if flow == 'annotation':
-        annotation = True
-    if flow == 'expression':
-        read_processing = True
-        quantification = True
-        diffexp = True
-    if flow == 'bowtie2':
-        read_processing = True
-        bt2_map = True
-
-#print_animal
-animal_targs = [ANIMALS_DIR+"octopus",ANIMALS_DIR+"fish"]
-
-# workflow rules
-TARGETS = []
-
-include: 'rules/common.rule'
-
-if read_processing:
-    #fastqc
-    include: 'rules/fastqc/fastqc.rule'
-    from rules.fastqc.fastqc_targets import get_targets
-    fastqc_targs = get_targets(units, base, QC_DIR)
-    TARGETS += fastqc_targs
-    #trimmomatic
-    include: 'rules/trimmomatic/trimmomatic.rule'
-    from rules.trimmomatic.trimmomatic_targets import get_targets
-    trim_targs = get_targets(units, base, TRIM_DIR)
-    TARGETS += trim_targs
-
-if assembly:
-    #khmer
-    include: 'rules/khmer/khmer.rule'
-    from rules.khmer.khmer_targets import get_targets
-    khmer_targs = get_targets(units, base, KHMER_TRIM_DIR)
-    TARGETS += khmer_targs
-    #trinity
-    include: 'rules/trinity/trinity.rule'
-    from rules.trinity.trinity_targets import get_targets
-    trinity_targs = get_targets(units, base, ASSEMBLY_DIR)
-    TARGETS += trinity_targs
-
-if input_assembly:
-    include: 'rules/assemblyinput/assemblyinput.rule'
-    from rules.assemblyinput.assemblyinput_targets import get_targets
-    assemblyinput_targs = get_targets(units, base, ASSEMBLY_DIR)
-    TARGETS += assemblyinput_targs
-
-if assembly_quality:
-    #busco
-    include: 'rules/busco/busco.rule'
-    from rules.busco.busco_targets import get_targets
-    busco_targs = get_targets(units, base, BUSCO_DIR)
-    #TARGETS += busco_targs
-    #sourmash
-    include: 'rules/sourmash/sourmash.rule'
-    from rules.sourmash.sourmash_targets import get_targets
-    sourmash_targs = get_targets(base,SOURMASH_DIR)
-    TARGETS += sourmash_targs
-
-if annotation:
-   #dammit
-   include: 'rules/dammit/dammit.rule'
-   from rules.dammit.dammit_targets import get_targets
-   dammit_targs = get_targets(units, base, ANNOT_DIR)
-   TARGETS += dammit_targs
-
-if quantification:
-    #salmon
-    include: 'rules/salmon/salmon.rule'
-    from rules.salmon.salmon_targets import get_targets
-    salmon_targs = get_targets(units, base, QUANT_DIR)
-    TARGETS += salmon_targs
-
-if bt2_map:
-    #bowtie2
-    include: 'rules/bowtie2/bowtie2.rule'
-    from rules.bowtie2.bowtie2_targets import get_targets
-    bowtie2_targs = get_targets(units, base, BT2_DIR)
-    TARGETS += bowtie2_targs
-
-if diffexp:
-    if replicates:
-        #deseq2
-        include: 'rules/deseq2/deseq2.rule'
-        from rules.deseq2.deseq2_targets import get_targets
-        deseq2_targs = get_targets(units,base,DSEQ2_DIR, conf = config)
-        TARGETS += deseq2_targs
-        #include: 'rules/edgeR/edgeR.rule'
-        #from rules.edgeR.edgeR_targets import get_targets
-        #edgeR_targs = get_targets(units,base,EDGER_DIR, conf = config)
-        #TARGETS += edgeR_targs
-    #else:
-        #include: 'rules/edgeR/edgeR_no_replicates.rule'
-        #from rules.edgeR.edgeR_targets import get_targets
-        #edgeR_targs = get_targets(units,base,EDGER_DIR, conf = config)
-        #TARGETS += edgeR_targs
-
-#push_sigs
-#include: 'rules/push_sigs.rule'
+#### snakemake ####
+# include rule files
+includeRules = config['include_rules']
+for r in includeRules:
+    include: r
 
 onstart: 
-    shell('cat {animal_targs[0]}')
+    shell('cat {octopus}')
     print('-----------------------------------------------------------------')
     print('Welcome to the Eel Pond, de novo transcriptome assembly pipeline.')
     print('-----------------------------------------------------------------')
 
-    # for testing: snakemake usually prints targets of each rule for us
-    # print('Output files to be generated by the pipeline:')
-    # print(TARGETS)
+onsuccess:
+    print("\n--- Eel Pond Workflow executed successfully! ---\n")
+    shell('cat {fish}')
 
-rule all:
-    input: TARGETS
+## targeting rules
+rule preprocess:
+    input: generate_mult_targs(config, 'preprocess', samples)  
 
-##### singularity #####
+rule kmer_trim:
+    input: generate_mult_targs(config, 'kmer_trim', samples)  
 
-# this container defines the underlying OS for each job when using the workflow
-# with --use-conda --use-singularity
-#singularity: "docker://continuumio/miniconda3"
+rule assemble:
+    input: generate_mult_targs(config, 'assemble', samples)
 
-#shell('cat {animal_targs[1]}')
+rule assemblyinput:
+    input: generate_mult_targs(config, 'assemblyinput', samples)
+
+rule annotate:
+    input: generate_mult_targs(config, 'annotate', samples)
+
+rule quantify:
+    input: generate_mult_targs(config, 'quantify', samples)
+
+#rule diff_expression:
+#    input: generate_mult_targs(config, 'diffexp', samples)
 
 ##### report #####
+#report: "report/workflow.rst"
 
-report: "report/workflow.rst"
 shell('cat {animal_targs[1]}')
-
-onsuccess:
-    #if "verbose" in config and config["verbose"]:
-    print("\n--- Eel Pond Workflow executed successfully! ---\n")
-    shell('cat {animal_targs[1]}')
 
