@@ -1,8 +1,8 @@
 import os, re
 from os.path import join, dirname
 
-data_dir = config['eelpond_directories']['outdirs']['input_data']
-trim_dir = config['trimmomatic']['eelpond_dirname']
+data_dir = config['eelpond_directories']['outdirs']['link_data']
+trim_dir = config['eelpond_directories']['outdirs']['preprocess']
 qc_dir   = config['fastqc']['eelpond_dirname']
 
 def get_trimmed(wildcards):

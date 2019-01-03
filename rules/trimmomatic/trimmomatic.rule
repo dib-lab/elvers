@@ -1,6 +1,6 @@
 from os.path import join
 
-data_dir    = config['eelpond_directories']['outdirs']['input_data']
+data_dir    = config['eelpond_directories']['outdirs']['link_data']
 trim_params = config['trimmomatic']
 trim_dir    = trim_params['eelpond_dirname']
 

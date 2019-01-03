@@ -68,11 +68,11 @@ rule kmer_trim:
 rule assemble:
     input: generate_mult_targs(config, 'assemble', samples)
 
-rule annotation:
-    input: generate_mult_targs(config, 'annotation', samples)
+rule annotate:
+    input: generate_mult_targs(config, 'annotate', samples)
 
-rule quantification:
-    input: generate_mult_targs(config, 'quantification', samples)
+rule quantify:
+    input: generate_mult_targs(config, 'quantify', samples)
 
 #rule diff_expression:
 #    input: generate_mult_targs(config, 'diffexp', samples)

@@ -9,34 +9,25 @@ eelpond_directories:
   rules: rules
   animals: animals
   logs: logs
-  outdirs: 
-    # each target rule must have a dirname
-    # target_rule: dirname
-    input_data: input_data
-    download_data: input_data
-    link_data: input_data
-    preprocess: preprocess
-    kmer_trim: preprocess
-    assemble: assembly
-    annotation: annotation
-    quantification: quant
-    diffexp: diffexp
 
 # programs to be run at each step of the pipeline
 # change these if you're sure you have new program 
 # params and targets right.
 eelpond_pipeline:
   download_data:
+    outdir: input_data
     rules:
       - ftp 
     targets:
       - ftp
   link_data:
+    outdir: input_data
     rules:
       - link_data 
     targets:
       - link_data
   preprocess:
+    outdir: preprocess
     rules:
       - link_data
       - fastqc
@@ -45,6 +36,7 @@ eelpond_pipeline:
       - fastqc
       - trimmomatic
   kmer_trim:
+    outdir: preprocess
     rules:
       - link_data
       - trimmomatic
@@ -52,13 +44,15 @@ eelpond_pipeline:
     targets:
       - khmer
   assemble:
+    outdir: assembly
     rules:
       - trimmomatic
       - khmer
       - trinity
     targets:
       - trinity
-  annotation:
+  annotate:
+    outdir: annotation
     rules:
       - assemblyinput
       - dammit
@@ -66,7 +60,8 @@ eelpond_pipeline:
     targets:
       - dammit
       - sourmash
-  quantification:
+  quantify:
+    outdir: quant
     rules:
       - assemblyinput
       - link_data
@@ -75,6 +70,7 @@ eelpond_pipeline:
     targets:
       - salmon
   #diffexp:
+  #  outdir: diffexp
   #  rules:
   #    - deseq2
   #  targets:

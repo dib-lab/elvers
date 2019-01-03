@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+
 """
 Execution script for snakemake eelpond.
 """
@@ -42,8 +43,14 @@ def build_default_params(workdir, targets):
     # grab general defaults
     defaultParams['basename'] = pipeline_defaults['basename']
     defaultParams['assembly_extensions'] = pipeline_defaults['assembly_extensions']
-    # add all directories
+    # add main directories
     defaultParams['eelpond_directories'] = pipeline_defaults['eelpond_directories']
+    # add outdir name for all potential rules
+    all_rules = pipeline_defaults['eelpond_pipeline']
+    outdirs = {}
+    for rule, info in all_rules.items():
+        outdirs[rule] = info.get('outdir', rule) # default to rule name if no outdir provided
+    defaultParams['eelpond_directories']['outdirs'] = outdirs
     # grab targets, and subset by input target
     pipelineTargets = pipeline_defaults['eelpond_pipeline']
     subsetPipelineD = {k: pipelineTargets[k] for k in pipelineTargets.keys() & targets}
@@ -80,20 +87,23 @@ def build_dirs(workdir, params, targets):
     else:
         outdir = basename + '_out'
     params['eelpond_directories']['out_dir'] = outdir
-    
+    # main directory structure 
     outDirs = params['eelpond_directories']['outdirs']
     for targ, outD in outDirs.items():
         outDirs[targ] = os.path.join(outdir, outD)
+    # add target rule: outdir mapping
     params['eelpond_directories']['outdirs'] = outDirs
     
     # build program-specific dirs 
     for targ in targets:
-        tools = params['eelpond_pipeline'][targ]['rules']
+        targ_dir = params['eelpond_pipeline'][targ].get('outdir', targ) # default to rule name if no outdir provided
+        if targ_dir not in outDirs:
+            outDirs[targ] = os.path.join(outdir, targ_dir)
         targ_dir = outDirs[targ]
+        tools = params['eelpond_pipeline'][targ]['rules']
         for prog in tools:
             prog_params = params[prog]
             if isinstance(prog_params, dict):
-                #prog_dirname = prog_params.get('eelpond_dirname', prog)
                 params[prog]['eelpond_dirname'] = targ_dir #os.path.join(targ_dir, prog_dirname)
     return params
 
@@ -175,9 +185,12 @@ Targets:
    preprocess         - preprocess reads 
    kmer_trim          - kmer trim preprocessed reads
    assemble           - transcriptome assembly 
-   annotation         - annotate transcriptome assembly
-   quantififcation    - read quantification 
-   clean              - remove target dirs ** not enabled yet! **
+   annotate           - annotate transcriptome assembly
+   quantify           - read quantification 
+
+   ## not enabled yet: ##
+   diffexp            - conduct differential expression
+   clean              - remove target dirs
 
 For a quickstart, run this:
 
@@ -196,7 +209,7 @@ from the main eelpond directory.
     parser.add_argument('--unlock', action='store_true')
     parser.add_argument('--experiment', default=None)
     ### to do: enable the option below
-    parser.add_argument('--build_paramsfile', action='store_true', help='just build the default parameter file')
+    parser.add_argument('--build_config', action='store_true', help='just build the default parameter file')
     args = parser.parse_args()
 
     sys.exit(main(args))
