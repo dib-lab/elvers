@@ -21,7 +21,7 @@ validate(samples, schema="schemas/samples_v2.schema.yaml") # new version
 samples['name'] = samples["sample"].map(str) + '_' + samples["unit"].map(str)
 
 # note, this function *needs* to be in this file, or added somewhere it can be accessed by all rules
-def is_single_end(sample, unit, end = ''):
+def is_single_end(sample, unit, end = '', assembly = ''):
     return pd.isnull(samples.loc[(sample, unit), "fq2"])
 
 # check for replicates ** need to change with new samples scheme

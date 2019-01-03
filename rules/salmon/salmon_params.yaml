@@ -1,10 +1,20 @@
 salmon:
+  input_pattern: .trim.fq.gz
+  input_dir: preprocess
   extensions: 
     read:
+      combine_units: True
       pe:
-        - '/quant.sf'
-        - '/lib_format_counts.json'
+        - _x___assembly__.salmon/quant.sf
+        - _x___assembly__.salmon/lib_format_counts.json
       se:
-        - '/quant.sf'
-        - '/lib_format_counts.json'
-
+        - _x___assembly__.salmon/quant.sf
+        - _x___assembly__.salmon/lib_format_counts.json
+    base:
+        - .salmonindex
+  index_params:
+    extra: ''
+  quant_params:
+    libtype: A
+    extra: ''
+    #extra: '--minAssignedFrags 1' #helps with small test data

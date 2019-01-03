@@ -4,7 +4,6 @@ import collections
 import pandas as pd
 from os.path import join
 
-
 # general utilities
 def read_yaml(filename):
     with open(filename, 'r') as stream:
@@ -31,47 +30,43 @@ def update_nested_dict(d, other):
         else:
             d[k] = v
 
-# to do: disable "unit" if desired
-#def is_se(units,sample, unit = '', end = ''):
-#    if unit:
-#        return pd.isnull(samples.loc[(sample, unit), "fq2"])
-#    else:
-#        return pd.isnull(samples.loc[(sample), "fq2"]) #any nulls? what do we want to return?
-
 # sample checks
-def is_single_end(sample, unit, end = ''):
+def is_single_end(sample, unit, end = '', assembly = ''):
     return pd.isnull(samples.loc[(sample, unit), "fq2"])
 
-def generate_data_targs(outdir, samples, extensions = {}):
-    targs = []
-    pe_ext = extensions.get('pe', None)
-    se_ext = extensions.get('se', None)
-    se_names = samples.loc[samples["fq2"].isnull(), 'name'].tolist()
-    pe_names = samples.loc[samples["fq2"].notnull(), 'name'].tolist()
-    if se_ext and len(se_names)>0:
-        targs+=[join(outdir, name + e) for e in se_ext for name in se_names]
-    if pe_ext and len(pe_names) > 0:
-        targs+=[join(outdir, name + e) for e in pe_ext for name in pe_names]
-    return targs
-    
-def generate_base_targs(outdir, basename, extensions, assembly_extensions):
-    target_list = []
-    for ext in assembly_extensions:
+def generate_targs(outdir, basename, samples, assembly_exts=[''], base_exts = None, read_exts = None):
+    base_targets, read_targets = [],[]
+    # handle read targets
+    if read_exts:
+        pe_ext = read_exts.get('pe', None)
+        se_ext = read_exts.get('se', None)
+        combine_units = read_exts.get('combine_units', False)
+        if combine_units:
+            se_names = samples.loc[samples["fq2"].isnull(), 'sample'].tolist()
+            pe_names = samples.loc[samples["fq2"].notnull(), 'sample'].tolist()
+        else:
+            se_names = samples.loc[samples["fq2"].isnull(), 'name'].tolist()
+            pe_names = samples.loc[samples["fq2"].notnull(), 'name'].tolist()
+        if se_ext and len(se_names)>0:
+            read_targets+=[join(outdir, name + e) for e in se_ext for name in se_names]
+        if pe_ext and len(pe_names) > 0:
+            read_targets+=[join(outdir, name + e) for e in pe_ext for name in pe_names]
+    # handle base targets 
+    for ext in assembly_exts:
         assemblyname = basename + ext
-        target_list += [join(outdir, assemblyname + e) for e in extensions]
-    return target_list
+        if base_exts:    
+            base_targets += [join(outdir, assemblyname + e) for e in base_exts]
+        # handle read targets that contain assembly info
+        read_targets = [t.replace("__assembly__", assemblyname) for t in read_targets]
+    return base_targets + read_targets
 
 def generate_program_targs(configD, samples, basename, assembly_exts):
     # given configD from each program, build targets
     outdir = configD['eelpond_dirname']
     exts = configD['extensions']
-    targets = []
-    if exts.get('read', None): 
-        targets+=generate_data_targs(outdir, samples, exts.get('read'))
-    if exts.get('base', None):
-        if exts.get('assembly_extensions'): # this program is an assembler or only works with specific assemblies
-            assembly_exts = exts.get('assembly_extensions') # override generals with rule-specific assembly extensions
-        targets+=generate_base_targs(outdir, basename, exts.get('base'), assembly_exts)
+    if exts.get('assembly_extensions'): # this program is an assembler or only works with specific assemblies
+        assembly_exts = exts.get('assembly_extensions') # override generals with rule-specific assembly extensions
+    targets = generate_targs(outdir, basename, samples, assembly_exts, exts.get('base', None),exts.get('read'))
     return targets
 
 def generate_mult_targs(configD, workflow, samples):
