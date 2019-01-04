@@ -81,6 +81,17 @@ eelpond_pipeline:
       - plass
     targets:
       - plass
+  
+  paladin_map:
+    outdir: paladin
+    rules:
+      - plass
+      - pear
+ #     - paladin
+    targets:
+  #    - paladin
+       - pear
+  
   #diffexp:
   #  outdir: diffexp
   #  rules:

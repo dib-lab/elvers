@@ -1,0 +1,77 @@
+from os.path import join
+
+ep_params = config['pear']['eelpond_params']
+pear_params = config['pear']['program_params']
+
+input_dirname = ep_params['input_dir']
+input_dir     = config['eelpond_directories']['outdirs'][input_dirname]
+ext           = ep_params['input_pattern']
+#combine_units = ep_params['extensions']['read']['combine_units']
+
+pear_dir = ep_params['outdir']
+
+
+#def get_pear_input(w):
+#    r1,r2 = [],[]
+#    readsD = {}
+#    if assembly_params.get('input_kmer_trimmed', True):
+#        ext = '.khmer.fq.gz'
+#        input_dir = config['eelpond_directories']['outdirs']['preprocess']
+#    elif assembly_params.get('input_trimmomatic_trimmed', True):
+#        ext = '.trim.fq.gz'
+#        input_dir = config['eelpond_directories']['outdirs']['preprocess']
+#    else:
+#        ext = '.fq.gz'
+#        input_dir = config['eelpond_directories']['outdirs']['link_data']
+#    for s, u in samples.iterrows():
+#        sample, unit = u['sample'],u['unit']
+#        if not is_single_end(sample, unit):
+#            r1+= [join(input_dir, f"{sample}_{unit}_1{ext}")]
+#            r2+= [join(input_dir, f"{sample}_{unit}_2{ext}")]
+#    if len(r1) > 0:
+#        readsD['left'] = r1
+#        readsD['right'] = r2
+#    return readsD
+
+# use if you don't want to collapse technical replicates ("units" column; deseq2 not supported)
+def get_sample_no_combine(w):
+    readsD = {}
+    if not is_single_end(**w): # note, this requires unit to be in outputs!
+        readsD['r1'] = join(input_dir, f'{w.sample}_{w.unit}_1{ext}')
+        readsD['r2'] = join(input_dir, f'{w.sample}_{w.unit}_2{ext}')
+        return readsD
+    return readsD
+
+def get_sample_combine_units(w):
+    readsD = {}
+    r1,r2,r = [],[],[]
+    unit_list = samples.groupby(level=0).get_group(w.sample)['unit'].tolist()
+    for unit in unit_list:
+        if not is_single_end(w.sample, unit):
+            r1+= [join(input_dir, f"{w.sample}_{unit}_1{ext}")]
+            r2+= [join(input_dir, f"{w.sample}_{unit}_2{ext}")]
+    if r1:
+        readsD['r1'] = r1
+        readsD['r2'] = r2
+    return readsD
+
+rule pear_read_merging:
+    """
+    Merge PE reads with PEAR, for input into PALADIN
+	"""
+    input:
+        unpack(get_sample_no_combine)
+    output: 
+        join(pear_dir,'{sample}_{unit}.pear.fq.gz'),
+    message:
+        """--- Merging paired reads using PEAR  ---"""
+    params:
+        pval = pear_params.get('pval',"0.01"),
+        max_mem = pear_params.get('max_memory', "20G"),
+        extra = pear_params.get('extra', '')
+    threads: 6
+    log: join(LOGS_DIR, 'pear/{sample}_{unit}.log')
+    conda: 'pear-env.yaml'
+    shell: """
+	    pear -f {input.r1} -r {input.r2} -p {params.pval} -j {threads} -y {params.max_mem} {params.extra} -o {output} 2> {log}
+        """	

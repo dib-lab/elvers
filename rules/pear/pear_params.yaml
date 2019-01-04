@@ -1,0 +1,17 @@
+pear:
+  eelpond_params:
+    input_pattern: .trim.fq.gz
+    input_dir: preprocess
+    extensions: 
+      #combine_units: True
+      read:
+        pe:
+          - .pear.fq.gz
+  program_params:
+    # input trimmed-reads
+    input_trimmomatic_trimmed: True
+    # input kmer-trimmed reads
+    input_kmer_trimmed: False
+    pval: .01
+    max_memory: 20G
+    extra: ''

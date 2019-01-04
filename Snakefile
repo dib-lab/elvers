@@ -80,6 +80,9 @@ rule quantify:
 rule plass_assemble:
     input: generate_mult_targs(config, 'plass_assemble', samples)
 
+rule paladin_map:
+    input: generate_mult_targs(config, 'paladin_map', samples)
+
 #rule diff_expression:
 #    input: generate_mult_targs(config, 'diffexp', samples)
 

@@ -1,0 +1,76 @@
+import os
+from os.path import join
+
+assembly_dir  = config['eelpond_directories']['outdirs']['assemble']
+input_dirname = ep_params['input_dir']
+input_dir     = config['eelpond_directories']['outdirs'][input_dirname]
+
+ep_params = config['paladin']['eelpond_params']
+paladin_params = config['paladin']['program_params']
+
+#ext           = ep_params['input_pattern']
+#combine_units = ep_params['extensions']['read']['combine_units']
+
+# get outdir
+paladin_dir = ep_params['outdir']
+assembly_extension = ep_params['extensions']['assembly_extensions'][0] 
+
+
+
+
+
+
+rule cp_assemb_for_paladin:
+    input: join(assembly_dir, "{assembly}.fasta"),
+    output: join(paladin_dir + '_{assembly}', "{assembly}.fasta")
+    shell:"""
+    cp {input} {output}
+    """
+
+rule paladin_index:
+    input: join(paladin_dir + '_{assembly}', "{assembly}.fasta")
+    output: join(paladin_dir + '_{assembly}', "{assembly}.fasta.bwt"),
+    conda: "paladin-env.yaml"
+    shell: """
+    paladin index -r3 {input}
+    """
+    
+# to improve: merge reads with PEAR before mapping with paladin
+
+rule paladin_align:
+    input:  
+        reads= lambda wildcards: join(TRIM_DIR, '{}_{}_{}.trim.fq.gz'.format(wildcards.sample,wildcards.unit, wildcards.end)),
+        index = join(paladin_dir + '_{assembly}', "{assembly}.fasta.bwt")
+    output: join(paladin_dir + '_{assembly}', "{sample}_{unit}_{end}_trim.paladin.bam") 
+    params: 
+        index=join(paladin_dir + '_{assembly}', "{assembly}.fasta")
+    conda: "paladin-env.yaml"
+    threads: 20
+    shell:"""
+    paladin align -f 125 -t {threads} {params.index} {input.reads} | samtools view -Sb - > {output}
+    """
+    
+rule samtools_sort_paladin:
+    input:  join(paladin_dir + '_{assembly}', "{sample}_{unit}_{end}_trim.paladin.bam") 
+    output:  join(paladin_dir + '_{assembly}', "{sample}_{unit}_{end}_trim.paladin.sort.bam") 
+    conda: "paladin-env.yaml"
+    threads: 5
+    shell:"""
+    samtools sort -@ {threads} {input} -o {output}
+    """
+
+rule samtools_flagstat_paladin:
+    input: join(paladin_dir + '_{assembly}', "{sample}_{unit}_{end}_trim.paladin.sort.bam") 
+    output: join(paladin_dir + '_{assembly}', "{sample}_{unit}_{end}_trim.paladin.sort.bam.flagstat")
+    conda: "paladin-env.yaml"
+    shell:"""
+    samtools flagstat {input} > {output}
+    """
+    
+rule samtools_index_paladin:
+    input: join(paladin_dir + '_{assembly}', "{sample}_{unit}_{end}_trim.paladin.sort.bam") 
+    output: join(paladin_dir + '_{assembly}', "{sample}_{unit}_{end}_trim.paladin.sort.bam.bai") 
+    conda: "paladin-env.yaml"
+    shell:"""
+    samtools index {input}
+    """
