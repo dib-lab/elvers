@@ -77,6 +77,9 @@ rule annotate:
 rule quantify:
     input: generate_mult_targs(config, 'quantify', samples)
 
+rule plass_assemble:
+    input: generate_mult_targs(config, 'plass_assemble', samples)
+
 #rule diff_expression:
 #    input: generate_mult_targs(config, 'diffexp', samples)
 

@@ -73,6 +73,14 @@ eelpond_pipeline:
       - salmon
     targets:
       - salmon
+  plass_assemble:
+    outdir: assembly
+    rules:
+      - trimmomatic
+      - khmer
+      - plass
+    targets:
+      - plass
   #diffexp:
   #  outdir: diffexp
   #  rules:
