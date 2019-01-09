@@ -1,0 +1,7 @@
+# slurm_cluster.yaml - cluster configuration for eelpond
+__default__:
+    account: account_name
+    partition: partition_name 
+    time: 3:00:00
+    nodes: 1
+    mem: 10G

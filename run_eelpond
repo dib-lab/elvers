@@ -233,6 +233,7 @@ from the main eelpond directory.
     parser.add_argument('-n', '--dry-run', action='store_true')
     parser.add_argument('-v', '--verbose', action='store_true')
     parser.add_argument('-d', '--debug', action='store_true')
+    parser.add_argument('--slurm', action='store_true')
     parser.add_argument('--nolock', action='store_true')
     parser.add_argument('--unlock', action='store_true')
     parser.add_argument('--build_config', action='store_true', help='just build the default parameter file')
