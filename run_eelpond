@@ -144,8 +144,13 @@ def main(args):
     if 'full' in targs:
         targs = ['preprocess', 'kmer_trim', 'assemble', 'annotate', 'quantify']
     if args.build_config:
-        if not '.yaml' in args.configfile:
-            args.configfile = args.configfile + '.yaml'
+        # TODO: add a check here so we don't overwrite config!!!
+        configfile = args.configfile
+        if not '.yaml' or not '.yml' in args.configfile:
+            configfile = args.configfile + '.yaml'
+        if os.path.exists(configfile):
+            sys.stderr.write(f"\n\tError: found configfile path at {configfile}, but you have '--build_config' specified. Please fix.\n\n")
+            sys.exit(-1)
         default_params = build_default_params(thisdir, targs)
         write_config(default_params, targs, args.configfile)
         sys.exit(0)
