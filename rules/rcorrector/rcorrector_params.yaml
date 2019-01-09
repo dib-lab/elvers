@@ -1,0 +1,14 @@
+rcorrector:
+  eelpond_params:
+    input_pattern: .trim.fq.gz
+    input_dir: preprocess
+    extensions:
+      read:
+        combine_units: False
+        pe:
+          - "_1.rcorr.fq.gz"
+          - "_2.rcorr.fq.gz"
+        se:
+          - ".se.rcorr.fq.gz"
+  program_params:
+    extra: ''

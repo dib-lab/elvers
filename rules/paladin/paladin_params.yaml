@@ -3,14 +3,22 @@ paladin:
     extensions:
       assembly_extensions: # use this extension only for all output of this assembler 
         - _plass
+      base:
+        - '.fasta.bwt'
       read:
         pe:
-
+          - _x___assembly__.paladin.bam
+          - _x___assembly__.paladin.sort.bam
+          - _x___assembly__.paladin.sort.bam.flagstat
+          - _x___assembly__.paladin.sort.bam.bai
         se:
+          - _x___assembly__.paladin.bam
+          - _x___assembly__.paladin.sort.bam
+          - _x___assembly__.paladin.sort.bam.flagstat
+          - _x___assembly__.paladin.sort.bam.bai
   program_params:
-    # input kmer-trimmed reads
-    input_pear_merged: True
-    # input trimmed-reads
-    input_trimmomatic_trimmed: False
-    # do we want to assemble the single reads with pe reads?
-
+    index_params:
+      reference_type: '3'
+    alignment_params:
+      f: 125
+      extra: ''
