@@ -23,6 +23,9 @@
 ```
 Snakemake update of the Eel Pond Protocol for *de novo* RNAseq analysis
 
+
+*At the moment, running the Trinity de novo assembler is limited to Linux operating systems*
+
 Install [miniconda](https://conda.io/miniconda.html) (for Ubuntu 16.04 [Jetstream image](https://use.jetstream-cloud.org/application/images/107)):
 ```
 wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
@@ -45,11 +48,24 @@ cd eelpond
 
 # see the help:
 ./run_eelpond -h
+```
 
+If you're on Linux, run a full test:
+```
 #run test data
-./run_eelpond nema-test
+./run_eelpond nema-test full
 ```
 This will run a small set of _Nematostella vectensis_ test data (from [Tulin et al., 2013](https://evodevojournal.biomedcentral.com/articles/10.1186/2041-9139-4-16))
+
+If you're on OSX, Trinity will not work (for now). You can test all other steps:
+individually:
+```
+./run_eelpond nema-test preprocess
+```
+or together:
+```
+./run_eelpond nema-test kmer_trim quantify annotate
+```
 
 **Running your own data:**
 
