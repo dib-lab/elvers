@@ -32,17 +32,20 @@ eelpond_pipeline:
       - link_data
       - fastqc
       - trimmomatic
+      - khmer
     targets:
       - fastqc
       - trimmomatic
-  kmer_trim:
-    outdir: preprocess
-    rules:
-      - link_data
-      - trimmomatic
       - khmer
-    targets:
-      - khmer
+ # kmer_trim:
+ #   outdir: preprocess
+ #   rules:
+ #     - link_data
+ #     - trimmomatic
+ #   targets:
+ #     - link_data
+ #     - trimmomatic
+ #     - khmer
   assemble:
     outdir: assembly
     rules:

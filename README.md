@@ -24,7 +24,10 @@
 Snakemake update of the Eel Pond Protocol for *de novo* RNAseq analysis
 
 
-*At the moment, running the Trinity de novo assembler is limited to Linux operating systems*
+* OSX issues:*
+  - fastqc fails about half the time
+  - Trinity assembler does not work
+
 
 Install [miniconda](https://conda.io/miniconda.html) (for Ubuntu 16.04 [Jetstream image](https://use.jetstream-cloud.org/application/images/107)):
 ```

@@ -142,7 +142,7 @@ def main(args):
     # handle "full" target:
     targs = args.targets
     if 'full' in targs:
-        targs = ['preprocess', 'kmer_trim', 'assemble', 'annotate', 'quantify']
+        targs = ['preprocess', 'assemble', 'annotate', 'quantify'] #kmer_trim
     if args.build_config:
         # TODO: add a check here so we don't overwrite config!!!
         configfile = args.configfile
@@ -211,7 +211,6 @@ Targets:
 
    full               - run full workflow (default)
    preprocess         - preprocess reads 
-   kmer_trim          - kmer trim preprocessed reads
    assemble           - transcriptome assembly 
    annotate           - annotate transcriptome assembly
    quantify           - read quantification 
