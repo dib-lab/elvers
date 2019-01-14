@@ -81,9 +81,10 @@ def generate_mult_targs(configD, workflow, samples):
             targs += generate_program_targs(configD[r]['eelpond_params'], samples, base, assembly_exts)
     return targs
             
-# don't need this anymore: just building full config via run_eelpond
-def get_params(rule_name, rules_dir='rules'):
-    rule_paramsfile = os.path.join(rules_dir, rule_name, rule_name + '_params.yaml') 
+def get_params(rule_name, rule_dir='rules'):
+    # pass in a rule name & the directory that contains its paramsfile. 
+    # Return paramsD
+    rule_paramsfile = os.path.join(rule_dir,rule_name+ '_params.yaml')
     rule_params = {}
     with open(rule_paramsfile, 'r') as stream:
         try:
@@ -92,5 +93,3 @@ def get_params(rule_name, rules_dir='rules'):
             print(exc)
         rule_params= paramsD[rule_name]
     return rule_params
-
-
