@@ -43,10 +43,6 @@ octopus = animalsD['octopus']
 fish = animalsD['fish']
 
 #### snakemake ####
-# include rule files
-includeRules = config['include_rules']
-for r in includeRules:
-    include: r
 
 onstart: 
     shell('cat {octopus}')
@@ -63,7 +59,7 @@ rule preprocess:
     input: generate_mult_targs(config, 'preprocess', samples)  
 
 rule kmer_trim:
-    input: generate_mult_targs(config, 'kmer_trim', samples)  
+    input: generate_mult_targs(config, 'kmer_trim', samples) 
 
 rule assemble:
     input: generate_mult_targs(config, 'assemble', samples)
@@ -77,12 +73,20 @@ rule annotate:
 rule quantify:
     input: generate_mult_targs(config, 'quantify', samples)
 
+rule correct_reads:
+    input: generate_mult_targs(config, 'correct_reads', samples)
+
 rule plass_assemble:
     input: generate_mult_targs(config, 'plass_assemble', samples)
 
 rule paladin_map:
     input: generate_mult_targs(config, 'paladin_map', samples)
 
+
+# include rule files
+includeRules = config['include_rules']
+for r in includeRules:
+    include: r
 #rule diff_expression:
 #    input: generate_mult_targs(config, 'diffexp', samples)
 

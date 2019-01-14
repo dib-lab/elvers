@@ -1,5 +1,6 @@
 link_data:
   eelpond_params:
+    outdir: input_data
     extensions:
       read:
         pe:

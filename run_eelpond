@@ -50,6 +50,7 @@ def build_default_params(workdir, targets):
     # add outdir name for all potential rules
     all_rules = pipeline_defaults['eelpond_pipeline']
     outdirs = {}
+    # general out directories for target rules
     for rule, info in all_rules.items():
         outdirs[rule] = info.get('outdir', rule) # default to rule name if no outdir provided
     defaultParams['eelpond_directories']['outdirs'] = outdirs
@@ -89,6 +90,8 @@ def build_dirs(workdir, params, targets):
     else:
         outdir = basename + '_out'
     params['eelpond_directories']['out_dir'] = outdir
+    # if we want logs to be *within* individual outdirs, change logsdir here (else logs in eelpond dir)
+    params['eelpond_directories']['logs'] = join(outdir, os.path.basename(params['eelpond_directories']['logs']))
     # main directory structure 
     outDirs = params['eelpond_directories']['outdirs']
     for targ, outD in outDirs.items():
@@ -106,7 +109,13 @@ def build_dirs(workdir, params, targets):
         for prog in tools:
             prog_params = params[prog]['eelpond_params']
             if isinstance(prog_params, dict):
-                params[prog]['eelpond_params']['outdir'] = targ_dir #os.path.join(targ_dir, prog_dirname)
+                prog_dir = params[prog]['eelpond_params'].get('outdir')
+                if not prog_dir:
+                    params[prog]['eelpond_params']['outdir'] = targ_dir #os.path.join(targ_dir, prog_dirname)
+                else:
+                    params[prog]['eelpond_params']['outdir'] = os.path.join(outdir, prog_dir) 
+
+                #params[prog]['eelpond_params']['outdir'] = targ_dir #os.path.join(targ_dir, prog_dirname)
     return params
 
 def handle_assemblyInput(assembInput, config):
@@ -139,12 +148,11 @@ def main(args):
     thisdir = os.path.abspath(os.path.dirname(__file__))
     snakefile = find_Snakefile(thisdir)
     
-    # handle "full" target:
     targs = args.targets
+    # handle "full" target:
     if 'full' in targs:
-        targs = ['preprocess', 'assemble', 'annotate', 'quantify'] #kmer_trim
+        targs = ['preprocess', 'kmer_trim', 'assemble', 'annotate', 'quantify']
     if args.build_config:
-        # TODO: add a check here so we don't overwrite config!!!
         configfile = args.configfile
         if not '.yaml' or not '.yml' in args.configfile:
             configfile = args.configfile + '.yaml'

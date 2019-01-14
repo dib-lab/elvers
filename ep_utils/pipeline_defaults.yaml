@@ -32,23 +32,21 @@ eelpond_pipeline:
       - link_data
       - fastqc
       - trimmomatic
-      - khmer
     targets:
-      - fastqc
+      #- fastqc
+      - trimmomatic
+  kmer_trim:
+    outdir: preprocess
+    rules:
+      - link_data
       - trimmomatic
       - khmer
- # kmer_trim:
- #   outdir: preprocess
- #   rules:
- #     - link_data
- #     - trimmomatic
- #   targets:
- #     - link_data
- #     - trimmomatic
- #     - khmer
+    targets:
+      - khmer
   assemble:
     outdir: assembly
     rules:
+      - link_data
       - trimmomatic
       - khmer
       - trinity
@@ -79,6 +77,7 @@ eelpond_pipeline:
   plass_assemble:
     outdir: assembly
     rules:
+      - link_data
       - trimmomatic
       - khmer
       - plass
@@ -87,19 +86,22 @@ eelpond_pipeline:
   paladin_map:
     outdir: paladin
     rules:
+      - link_data
+      - trimmomatic
+      - khmer
       - plass
       - pear
       - paladin
     targets:
       - paladin
-  
-  #correct_reads:
-  #  outdir: preprocess
-  #  rules:
-  #    - trimmomatic
-  #    - rcorrector
-  #  targets:
-  #    - rcorrector
+  correct_reads:
+    outdir: preprocess
+    rules:
+      - link_data
+      - trimmomatic
+      - rcorrector
+    targets:
+      - rcorrector
   #diffexp:
   #  outdir: diffexp
   #  rules:

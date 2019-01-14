@@ -16,10 +16,7 @@ r = snakemake.input.get("r")
 
 def move_files(outdir, in_list, out_list):
     for f, o in zip(in_list, out_list):
-        print(f)
-        print(o)
         f = path.join(outdir, f)
-        o = path.join(outdir, o)
         shell("cp {f} {o}")
         shell("rm -f {f}")
     

@@ -1,5 +1,6 @@
 dammit:  
   eelpond_params:
+    outdir: annotation
     extensions: 
       base: 
         - '.dammit.gff3'

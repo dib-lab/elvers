@@ -1,5 +1,6 @@
 khmer:
   eelpond_params:
+    outdir: preprocess
     extensions:
       read:
         pe:

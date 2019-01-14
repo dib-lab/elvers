@@ -1,5 +1,6 @@
 trinity:
   eelpond_params:
+    outdir: assembly
     extensions:
       assembly_extensions: # use this extension only for all output of this assembler 
         - _trinity
