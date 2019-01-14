@@ -1,4 +1,4 @@
-link_data:
+get_data:
   eelpond_params:
     outdir: input_data
     extensions:
@@ -8,3 +8,5 @@ link_data:
           - "_2.fq.gz"
         se:
           - ".se.fq.gz" 
+  program_params:
+    download_data: False

@@ -14,22 +14,15 @@ eelpond_directories:
 # change these if you're sure you have new program 
 # params and targets right.
 eelpond_pipeline:
-  download_data:
+  input_data:
     outdir: input_data
     rules:
-      - ftp 
+      - get_data
     targets:
-      - ftp
-  link_data:
-    outdir: input_data
-    rules:
-      - link_data 
-    targets:
-      - link_data
+      - get_data
   preprocess:
     outdir: preprocess
     rules:
-      - link_data
       - fastqc
       - trimmomatic
     targets:
@@ -38,7 +31,6 @@ eelpond_pipeline:
   kmer_trim:
     outdir: preprocess
     rules:
-      - link_data
       - trimmomatic
       - khmer
     targets:
@@ -46,7 +38,6 @@ eelpond_pipeline:
   assemble:
     outdir: assembly
     rules:
-      - link_data
       - trimmomatic
       - khmer
       - trinity
@@ -69,7 +60,6 @@ eelpond_pipeline:
   quantify:
     outdir: quant
     rules:
-      - link_data
       - trimmomatic
       - salmon
     targets:
@@ -77,7 +67,6 @@ eelpond_pipeline:
   plass_assemble:
     outdir: assembly
     rules:
-      - link_data
       - trimmomatic
       - khmer
       - plass
@@ -86,7 +75,6 @@ eelpond_pipeline:
   paladin_map:
     outdir: paladin
     rules:
-      - link_data
       - trimmomatic
       - khmer
       - plass
@@ -97,7 +85,6 @@ eelpond_pipeline:
   correct_reads:
     outdir: preprocess
     rules:
-      - link_data
       - trimmomatic
       - rcorrector
     targets:

@@ -2,7 +2,7 @@ import os, re
 from os.path import join
 
 #input dirs
-data_dir = config['eelpond_directories']['outdirs']['link_data']
+data_dir = config['eelpond_directories']['outdirs']['input_data']
 trim_dir = config['eelpond_directories']['outdirs']['preprocess']
 #outdir
 qc_dir   = config['fastqc']['eelpond_params']['outdir']

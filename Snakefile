@@ -54,7 +54,9 @@ onsuccess:
     print("\n--- Eel Pond Workflow executed successfully! ---\n")
     shell('cat {fish}')
 
-## targeting rules
+rule input_data:
+    input: generate_mult_targs(config, 'input_data', samples)
+
 rule preprocess:
     input: generate_mult_targs(config, 'preprocess', samples)  
 
