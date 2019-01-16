@@ -53,7 +53,7 @@ cd eelpond
 ./run_eelpond -h
 ```
 
-Individual workflows are working:
+Individual workflows are working, e.g.:
 ```
 #run test data
 ./run_eelpond nema-test preprocess
