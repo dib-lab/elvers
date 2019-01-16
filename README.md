@@ -53,22 +53,29 @@ cd eelpond
 ./run_eelpond -h
 ```
 
-If you're on Linux, run a full test:
+Individual workflows are working:
+```
+#run test data
+./run_eelpond nema-test preprocess
+```
+```
+#run test data
+./run_eelpond nema-test kmer_trim
+```
+```
+#run test data
+./run_eelpond nema-test assemble
+```
+These will run a small set of _Nematostella vectensis_ test data (from [Tulin et al., 2013](https://evodevojournal.biomedcentral.com/articles/10.1186/2041-9139-4-16))
+
+Coming soon:
 ```
 #run test data
 ./run_eelpond nema-test full
 ```
-This will run a small set of _Nematostella vectensis_ test data (from [Tulin et al., 2013](https://evodevojournal.biomedcentral.com/articles/10.1186/2041-9139-4-16))
+to run a full set of read pre-processing, kmer trimming, Trinity assembly, dammit annotation and salmon quantification
 
-If you're on OSX, Trinity will not work (for now). You can test all other steps:
-individually:
-```
-./run_eelpond nema-test preprocess
-```
-or together:
-```
-./run_eelpond nema-test kmer_trim quantify annotate
-```
+If you're on OSX, Trinity will not work (for now), but you can test all other steps.
 
 **Running your own data:**
 
