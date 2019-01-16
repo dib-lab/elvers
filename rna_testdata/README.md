@@ -7,8 +7,8 @@ mRNAseq reads from a tiny subset of data from [Nematostella vectensis](https://e
 
 ### For full data from these time points:
 ```
-curl -L https://osf.io/p4fy5/download -o nema_subset_0Hour.zip
-curl -L https://osf.io/ewyv5/download -o nema_subset_6Hour.zip
+curl -L https://osf.io/365fg/download -o nema_subset_0Hour.zip
+curl -L https://osf.io/9tf2g/download -o nema_subset_6Hour.zip
 ```
 ### For all time points:
 OSF project: https://osf.io/72bu3/
