@@ -151,7 +151,7 @@ def main(args):
     targs = args.targets
     # handle "full" target:
     if 'full' in targs:
-        targs = ['input_data', 'preprocess', 'kmer_trim', 'assemble', 'annotate', 'quantify']
+        targs = ['input_data', 'assemble', 'annotate', 'quantify']
     if args.build_config:
         configfile = args.configfile
         if not '.yaml' or not '.yml' in args.configfile:
@@ -219,7 +219,7 @@ def main(args):
         return 1
 
 
-
+# TODO: would be good to pull availble rules from eelpond_pipeline in default config or a separate workflow file!
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='run snakemake eelpond', usage='''run_eelpond <configfile.yaml>  [<target> ...]
 
@@ -239,9 +239,14 @@ Targets:
 
 For a quickstart, run this:
 
-   ./run_eelpond nema-test full
+   ./run_eelpond nema-test
 
 from the main eelpond directory.
+
+To build an editable configfile to start work on your own data, run:
+
+./run_eelpond my_config --build_config
+
 
 ''')
 
