@@ -45,7 +45,7 @@ cd eelpond
 
 Create a conda environment with all the dependencies for eelpond
 ```
-conda env create --file eelpond_env.yaml -n eelpond
+conda env create --file ep_utils/eelpond_environment.yaml -n eelpond
 ```
 
 Activate that environment. You'll need to do this anytime you want to run eelpond
