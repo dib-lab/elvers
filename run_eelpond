@@ -16,27 +16,6 @@ import snakemake
 from ep_utils.utils import *
 from ep_utils.pretty_config import pretty_name, write_config
 
-def find_Snakefile(workdir):
-    snakefile = os.path.join(workdir, 'Snakefile')
-    assert os.path.exists(snakefile), 'Error: cannot find Snakefile at {}\n'.format(snakefile)
-    return snakefile
-
-def find_yaml(workdir, filename, name): 
-    # find the workflow config file
-    workflowfile = None
-    if os.path.exists(filename) and not os.path.isdir(filename):
-        workflowfile = filename
-    else:
-        for suffix in ('', '.yaml', '.yml'):
-            tryfile = os.path.join(workdir, filename + suffix)
-            if os.path.exists(tryfile) and not os.path.isdir(tryfile):
-                if name != 'pipeline_defaults':
-                    sys.stderr.write('\tFound {} file at {}\n'.format(name, tryfile))
-                workflowfile = tryfile
-                break
-    assert workflowfile, f'Error, cannot find specified {name} file {filename}\n\n\n   Use option "--build_config" to build a default {name} at {filename}.\n'
-    return workflowfile
-
 def build_default_params(workdir, targets):
     defaultParams = {}
     # first, figure out which parts of the pipeline are being run, and get those defaults
@@ -44,98 +23,94 @@ def build_default_params(workdir, targets):
     pipeline_defaults = read_yaml(pipeline_defaultsFile)
     # grab general defaults
     defaultParams['basename'] = pipeline_defaults['basename']
-    defaultParams['assembly_extensions'] = pipeline_defaults['assembly_extensions']
-    # add main directories
+    # add main directories, outdirs available to all workflows
     defaultParams['eelpond_directories'] = pipeline_defaults['eelpond_directories']
-    # add outdir name for all potential rules
-    all_rules = pipeline_defaults['eelpond_pipeline']
-    outdirs = {}
-    # general out directories for target rules
-    for rule, info in all_rules.items():
-        outdirs[rule] = info.get('outdir', rule) # default to rule name if no outdir provided
-    defaultParams['eelpond_directories']['outdirs'] = outdirs
-    # grab targets, and subset by input target
-    pipelineTargets = pipeline_defaults['eelpond_pipeline']
-    subsetPipelineD = {k: pipelineTargets[k] for k in pipelineTargets.keys() & targets}
-    defaultParams['eelpond_pipeline'] = subsetPipelineD
-    # next, get defaults for the included rules
-    targetRules = []
-    for targD in subsetPipelineD.values():
-        targetRules+= targD.get('rules', [])
+    # grab all available workflows, and subset by user input
+    ep_workflows = pipeline_defaults['eelpond_workflows']
+    workflows_to_run = {k: ep_workflows[k] for k in ep_workflows.keys() & targets}
+    defaultParams['eelpond_workflows'] = workflows_to_run
+    # find targs the user entered that are not in our default info.
+    extra_targs = [t for t in targets if t not in ep_workflows]
+    for e in extra_targs: # assume extra targets are single rules, and add to the workflow
+        workflows_to_run[e] = {'rules': [e], 'targets': [e]}
+    # For each rule in the desired workflow, save rulename and grab rule params
+    required_rules = []
+    for targD in workflows_to_run.values():
+        required_rules+= targD.get('rules', [])
     ruleParamsFiles = []
     includeRules = []
+    assembly_extensions = []
     rules_dir = defaultParams['eelpond_directories']['rules']    
-    for rule in targetRules:
-        ruleParamsFiles+= glob.glob(os.path.join(workdir, rules_dir, '*', rule + '_params.yaml'))
-        includeRules+= glob.glob(os.path.join(workdir, rules_dir, '*', rule + '.rule'))
-    for f in ruleParamsFiles:
-        defaultParams.update(read_yaml(f))
-    defaultParams['include_rules'] = includeRules
+    for rule_name in required_rules:
+        try:
+            rule = glob.glob(os.path.join(workdir, rules_dir, '*', rule_name + '.rule'))[0]
+            defaultParams[rule_name] = get_params(rule_name, os.path.dirname(rule))
+            assembly_exts = defaultParams[rule_name]['eelpond_params']['extensions'].get('assembly_extensions', [])
+            assembly_extensions+=assembly_exts
+            includeRules += [rule]
+        except: # if allows user workflow input, can't do this here (check extra targs later?)
+            sys.stderr.write(f"\n\tError: Can't add rules for extra target {e}. Please fix.\n\n")
+            sys.exit(-1)
+    defaultParams['include_rules'] = list(set(includeRules))
+    defaultParams['assembly_extensions'] = list(set(assembly_extensions))
     return defaultParams
 
-def build_dirs(workdir, params, targets):
-    #build eelpond dir info
-    ep_dirs = params['eelpond_directories']
-    for d in ep_dirs:
-        if 'outdirs' not in d:
-            ep_dirs[d] = os.path.join(workdir, d)
-        if 'animals' in d:
-            ep_dirs[d] = os.path.join(workdir, 'ep_utils', d)
-    params['eelpond_directories'] = ep_dirs
-    
-    #build out dirs for target workflows 
+def build_dirs(ep_dir, params):
+    # build main eelpond dir info
+    rules_dir = params['eelpond_directories']['rules']
+    params['eelpond_directories']['rules'] = os.path.join(ep_dir, rules_dir)
+    animals_dir =  params['eelpond_directories']['animals']
+    params['eelpond_directories']['animals'] = os.path.join(ep_dir, 'ep_utils', animals_dir)
+
+    # allow user to define basename, and experiment, build outdir name
     basename = params['basename']
     if params.get('experiment'):
         outdir = basename + "_out_" + params['experiment']
     else:
         outdir = basename + '_out'
-    params['eelpond_directories']['out_dir'] = outdir
+    params['eelpond_directories']['out_dir'] = outdir # outdir NAME
     # if we want logs to be *within* individual outdirs, change logsdir here (else logs in eelpond dir)
     params['eelpond_directories']['logs'] = join(outdir, os.path.basename(params['eelpond_directories']['logs']))
-    # main directory structure 
+    # if desired, user can also provide out_path, and all dirs will be build under there
+    # outdirectory, build all directories relative to that path 
+    out_path = params.get('out_path', ep_dir)
+    # if user inputs an absolute path:
+    if os.path.isabs(out_path): # if not absolute, just assume subdirectory of eelpond.  
+        assert os.path.exists(out_path) and os.path.isdir(out_path), f"Error: provided output path {out_path} is not an existing directory. Please fix.\n\n"
+    # Now join out_path, outdir name
+    outdir = os.path.join(out_path, outdir)  
+    # build dirs for main eelpond output directories
     outDirs = params['eelpond_directories']['outdirs']
     for targ, outD in outDirs.items():
         outDirs[targ] = os.path.join(outdir, outD)
-    # add target rule: outdir mapping
+    # put joined paths back in params file
     params['eelpond_directories']['outdirs'] = outDirs
-    
-    # build program-specific dirs 
-    for targ in targets:
-        targ_dir = params['eelpond_pipeline'][targ].get('outdir', targ) # default to rule name if no outdir provided
-        if targ_dir not in outDirs:
-            outDirs[targ] = os.path.join(outdir, targ_dir)
-        targ_dir = outDirs[targ]
-        tools = params['eelpond_pipeline'][targ]['rules']
-        for prog in tools:
-            prog_params = params[prog]['eelpond_params']
-            if isinstance(prog_params, dict):
-                prog_dir = params[prog]['eelpond_params'].get('outdir')
-                if not prog_dir:
-                    params[prog]['eelpond_params']['outdir'] = targ_dir #os.path.join(targ_dir, prog_dirname)
-                else:
-                    params[prog]['eelpond_params']['outdir'] = os.path.join(outdir, prog_dir) 
+    # build dirs for included rules
 
-                #params[prog]['eelpond_params']['outdir'] = targ_dir #os.path.join(targ_dir, prog_dirname)
+    included_rules = params['include_rules']
+    for rule in included_rules:
+        prog = os.path.basename(rule).split('.rule')[0]
+        # if no outdir, just use program name
+        prog_dir = params[prog]['eelpond_params'].get('outdir', prog)
+        params[prog]['eelpond_params']['outdir'] = os.path.join(outdir, prog_dir) 
     return params
 
 def handle_assemblyInput(assembInput, config):
     # find files
-    assemblyfile = config['assemblyinput'].get('assembly', None)
+    program_params = config.get('assemblyinput')
+    assemblyfile = program_params.get('assembly', None)
     assert os.path.exists(assemblyfile), 'Error: cannot find input assembly at {}\n'.format(assemblyfile)
     sys.stderr.write('\tFound input assembly at {}\n'.format(assemblyfile))
-    gtmap = config['assemblyinput'].get('gene_trans_map', None)
+    gtmap = program_params.get('gene_trans_map', None)
     assert os.path.exists(gtmap), 'Error: cannot find assembly gene_trans_map at {}\n'.format(gtmap)
     sys.stderr.write('\tFound input assembly gene-transcript map at {}\n'.format(gtmap))
     # grab user-input assembly extension
-    input_assembly_extension = config['assemblyinput'].get('assembly_extension', '')
-    # build eelpond_params in order to add user extension to the assemblyinput params info 
-    eelpond_params = {}
-    eelpond_params['extensions'] = {}
-    eelpond_params['extensions']['assembly_extension'] = input_assembly_extension
-    config['assemblyinput']['eelpond_params'] = eelpond_params
+    input_assembly_extension = program_params.get('assembly_extension', '')
+    config['assemblyinput'] = {}
+    config['assemblyinput']['program_params'] = program_params 
+    config['assemblyinput']['eelpond_params'] = {'extensions':{'assembly_extensions': [input_assembly_extension]}}
     # add extension to overall assembly_extensions info
-    exts =  config.get('assembly_extensions', [])
-    config['assembly_extensions'] = list(set(exts + [input_assembly_extension]))
+    #config['assembly_extensions'] = list(set(config.get('assembly_extensions', []) + [input_assembly_extension]))
     return config
 
 
@@ -151,7 +126,7 @@ def main(args):
     targs = args.targets
     # handle "full" target:
     if 'full' in targs:
-        targs = ['input_data', 'assemble', 'annotate', 'quantify']
+        targs = ['assemble', 'annotate', 'quantify']
     if args.build_config:
         configfile = args.configfile
         if not '.yaml' or not '.yml' in args.configfile:
@@ -182,7 +157,7 @@ def main(args):
         # update defaults with user-specified parameters
         update_nested_dict(paramsD,configD) # configD takes priority over default params 
         # use params to build directory structure
-        paramsD = build_dirs(thisdir, paramsD, targs)
+        paramsD = build_dirs(thisdir, paramsD)
         # Note: Passing a configfile allows nested yaml/dictionary format. 
         # Passing these params in via `config` would require a flat dictionary.
         
@@ -209,10 +184,11 @@ def main(args):
 
         # run!!
         # params file becomes snakemake configfile
+
         status = snakemake.snakemake(snakefile, configfile=paramsfile, use_conda=True, 
-                                 targets=targs, printshellcmds=True,
+                                 targets=['eelpond'], printshellcmds=True,
                                  dryrun=args.dry_run, lock=not args.nolock,
-                                 verbose=args.verbose, debug_dag=args.debug)
+                                 verbose=args.verbose, debug_dag=args.debug, printdag=args.dag)
     
         if status: # translate "success" into shell exit code of 0
            return 0
@@ -255,6 +231,7 @@ To build an editable configfile to start work on your own data, run:
     parser.add_argument('-n', '--dry-run', action='store_true')
     parser.add_argument('-v', '--verbose', action='store_true')
     parser.add_argument('-d', '--debug', action='store_true')
+    parser.add_argument('--dag', action='store_true')
     parser.add_argument('--nolock', action='store_true')
     parser.add_argument('--unlock', action='store_true')
     parser.add_argument('--build_config', action='store_true', help='just build the default parameter file')

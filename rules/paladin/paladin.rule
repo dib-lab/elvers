@@ -24,8 +24,7 @@ def get_paladin_input(w):
     return readsD
 
 rule paladin_index:
-    input: 
-        assembly =join(assembly_dir, "{assembly}.fasta")
+    input: join(assembly_dir, "{assembly}.fasta")
     output: join(paladin_dir, "{assembly}.fasta.bwt"),
     params: 
         reference_type= index_params.get('reference_type', '3')

@@ -17,7 +17,7 @@ min_version("5.1.2") #minimum snakemake version
 
 # read in sample info 
 samples = pd.read_table(config["samples"],dtype=str).set_index(["sample", "unit"], drop=False)
-validate(samples, schema="schemas/samples_v2.schema.yaml") # new version
+#validate(samples, schema="schemas/samples_v2.schema.yaml") # new version
 samples['name'] = samples["sample"].map(str) + '_' + samples["unit"].map(str)
 
 # note, this function *needs* to be in this file, or added somewhere it can be accessed by all rules
@@ -54,46 +54,16 @@ onsuccess:
     print("\n--- Eel Pond Workflow executed successfully! ---\n")
     shell('cat {fish}')
 
-rule input_data:
-    input: generate_mult_targs(config, 'input_data', samples)
-
-rule preprocess:
-    input: generate_mult_targs(config, 'preprocess', samples)  
-
-rule kmer_trim:
-    input: generate_mult_targs(config, 'kmer_trim', samples) 
-
-rule assemble:
-    input: generate_mult_targs(config, 'assemble', samples)
-
-rule assemblyinput:
-    input: generate_mult_targs(config, 'assemblyinput', samples)
-
-rule annotate:
-    input: generate_mult_targs(config, 'annotate', samples)
-
-rule quantify:
-    input: generate_mult_targs(config, 'quantify', samples)
-
-rule correct_reads:
-    input: generate_mult_targs(config, 'correct_reads', samples)
-
-rule plass_assemble:
-    input: generate_mult_targs(config, 'plass_assemble', samples)
-
-rule paladin_map:
-    input: generate_mult_targs(config, 'paladin_map', samples)
-
-
 # include rule files
 includeRules = config['include_rules']
 for r in includeRules:
     include: r
-#rule diff_expression:
-#    input: generate_mult_targs(config, 'diffexp', samples)
+
+rule eelpond:
+    input: generate_all_targs(config, samples)
 
 ##### report #####
 #report: "report/workflow.rst"
 
-shell('cat {animal_targs[1]}')
+shell('cat {animal_targs[2]}')
 

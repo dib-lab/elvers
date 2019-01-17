@@ -1,6 +1,6 @@
 assemblyinput:
   eelpond_params:
-    assembly_extension: ""
+    outdir: assembly
     extensions:
       base:
         - '.fasta'
@@ -9,4 +9,4 @@ assemblyinput:
   program_params:
     assembly: 'name.fasta'
     gene_trans_map:  'name.fasta.gene_trans_map'
-    assembly_extension: '_extension_example'
+    assembly_extension: '_input'

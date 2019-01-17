@@ -1,10 +1,33 @@
 import os
+import sys
 import yaml
 import collections
 import pandas as pd
 from os.path import join
 
+
 # general utilities
+def find_Snakefile(workdir):
+    snakefile = os.path.join(workdir, 'Snakefile')
+    assert os.path.exists(snakefile), 'Error: cannot find Snakefile at {}\n'.format(snakefile)
+    return snakefile
+
+def find_yaml(workdir, filename, name):
+    # find the workflow config file
+    workflowfile = None
+    if os.path.exists(filename) and not os.path.isdir(filename):
+        workflowfile = filename
+    else:
+        for suffix in ('', '.yaml', '.yml'):
+            tryfile = os.path.join(workdir, filename + suffix)
+            if os.path.exists(tryfile) and not os.path.isdir(tryfile):
+                if name != 'pipeline_defaults':
+                    sys.stderr.write('\tFound {} file at {}\n'.format(name, tryfile))
+                workflowfile = tryfile
+                break
+    assert workflowfile, f'Error, cannot find specified {name} file {filename}\n\n\n   Use option "--build_config" to build a default {name} at {filename}.\n'
+    return workflowfile
+
 def read_yaml(filename):
     with open(filename, 'r') as stream:
         try:
@@ -67,18 +90,41 @@ def generate_program_targs(configD, samples, basename, assembly_exts):
     if exts.get('assembly_extensions'): # this program is an assembler or only works with specific assemblies
         assembly_exts = exts.get('assembly_extensions') # override generals with rule-specific assembly extensions
     targets = generate_targs(outdir, basename, samples, assembly_exts, exts.get('base', None),exts.get('read'))
+    print(targets)
     return targets
 
 def generate_mult_targs(configD, workflow, samples):
     # pass full config, program names. Call generate_program_targs to build each
-    workflows = configD['eelpond_pipeline']
+    workflows = configD['eelpond_workflows']
     targs = []
     base = configD['basename']
     assembly_exts = configD.get('assembly_extensions', [""])
+    # add assertion to make sure workflow exists in config!
     if workflows.get(workflow, None):
-        target_rules = configD['eelpond_pipeline'][workflow]['targets']
+        target_rules = configD['eelpond_workflows'][workflow]['targets']
         for r in target_rules:
             targs += generate_program_targs(configD[r]['eelpond_params'], samples, base, assembly_exts)
+    targs = list(set(targs))
+    return targs
+
+# replacement for generate_mult_targs, to enable full workflows!
+def generate_all_targs(configD, samples):
+    # pass full config, program names. Call generate_program_targs to build each
+    workflows = configD['eelpond_workflows']
+    targs = []
+    base = configD['basename']
+    assembly_exts = configD.get('assembly_extensions', [""])
+    # add assertion to make sure workflow exists in config!
+    #if workflows.get(workflow, None):
+    target_rules = []
+    for flow,info in workflows.items():
+        if info.get('targets', None): # this is a workflow, not a single rule
+            target_rules += list(info.get('targets'))
+        else:
+            target_rules += [flow]
+    for r in set(target_rules):
+        targs += generate_program_targs(configD[r]['eelpond_params'], samples, base, assembly_exts)
+    targs = list(set(targs))
     return targs
             
 def get_params(rule_name, rule_dir='rules'):

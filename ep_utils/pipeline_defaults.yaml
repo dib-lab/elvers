@@ -2,26 +2,31 @@
 
 #general settings
 basename: eelpond
-assembly_extensions:
-  - _trinity
 
+# these outdirectories will be available to all workflows and rules
 eelpond_directories:
   rules: rules
   animals: animals
   logs: logs
+  outdirs:
+    input_data: input_data
+    preprocess: preprocess
+    assemble: assembly
+    annotate: annotation
+    quantify: quant
+    diffexp: diffexp
+
 
 # programs to be run at each step of the pipeline
 # change these if you're sure you have new program 
 # params and targets right.
-eelpond_pipeline:
+eelpond_workflows:
   input_data:
-    outdir: input_data
     rules:
       - get_data
     targets:
       - get_data
   preprocess:
-    outdir: preprocess
     rules:
       - fastqc
       - trimmomatic
@@ -29,14 +34,12 @@ eelpond_pipeline:
       #- fastqc
       - trimmomatic
   kmer_trim:
-    outdir: preprocess
     rules:
       - trimmomatic
       - khmer
     targets:
       - khmer
   assemble:
-    outdir: assembly
     rules:
       - trimmomatic
       - khmer
@@ -44,13 +47,11 @@ eelpond_pipeline:
     targets:
       - trinity
   assemblyinput:
-    outdir: assembly
     rules:
       - assemblyinput
     targets:
       - assemblyinput
   annotate:
-    outdir: annotation
     rules:
       - dammit
       - sourmash
@@ -58,14 +59,12 @@ eelpond_pipeline:
       - dammit
       - sourmash
   quantify:
-    outdir: quant
     rules:
       - trimmomatic
       - salmon
     targets:
       - salmon
   plass_assemble:
-    outdir: assembly
     rules:
       - trimmomatic
       - khmer
@@ -73,7 +72,6 @@ eelpond_pipeline:
     targets:
       - plass
   paladin_map:
-    outdir: paladin
     rules:
       - trimmomatic
       - khmer
@@ -83,14 +81,12 @@ eelpond_pipeline:
     targets:
       - paladin
   correct_reads:
-    outdir: preprocess
     rules:
       - trimmomatic
       - rcorrector
     targets:
       - rcorrector
   #diffexp:
-  #  outdir: diffexp
   #  rules:
   #    - deseq2
   #  targets:

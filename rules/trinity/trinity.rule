@@ -6,7 +6,6 @@ assembly_params = config['trinity']['program_params']
 assembly_dir = ep_params['outdir']
 assembly_extension = ep_params['extensions']['assembly_extensions'][0] # should only be a single entry here, default: '_trinity'
 
-
 def get_assembly_input(w):
     r1,r2,single =[],[],[]
     readsD = {}
@@ -18,7 +17,7 @@ def get_assembly_input(w):
         input_dir = config['eelpond_directories']['outdirs']['preprocess']
     else:
         ext = '.fq.gz'
-        input_dir = config['eelpond_directories']['outdirs']['link_data']
+        input_dir = config['eelpond_directories']['outdirs']['input_data']
     for s, u in samples.iterrows():
         sample, unit = u['sample'],u['unit']
         if is_single_end(sample, unit):
