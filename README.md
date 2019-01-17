@@ -24,7 +24,7 @@
 Snakemake update of the Eel Pond Protocol for *de novo* RNAseq analysis
 
 
-* OSX issues:*
+**OSX issues:**
   - fastqc fails about half the time
   - Trinity assembler does not work
 
@@ -38,7 +38,7 @@ source ~/.bash_profile
 ```
 
 ```
-conda install -c bioconda -c conda-forge -y snakemake yaml
+conda install -c bioconda -c conda-forge -y snakemake yaml pandas
 ```
 
 
