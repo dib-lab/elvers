@@ -53,19 +53,19 @@ cd eelpond
 ./run_eelpond -h
 ```
 
-Individual workflows are working, e.g.:
+Test a "full" workflow, consisting of read pre-processing, kmer trimming, Trinity assembly, dammit annotation and salmon quantification:
 ```
-#run test data
+./run_eelpond nema-test full
+```
+
+Or, run subworkflows independently
+```
 ./run_eelpond nema-test preprocess
+./run_eelpond nema-test trimmomatic
+
 ```
-```
-#run test data
-./run_eelpond nema-test kmer_trim
-```
-```
-#run test data
-./run_eelpond nema-test assemble
-```
+
+
 These will run a small set of _Nematostella vectensis_ test data (from [Tulin et al., 2013](https://evodevojournal.biomedcentral.com/articles/10.1186/2041-9139-4-16))
 
 Coming soon:
