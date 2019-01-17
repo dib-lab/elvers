@@ -8,3 +8,4 @@ dependencies:
   - snakemake >=5.1.2
   - yaml
   - pandas
+  - dot
