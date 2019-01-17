@@ -76,12 +76,15 @@ def generate_targs(outdir, basename, samples, assembly_exts=[''], base_exts = No
             read_targets+=[join(outdir, name + e) for e in pe_ext for name in pe_names]
     # handle base targets 
     read_targs = []
-    for ext in assembly_exts:
-        assemblyname = basename + ext
-        if base_exts:    
-            base_targets += [join(outdir, assemblyname + e) for e in base_exts]
-        # handle read targets that contain assembly info
-        read_targs+= [t.replace("__assembly__", assemblyname) for t in read_targets]
+    if assembly_exts:
+        for ext in assembly_exts:
+            assemblyname = basename + ext
+            if base_exts:
+                base_targets += [join(outdir, assemblyname + e) for e in base_exts]
+            # handle read targets that contain assembly info
+            read_targs+= [t.replace("__assembly__", assemblyname) for t in read_targets]
+    else:
+        read_targs = read_targets
     return base_targets + read_targs
 
 def generate_program_targs(configD, samples, basename, assembly_exts):

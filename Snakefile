@@ -65,5 +65,5 @@ rule eelpond:
 ##### report #####
 #report: "report/workflow.rst"
 
-shell('cat {animal_targs[2]}')
+shell('cat {animal_targs[1]}')
 

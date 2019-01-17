@@ -150,6 +150,8 @@ def main(args):
         if assembInput:
             targs+=['assemblyinput']
             configD, assemblyinput_ext = handle_assemblyInput(assembInput, configD)
+        else:
+            assemblyinput_ext = None
         if 'assemblyinput' in targs and not assembInput:
             sys.stderr.write("\n\tError: trying to run `assemblyinput` workflow, but there's no assembly file specified in your configfile. Please fix.\n\n")
             sys.exit(-1)
@@ -157,7 +159,8 @@ def main(args):
         paramsD = build_default_params(thisdir, targs)
         # update defaults with user-specified parameters
         update_nested_dict(paramsD,configD) # configD takes priority over default params 
-        paramsD['assembly_extensions'] = list(set(paramsD.get('assembly_extensions', []) + [assemblyinput_ext]))
+        if assemblyinput_ext:
+            paramsD['assembly_extensions'] = list(set(paramsD.get('assembly_extensions', []) + [assemblyinput_ext]))
         # use params to build directory structure
         paramsD = build_dirs(thisdir, paramsD)
         # Note: Passing a configfile allows nested yaml/dictionary format. 

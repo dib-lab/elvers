@@ -37,45 +37,41 @@ echo export PATH="$HOME/miniconda3/bin:$PATH" >> ~/.bash_profile
 source ~/.bash_profile
 ```
 
+Now, get the eelpond code
 ```
-conda install -c bioconda -c conda-forge -y snakemake yaml pandas
-```
-
-
-Run Eelpond:
-
-```
-#get eelpond code
 git clone https://github.com/dib-lab/eelpond.git
 cd eelpond
-
-# see the help:
-./run_eelpond -h
 ```
 
-Test a "full" workflow, consisting of read pre-processing, kmer trimming, Trinity assembly, dammit annotation and salmon quantification:
+Create a conda environment with all the dependencies for eelpond
+```
+conda env create --file eelpond_env.yaml -n eelpond
+```
+
+Activate that environment. You'll need to do this anytime you want to run eelpond
+```
+source activate eelpond
+```
+
+Now you can start running eelpond!
+
+To test a "full" workflow, consisting of read pre-processing, kmer trimming, Trinity assembly, dammit annotation and salmon quantification:
 ```
 ./run_eelpond nema-test full
 ```
+These will run a small set of _Nematostella vectensis_ test data (from [Tulin et al., 2013](https://evodevojournal.biomedcentral.com/articles/10.1186/2041-9139-4-16))
 
-Or, run subworkflows independently
+
+You can also run individual tools or subworkflows independently:
 ```
 ./run_eelpond nema-test preprocess
 ./run_eelpond nema-test trimmomatic
-
 ```
 
-
-These will run a small set of _Nematostella vectensis_ test data (from [Tulin et al., 2013](https://evodevojournal.biomedcentral.com/articles/10.1186/2041-9139-4-16))
-
-Coming soon:
+See the help, here:
 ```
-#run test data
-./run_eelpond nema-test full
+./run_eelpond -h
 ```
-to run a full set of read pre-processing, kmer trimming, Trinity assembly, dammit annotation and salmon quantification
-
-If you're on OSX, Trinity will not work (for now), but you can test all other steps.
 
 **Running your own data:**
 
