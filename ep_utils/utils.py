@@ -75,13 +75,14 @@ def generate_targs(outdir, basename, samples, assembly_exts=[''], base_exts = No
         if pe_ext and len(pe_names) > 0:
             read_targets+=[join(outdir, name + e) for e in pe_ext for name in pe_names]
     # handle base targets 
+    read_targs = []
     for ext in assembly_exts:
         assemblyname = basename + ext
         if base_exts:    
             base_targets += [join(outdir, assemblyname + e) for e in base_exts]
         # handle read targets that contain assembly info
-        read_targets = [t.replace("__assembly__", assemblyname) for t in read_targets]
-    return base_targets + read_targets
+        read_targs+= [t.replace("__assembly__", assemblyname) for t in read_targets]
+    return base_targets + read_targs
 
 def generate_program_targs(configD, samples, basename, assembly_exts):
     # given configD from each program, build targets
@@ -90,7 +91,6 @@ def generate_program_targs(configD, samples, basename, assembly_exts):
     if exts.get('assembly_extensions'): # this program is an assembler or only works with specific assemblies
         assembly_exts = exts.get('assembly_extensions') # override generals with rule-specific assembly extensions
     targets = generate_targs(outdir, basename, samples, assembly_exts, exts.get('base', None),exts.get('read'))
-    print(targets)
     return targets
 
 def generate_mult_targs(configD, workflow, samples):

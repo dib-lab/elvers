@@ -112,7 +112,7 @@ def handle_assemblyInput(assembInput, config):
     config['assemblyinput']['eelpond_params'] = {'extensions':{'assembly_extensions': [input_assembly_extension]}}
     # add extension to overall assembly_extensions info
     #config['assembly_extensions'] = list(set(config.get('assembly_extensions', []) + [input_assembly_extension]))
-    return config
+    return config, input_assembly_extension
 
 
 def main(args):
@@ -149,7 +149,7 @@ def main(args):
         assembInput = configD.get('assemblyinput', None)
         if assembInput:
             targs+=['assemblyinput']
-            configD = handle_assemblyInput(assembInput, configD)
+            configD, assemblyinput_ext = handle_assemblyInput(assembInput, configD)
         if 'assemblyinput' in targs and not assembInput:
             sys.stderr.write("\n\tError: trying to run `assemblyinput` workflow, but there's no assembly file specified in your configfile. Please fix.\n\n")
             sys.exit(-1)
@@ -157,6 +157,7 @@ def main(args):
         paramsD = build_default_params(thisdir, targs)
         # update defaults with user-specified parameters
         update_nested_dict(paramsD,configD) # configD takes priority over default params 
+        paramsD['assembly_extensions'] = list(set(paramsD.get('assembly_extensions', []) + [assemblyinput_ext]))
         # use params to build directory structure
         paramsD = build_dirs(thisdir, paramsD)
         # Note: Passing a configfile allows nested yaml/dictionary format. 
