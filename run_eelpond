@@ -36,7 +36,8 @@ def build_default_params(workdir, targets):
     # For each rule in the desired workflow, save rulename and grab rule params
     required_rules = []
     for targD in workflows_to_run.values():
-        required_rules+= targD.get('rules', [])
+        required_rules+= targD.get('include', [])
+        required_rules+= targD.get('targets', [])
     ruleParamsFiles = []
     includeRules = []
     assembly_extensions = []
@@ -135,7 +136,7 @@ def main(args):
             sys.stderr.write(f"\n\tError: found configfile path at {configfile}, but you have '--build_config' specified. Please fix.\n\n")
             sys.exit(-1)
         default_params = build_default_params(thisdir, targs)
-        write_config(default_params, targs, args.configfile)
+        write_config(default_params, targs, configfile)
         sys.exit(0)
     else: 
         configfile = find_yaml(thisdir, args.configfile, 'configfile') # find configfile

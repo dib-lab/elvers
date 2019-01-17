@@ -37,9 +37,11 @@ def write_config(paramsD, targets, out):
         seen_rules = []
         for targ in targets:
             # grab all rules, their params for target pipeliness
-            rules = paramsD['eelpond_workflows'][targ]['rules']
+            include_rules = paramsD['eelpond_workflows'][targ].get('include', [])
+            targets = paramsD['eelpond_workflows'][targ].get('targets', [])
+            all_rules = include_rules+targets
             targ_params = {}
-            for r in rules:
+            for r in all_rules:
                 if r not in seen_rules:
                     seen_rules+=[r]
                     if paramsD[r].get('program_params', None):

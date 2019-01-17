@@ -22,72 +22,58 @@ eelpond_directories:
 # params and targets right.
 eelpond_workflows:
   input_data:
-    rules:
-      - get_data
     targets:
       - get_data
   preprocess:
-    rules:
+    include:
       - fastqc
-      - trimmomatic
     targets:
       #- fastqc
       - trimmomatic
   kmer_trim:
-    rules:
+    include:
       - trimmomatic
-      - khmer
     targets:
       - khmer
   assemble:
-    rules:
+    include:
       - trimmomatic
       - khmer
-      - trinity
     targets:
       - trinity
   assemblyinput:
-    rules:
-      - assemblyinput
     targets:
       - assemblyinput
   annotate:
-    rules:
-      - dammit
-      - sourmash
     targets:
       - dammit
       - sourmash
   quantify:
-    rules:
+    include:
       - trimmomatic
-      - salmon
     targets:
       - salmon
   plass_assemble:
-    rules:
+    include:
       - trimmomatic
       - khmer
-      - plass
     targets:
       - plass
   paladin_map:
-    rules:
+    include:
       - trimmomatic
       - khmer
       - plass
       - pear
-      - paladin
     targets:
       - paladin
   correct_reads:
-    rules:
+    include:
       - trimmomatic
-      - rcorrector
     targets:
       - rcorrector
   #diffexp:
-  #  rules:
+  #  include:
   #    - deseq2
   #  targets:
   #    - deseq2
