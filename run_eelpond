@@ -15,6 +15,7 @@ import snakemake
 
 from ep_utils.utils import *
 from ep_utils.pretty_config import pretty_name, write_config
+from ep_utils.print_workflow_options import print_available_workflows_and_tools
 
 def build_default_params(workdir, targets):
     defaultParams = {}
@@ -120,18 +121,25 @@ def handle_assemblyInput(assembInput, config):
 
 
 def main(args):
+    
+    thisdir = os.path.abspath(os.path.dirname(__file__))
+    # print available workflows and rules, if desired
+    if args.print_workflows or args.print_rules:
+        pipeline_defaultsFile = find_yaml(thisdir, os.path.join('ep_utils', 'pipeline_defaults'), 'pipeline_defaults')
+        print_available_workflows_and_tools(read_yaml(pipeline_defaultsFile), args.print_workflows, args.print_rules)
+        sys.exit(0)
+    
     # first, find the Snakefile and configfile
     print('\n--------')
     print('checking for required files:')
     print('--------\n')
     
-    thisdir = os.path.abspath(os.path.dirname(__file__))
     snakefile = find_Snakefile(thisdir)
     
     targs = args.targets
     # handle "full" target:
     if 'full' in targs:
-        targs = ['assemble', 'annotate', 'quantify']
+        targs = ['assemble', 'annotate', 'quantify', 'diffexp']
     if args.build_config:
         configfile = args.configfile
         if not '.yaml' or not '.yml' in args.configfile:
@@ -236,6 +244,8 @@ To build an editable configfile to start work on your own data, run:
     parser.add_argument('-k', '--keep_going', action='store_true')
     parser.add_argument('--nolock', action='store_true')
     parser.add_argument('--unlock', action='store_true')
+    parser.add_argument('-w', '--print_workflows', action='store_true', help='just show available workflows')
+    parser.add_argument('-r', '--print_rules', action='store_true', help='just show available rules')
     parser.add_argument('--build_config', action='store_true', help='just build the default parameter file')
     args = parser.parse_args()
 
