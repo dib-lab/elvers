@@ -194,7 +194,8 @@ def main(args):
         # params file becomes snakemake configfile
 
         status = snakemake.snakemake(snakefile, configfile=paramsfile, use_conda=True, 
-                                 targets=['eelpond'], printshellcmds=True,
+                                 targets=['eelpond'], printshellcmds=True, 
+                                 cores=args.threads,
                                  dryrun=args.dry_run, lock=not args.nolock,
                                  verbose=args.verbose, debug_dag=args.debug, 
                                  printdag=args.dag, keepgoing=args.keep_going)
@@ -237,6 +238,7 @@ To build an editable configfile to start work on your own data, run:
 
     parser.add_argument('configfile')
     parser.add_argument('targets', nargs='*', default=['full'])
+    parser.add_argument('-t', '--threads', type=int, default=1)
     parser.add_argument('-n', '--dry-run', action='store_true')
     parser.add_argument('-v', '--verbose', action='store_true')
     parser.add_argument('-d', '--debug', action='store_true')
