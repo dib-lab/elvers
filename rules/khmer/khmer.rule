@@ -10,8 +10,9 @@ def get_trimmed(w):
     if not is_single_end(**w):
         readsD['r1'] = expand(join(trim_dir, '{sample}_{unit}_1.trim.fq.gz'),**w)
         readsD['r2'] = expand(join(trim_dir, '{sample}_{unit}_2.trim.fq.gz'),**w)
-#        readsD['r1_unpaired'] = expand(join(trim_dir, '{sample}_{unit}_2.se.trim.fq.gz'),**w)
-#        readsD['r2_unpaired'] = expand(join(trim_dir, '{sample}_{unit}_2.se.trim.fq.gz'),**w)
+        # conflict with se pattern matching. Also just take extra time for little benefit
+        #readsD['r1_unpaired'] = expand(join(trim_dir, "{sample}_{unit}_1.se.trim.fq.gz"),**w)
+        #readsD['r2_unpaired'] = expand(join(trim_dir, "{sample}_{unit}_2.se.trim.fq.gz") **w)
         return readsD
     return expand(join(trim_dir, '{sample}_{unit}.se.trim.fq.gz'), **w)
 
@@ -22,8 +23,6 @@ if diginorm:
         kmer trim and diginorm with khmer
         """
         input: unpack(get_trimmed)
-           #r1 = lambda wildcards: expand(join(trim_dir, f'{wildcards.sample}_{wildcards.unit}_1.trim.fq.gz')),
-           #r2 = lambda wildcards: expand(join(trim_dir, f'{wildcards.sample}_{wildcards.unit}_2.trim.fq.gz'))
         output: 
             paired=join(khmer_dir,'{sample}_{unit}.paired.khmer.fq.gz'),
             single=join(khmer_dir,'{sample}_{unit}.single.khmer.fq.gz'),
@@ -33,20 +32,16 @@ if diginorm:
             k = khmer_params.get('ksize', 20),
             Z = khmer_params.get('Z', 18), 
             C = khmer_params.get('C', 3), 
-            memory = khmer_params.get('memory', 20e9),
+            memory = khmer_params.get('memory', 4e9),
             cov = khmer_params.get('coverage', 20),
             extra = khmer_params.get('extra', '')
         threads: 10
         log: join(LOGS_DIR, 'khmer/{sample}_{unit}.pe.diginorm.log')
         conda:  'khmer-env.yaml'
-        shell: " (interleave-reads.py {input.r1} {input.r2} )| "
+        #shell: " (interleave-reads.py {input.r1} {input.r2} && zcat {input.r1_unpaired} {input.r2_unpaired}) | "
+        shell: " (interleave-reads.py {input.r1} {input.r2} ) | "
                " (trim-low-abund.py -V -k {params.k} -Z {params.Z} -C {params.C} - -o - -M {params.memory} "
                " --diginorm --diginorm-coverage={params.cov}) | (extract-paired-reads.py --gzip "
-               " -p {output.paired} -s {output.single}) > {log}"
-            #shell: " (interleave-reads.py {input.r1} {input.r2} && zcat {input.r1_unpaired} {input.r2_unpaired}) | "
-            #       " (trim-low-abund.py -V -k {params.k} -Z {params.Z} -C {params.C} - -o - -M {params.memory} "
-            #       " --diginorm --diginorm-coverage={params.cov}) | (extract-paired-reads.py --gzip "
-            #       " -p {output.paired} -s {output.single}) > {log}"
 
     rule khmer_se_diginorm:
         """

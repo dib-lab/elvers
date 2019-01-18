@@ -15,6 +15,6 @@ khmer:
     ksize: 20
     Z: 18
     C: 3
-    memory: 20e9
+    memory: 4e9
     coverage: 20
     extra: ""
