@@ -10,7 +10,7 @@ deseq2:
         - .c__contrast__.deseq2.padj_0.1.tsv
         - .c__contrast__.deseq2.ma-plot.pdf
   program_params:
-    gene_trans_map: rna_testdata/nema.fasta.gene_trans_map
+    gene_trans_map: True
     # contrasts for the deseq2 results method
     contrasts:
       time0-vs-time6:
