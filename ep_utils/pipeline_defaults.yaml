@@ -26,17 +26,20 @@ eelpond_workflows:
       - get_data
   preprocess:
     include:
+      - get_data
       - fastqc
     targets:
       #- fastqc
       - trimmomatic
   kmer_trim:
     include:
+      - get_data
       - trimmomatic
     targets:
       - khmer
   assemble:
     include:
+      - get_data
       - trimmomatic
       - khmer
     targets:
@@ -50,17 +53,20 @@ eelpond_workflows:
       - sourmash
   quantify:
     include:
+      - get_data
       - trimmomatic
     targets:
       - salmon
   plass_assemble:
     include:
+      - get_data
       - trimmomatic
       - khmer
     targets:
       - plass
   paladin_map:
     include:
+      - get_data
       - trimmomatic
       - khmer
       - plass
@@ -69,6 +75,7 @@ eelpond_workflows:
       - paladin
   correct_reads:
     include:
+      - get_data
       - trimmomatic
     targets:
       - rcorrector

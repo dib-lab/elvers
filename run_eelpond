@@ -165,16 +165,6 @@ def main(args):
         paramsD = build_dirs(thisdir, paramsD)
         # Note: Passing a configfile allows nested yaml/dictionary format. 
         # Passing these params in via `config` would require a flat dictionary.
-        
-        # check for input data
-        if not os.path.exists(paramsD['eelpond_directories']['outdirs']['input_data']):
-            paramsD['include_rules']+= [join(paramsD['eelpond_directories']['rules'], 'utils', 'get_data.rule')]
-            get_data_params = get_params('get_data', join(paramsD['eelpond_directories']['rules'], 'utils'))
-            if paramsD.get('get_data'):
-                update_nested_dict(get_data_params, paramsD['get_data'])
-            paramsD['get_data'] = get_data_params
-
-
         paramsfile = os.path.join(os.path.dirname(configfile), '.ep_' + os.path.basename(configfile))
         sys.stderr.write('\tAdded default parameters from rule-specific params files.\n\tWriting full params to {}\n'.format(paramsfile))
         write_yaml(paramsD, paramsfile)
