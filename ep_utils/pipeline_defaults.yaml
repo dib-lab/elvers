@@ -16,7 +16,6 @@ eelpond_directories:
     quantify: quant
     diffexp: diffexp
 
-
 # programs to be run at each step of the pipeline
 # change these if you're sure you have new program 
 # params and targets right.
@@ -27,9 +26,8 @@ eelpond_workflows:
   preprocess:
     include:
       - get_data
-      - fastqc
     targets:
-      #- fastqc
+      - fastqc
       - trimmomatic
   kmer_trim:
     include:
@@ -79,8 +77,10 @@ eelpond_workflows:
       - trimmomatic
     targets:
       - rcorrector
-  #diffexp:
-  #  include:
-  #    - deseq2
-  #  targets:
-  #    - deseq2
+  diffexp:
+    include:
+      - get_data
+      - trimmomatic
+      - salmon
+    targets:
+      - deseq2

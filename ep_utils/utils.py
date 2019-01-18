@@ -57,7 +57,7 @@ def update_nested_dict(d, other):
 def is_single_end(sample, unit, end = '', assembly = ''):
     return pd.isnull(samples.loc[(sample, unit), "fq2"])
 
-def generate_targs(outdir, basename, samples, assembly_exts=[''], base_exts = None, read_exts = None):
+def generate_targs(outdir, basename, samples, assembly_exts=[''], base_exts = None, read_exts = None, contrasts = []):
     base_targets, read_targets = [],[]
     # handle read targets
     if read_exts:
@@ -85,15 +85,21 @@ def generate_targs(outdir, basename, samples, assembly_exts=[''], base_exts = No
             read_targs+= [t.replace("__assembly__", assemblyname) for t in read_targets]
     else:
         read_targs = read_targets
-    return base_targets + read_targs
+    base_targs = []
+    if contrasts:
+        for c in contrasts:
+            base_targs +=[t.replace("__contrast__", c) for t in base_targets]
+    else:
+        base_targs = base_targets
+    return base_targs + read_targs
 
-def generate_program_targs(configD, samples, basename, assembly_exts):
+def generate_program_targs(configD, samples, basename, assembly_exts, contrasts):
     # given configD from each program, build targets
     outdir = configD['outdir']
     exts = configD['extensions']
     if exts.get('assembly_extensions'): # this program is an assembler or only works with specific assemblies
         assembly_exts = exts.get('assembly_extensions') # override generals with rule-specific assembly extensions
-    targets = generate_targs(outdir, basename, samples, assembly_exts, exts.get('base', None),exts.get('read'))
+    targets = generate_targs(outdir, basename, samples, assembly_exts, exts.get('base', None),exts.get('read'), contrasts)
     return targets
 
 def generate_mult_targs(configD, workflow, samples):
@@ -106,7 +112,8 @@ def generate_mult_targs(configD, workflow, samples):
     if workflows.get(workflow, None):
         target_rules = configD['eelpond_workflows'][workflow]['targets']
         for r in target_rules:
-            targs += generate_program_targs(configD[r]['eelpond_params'], samples, base, assembly_exts)
+            contrasts = configD[r]['program_params'].get('contrasts', [])
+            targs += generate_program_targs(configD[r]['eelpond_params'], samples, base, assembly_exts, contrasts)
     targs = list(set(targs))
     return targs
 
@@ -126,7 +133,8 @@ def generate_all_targs(configD, samples):
         else:
             target_rules += [flow]
     for r in set(target_rules):
-        targs += generate_program_targs(configD[r]['eelpond_params'], samples, base, assembly_exts)
+        contrasts = configD[r]['program_params'].get('contrasts', [])
+        targs += generate_program_targs(configD[r]['eelpond_params'], samples, base, assembly_exts, contrasts)
     targs = list(set(targs))
     return targs
             
