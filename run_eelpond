@@ -102,16 +102,20 @@ def handle_assemblyInput(assembInput, config):
     assemblyfile = program_params.get('assembly', None)
     assert os.path.exists(assemblyfile), 'Error: cannot find input assembly at {}\n'.format(assemblyfile)
     sys.stderr.write('\tFound input assembly at {}\n'.format(assemblyfile))
-    gtmap = program_params.get('gene_trans_map', None)
-    assert os.path.exists(gtmap), 'Error: cannot find assembly gene_trans_map at {}\n'.format(gtmap)
-    sys.stderr.write('\tFound input assembly gene-transcript map at {}\n'.format(gtmap))
+    gtmap = program_params.get('gene_trans_map', '')
+    extensions= {}
+    if gtmap:
+        assert os.path.exists(gtmap), 'Error: cannot find assembly gene_trans_map at {}\n'.format(gtmap)
+        sys.stderr.write('\tFound input assembly gene-transcript map at {}\n'.format(gtmap))
+        extensions = {'base': ['.fasta', '.fasta.gene_trans_map']} # kinda hacky. do this better
+    else:
+        program_params['gene_trans_map'] = ''
     # grab user-input assembly extension
     input_assembly_extension = program_params.get('assembly_extension', '')
     config['assemblyinput'] = {}
     config['assemblyinput']['program_params'] = program_params 
-    config['assemblyinput']['eelpond_params'] = {'extensions':{'assembly_extensions': [input_assembly_extension]}}
-    # add extension to overall assembly_extensions info
-    #config['assembly_extensions'] = list(set(config.get('assembly_extensions', []) + [input_assembly_extension]))
+    extensions['assembly_extensions'] = [input_assembly_extension]
+    config['assemblyinput']['eelpond_params'] = {'extensions': extensions} 
     return config, input_assembly_extension
 
 
@@ -159,7 +163,8 @@ def main(args):
         paramsD = build_default_params(thisdir, targs)
         # update defaults with user-specified parameters
         update_nested_dict(paramsD,configD) # configD takes priority over default params 
-        if assemblyinput_ext:
+        # add extension to overall assembly_extensions info
+        if assemblyinput_ext: # note, need to do it here to prevent override with defaults
             paramsD['assembly_extensions'] = list(set(paramsD.get('assembly_extensions', []) + [assemblyinput_ext]))
         # use params to build directory structure
         paramsD = build_dirs(thisdir, paramsD)
@@ -183,7 +188,8 @@ def main(args):
         status = snakemake.snakemake(snakefile, configfile=paramsfile, use_conda=True, 
                                  targets=['eelpond'], printshellcmds=True,
                                  dryrun=args.dry_run, lock=not args.nolock,
-                                 verbose=args.verbose, debug_dag=args.debug, printdag=args.dag)
+                                 verbose=args.verbose, debug_dag=args.debug, 
+                                 printdag=args.dag, keepgoing=args.keep_going)
     
         if status: # translate "success" into shell exit code of 0
            return 0
@@ -227,6 +233,7 @@ To build an editable configfile to start work on your own data, run:
     parser.add_argument('-v', '--verbose', action='store_true')
     parser.add_argument('-d', '--debug', action='store_true')
     parser.add_argument('--dag', action='store_true')
+    parser.add_argument('-k', '--keep_going', action='store_true')
     parser.add_argument('--nolock', action='store_true')
     parser.add_argument('--unlock', action='store_true')
     parser.add_argument('--build_config', action='store_true', help='just build the default parameter file')

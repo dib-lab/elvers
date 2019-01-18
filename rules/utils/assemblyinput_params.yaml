@@ -4,7 +4,7 @@ assemblyinput:
     extensions:
       base:
         - '.fasta'
-        - '.fasta.gene_trans_map'
+      #  - '.fasta.gene_trans_map'
   # for user input
   program_params:
     assembly: 'name.fasta'
