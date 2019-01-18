@@ -192,10 +192,9 @@ def main(args):
 
         # run!!
         # params file becomes snakemake configfile
-
         status = snakemake.snakemake(snakefile, configfile=paramsfile, use_conda=True, 
                                  targets=['eelpond'], printshellcmds=True, 
-                                 cores=args.threads,
+                                 cores=args.threads, cleanup_conda= args.cleanup_conda,
                                  dryrun=args.dry_run, lock=not args.nolock,
                                  verbose=args.verbose, debug_dag=args.debug, 
                                  printdag=args.dag, keepgoing=args.keep_going)
@@ -211,17 +210,14 @@ if __name__ == '__main__':
 
 Run eelpond snakemake workflows, using the given configfile.
 
-Targets:
+Available Workflows:
 
    full               - run full workflow (default)
    preprocess         - preprocess reads 
    assemble           - transcriptome assembly 
    annotate           - annotate transcriptome assembly
    quantify           - read quantification 
-
-   ## not enabled yet: ##
    diffexp            - conduct differential expression
-   clean              - remove target dirs
 
 For a quickstart, run this:
 
@@ -241,14 +237,18 @@ To build an editable configfile to start work on your own data, run:
     parser.add_argument('-t', '--threads', type=int, default=1)
     parser.add_argument('-n', '--dry-run', action='store_true')
     parser.add_argument('-v', '--verbose', action='store_true')
+    parser.add_argument('-w', '--print_workflows', action='store_true', help='just show available workflows')
+    parser.add_argument('-r', '--print_rules', action='store_true', help='just show available rules')
+    parser.add_argument('--build_config', action='store_true', help='just build the default parameter file')
+    # advanced args below (maybe separate so these don't always print out)
     parser.add_argument('-d', '--debug', action='store_true')
     parser.add_argument('--dag', action='store_true')
     parser.add_argument('-k', '--keep_going', action='store_true')
     parser.add_argument('--nolock', action='store_true')
     parser.add_argument('--unlock', action='store_true')
-    parser.add_argument('-w', '--print_workflows', action='store_true', help='just show available workflows')
-    parser.add_argument('-r', '--print_rules', action='store_true', help='just show available rules')
-    parser.add_argument('--build_config', action='store_true', help='just build the default parameter file')
+    parser.add_argument('--cleanup_conda', action='store_true')
+    parser.add_argument('--forcetargets', action='store_true', help='force given targets to be re-created (default False)')
+    parser.add_argument('--forceall', action='store_true', help='force all output files to be re-created (default False)')
     args = parser.parse_args()
 
     sys.exit(main(args))

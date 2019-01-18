@@ -1,0 +1,102 @@
+from os.path import join
+
+# need to modify for "sample" not "r1/r2/r"
+#sample = [r1,r2] or sample = [r] gets passed in
+
+bt2_params = config['bowtie2']
+bt2_dir = bt2_params['eelpond_dirname']
+# input assembly
+assembly_dir  = config['eelpond_directories']['outdirs']['assemble']
+# input reads
+input_dirname = bowtie2_params['input_dir']
+input_dir     = config['eelpond_directories']['outdirs'][input_dirname]
+
+quant_dir     = salmon_params['eelpond_dirname']
+ext           =  salmon_params['input_pattern']
+combine_units = salmon_params['extensions']['read']['combine_units']
+
+# use if you don't want to collapse technical replicates ("units" column; deseq2 not supported)
+def get_sample_no_combine(w):
+    readsD = {}
+    if not is_single_end(**w): # note, this requires unit to be in outputs!
+        readsD['r1'] = join(input_dir, f'{w.sample}_{w.unit}_1{ext}')
+        readsD['r2'] = join(input_dir, f'{w.sample}_{w.unit}_2{ext}')
+        return readsD
+    readsD['r'] = join(input_dir, f'{w.sample}_{w.unit}{ext}')
+    return readsD
+
+def get_sample_combine_units(w):
+    readsD = {}
+    r1,r2,r = [],[],[]
+    unit_list = samples.groupby(level=0).get_group(w.sample)['unit'].tolist()
+    for unit in unit_list:
+        if not is_single_end(w.sample, unit):
+            r1+= [join(input_dir, f"{w.sample}_{unit}_1{ext}")]
+            r2+= [join(input_dir, f"{w.sample}_{unit}_2{ext}")]
+        else:
+            r+= [join(input_dir, f"{w.sample}_{unit}{ext}")]
+    if r1:
+        readsD['sample'] = r1 + r2
+        #readsD['r1'] = r1
+        #readsD['r2'] = r2
+    elif r:
+        readsD['sample'] = r
+    return readsD
+
+rule bowtie2_index:
+    """
+    Index the transcriptome for bowtie2 mapping
+    """
+    input:
+        join(assembly_dir, "{assembly}.fasta")
+    output:
+        directory(join(quant_dir, "{assembly}.bowtie2index"))
+    message:
+        """--- Indexing the transcriptome with Bowtie2 ---"""
+    threads: 10
+    params:
+        extra = bt2_params['index_params'].get('extra', '')
+    log:
+        join(LOGS_DIR, 'bowtie2/{assembly}_index.log')
+    conda: "bowtie2-env.yaml"
+    script: "bowtie2-index-wrapper.py"
+
+rule bowtie2_index:
+    """
+    Index the transcriptome for salmon quantification
+    """
+    input:
+        join(ASSEMBLY_DIR, BASE + ".fasta")
+    output:
+        index = join(bt2_dir, BASE + "_bowtie2.1.bt2")
+    message:
+        """--- Indexing the transcriptome with Bowtie2 ---"""
+    threads: 2
+    params:
+        extra = ''
+    log:
+        join(LOGS_DIR, 'bowtie2', BASE +'_index.log')
+    conda: 
+        'bowtie2-env.yaml'
+    script:
+        'wrapper.py'
+#    shell: 
+#        'bowtie2-build {input} {output}'
+    #wrapper:
+    #    '0.27.1/bio/bowtie/index'
+
+rule bowtie2_map:
+    input:
+        unpack(get_trimmed_combined_pe), 
+        index = rules.bowtie2_index.output.index, #join(bt2_dir, BASE + "_bowtie2"),
+    output:
+        join(bt2_dir, "{sample}_pe_x_" + BASE + ".bam")
+    log:
+        "logs/bowtie2/{sample}.log"
+    params:
+        index = join(bt2_dir, BASE + "_bowtie2"),
+        # index="index/genome",  # prefix of reference genome index (built with bowtie2-build)
+        extra=" --local "  # optional parameters
+    threads: 8
+    wrapper:
+        "0.27.1/bio/bowtie2/align"
