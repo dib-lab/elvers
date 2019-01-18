@@ -38,10 +38,11 @@ if diginorm:
         threads: 10
         log: join(LOGS_DIR, 'khmer/{sample}_{unit}.pe.diginorm.log')
         conda:  'khmer-env.yaml'
-        #shell: " (interleave-reads.py {input.r1} {input.r2} && zcat {input.r1_unpaired} {input.r2_unpaired}) | "
         shell: " (interleave-reads.py {input.r1} {input.r2} ) | "
                " (trim-low-abund.py -V -k {params.k} -Z {params.Z} -C {params.C} - -o - -M {params.memory} "
                " --diginorm --diginorm-coverage={params.cov}) | (extract-paired-reads.py --gzip "
+               " -p {output.paired} -s {output.single}) > {log}"
+        #shell: " (interleave-reads.py {input.r1} {input.r2} && zcat {input.r1_unpaired} {input.r2_unpaired}) | "
 
     rule khmer_se_diginorm:
         """
@@ -79,7 +80,7 @@ else:
             k = khmer_params.get('ksize', 20),
             Z = khmer_params.get('Z', 18), 
             C = khmer_params.get('C', 3), 
-            memory = khmer_params.get('memory', 20e9),
+            memory = khmer_params.get('memory', 4e9),
             extra = khmer_params.get('extra', '')
         threads: 10
         log: join(LOGS_DIR, 'khmer/{sample}_{unit}.pe.log')
