@@ -1,4 +1,3 @@
-name: eelpond
 channels:
   - bioconda
   - defaults
