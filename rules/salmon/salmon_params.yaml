@@ -5,7 +5,7 @@ salmon:
     input_dir: preprocess
     extensions: 
       read:
-        combine_units: False
+        combine_units: True
         pe:
           - _x___assembly__.salmon/quant.sf
           - _x___assembly__.salmon/lib_format_counts.json

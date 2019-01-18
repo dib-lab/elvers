@@ -43,7 +43,7 @@ if r:
 
 outdir = path.dirname(snakemake.output.get('quant'))
 
-shell("salmon quant -i {snakemake.input.index} "
+shell("salmon quant -i {snakemake.input.index} --validateMappings "
       " -l {libtype} {read_cmd} -o {outdir} "
       " -p {snakemake.threads} {extra} {log} ")
 
