@@ -50,9 +50,7 @@ rule trinity:
     threads: 4
     log: join(LOGS_DIR, 'trinity/trinity.log')
     conda: "trinity-env.yaml"
-	script: "wrapper.py"
-    #wrapper:
-    #    "0.27.1/bio/trinity"
+	script: "trinity-wrapper.py"
 
 rule rename_trinity_fasta:
     input: rules.trinity.output.fasta

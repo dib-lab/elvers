@@ -16,4 +16,5 @@ trinity:
     add_single_to_paired: False
     max_memory : 30G
     seqtype: fq
+    extra: ''
 

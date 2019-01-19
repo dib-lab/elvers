@@ -6,44 +6,9 @@ Here we use a set TruSeq Illumina adapters. However, if running this on your own
 
 See excellent paper on trimming parameters by [MacManes 2014](https://www.frontiersin.org/articles/10.3389/fgene.2014.00013/full).
 
+## Trimmomatic Command
+
 Based on these recommendations by MacManes 2014, we use this command in this pipeline:
-
-```
-TrimmomaticPE ${base}.fastq.gz ${baseR2}.fastq.gz \
-    ${base}.qc.fq.gz s1_se \
-    ${baseR2}.qc.fq.gz s2_se \
-    ILLUMINACLIP:TruSeq3-PE.fa:2:40:15 \
-    LEADING:2 TRAILING:2 \
-    SLIDINGWINDOW:4:2 \
-    MINLEN:25
-```
-## Customizing the trimming pipeline
-
-The default trimming paramters can be overridden by providing the following in the `.yaml` configuration file:
-
-Be sure to modify the trimming commands as desired
-
-From the [Trimmomatic documentation](http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/TrimmomaticManual_V0.32.pdf):
-
-```
-Trimmomatic is a fast, multithreaded command line tool that can be used to trim and crop
-Illumina (FASTQ) data as well as to remove adapters. These adapters can pose a real problem
-depending on the library preparation and downstream application.
-
-There are two major modes of the program: Paired end mode and Single end mode. The
-paired end mode will maintain correspondence of read pairs and also use the additional
-information contained in paired reads to better find adapter or PCR primer fragments
-introduced by the library preparation process.
-
-Trimmomatic works with FASTQ files (using phred + 33 or phred + 64 quality scores,
-depending on the Illumina pipeline used). Files compressed using either „gzip‟ or „bzip2‟ are
-supported, and are identified by use of „.gz‟ or „.bz2‟ file extensions.
-```
-
-
-## Trimmomatic Params
-
-We run `trimmomatic` via snakemake, but on the commandline, the command would look like this:
 
 ```
 TrimmomaticPE ${base}.fastq.gz ${baseR2}.fastq.gz \
@@ -55,17 +20,23 @@ TrimmomaticPE ${base}.fastq.gz ${baseR2}.fastq.gz \
     MINLEN:25
 ```
 
-The trimming command can be modified via the configfile. This is what that same command looks
-like in our config:
+However, the trimming command can be extensively modified via the configfile. Here's how the parameters for the command above look in our config:
+
 ```
 trimmomatic:
   trim_cmd:  "ILLUMINACLIP:{}:2:40:15 LEADING:2 TRAILING:2 SLIDINGWINDOW:4:15 MINLEN:25"
+  extra: ''
 ```
-To get the trimmomatic config you can modify, run:
+
+## Customizing the trimming parameters
+
+To modify any program params, you need to add a couple lines to the config file you provide to `eelpond`.
+
+To get a trimmomatic config you can modify, run:
 ```
-./run_eelpond trimmomatic.config --build_config trimmomatic
+./run_eelpond trimmomatic.yaml trimmomatic --build_config
 ```
-The output should look like this:
+The output should be a small `yaml` configfile that contains:
 ```
 ####################  trimmomatic  ####################
 trimmomatic:
@@ -77,20 +48,21 @@ trimmomatic:
   trim_cmd: ILLUMINACLIP:{}:2:40:15 LEADING:20 TRAILING:20 SLIDINGWINDOW:4:15 MINLEN:35
   extra: ''
 ```
-
-
-In addition to changing parameters we've specifically enabled, you can modify the `extra` param to pass any extra trimmomatic parameters, e.g.:
+Override default params by modifying these lines. In addition to changing parameters we've specifically enabled, you can modify the `extra` param to pass any extra trimmomatic parameters, e.g.:
 ```
   extra: '--someflag someparam --someotherflag thatotherparam'
 ```
+Or in Trimmomatic params:
+```
+  extra: 'HEADCROP:5' # to remove the first 5 bases at the front of the read.
+``
+Be sure the modified lines go into the config file you're using to run `eelpond`. For more on what parameters are available, see the [Trimmomatic documentation](http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/TrimmomaticManual_V0.32.pdf).
 
-## Trimmomatic Snakemake Wrappers
+## Trimmomatic Rule 
 
 We use a local copies of the [trimmomatic snakemake wrappers](https://snakemake-wrappers.readthedocs.io/en/stable/wrappers/trimmomatic.html) to run Trimmomatic.
 
-## eelpond rule
-
-Check out the `eelpond` trimmomatic rule on [github](https://github.com/dib-lab/eelpond/blob/master/rules/trimmomatic/trimmomatic.rule)
+For snakemake afficionados, here's the basic structure of the trimmomatic eelpond rules. Directories and parameters are specified via the configfile (see the rule on [github](https://github.com/dib-lab/eelpond/blob/master/rules/trimmomatic/trimmomatic.rule)).
 
 ```
 def get_pretrim(w):

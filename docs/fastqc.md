@@ -16,23 +16,33 @@ There are several caveats about FastQC - the main one is that it only calculates
 
 Check out these examples of [good](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/good_sequence_short_fastqc.html) and [bad](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/bad_sequence_fastqc.html) Illumina data.
 
-## Fastqc Snakemake Wrapper
-
-We use a local copy of the [fastqc snakemake wrapper](https://snakemake-wrappers.readthedocs.io/en/stable/wrappers/fastqc.html) to run fastqc. 
-
 
 ## Fastqc Params
 
-We run `fastqc` with default parameters. You can add additional params by adding the following to your configfile:
+To modify any program params, you need to add a couple lines to the config file you provide to `eelpond`. 
 
+To get a fastqc config you can modify, run:
 ```
+./run_eelpond fastqc.yaml fastqc --build_config
+```
+The output should be a small `yaml` configfile that contains:
+```
+  ####################  fastqc  ####################
 fastqc:
-  extra: '--someflag someparam'
+  extra: ''
 ```
+There's almost nothing in here because we use default params. However, you can modify the `extra` param to pass any extra trimmomatic parameters, e.g.:
+```
+  extra: '--someflag someparam --someotherflag thatotherparam'
+```
+Be sure the modified lines go into the config file you're using to run `eelpond`.
 
-## eelpond rule
+## Fastqc rule
 
-Check out the `eelpond` fastqc on [github](https://github.com/dib-lab/eelpond/blob/master/rules/fastqc/fastqc.rule)
+We use a local copies of the [fastqc snakemake wrapper](https://snakemake-wrappers.readthedocs.io/en/stable/wrappers/fastqc.html) to run Fastqc.
+
+For snakemake afficionados, Here's the basic structure of the fastqc rules. Directories and parameters are specified via the configfile (see the rule on [github](https://github.com/dib-lab/eelpond/blob/master/rules/fastqc/fastqc.rule)).
+
 
 
 ```
