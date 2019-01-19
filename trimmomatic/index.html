@@ -680,7 +680,7 @@ trimmomatic:
 </pre></div>
 
 
-<p>Override default params by modifying these lines. In addition to changing parameters we've specifically enabled, you can modify the <code>extra</code> param to pass any extra trimmomatic parameters, e.g.:</p>
+<p>Override default params by modifying these lines. In addition to changing parameters we have ve specifically enabled, you can modify the <code>extra</code> param to pass any extra trimmomatic parameters, e.g.:</p>
 <div class="codehilite"><pre><span></span>  extra: &#39;--someflag someparam --someotherflag thatotherparam&#39;
 </pre></div>
 
@@ -688,6 +688,7 @@ trimmomatic:
 <p>Or in Trimmomatic params:</p>
 <div class="codehilite"><pre><span></span>  extra: &#39;HEADCROP:5&#39; # to remove the first 5 bases at the front of the read.
 ``
+
 Be sure the modified lines go into the config file you&#39;re using to run `eelpond`. For more on what parameters are available, see the [Trimmomatic documentation](http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/TrimmomaticManual_V0.32.pdf).
 
 ## Trimmomatic Rule 
