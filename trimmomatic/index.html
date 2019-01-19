@@ -376,6 +376,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#trimmomatic-rule" title="Trimmomatic Rule" class="md-nav__link">
+    Trimmomatic Rule
+  </a>
+  
+</li>
+      
       
       
       
@@ -613,6 +620,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#trimmomatic-rule" title="Trimmomatic Rule" class="md-nav__link">
+    Trimmomatic Rule
+  </a>
+  
+</li>
+      
       
       
       
@@ -680,71 +694,69 @@ trimmomatic:
 </pre></div>
 
 
-<p>Override default params by modifying these lines. In addition to changing parameters we have ve specifically enabled, you can modify the <code>extra</code> param to pass any extra trimmomatic parameters, e.g.:</p>
+<p>Override default params by modifying these lines. In addition to changing parameters we've specifically enabled, 
+you can modify the "extra" param to pass any extra trimmomatic parameters, e.g.:</p>
 <div class="codehilite"><pre><span></span>  extra: &#39;--someflag someparam --someotherflag thatotherparam&#39;
 </pre></div>
 
 
 <p>Or in Trimmomatic params:</p>
 <div class="codehilite"><pre><span></span>  extra: &#39;HEADCROP:5&#39; # to remove the first 5 bases at the front of the read.
-``
-
-Be sure the modified lines go into the config file you&#39;re using to run `eelpond`. For more on what parameters are available, see the [Trimmomatic documentation](http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/TrimmomaticManual_V0.32.pdf).
-
-## Trimmomatic Rule 
-
-We use a local copies of the [trimmomatic snakemake wrappers](https://snakemake-wrappers.readthedocs.io/en/stable/wrappers/trimmomatic.html) to run Trimmomatic.
-
-For snakemake afficionados, here&#39;s the basic structure of the trimmomatic eelpond rules. Directories and parameters are specified via the configfile (see the rule on [github](https://github.com/dib-lab/eelpond/blob/master/rules/trimmomatic/trimmomatic.rule)).
 </pre></div>
 
 
-<p>def get_pretrim(w):
+<p>Be sure the modified lines go into the config file you're using to run <code>eelpond</code>. For more on what parameters are available, see the <a href="http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/TrimmomaticManual_V0.32.pdf">Trimmomatic documentation</a>.</p>
+<h2 id="trimmomatic-rule">Trimmomatic Rule<a class="headerlink" href="#trimmomatic-rule" title="Permanent link">&para;</a></h2>
+<p>We use a local copies of the <a href="https://snakemake-wrappers.readthedocs.io/en/stable/wrappers/trimmomatic.html">trimmomatic snakemake wrappers</a> to run Trimmomatic.</p>
+<p>For snakemake afficionados, here's the basic structure of the trimmomatic eelpond rules. Directories and parameters are specified via the configfile (see the rule on <a href="https://github.com/dib-lab/eelpond/blob/master/rules/trimmomatic/trimmomatic.rule">github</a>).</p>
+<div class="codehilite"><pre><span></span>def get_pretrim(w):
     readsD = {}
-    if not is_single_end(<strong>w):
-        readsD['r1'] = expand(join(data_dir, '{sample}_{unit}_1.fq.gz'),</strong>w)
-        readsD['r2'] = expand(join(data_dir, '{sample}_{unit}_2.fq.gz'),<strong>w)
+    if not is_single_end(**w):
+        readsD[&#39;r1&#39;] = expand(join(data_dir, &#39;{sample}_{unit}_1.fq.gz&#39;),**w)
+        readsD[&#39;r2&#39;] = expand(join(data_dir, &#39;{sample}_{unit}_2.fq.gz&#39;),**w)
         return readsD
-    return expand(join(data_dir, '{sample}_{unit}_1.fq.gz'), </strong>w)</p>
-<p>rule trimmomatic_pe:
-    """
+    return expand(join(data_dir, &#39;{sample}_{unit}_1.fq.gz&#39;), **w)
+
+rule trimmomatic_pe:
+    &quot;&quot;&quot;
     Trim reads from the sequencer by trimming or dropping low-quality reads.
-    """
+    &quot;&quot;&quot;
     input:
         unpack(get_pretrim)
     output:
-        r1=join(trim_dir, "{sample}<em>{unit}_1.trim.fq.gz"),
-        r2=join(trim_dir, "{sample}</em>{unit}<em>2.trim.fq.gz"),
-        r1_unpaired=join(trim_dir, "{sample}</em>{unit}<em>1.se.trim.fq.gz"),
-        r2_unpaired=join(trim_dir, "{sample}</em>{unit}<em>2.se.trim.fq.gz"),
+        r1=join(trim_dir, &quot;{sample}_{unit}_1.trim.fq.gz&quot;),
+        r2=join(trim_dir, &quot;{sample}_{unit}_2.trim.fq.gz&quot;),
+        r1_unpaired=join(trim_dir, &quot;{sample}_{unit}_1.se.trim.fq.gz&quot;),
+        r2_unpaired=join(trim_dir, &quot;{sample}_{unit}_2.se.trim.fq.gz&quot;),
     message:
-        """--- Quality trimming PE read data with Trimmomatic."""
-    threads: trim_params.get('cpu', 16)
+        &quot;&quot;&quot;--- Quality trimming PE read data with Trimmomatic.&quot;&quot;&quot;
+    threads: trim_params.get(&#39;cpu&#39;, 16)
     params:
-        trimmer = (trim_params['trim_cmd'].format(trim_params['adapter_file']['pe_name'])).split(' '),
-        extra = ''
-    log: join(LOGS_DIR, 'trimmomatic/{sample}</em>{unit}_pe.log')
+        trimmer = (trim_params[&#39;trim_cmd&#39;].format(trim_params[&#39;adapter_file&#39;][&#39;pe_name&#39;])).split(&#39; &#39;),
+        extra = &#39;&#39;
+    log: join(LOGS_DIR, &#39;trimmomatic/{sample}_{unit}_pe.log&#39;)
     wrapper:
-        '0.27.1/bio/trimmomatic/pe'</p>
-<p>rule trimmomatic_se:
-    """
+        &#39;0.27.1/bio/trimmomatic/pe&#39;
+
+rule trimmomatic_se:
+    &quot;&quot;&quot;
     Trim reads from the sequencer by trimming or dropping low-quality reads.
-    """
+    &quot;&quot;&quot;
     input:
         get_pretrim
     output:
-        r1=join(trim_dir, "{sample}<em>{unit}.se.trim.fq.gz"), 
+        r1=join(trim_dir, &quot;{sample}_{unit}.se.trim.fq.gz&quot;), 
     message:
-        """--- Quality trimming SE read data with Trimmomatic."""
-    threads: trim_params.get('cpu', 16)
+        &quot;&quot;&quot;--- Quality trimming SE read data with Trimmomatic.&quot;&quot;&quot;
+    threads: trim_params.get(&#39;cpu&#39;, 16)
     params:
-        trimmer = (trim_params['trim_cmd'].format(trim_params['adapter_file']['se_name'])).split(' '),
-        extra = ''
+        trimmer = (trim_params[&#39;trim_cmd&#39;].format(trim_params[&#39;adapter_file&#39;][&#39;se_name&#39;])).split(&#39; &#39;),
+        extra = &#39;&#39;
     log:
-        join(LOGS_DIR, 'trimmomatic/{sample}</em>{unit}_se.log')
+        join(LOGS_DIR, &#39;trimmomatic/{sample}_{unit}_se.log&#39;)
     wrapper:
-        '0.27.1/bio/trimmomatic/se'
-```</p>
+        &#39;0.27.1/bio/trimmomatic/se&#39;
+</pre></div>
                 
                   
                 
