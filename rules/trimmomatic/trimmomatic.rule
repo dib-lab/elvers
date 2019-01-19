@@ -28,7 +28,7 @@ rule trimmomatic_pe:
     threads: trim_params.get('cpu', 16)
     params:
         trimmer = (trim_params['trim_cmd'].format(trim_params['adapter_file']['pe_name'])).split(' '),
-        extra = ''
+        extra = trim_params.get('extra', '')
     log: join(LOGS_DIR, 'trimmomatic/{sample}_{unit}_pe.log')
     wrapper:
         '0.27.1/bio/trimmomatic/pe'
@@ -46,7 +46,7 @@ rule trimmomatic_se:
     threads: trim_params.get('cpu', 16)
     params:
         trimmer = (trim_params['trim_cmd'].format(trim_params['adapter_file']['se_name'])).split(' '),
-        extra = ''
+        extra = trim_params.get('extra', '')
     log:
         join(LOGS_DIR, 'trimmomatic/{sample}_{unit}_se.log')
     wrapper:

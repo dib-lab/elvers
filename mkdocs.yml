@@ -38,15 +38,44 @@ extra_css:
 # give a title for each page
 nav:
   - 'About' : 'index.md'
-  - 'Read Quality Trimming and Filtering' : 'QC.md'
-  - 'Annotation' : 'Annotation.md'
-  - 'Digital Normalization' : 'Diginorm.md'
-  - 'Assembly' : 'Assembly.md'
-  - 'Quality Assessment': 'Quality.md'
-  - 'Transcript Quantification' : 'Quant.md'
-  - 'Differential Expression' : 'DE.md'
+  - 'Available Workflows':
+    - 'Eel Pond Protocol': 'Eel_Pond_workflow.md'
+    - 'PLASS Assembly': 'Protein_assembly_workflow.md'
+    - 'Subworkflows':
+      - 'preprocess': preprocess.md
+      - 'kmer_trim': kmer_trim.md
+      - 'assemble': assemble.md
+      - 'assemblyinput': assemblyinput.md
+      - 'annotate': annotate:.md
+      - 'quantify': quantify.md
+      - 'plass_assemble:': plass_assemble:.md
+      - 'paladin_map': .paladin_mapmd
+      - 'correct_reads': correct_reads:.md
+      - 'diffexp': diffexp.md
+    - 'Programs Used':
+      - 'fastqc': fastqc.md
+      - 'trimmomatic': trimmomatic.md
+      - 'khmer': khmer.md
+      - 'trinity': trinity.md
+      - 'dammit': dammit.md
+      - 'sourmash': sourmash.md
+      - 'salmon': salmon.md
+      - 'deseq2': deseq2.md
+      - 'plass': plass.md
+      - 'pear': pear.md
+      - 'paladin': paladin.md
+      - 'rcorrector': rcorrector.md
   - 'For Developers':
     - 'dev_tips.md'
+    - 'Configuration.md'
+      #- 'Read Quality Trimming' : 'QC.md'
+      #- 'Kmer Trimming and Diginorm' : 'Diginorm.md'
+      #- 'Assembly' : 'Assembly.md'
+      #- 'Quality Assessment': 'Quality.md'
+      #- 'Annotation' : 'Annotation.md'
+      #- 'Transcript Quantification' : 'Quant.md'
+      #- 'Differential Expression' : 'DE.md'
+
 
 # Extensions
 markdown_extensions:

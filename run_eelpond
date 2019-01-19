@@ -142,7 +142,7 @@ def main(args):
         targs = ['assemble', 'annotate', 'quantify', 'diffexp']
     if args.build_config:
         configfile = args.configfile
-        if not '.yaml' or not '.yml' in args.configfile:
+        if not any(ext in args.configfile for ext in ['.yaml', '.yml']):
             configfile = args.configfile + '.yaml'
         if os.path.exists(configfile):
             sys.stderr.write(f"\n\tError: found configfile path at {configfile}, but you have '--build_config' specified. Please fix.\n\n")

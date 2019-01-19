@@ -1,6 +1,5 @@
 # EelPond
 
-# Snakemake update of the Eel Pond Protocol for *de novo* RNAseq analysis
 
 ```
                            ___
@@ -23,21 +22,14 @@
               `       '--;            (' 
 
 ```
-This is a lightweight protocol for assembling up to a few hundred million mRNAseq reads, annotating the resulting assembly, and doing differential expression analysis. The input is short-insert paired-end Illumina reads. This protocol can be run in a single command because it uses the snakemake automated workflow management system.
-
-Previous versions of this protocol included line-by-line commands that the user could follow along with using a test dataset provided in the instructions. Since the recent development of [snakemake](https://snakemake.readthedocs.io/en/stable/) workflow management tool and [snakemake-wrappers](https://snakemake-wrappers.readthedocs.io/en/stable/) to manage sofware installation of commonly-used bioinformatics tools, we have re-implemented the Eel Pond Protocol to make it easier for users to install software and run a *de novo* transcriptome assembly, annotation, and quick differential expression analysis on a set of short-read Illumina data using a single command.
-
-The software for this protocol can be found [here](https://github.com/dib-lab/eelpond). 
+eelpond started as a snakemake update of the Eel Pond Protocal for *de novo* RNAseq analysis. It has evolved slightly to enable a number of workflows for (mostly) RNA data, which can all be run via the `eelpond` workflow wrapper. `eelpond` uses [snakemake](https://snakemake.readthedocs.io) for workflow management and [conda](https://conda.io/docs/) for software installation. The code can be found [here](https://github.com/dib-lab/eelpond). 
 
 
-# Getting Started
+## Getting Started
 
-At the moment, only Linux is supported. OSX issues:
-  - fastqc fails about half the time
-  - Trinity assembler does not work
+Linux is the recommended OS. Nearly everything also works on MacOSX, but some programs (fastqc, Trinity) are troublesome.
 
-
-Install [miniconda](https://conda.io/miniconda.html) (for Ubuntu 16.04 [Jetstream image](https://use.jetstream-cloud.org/application/images/107)):
+If you don't have conda yet, install [miniconda](https://conda.io/miniconda.html) (for Ubuntu 16.04 [Jetstream image](https://use.jetstream-cloud.org/application/images/107)):
 ```
 wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
 bash Miniconda3-latest-Linux-x86_64.sh -b
@@ -58,61 +50,63 @@ conda env create --file ep_utils/eelpond_environment.yaml -n eelpond
 
 Activate that environment. You'll need to do this anytime you want to run eelpond
 ```
-source activate eelpond
+source activate eelpond 
+# or
+# conda activate eelpond
 ```
+Now you can start running workflows!
 
-Now you can start running eelpond!
 
-To test a "full" workflow, consisting of read pre-processing, kmer trimming, Trinity assembly, dammit annotation and salmon quantification:
+## Default workflow: Eel Pond Protocol for *de novo* RNAseq analysis
+
+The Eel Pond protocol (which inspired the `eelpond` name) included line-by-line commands that the user could follow along with using a test dataset provided in the instructions. We have re-implemented the protocol here to enable automated *de novo* transcriptome assembly, annotation, and quick differential expression analysis on a set of short-read Illumina data using a single command. See more about this protocol [here](eel_pond_protocol.md).
+
+To test the default workflow:
 ```
 ./run_eelpond nema-test full
 ```
-These will run a small set of _Nematostella vectensis_ test data (from [Tulin et al., 2013](https://evodevojournal.biomedcentral.com/articles/10.1186/2041-9139-4-16))
+This will run a small set of _Nematostella vectensis_ test data (from [Tulin et al., 2013](https://evodevojournal.biomedcentral.com/articles/10.1186/2041-9139-4-16))
+
+## Running Your Own Data
+
+To run your own data, you'll need to create two files, a `tsv` file containing 
+your sample info, and a `yaml` file containing basic configuration info. To start,
+copy the test data files so you can modify them.
+```
+cp nema_samples.tsv <my-tsv-samples.tsv>
+```
+Modify this tab-separated file with your sample names and locations for each file. 
+
+Notes:  
+    - `eelpond` is a bit finicky here: all columns must be separated by tabs, not spaces. If you get an immediate error about your samples file, this is likely the cause.   
+    - the `unit` column allows you to enter multiple files or file pairs for each samples, such as files that are from different lanes. If you don't have a `unit` bit of information, just add something short as placeholder (e.g. `a`). All units for a single sample are combined prior to the differential expression steps. At some point, we may enable a `no_units` version of the `eelpond`, but it's not in our immediate plans :). 
+
+Next, build a configfile to edit:
+```
+./run_eelpond config_name --build_config
+```
+
+This configfile will contain all the default paramters for each step of the workflow you target.
+If you don't specify any targets, it will default to the "full" pipeline, which executes read
+preprocessing, assembly, annotation, and quantification. 
+
+Then, modify this configfile as necessary. 
+
+**The configfile must contain at least:**
+```
+samples: path/to/my-tsv-samples.tsv
+```
+**which directs `eelpond` to your sample files.**
 
 
-You can also run individual tools or subworkflows independently:
-```
-./run_eelpond nema-test preprocess
-./run_eelpond nema-test trimmomatic
-```
+## Additional Info
+
+Each independent step is split into a smaller workflow that can be run independently, if desired, e.g. `./run_eelpond nema-test preprocess`. Individual tools can also be run independently, see [Advanced Usage](advanced_usage.md).
 
 See the help, here:
 ```
 ./run_eelpond -h
 ```
-
-**Running your own data:**
-
-To run your own data, you'll need to create two files, a `tsv` file containing 
-your sample info, and a `yaml` file containing basic configuration info. To start,
-copy the test data files so you can modify them.
-
-```
-cp nema_samples.tsv <my-tsv-name.tsv>
-```
-
-Next, build a configfile to edit:
-
-```
-./run_eelpond config_name --build_config
-
-```
-This configfile will contain all the default paramters for each step of the pipeline you target.
-If you don't specify any targets, it will default to the "full" pipeline, which executes read
-preprocessing, assembly, annotation, and quantification.
-
-Then, modify this configfile as necessary. 
-The essential component is the `samples.tsv` file, which points `eelpond` to your sample files.
-
-
-**References:**  
-
-  * [original eel-pond protocol docs, last updated 2015](https://khmer-protocols.readthedocs.io/en/ctb/mrnaseq/)
-  * [eel-pond protocol docs, last updated 2016](http://eel-pond.readthedocs.io/en/latest/)
-  * [DIBSI, nonmodel RNAseq workshop, July 2017](http://dibsi-rnaseq.readthedocs.io/en/latest/)
-  * [SIO-BUG, nonmodel RNAseq workshop, October 2017](http://rnaseq-workshop-2017.readthedocs.io/en/latest/index.html)
-
-
 **available workflows:**  
 
   - preprocess: Read Quality Trimming and Filtering (fastqc, trimmomatic)
@@ -123,5 +117,18 @@ The essential component is the `samples.tsv` file, which points `eelpond` to you
   - quantify: Quantify transcripts (salmon) 
   - full: preprocess, kmer_trim, assemble, annotate, quantify 
 
+You can see the available workflows (and which programs they run) by using the `--print_workflows` flag:
+```
+./run_eelpond nema-test --print_workflows
+```
+
+
+
+**References:**  
+
+  * [original eel-pond protocol docs, last updated 2015](https://khmer-protocols.readthedocs.io/en/ctb/mrnaseq/)
+  * [eel-pond protocol docs, last updated 2016](http://eel-pond.readthedocs.io/en/latest/)
+  * [DIBSI, nonmodel RNAseq workshop, July 2017](http://dibsi-rnaseq.readthedocs.io/en/latest/)
+  * [SIO-BUG, nonmodel RNAseq workshop, October 2017](http://rnaseq-workshop-2017.readthedocs.io/en/latest/index.html)
 
 

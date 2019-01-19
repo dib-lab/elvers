@@ -17,3 +17,4 @@ trimmomatic:
       pe_url: "https://raw.githubusercontent.com/timflutre/trimmomatic/master/adapters/TruSeq3-PE-2.fa"
       se_name: "TruSeq3-SE.fa"
       se_url: "https://raw.githubusercontent.com/timflutre/trimmomatic/master/adapters/TruSeq3-SE.fa"
+    extra: ''
