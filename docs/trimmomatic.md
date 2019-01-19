@@ -1,6 +1,7 @@
 # Trimmomatic
 
 ## Quickstart: Running Trimmomatic with eelpond
+
 ```
 ./run_eelpond nema-test preprocess
 ```
@@ -42,10 +43,13 @@ trimmomatic:
 To modify any program params, you need to add a couple lines to the config file you provide to `eelpond`.
 
 To get a trimmomatic config you can modify, run:
+
 ```
 ./run_eelpond trimmomatic.yaml trimmomatic --build_config
 ```
+
 The output should be a small `yaml` configfile that contains:
+
 ```
 ####################  trimmomatic  ####################
 trimmomatic:
@@ -57,14 +61,21 @@ trimmomatic:
   trim_cmd: ILLUMINACLIP:{}:2:40:15 LEADING:20 TRAILING:20 SLIDINGWINDOW:4:15 MINLEN:35
   extra: ''
 ```
-Override default params by modifying these lines. In addition to changing parameters we've specifically enabled, you can modify the `extra` param to pass any extra trimmomatic parameters, e.g.:
+
+
+Override default params by modifying these lines. In addition to changing parameters we've specifically enabled, 
+you can modify the "extra" param to pass any extra trimmomatic parameters, e.g.:
+
 ```
   extra: '--someflag someparam --someotherflag thatotherparam'
 ```
+
 Or in Trimmomatic params:
+
 ```
   extra: 'HEADCROP:5' # to remove the first 5 bases at the front of the read.
-``
+```
+
 Be sure the modified lines go into the config file you're using to run `eelpond`. For more on what parameters are available, see the [Trimmomatic documentation](http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/TrimmomaticManual_V0.32.pdf).
 
 ## Trimmomatic Rule 
