@@ -11,7 +11,7 @@
       <meta http-equiv="x-ua-compatible" content="ie=edge">
       
       
-        <link rel="canonical" href="http://dib-lab.github.io/eelpond/dev_tips/">
+        <link rel="canonical" href="http://dib-lab.github.io/eelpond/fastqc/">
       
       
       
@@ -38,7 +38,7 @@
     
     
       
-        <title>Notes for Developers - eelpond</title>
+        <title>fastqc - eelpond</title>
       
     
     
@@ -102,7 +102,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="../#notes-for-developers" tabindex="1" class="md-skip">
+      <a href="../#fastqc" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -128,7 +128,7 @@
                 eelpond
               </span>
               <span class="md-header-nav__topic">
-                Notes for Developers
+                fastqc
               </span>
             
           
@@ -242,10 +242,12 @@
       
       
 
+  
 
-  <li class="md-nav__item md-nav__item--nested">
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" checked>
     
     <label class="md-nav__link" for="nav-2">
       Available Workflows
@@ -285,10 +287,12 @@
           
           
 
+  
 
-  <li class="md-nav__item md-nav__item--nested">
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2-3" type="checkbox" id="nav-2-3">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2-3" type="checkbox" id="nav-2-3" checked>
     
     <label class="md-nav__link" for="nav-2-3">
       Programs Used
@@ -304,11 +308,70 @@
           
           
 
+  
 
-  <li class="md-nav__item">
-    <a href="../fastqc/" title="fastqc" class="md-nav__link">
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        fastqc
+      </label>
+    
+    <a href="./" title="fastqc" class="md-nav__link md-nav__link--active">
       fastqc
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#quickstart-running-fastqc-with-eelpond" title="Quickstart: Running FastQC with eelpond" class="md-nav__link">
+    Quickstart: Running FastQC with eelpond
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fastqc_1" title="FastQC" class="md-nav__link">
+    FastQC
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fastqc-params" title="FastQC Params" class="md-nav__link">
+    FastQC Params
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fastqc-rule" title="FastQC rule" class="md-nav__link">
+    FastQC rule
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
   </li>
 
         
@@ -458,12 +521,10 @@
       
       
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+  <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3" checked>
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
     
     <label class="md-nav__link" for="nav-3">
       For Developers
@@ -479,20 +540,11 @@
           
           
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-      
-    
-    
-    <a href="./" title="Notes for Developers" class="md-nav__link md-nav__link--active">
+  <li class="md-nav__item">
+    <a href="../dev_tips/" title="Notes for Developers" class="md-nav__link">
       Notes for Developers
     </a>
-    
   </li>
 
         
@@ -530,6 +582,43 @@
     
   
   
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#quickstart-running-fastqc-with-eelpond" title="Quickstart: Running FastQC with eelpond" class="md-nav__link">
+    Quickstart: Running FastQC with eelpond
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fastqc_1" title="FastQC" class="md-nav__link">
+    FastQC
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fastqc-params" title="FastQC Params" class="md-nav__link">
+    FastQC Params
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fastqc-rule" title="FastQC rule" class="md-nav__link">
+    FastQC rule
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -541,66 +630,83 @@
               
                 
                 
-                <h1 id="notes-for-developers">Notes for Developers<a class="headerlink" href="#notes-for-developers" title="Permanent link">&para;</a></h1>
-<p>Admin: updating mkdocs documentation</p>
-<ol>
-<li>update the docs and commit your changes</li>
-<li><code>mkdocs build</code> to update the docs<ul>
-<li>note: if you don't already have mkdocs, install with:
-<code>conda install -c conda-forge mkdocs</code></li>
-</ul>
-</li>
-<li>if you haven't already, install ghp-import:
-    <code>conda install -c conda-forge ghp-import</code></li>
-<li>use ghp-import to push the updated to docs to the  gh-pages branch
-    <code>ghp-import site -p</code></li>
-</ol>
-<p>Some useful conda, snakemake, workflow hints:</p>
-<h1 id="optional-to-make-conda-installs-simpler-set-up-conda-configuration">optional: to make conda installs simpler, set up conda configuration<a class="headerlink" href="#optional-to-make-conda-installs-simpler-set-up-conda-configuration" title="Permanent link">&para;</a></h1>
-<div class="codehilite"><pre><span></span>conda config --set always_yes yes --set changeps1 no
-conda config --add channels conda-forge
-conda config --add channels defaults
-conda config --add channels bioconda
+                <h1 id="fastqc">FastQC<a class="headerlink" href="#fastqc" title="Permanent link">&para;</a></h1>
+<h2 id="quickstart-running-fastqc-with-eelpond">Quickstart: Running FastQC with eelpond<a class="headerlink" href="#quickstart-running-fastqc-with-eelpond" title="Permanent link">&para;</a></h2>
+<div class="codehilite"><pre><span></span>./run_eelpond nema-test preprocess
 </pre></div>
 
 
-<h1 id="if-you-need-to-modify-a-conda-package">If you need to modify a conda package:<a class="headerlink" href="#if-you-need-to-modify-a-conda-package" title="Permanent link">&para;</a></h1>
-<p>you'll need to work with a local install of that package. 
- Here's how to use conda to install the dependenciesfrom the conda recipe.
- see also https://conda.io/docs/user-guide/tutorials/build-pkgs.html#building-and-installing</p>
-<p>install conda-build  </p>
-<div class="codehilite"><pre><span></span>```
-conda install conda-build
-```
+<p>This will run trimmomatic trimming and fastqc on pre-trim and post-trim data.</p>
+<h2 id="fastqc_1">FastQC<a class="headerlink" href="#fastqc_1" title="Permanent link">&para;</a></h2>
+<p>We use <a href="https://www.bioinformatics.babraham.ac.uk/projects/fastqc/">FastQC</a> to assess quality of sequencing data before and after adapter trimming. </p>
+<p>From the <a href="https://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/">FastQC documentation</a>:  </p>
+<div class="codehilite"><pre><span></span>What is FastQC
+Modern high throughput sequencers can generate hundreds of millions of sequences in a single run. Before analysing this sequence to draw biological conclusions you should always perform some simple quality control checks to ensure that the raw data looks good and there are no problems or biases in your data which may affect how you can usefully use it.
+
+Most sequencers will generate a QC report as part of their analysis pipeline, but this is usually only focused on identifying problems which were generated by the sequencer itself. FastQC aims to provide a QC report which can spot problems which originate either in the sequencer or in the starting library material.
+
+FastQC can be run in one of two modes. It can either run as a stand alone interactive application for the immediate analysis of small numbers of FastQ files, or it can be run in a non-interactive mode where it would be suitable for integrating into a larger analysis pipeline for the systematic processing of large numbers of files.
 </pre></div>
 
 
-<p>clone the repo of interest and cd into it  </p>
-<div class="codehilite"><pre><span></span> ```
- git clone dammit-repo
- cd dammit-repo
- ```
+<p>There are several caveats about FastQC - the main one is that it only calculates certain statistics (like duplicated sequences) for subsets of the data (e.g. duplicate sequences are only analyzed for the first 100,000 sequences in each file). </p>
+<p>Check out these examples of <a href="https://www.bioinformatics.babraham.ac.uk/projects/fastqc/good_sequence_short_fastqc.html">good</a> and <a href="https://www.bioinformatics.babraham.ac.uk/projects/fastqc/bad_sequence_fastqc.html">bad</a> Illumina data.</p>
+<h2 id="fastqc-params">FastQC Params<a class="headerlink" href="#fastqc-params" title="Permanent link">&para;</a></h2>
+<p>To modify any program params, you need to add a couple lines to the config file you provide to <code>eelpond</code>. </p>
+<p>To get a fastqc config you can modify, run:</p>
+<div class="codehilite"><pre><span></span>./run_eelpond fastqc.yaml fastqc --build_config
 </pre></div>
 
 
-<p>There should be a folder called recipe. 
- Use conda-build to build it.  </p>
-<div class="codehilite"><pre><span></span>``` 
-conda build recipe
-```
+<p>The output should be a small <code>yaml</code> configfile that contains:</p>
+<div class="codehilite"><pre><span></span>  ####################  fastqc  ####################
+fastqc:
+  extra: &#39;&#39;
 </pre></div>
 
 
-<p>Install the local code  </p>
-<div class="codehilite"><pre><span></span>```
-## not working conda install dammit --use-local
-# or, you can use pip:
-# pip install -e . —no-deps
-# NOW, use:
-conda develop .
-pip install -e .
+<p>There's almost nothing in here because we use default params. However, you can modify the <code>extra</code> param to pass any extra trimmomatic parameters, e.g.:</p>
+<div class="codehilite"><pre><span></span>  extra: &#39;--someflag someparam --someotherflag thatotherparam&#39;
+</pre></div>
 
-```
+
+<p>Be sure the modified lines go into the config file you're using to run <code>eelpond</code>.</p>
+<h2 id="fastqc-rule">FastQC rule<a class="headerlink" href="#fastqc-rule" title="Permanent link">&para;</a></h2>
+<p>We use a local copies of the <a href="https://snakemake-wrappers.readthedocs.io/en/stable/wrappers/fastqc.html">fastqc snakemake wrapper</a> to run Fastqc.</p>
+<p>For snakemake afficionados, Here's the basic structure of the fastqc rules. Directories and parameters are specified via the configfile (see the rule on <a href="https://github.com/dib-lab/eelpond/blob/master/rules/fastqc/fastqc.rule">github</a>).</p>
+<div class="codehilite"><pre><span></span>def get_trimmed(wildcards):
+    if not is_single_end(**wildcards):
+        return expand(join(trim_dir, &#39;{sample}_{unit}_{end}.fq.gz&#39;), **wildcards)
+    return expand(join(trim_dir, &#39;{sample}_{unit}_{end}.fq.gz&#39;), **wildcards)
+
+def get_pretrim(wildcards):
+    if not is_single_end(**wildcards):
+        return expand(join(data_dir, &#39;{sample}_{unit}_{end}.fq.gz&#39;), **wildcards)
+    return expand(join(data_dir, &#39;{sample}_{unit}_{end}.fq.gz&#39;), **wildcards)
+
+rule fastqc_trimmed:
+    input:
+       get_trimmed
+    output:
+        html=join(qc_dir,&#39;{sample}_{unit}_{end}.fastqc.html&#39;),
+        zip=join(qc_dir,&#39;{sample}_{unit}_{end}.fastqc.zip&#39;)
+    params: fastqc_params.get(&#39;extra&#39;, &quot;&quot;)
+    log:
+        join(LOGS_DIR, &#39;fastqc/{sample}_{unit}_{end}.log&#39;)
+    conda: &quot;fastqc-env.yaml&quot;
+    script: &quot;wrapper.py&quot;
+
+rule fastqc_pretrim:
+    input:
+        get_pretrim
+    output:
+        html=join(qc_dir,&#39;{sample}_{unit}_{end}.fastqc.html&#39;),
+        zip=join(qc_dir,&#39;{sample}_{unit}_{end}.fastqc.zip&#39;)
+    params: fastqc_params.get(&#39;extra&#39;, &quot;&quot;)
+    log:
+        join(LOGS_DIR, &#39;fastqc/{sample}_{unit}_{end}.log&#39;)
+    conda: &quot;fastqc-env.yaml&quot;
+    script: &quot;wrapper.py&quot;
 </pre></div>
                 
                   
@@ -623,7 +729,7 @@ pip install -e .
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
-          <a href="../rcorrector/" title="rcorrector" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../Protein_assembly_workflow/" title="PLASS Assembly" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-flex__cell md-flex__cell--shrink">
               <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
             </div>
@@ -632,19 +738,19 @@ pip install -e .
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                rcorrector
+                PLASS Assembly
               </span>
             </div>
           </a>
         
         
-          <a href="../Configuration/" title="Configuring the pipeline" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../trimmomatic/" title="trimmomatic" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
               <span class="md-flex__ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Configuring the pipeline
+                trimmomatic
               </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink">

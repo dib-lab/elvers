@@ -11,7 +11,7 @@
       <meta http-equiv="x-ua-compatible" content="ie=edge">
       
       
-        <link rel="canonical" href="http://dib-lab.github.io/eelpond/dev_tips/">
+        <link rel="canonical" href="http://dib-lab.github.io/eelpond/Eel_Pond_workflow/">
       
       
       
@@ -38,7 +38,7 @@
     
     
       
-        <title>Notes for Developers - eelpond</title>
+        <title>Eel Pond Protocol - eelpond</title>
       
     
     
@@ -102,7 +102,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="../#notes-for-developers" tabindex="1" class="md-skip">
+      <a href="../#eel-pond-workflow" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -128,7 +128,7 @@
                 eelpond
               </span>
               <span class="md-header-nav__topic">
-                Notes for Developers
+                Eel Pond Protocol
               </span>
             
           
@@ -242,10 +242,12 @@
       
       
 
+  
 
-  <li class="md-nav__item md-nav__item--nested">
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" checked>
     
     <label class="md-nav__link" for="nav-2">
       Available Workflows
@@ -261,11 +263,56 @@
           
           
 
+  
 
-  <li class="md-nav__item">
-    <a href="../Eel_Pond_workflow/" title="Eel Pond Protocol" class="md-nav__link">
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Eel Pond Protocol
+      </label>
+    
+    <a href="./" title="Eel Pond Protocol" class="md-nav__link md-nav__link--active">
       Eel Pond Protocol
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#running-test-data" title="Running Test Data" class="md-nav__link">
+    Running Test Data
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#running-your-own-data" title="Running Your Own Data" class="md-nav__link">
+    Running Your Own Data
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
   </li>
 
         
@@ -458,12 +505,10 @@
       
       
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+  <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3" checked>
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
     
     <label class="md-nav__link" for="nav-3">
       For Developers
@@ -479,20 +524,11 @@
           
           
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-      
-    
-    
-    <a href="./" title="Notes for Developers" class="md-nav__link md-nav__link--active">
+  <li class="md-nav__item">
+    <a href="../dev_tips/" title="Notes for Developers" class="md-nav__link">
       Notes for Developers
     </a>
-    
   </li>
 
         
@@ -530,6 +566,29 @@
     
   
   
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#running-test-data" title="Running Test Data" class="md-nav__link">
+    Running Test Data
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#running-your-own-data" title="Running Your Own Data" class="md-nav__link">
+    Running Your Own Data
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -541,66 +600,103 @@
               
                 
                 
-                <h1 id="notes-for-developers">Notes for Developers<a class="headerlink" href="#notes-for-developers" title="Permanent link">&para;</a></h1>
-<p>Admin: updating mkdocs documentation</p>
-<ol>
-<li>update the docs and commit your changes</li>
-<li><code>mkdocs build</code> to update the docs<ul>
-<li>note: if you don't already have mkdocs, install with:
-<code>conda install -c conda-forge mkdocs</code></li>
+                <h1 id="eel-pond-workflow">Eel Pond Workflow<a class="headerlink" href="#eel-pond-workflow" title="Permanent link">&para;</a></h1>
+<p>The Eel Pond protocol (which inspired the eelpond name) included line-by-line commands that the user could follow along with using a test dataset provided in the instructions. We have re-implemented the protocol here to enable automated de novo transcriptome assembly, annotation, and quick differential expression analysis on a set of short-read Illumina data using a single command. See more about this protocol <a href="https://github.com/dib-lab/eelpond/blob/master/docs/eel_pond_protocol.md">here</a>.</p>
+<p>The "Eel Pond" Protocol for RNAseq consists of:</p>
+<ul>
+<li><a href="../trimmomatic/">trimmomatic</a> adapter and read quality trimming</li>
+<li><a href="../fastqc/">fastqc</a> read qc evaluation</li>
+<li><a href="../khmer/">khmer</a> k-mer trimming and (optional) digital normalization</li>
+<li><a href="../trinity/">trinity</a> <em>de novo</em> assembly</li>
+<li><a href="../dammit/">dammit</a> annotation</li>
+<li><a href="../salmon/">salmon</a> read quantification to the trinity assembly</li>
+<li><a href="../deseq2/">deseq2</a> differential expression analysis</li>
 </ul>
-</li>
-<li>if you haven't already, install ghp-import:
-    <code>conda install -c conda-forge ghp-import</code></li>
-<li>use ghp-import to push the updated to docs to the  gh-pages branch
-    <code>ghp-import site -p</code></li>
-</ol>
-<p>Some useful conda, snakemake, workflow hints:</p>
-<h1 id="optional-to-make-conda-installs-simpler-set-up-conda-configuration">optional: to make conda installs simpler, set up conda configuration<a class="headerlink" href="#optional-to-make-conda-installs-simpler-set-up-conda-configuration" title="Permanent link">&para;</a></h1>
-<div class="codehilite"><pre><span></span>conda config --set always_yes yes --set changeps1 no
-conda config --add channels conda-forge
-conda config --add channels defaults
-conda config --add channels bioconda
+<h2 id="running-test-data">Running Test Data<a class="headerlink" href="#running-test-data" title="Permanent link">&para;</a></h2>
+<p>This is the default workflow for <code>eelpond</code>. To run:</p>
+<div class="codehilite"><pre><span></span>./run_eelpond nema-test.yaml
+# or
+./run_eelpond nema-test.yaml full
 </pre></div>
 
 
-<h1 id="if-you-need-to-modify-a-conda-package">If you need to modify a conda package:<a class="headerlink" href="#if-you-need-to-modify-a-conda-package" title="Permanent link">&para;</a></h1>
-<p>you'll need to work with a local install of that package. 
- Here's how to use conda to install the dependenciesfrom the conda recipe.
- see also https://conda.io/docs/user-guide/tutorials/build-pkgs.html#building-and-installing</p>
-<p>install conda-build  </p>
-<div class="codehilite"><pre><span></span>```
-conda install conda-build
-```
+<p>This will run a small set of Nematostella vectensis test data (from <a href="https://evodevojournal.biomedcentral.com/articles/10.1186/2041-9139-4-16">Tulin et al., 2013</a>).</p>
+<h2 id="running-your-own-data">Running Your Own Data<a class="headerlink" href="#running-your-own-data" title="Permanent link">&para;</a></h2>
+<p>To run your own data, you'll need to create two files, a tsv file containing your sample info, and a yaml file containing basic configuration info. </p>
+<p>IMPORTANT: The sample info must be in a <strong>properly formatted</strong> tsv file. The easiest way to do this is to copy the test data tsv and modify:</p>
+<div class="codehilite"><pre><span></span>cp nema_samles.tsv my-samples.tsv
 </pre></div>
 
 
-<p>clone the repo of interest and cd into it  </p>
-<div class="codehilite"><pre><span></span> ```
- git clone dammit-repo
- cd dammit-repo
- ```
+<p>Now modify  <code>my-samples.tsv</code> with your sample information.</p>
+<p>Next, build a configfile to edit:</p>
+<div class="codehilite"><pre><span></span>./run_eelpond my-config.yaml --build_config
 </pre></div>
 
 
-<p>There should be a folder called recipe. 
- Use conda-build to build it.  </p>
-<div class="codehilite"><pre><span></span>``` 
-conda build recipe
-```
-</pre></div>
+<p>This configfile will contain all the default paramters for each step of the pipeline you target. If you don't specify any targets, it will default to the "full" Eel Pond Protocol pipeline, which executes read preprocessing, assembly, annotation, and quantification.</p>
+<p>Please see the documentation file for each individual program (linked above) for what paramters to modify.</p>
+<p>The configfile should look something like this:</p>
+<div class="codehilite"><pre><span></span>  ####################  Eelpond Pipeline Configfile  ####################
+basename: eelpond
+experiment: _experiment1
+samples: samples.tsv ### PATH TO YOUR SAMPLE FILE GOES HERE
 
+  ####################  assemble  ####################
+get_data:
+  download_data: false
+khmer:
+  C: 3
+  Z: 18
+  coverage: 20
+  diginorm: true
+  extra: &#39;&#39;
+  ksize: 20
+  memory: 4e9
+trimmomatic:
+  adapter_file:
+    pe_name: TruSeq3-PE.fa
+    pe_url: https://raw.githubusercontent.com/timflutre/trimmomatic/master/adapters/TruSeq3-PE-2.fa
+    se_name: TruSeq3-SE.fa
+    se_url: https://raw.githubusercontent.com/timflutre/trimmomatic/master/adapters/TruSeq3-SE.fa
+  extra: &#39;&#39;
+  trim_cmd: ILLUMINACLIP:{}:2:40:15 LEADING:20 TRAILING:20 SLIDINGWINDOW:4:15 MINLEN:35
+trinity:
+  add_single_to_paired: false
+  extra: &#39;&#39;
+  input_kmer_trimmed: true
+  input_trimmomatic_trimmed: false
+  max_memory: 30G
+  seqtype: fq
 
-<p>Install the local code  </p>
-<div class="codehilite"><pre><span></span>```
-## not working conda install dammit --use-local
-# or, you can use pip:
-# pip install -e . —no-deps
-# NOW, use:
-conda develop .
-pip install -e .
+  ####################  annotate  ####################
+dammit:
+  busco_group:
+  - metazoa
+  - eukaryota
+  db_dir: databases
+  db_extra: &#39;&#39;
+sourmash:
+  extra: &#39;&#39;
 
-```
+  ####################  quantify  ####################
+salmon:
+  index_params:
+    extra: &#39;&#39;
+  quant_params:
+    extra: &#39;&#39;
+    libtype: A
+
+  ####################  diffexp  ####################
+deseq2:
+  contrasts:
+    time0-vs-time6:
+    - time0
+    - time6
+  gene_trans_map: true
+  pca:
+    labels:
+    - condition
 </pre></div>
                 
                   
@@ -623,7 +719,7 @@ pip install -e .
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
-          <a href="../rcorrector/" title="rcorrector" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href=".." title="About" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-flex__cell md-flex__cell--shrink">
               <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
             </div>
@@ -632,19 +728,19 @@ pip install -e .
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                rcorrector
+                About
               </span>
             </div>
           </a>
         
         
-          <a href="../Configuration/" title="Configuring the pipeline" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../Protein_assembly_workflow/" title="PLASS Assembly" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
               <span class="md-flex__ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Configuring the pipeline
+                PLASS Assembly
               </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink">

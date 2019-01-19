@@ -11,7 +11,7 @@
       <meta http-equiv="x-ua-compatible" content="ie=edge">
       
       
-        <link rel="canonical" href="http://dib-lab.github.io/eelpond/dev_tips/">
+        <link rel="canonical" href="http://dib-lab.github.io/eelpond/pear/">
       
       
       
@@ -38,7 +38,7 @@
     
     
       
-        <title>Notes for Developers - eelpond</title>
+        <title>pear - eelpond</title>
       
     
     
@@ -102,7 +102,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="../#notes-for-developers" tabindex="1" class="md-skip">
+      <a href="../#merging-read-pairs-with-pear" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -128,7 +128,7 @@
                 eelpond
               </span>
               <span class="md-header-nav__topic">
-                Notes for Developers
+                pear
               </span>
             
           
@@ -242,10 +242,12 @@
       
       
 
+  
 
-  <li class="md-nav__item md-nav__item--nested">
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" checked>
     
     <label class="md-nav__link" for="nav-2">
       Available Workflows
@@ -285,10 +287,12 @@
           
           
 
+  
 
-  <li class="md-nav__item md-nav__item--nested">
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2-3" type="checkbox" id="nav-2-3">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2-3" type="checkbox" id="nav-2-3" checked>
     
     <label class="md-nav__link" for="nav-2-3">
       Programs Used
@@ -412,11 +416,20 @@
           
           
 
+  
 
-  <li class="md-nav__item">
-    <a href="../pear/" title="pear" class="md-nav__link">
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+    <a href="./" title="pear" class="md-nav__link md-nav__link--active">
       pear
     </a>
+    
   </li>
 
         
@@ -458,12 +471,10 @@
       
       
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+  <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3" checked>
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
     
     <label class="md-nav__link" for="nav-3">
       For Developers
@@ -479,20 +490,11 @@
           
           
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-      
-    
-    
-    <a href="./" title="Notes for Developers" class="md-nav__link md-nav__link--active">
+  <li class="md-nav__item">
+    <a href="../dev_tips/" title="Notes for Developers" class="md-nav__link">
       Notes for Developers
     </a>
-    
   </li>
 
         
@@ -541,67 +543,8 @@
               
                 
                 
-                <h1 id="notes-for-developers">Notes for Developers<a class="headerlink" href="#notes-for-developers" title="Permanent link">&para;</a></h1>
-<p>Admin: updating mkdocs documentation</p>
-<ol>
-<li>update the docs and commit your changes</li>
-<li><code>mkdocs build</code> to update the docs<ul>
-<li>note: if you don't already have mkdocs, install with:
-<code>conda install -c conda-forge mkdocs</code></li>
-</ul>
-</li>
-<li>if you haven't already, install ghp-import:
-    <code>conda install -c conda-forge ghp-import</code></li>
-<li>use ghp-import to push the updated to docs to the  gh-pages branch
-    <code>ghp-import site -p</code></li>
-</ol>
-<p>Some useful conda, snakemake, workflow hints:</p>
-<h1 id="optional-to-make-conda-installs-simpler-set-up-conda-configuration">optional: to make conda installs simpler, set up conda configuration<a class="headerlink" href="#optional-to-make-conda-installs-simpler-set-up-conda-configuration" title="Permanent link">&para;</a></h1>
-<div class="codehilite"><pre><span></span>conda config --set always_yes yes --set changeps1 no
-conda config --add channels conda-forge
-conda config --add channels defaults
-conda config --add channels bioconda
-</pre></div>
-
-
-<h1 id="if-you-need-to-modify-a-conda-package">If you need to modify a conda package:<a class="headerlink" href="#if-you-need-to-modify-a-conda-package" title="Permanent link">&para;</a></h1>
-<p>you'll need to work with a local install of that package. 
- Here's how to use conda to install the dependenciesfrom the conda recipe.
- see also https://conda.io/docs/user-guide/tutorials/build-pkgs.html#building-and-installing</p>
-<p>install conda-build  </p>
-<div class="codehilite"><pre><span></span>```
-conda install conda-build
-```
-</pre></div>
-
-
-<p>clone the repo of interest and cd into it  </p>
-<div class="codehilite"><pre><span></span> ```
- git clone dammit-repo
- cd dammit-repo
- ```
-</pre></div>
-
-
-<p>There should be a folder called recipe. 
- Use conda-build to build it.  </p>
-<div class="codehilite"><pre><span></span>``` 
-conda build recipe
-```
-</pre></div>
-
-
-<p>Install the local code  </p>
-<div class="codehilite"><pre><span></span>```
-## not working conda install dammit --use-local
-# or, you can use pip:
-# pip install -e . —no-deps
-# NOW, use:
-conda develop .
-pip install -e .
-
-```
-</pre></div>
+                <h1 id="merging-read-pairs-with-pear">Merging Read Pairs with PEAR<a class="headerlink" href="#merging-read-pairs-with-pear" title="Permanent link">&para;</a></h1>
+<p><em>coming soon</em></p>
                 
                   
                 
@@ -623,7 +566,7 @@ pip install -e .
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
-          <a href="../rcorrector/" title="rcorrector" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../plass/" title="plass" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-flex__cell md-flex__cell--shrink">
               <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
             </div>
@@ -632,19 +575,19 @@ pip install -e .
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                rcorrector
+                plass
               </span>
             </div>
           </a>
         
         
-          <a href="../Configuration/" title="Configuring the pipeline" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../paladin/" title="paladin" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
               <span class="md-flex__ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Configuring the pipeline
+                paladin
               </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink">

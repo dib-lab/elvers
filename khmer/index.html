@@ -11,7 +11,7 @@
       <meta http-equiv="x-ua-compatible" content="ie=edge">
       
       
-        <link rel="canonical" href="http://dib-lab.github.io/eelpond/Diginorm/">
+        <link rel="canonical" href="http://dib-lab.github.io/eelpond/khmer/">
       
       
       
@@ -38,7 +38,7 @@
     
     
       
-        <title>Digital Normalization - eelpond</title>
+        <title>khmer - eelpond</title>
       
     
     
@@ -49,7 +49,7 @@
       
         
         
-        <meta name="theme-color" content="#ab47bc">
+        <meta name="theme-color" content="">
       
     
     
@@ -71,7 +71,7 @@
   
     
     
-    <body dir="ltr" data-md-color-primary="purple" data-md-color-accent="purple">
+    <body dir="ltr" data-md-color-primary="darkblue" data-md-color-accent="blue">
   
     <svg class="md-svg">
       <defs>
@@ -102,7 +102,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="../#digital-normalization" tabindex="1" class="md-skip">
+      <a href="../#khmer-k-mer-trimming-and-optional-diginorm" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -128,7 +128,7 @@
                 eelpond
               </span>
               <span class="md-header-nav__topic">
-                Digital Normalization
+                khmer
               </span>
             
           
@@ -242,29 +242,95 @@
       
       
 
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" checked>
+    
+    <label class="md-nav__link" for="nav-2">
+      Available Workflows
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-2">
+        Available Workflows
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
 
   <li class="md-nav__item">
-    <a href="../QC/" title="Read Quality Trimming and Filtering" class="md-nav__link">
-      Read Quality Trimming and Filtering
+    <a href="../Eel_Pond_workflow/" title="Eel Pond Protocol" class="md-nav__link">
+      Eel Pond Protocol
     </a>
   </li>
 
-    
-      
-      
-      
+        
+          
+          
+          
 
 
   <li class="md-nav__item">
-    <a href="../Annotation/" title="Annotation" class="md-nav__link">
-      Annotation
+    <a href="../Protein_assembly_workflow/" title="PLASS Assembly" class="md-nav__link">
+      PLASS Assembly
     </a>
   </li>
 
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      
-      
-      
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2-3" type="checkbox" id="nav-2-3" checked>
+    
+    <label class="md-nav__link" for="nav-2-3">
+      Programs Used
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-2-3">
+        Programs Used
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../fastqc/" title="fastqc" class="md-nav__link">
+      fastqc
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../trimmomatic/" title="trimmomatic" class="md-nav__link">
+      trimmomatic
+    </a>
+  </li>
+
+        
+          
+          
+          
 
   
 
@@ -276,58 +342,128 @@
       
     
     
-    <a href="./" title="Digital Normalization" class="md-nav__link md-nav__link--active">
-      Digital Normalization
+    <a href="./" title="khmer" class="md-nav__link md-nav__link--active">
+      khmer
     </a>
     
   </li>
 
-    
-      
-      
-      
+        
+          
+          
+          
 
 
   <li class="md-nav__item">
-    <a href="../Assembly/" title="Assembly" class="md-nav__link">
-      Assembly
+    <a href="../trinity/" title="trinity" class="md-nav__link">
+      trinity
     </a>
   </li>
 
-    
-      
-      
-      
+        
+          
+          
+          
 
 
   <li class="md-nav__item">
-    <a href="../Quality/" title="Quality Assessment" class="md-nav__link">
-      Quality Assessment
+    <a href="../dammit/" title="dammit" class="md-nav__link">
+      dammit
     </a>
   </li>
 
-    
-      
-      
-      
+        
+          
+          
+          
 
 
   <li class="md-nav__item">
-    <a href="../Quant/" title="Transcript Quantification" class="md-nav__link">
-      Transcript Quantification
+    <a href="../sourmash/" title="sourmash" class="md-nav__link">
+      sourmash
     </a>
   </li>
 
-    
-      
-      
-      
+        
+          
+          
+          
 
 
   <li class="md-nav__item">
-    <a href="../DE/" title="Differential Expression" class="md-nav__link">
-      Differential Expression
+    <a href="../salmon/" title="salmon" class="md-nav__link">
+      salmon
     </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../deseq2/" title="deseq2" class="md-nav__link">
+      deseq2
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../plass/" title="plass" class="md-nav__link">
+      plass
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../pear/" title="pear" class="md-nav__link">
+      pear
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../paladin/" title="paladin" class="md-nav__link">
+      paladin
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../rcorrector/" title="rcorrector" class="md-nav__link">
+      rcorrector
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+      </ul>
+    </nav>
   </li>
 
     
@@ -338,13 +474,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9" type="checkbox" id="nav-9">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
     
-    <label class="md-nav__link" for="nav-9">
+    <label class="md-nav__link" for="nav-3">
       For Developers
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
-      <label class="md-nav__title" for="nav-9">
+      <label class="md-nav__title" for="nav-3">
         For Developers
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -358,6 +494,18 @@
   <li class="md-nav__item">
     <a href="../dev_tips/" title="Notes for Developers" class="md-nav__link">
       Notes for Developers
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Configuration/" title="Configuring the pipeline" class="md-nav__link">
+      Configuring the pipeline
     </a>
   </li>
 
@@ -395,25 +543,81 @@
               
                 
                 
-                <h1 id="digital-normalization">Digital Normalization<a class="headerlink" href="#digital-normalization" title="Permanent link">&para;</a></h1>
-<p>In this section, we’ll apply digital normalization and variable-coverage k-mer abundance trimming to the reads prior to assembly using the <a href="http://khmer.readthedocs.io/en/latest/">khmer software package</a> (version 2.1). This has the effect of reducing the computational cost of assembly without negatively affecting the quality of the assembly.</p>
-<p>This is all run in one command, taking the trimmed reads as input, uses the orphaned reads that survived while their mated pair did not during adapter and quality trimming. Then, low-abundance reads are trimmed to a coverage of 18 and normalized to a <em>k</em>-mer (<em>k</em> = 20) coverage of 20. </p>
-<div class="codehilite"><pre><span></span>(interleave-reads.py {}{}.trim_1P.fq {}{}.trim_2P.fq &amp;&amp; zcat {}orphans.fq.gz)| \\
+                <h1 id="khmer-k-mer-trimming-and-optional-diginorm">Khmer k-mer trimming and (optional) diginorm<a class="headerlink" href="#khmer-k-mer-trimming-and-optional-diginorm" title="Permanent link">&para;</a></h1>
+<p>Before running transcriptome assembly, we recommend doing some kmer spectral error trimming on your dataset, and if you have lots of reads, also performing digital normalization. This has the effect of reducing the computational cost of assembly without negatively affecting the quality of the assembly. We use <a href="https://khmer.readthedocs.io/">khmer</a> for both of these tasks.</p>
+<h1 id="khmer-command">Khmer Command<a class="headerlink" href="#khmer-command" title="Permanent link">&para;</a></h1>
+<p>Here's the command as it would look on the command line:</p>
+<div class="codehilite"><pre><span></span>(interleave-reads.py sample_1.trim.fq sample_2.trim.fq )| \\
 (trim-low-abund.py -V -k 20 -Z 18 -C 2 - -o - -M 4e9 --diginorm --diginorm-coverage=20) | \\
-(extract-paired-reads.py --gzip -p {}{}.paired.gz -s {}{}.single.gz) &gt; /dev/null
+(extract-paired-reads.py --gzip -p sample.paired.gz -s sample.single.gz) &gt; /dev/null
 </pre></div>
 
 
-<p>The output files are the remaining reads, grouped as pairs and singles (orphans). Since the Trinity de novo assembly software expects paired reads, we will split them into left <code>left.fq</code> and <code>right.fq</code> read pair files, including the single orphans in the <code>left.fq</code> file. </p>
-<div class="codehilite"><pre><span></span>for file in *.paired.gz
-do
-  split-paired-reads.py ${file}
-done
+<p>Trimmed reads are used as input. <code>trim-low-abund.py</code> trims low-abundance reads to a coverage of 18. Here, we also perform digital normalization to a <em>k</em>-mer (<em>k</em> = 20) coverage of 20.The output files are the remaining reads, grouped as pairs and singles (orphans). For more on <code>trim-low-abund</code>, see this <a href="https://khmer-recipes.readthedocs.io/en/latest/007-variable-coverage-trimming/">recipe</a>,</p>
+<p>Finally, since Trinity expects separate <code>left</code> and <code>right</code> files, we use <code>split-paired-reads.py</code> to split the interleaved pairs into two files.</p>
+<div class="codehilite"><pre><span></span>split-paired-reads.py sample.paired.gz
+</pre></div>
 
-cat *.1 &gt; left.fq
-cat *.2 &gt; right.fq
 
-gunzip -c ../diginorm/single.gz &gt;&gt; left.fq
+<h2 id="customizing-khmer-parameters">Customizing Khmer parameters<a class="headerlink" href="#customizing-khmer-parameters" title="Permanent link">&para;</a></h2>
+<p>To modify any program params, you need to add a couple lines to the config file you provide to <code>eelpond</code>.</p>
+<p>To get a khmer configfile you can modify, run:</p>
+<div class="codehilite"><pre><span></span>./run_eelpond khmer.yaml khmer --build_config
+</pre></div>
+
+
+<p>The output should be a small <code>yaml</code> configfile that contains:</p>
+<div class="codehilite"><pre><span></span>  ####################  khmer  ####################
+khmer:
+  C: 3
+  Z: 18
+  coverage: 20
+  diginorm: true
+  extra: &#39;&#39;
+  ksize: 20
+  memory: 4e9
+</pre></div>
+
+
+<p>Override default params by modifying any of these lines, and placing them in the config file you're using to run <code>eelpond</code>.</p>
+<h2 id="eelpond-rule">eelpond rule<a class="headerlink" href="#eelpond-rule" title="Permanent link">&para;</a></h2>
+<p>For snakemake afficionados, here's the basic structure of the khmer eelpond rules. Directories and parameters are specified via the configfile, for more, see the rule on <a href="https://github.com/dib-lab/eelpond/blob/master/rules/khmer/khmer.rule">github</a>.</p>
+<div class="codehilite"><pre><span></span>rule khmer_pe_diginorm:
+    &quot;&quot;&quot;
+    kmer trim and diginorm with khmer
+    &quot;&quot;&quot;
+    input: unpack(get_trimmed)
+    output: 
+        paired=join(khmer_dir,&#39;{sample}_{unit}.paired.khmer.fq.gz&#39;),
+        single=join(khmer_dir,&#39;{sample}_{unit}.single.khmer.fq.gz&#39;),
+    message:
+        &quot;&quot;&quot;--- khmer trimming of low-abundance kmers and digital normalization ---&quot;&quot;&quot;
+    params:
+        k = khmer_params.get(&#39;ksize&#39;, 20),
+        Z = khmer_params.get(&#39;Z&#39;, 18), 
+        C = khmer_params.get(&#39;C&#39;, 3), 
+        memory = khmer_params.get(&#39;memory&#39;, 4e9),
+        cov = khmer_params.get(&#39;coverage&#39;, 20),
+        extra = khmer_params.get(&#39;extra&#39;, &#39;&#39;)
+    threads: 10
+    log: join(LOGS_DIR, &#39;khmer/{sample}_{unit}.pe.diginorm.log&#39;)
+    conda:  &#39;khmer-env.yaml&#39;
+    shell: &quot; (interleave-reads.py {input.r1} {input.r2} ) | &quot;
+           &quot; (trim-low-abund.py -V -k {params.k} -Z {params.Z} -C {params.C} - -o - -M {params.memory} &quot;
+           &quot; --diginorm --diginorm-coverage={params.cov}) | (extract-paired-reads.py --gzip &quot;
+           &quot; -p {output.paired} -s {output.single}) &gt; {log}&quot;
+
+rule khmer_split_paired:
+    input: join(khmer_dir,&#39;{sample}_{unit}.paired.khmer.fq.gz&#39;),
+    output:
+        r1=join(khmer_dir, &#39;{sample}_{unit}_1.khmer.fq.gz&#39;),
+        r2=join(khmer_dir, &#39;{sample}_{unit}_2.khmer.fq.gz&#39;),
+    threads: 2
+    log: join(LOGS_DIR, &#39;khmer/{sample}_{unit}_split_paired&#39; + BASE + &#39;.log&#39;)
+    conda: &quot;khmer-env.yaml&quot;
+    shell: &quot;&quot;&quot;
+        split-paired-reads.py {input} --gzip -1 {output.r1} -2 {output.r2} &gt;&gt; {log}
+        &quot;&quot;&quot;
 </pre></div>
                 
                   
@@ -436,7 +640,7 @@ gunzip -c ../diginorm/single.gz &gt;&gt; left.fq
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
-          <a href="../Annotation/" title="Annotation" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../trimmomatic/" title="trimmomatic" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-flex__cell md-flex__cell--shrink">
               <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
             </div>
@@ -445,19 +649,19 @@ gunzip -c ../diginorm/single.gz &gt;&gt; left.fq
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                Annotation
+                trimmomatic
               </span>
             </div>
           </a>
         
         
-          <a href="../Assembly/" title="Assembly" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../trinity/" title="trinity" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
               <span class="md-flex__ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Assembly
+                trinity
               </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink">

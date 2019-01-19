@@ -49,7 +49,7 @@
       
         
         
-        <meta name="theme-color" content="#ab47bc">
+        <meta name="theme-color" content="">
       
     
     
@@ -71,7 +71,7 @@
   
     
     
-    <body dir="ltr" data-md-color-primary="purple" data-md-color-accent="purple">
+    <body dir="ltr" data-md-color-primary="darkblue" data-md-color-accent="blue">
   
     <svg class="md-svg">
       <defs>
@@ -240,94 +240,60 @@
       
     
     
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        About
+      </label>
+    
     <a href="." title="About" class="md-nav__link md-nav__link--active">
       About
     </a>
     
-  </li>
-
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
     
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#getting-started" title="Getting Started" class="md-nav__link">
+    Getting Started
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#default-workflow-eel-pond-protocol-for-de-novo-rnaseq-analysis" title="Default workflow: Eel Pond Protocol for de novo RNAseq analysis" class="md-nav__link">
+    Default workflow: Eel Pond Protocol for de novo RNAseq analysis
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#running-your-own-data" title="Running Your Own Data" class="md-nav__link">
+    Running Your Own Data
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-info" title="Additional Info" class="md-nav__link">
+    Additional Info
+  </a>
+  
+</li>
       
       
       
-
-
-  <li class="md-nav__item">
-    <a href="QC/" title="Read Quality Trimming and Filtering" class="md-nav__link">
-      Read Quality Trimming and Filtering
-    </a>
-  </li>
-
+      
+      
+    </ul>
+  
+</nav>
     
-      
-      
-      
-
-
-  <li class="md-nav__item">
-    <a href="Annotation/" title="Annotation" class="md-nav__link">
-      Annotation
-    </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
-    <a href="Diginorm/" title="Digital Normalization" class="md-nav__link">
-      Digital Normalization
-    </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
-    <a href="Assembly/" title="Assembly" class="md-nav__link">
-      Assembly
-    </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
-    <a href="Quality/" title="Quality Assessment" class="md-nav__link">
-      Quality Assessment
-    </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
-    <a href="Quant/" title="Transcript Quantification" class="md-nav__link">
-      Transcript Quantification
-    </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
-    <a href="DE/" title="Differential Expression" class="md-nav__link">
-      Differential Expression
-    </a>
   </li>
 
     
@@ -338,13 +304,229 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9" type="checkbox" id="nav-9">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2">
     
-    <label class="md-nav__link" for="nav-9">
+    <label class="md-nav__link" for="nav-2">
+      Available Workflows
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-2">
+        Available Workflows
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="Eel_Pond_workflow/" title="Eel Pond Protocol" class="md-nav__link">
+      Eel Pond Protocol
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="Protein_assembly_workflow/" title="PLASS Assembly" class="md-nav__link">
+      PLASS Assembly
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2-3" type="checkbox" id="nav-2-3">
+    
+    <label class="md-nav__link" for="nav-2-3">
+      Programs Used
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-2-3">
+        Programs Used
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="fastqc/" title="fastqc" class="md-nav__link">
+      fastqc
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="trimmomatic/" title="trimmomatic" class="md-nav__link">
+      trimmomatic
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="khmer/" title="khmer" class="md-nav__link">
+      khmer
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="trinity/" title="trinity" class="md-nav__link">
+      trinity
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="dammit/" title="dammit" class="md-nav__link">
+      dammit
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="sourmash/" title="sourmash" class="md-nav__link">
+      sourmash
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="salmon/" title="salmon" class="md-nav__link">
+      salmon
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="deseq2/" title="deseq2" class="md-nav__link">
+      deseq2
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="plass/" title="plass" class="md-nav__link">
+      plass
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="pear/" title="pear" class="md-nav__link">
+      pear
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="paladin/" title="paladin" class="md-nav__link">
+      paladin
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="rcorrector/" title="rcorrector" class="md-nav__link">
+      rcorrector
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
+    
+    <label class="md-nav__link" for="nav-3">
       For Developers
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
-      <label class="md-nav__title" for="nav-9">
+      <label class="md-nav__title" for="nav-3">
         For Developers
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -358,6 +540,18 @@
   <li class="md-nav__item">
     <a href="dev_tips/" title="Notes for Developers" class="md-nav__link">
       Notes for Developers
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="Configuration/" title="Configuring the pipeline" class="md-nav__link">
+      Configuring the pipeline
     </a>
   </li>
 
@@ -384,6 +578,43 @@
     
   
   
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#getting-started" title="Getting Started" class="md-nav__link">
+    Getting Started
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#default-workflow-eel-pond-protocol-for-de-novo-rnaseq-analysis" title="Default workflow: Eel Pond Protocol for de novo RNAseq analysis" class="md-nav__link">
+    Default workflow: Eel Pond Protocol for de novo RNAseq analysis
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#running-your-own-data" title="Running Your Own Data" class="md-nav__link">
+    Running Your Own Data
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-info" title="Additional Info" class="md-nav__link">
+    Additional Info
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -396,7 +627,6 @@
                 
                 
                 <h1 id="eelpond">EelPond<a class="headerlink" href="#eelpond" title="Permanent link">&para;</a></h1>
-<h1 id="snakemake-update-of-the-eel-pond-protocol-for-de-novo-rnaseq-analysis">Snakemake update of the Eel Pond Protocol for <em>de novo</em> RNAseq analysis<a class="headerlink" href="#snakemake-update-of-the-eel-pond-protocol-for-de-novo-rnaseq-analysis" title="Permanent link">&para;</a></h1>
 <div class="codehilite"><pre><span></span>                           ___
                         .-&#39;   `&#39;.
                        /         \
@@ -418,14 +648,10 @@
 </pre></div>
 
 
-<p>This is a lightweight protocol for assembling up to a few hundred million mRNAseq reads, annotating the resulting assembly, and doing differential expression analysis. The input is short-insert paired-end Illumina reads. This protocol can be run in a single command because it uses the snakemake automated workflow management system.</p>
-<p>Previous versions of this protocol included line-by-line commands that the user could follow along with using a test dataset provided in the instructions. Since the recent development of <a href="https://snakemake.readthedocs.io/en/stable/">snakemake</a> workflow management tool and <a href="https://snakemake-wrappers.readthedocs.io/en/stable/">snakemake-wrappers</a> to manage sofware installation of commonly-used bioinformatics tools, we have re-implemented the Eel Pond Protocol to make it easier for users to install software and run a <em>de novo</em> transcriptome assembly, annotation, and quick differential expression analysis on a set of short-read Illumina data using a single command.</p>
-<p>The software for this protocol can be found <a href="https://github.com/dib-lab/eelpond">here</a>. </p>
-<h1 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h1>
-<p>At the moment, only Linux is supported. OSX issues:
-  - fastqc fails about half the time
-  - Trinity assembler does not work</p>
-<p>Install <a href="https://conda.io/miniconda.html">miniconda</a> (for Ubuntu 16.04 <a href="https://use.jetstream-cloud.org/application/images/107">Jetstream image</a>):</p>
+<p>eelpond started as a snakemake update of the Eel Pond Protocal for <em>de novo</em> RNAseq analysis. It has evolved slightly to enable a number of workflows for (mostly) RNA data, which can all be run via the <code>eelpond</code> workflow wrapper. <code>eelpond</code> uses <a href="https://snakemake.readthedocs.io">snakemake</a> for workflow management and <a href="https://conda.io/docs/">conda</a> for software installation. The code can be found <a href="https://github.com/dib-lab/eelpond">here</a>. </p>
+<h2 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h2>
+<p>Linux is the recommended OS. Nearly everything also works on MacOSX, but some programs (fastqc, Trinity) are troublesome.</p>
+<p>If you don't have conda yet, install <a href="https://conda.io/miniconda.html">miniconda</a> (for Ubuntu 16.04 <a href="https://use.jetstream-cloud.org/application/images/107">Jetstream image</a>):</p>
 <div class="codehilite"><pre><span></span>wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
 bash Miniconda3-latest-Linux-x86_64.sh -b
 echo export PATH=&quot;$HOME/miniconda3/bin:$PATH&quot; &gt;&gt; ~/.bash_profile
@@ -445,53 +671,55 @@ cd eelpond
 
 
 <p>Activate that environment. You'll need to do this anytime you want to run eelpond</p>
-<div class="codehilite"><pre><span></span>source activate eelpond
+<div class="codehilite"><pre><span></span>source activate eelpond 
+# or
+# conda activate eelpond
 </pre></div>
 
 
-<p>Now you can start running eelpond!</p>
-<p>To test a "full" workflow, consisting of read pre-processing, kmer trimming, Trinity assembly, dammit annotation and salmon quantification:</p>
+<p>Now you can start running workflows!</p>
+<h2 id="default-workflow-eel-pond-protocol-for-de-novo-rnaseq-analysis">Default workflow: Eel Pond Protocol for <em>de novo</em> RNAseq analysis<a class="headerlink" href="#default-workflow-eel-pond-protocol-for-de-novo-rnaseq-analysis" title="Permanent link">&para;</a></h2>
+<p>The Eel Pond protocol (which inspired the <code>eelpond</code> name) included line-by-line commands that the user could follow along with using a test dataset provided in the instructions. We have re-implemented the protocol here to enable automated <em>de novo</em> transcriptome assembly, annotation, and quick differential expression analysis on a set of short-read Illumina data using a single command. See more about this protocol <a href="Eel_Pond_workflow/">here</a>.</p>
+<p>To test the default workflow:</p>
 <div class="codehilite"><pre><span></span>./run_eelpond nema-test full
 </pre></div>
 
 
-<p>These will run a small set of <em>Nematostella vectensis</em> test data (from <a href="https://evodevojournal.biomedcentral.com/articles/10.1186/2041-9139-4-16">Tulin et al., 2013</a>)</p>
-<p>You can also run individual tools or subworkflows independently:</p>
-<div class="codehilite"><pre><span></span>./run_eelpond nema-test preprocess
-./run_eelpond nema-test trimmomatic
-</pre></div>
-
-
-<p>See the help, here:</p>
-<div class="codehilite"><pre><span></span>./run_eelpond -h
-</pre></div>
-
-
-<p><strong>Running your own data:</strong></p>
+<p>This will run a small set of <em>Nematostella vectensis</em> test data (from <a href="https://evodevojournal.biomedcentral.com/articles/10.1186/2041-9139-4-16">Tulin et al., 2013</a>)</p>
+<h2 id="running-your-own-data">Running Your Own Data<a class="headerlink" href="#running-your-own-data" title="Permanent link">&para;</a></h2>
 <p>To run your own data, you'll need to create two files, a <code>tsv</code> file containing 
 your sample info, and a <code>yaml</code> file containing basic configuration info. To start,
 copy the test data files so you can modify them.</p>
-<div class="codehilite"><pre><span></span>cp nema_samples.tsv &lt;my-tsv-name.tsv&gt;
+<div class="codehilite"><pre><span></span>cp nema_samples.tsv &lt;my-tsv-samples.tsv&gt;
 </pre></div>
 
 
+<p>Modify this tab-separated file with your sample names and locations for each file. </p>
+<p>Notes:<br />
+    - <code>eelpond</code> is a bit finicky here: all columns must be separated by tabs, not spaces. If you get an immediate error about your samples file, this is likely the cause. <br />
+    - the <code>unit</code> column allows you to enter multiple files or file pairs for each samples, such as files that are from different lanes. If you don't have a <code>unit</code> bit of information, just add something short as placeholder (e.g. <code>a</code>). All units for a single sample are combined prior to the differential expression steps. At some point, we may enable a <code>no_units</code> version of the <code>eelpond</code>, but it's not in our immediate plans :). </p>
 <p>Next, build a configfile to edit:</p>
 <div class="codehilite"><pre><span></span>./run_eelpond config_name --build_config
 </pre></div>
 
 
-<p>This configfile will contain all the default paramters for each step of the pipeline you target.
+<p>This configfile will contain all the default paramters for each step of the workflow you target.
 If you don't specify any targets, it will default to the "full" pipeline, which executes read
-preprocessing, assembly, annotation, and quantification.</p>
-<p>Then, modify this configfile as necessary. 
-The essential component is the <code>samples.tsv</code> file, which points <code>eelpond</code> to your sample files.</p>
-<p><strong>References:</strong>  </p>
-<ul>
-<li><a href="https://khmer-protocols.readthedocs.io/en/ctb/mrnaseq/">original eel-pond protocol docs, last updated 2015</a></li>
-<li><a href="http://eel-pond.readthedocs.io/en/latest/">eel-pond protocol docs, last updated 2016</a></li>
-<li><a href="http://dibsi-rnaseq.readthedocs.io/en/latest/">DIBSI, nonmodel RNAseq workshop, July 2017</a></li>
-<li><a href="http://rnaseq-workshop-2017.readthedocs.io/en/latest/index.html">SIO-BUG, nonmodel RNAseq workshop, October 2017</a></li>
-</ul>
+preprocessing, assembly, annotation, and quantification. </p>
+<p>Then, modify this configfile as necessary. </p>
+<p><strong>The configfile must contain at least:</strong></p>
+<div class="codehilite"><pre><span></span>samples: path/to/my-tsv-samples.tsv
+</pre></div>
+
+
+<p><strong>which directs <code>eelpond</code> to your sample files.</strong></p>
+<h2 id="additional-info">Additional Info<a class="headerlink" href="#additional-info" title="Permanent link">&para;</a></h2>
+<p>Each independent step is split into a smaller workflow that can be run independently, if desired, e.g. <code>./run_eelpond nema-test preprocess</code>. Individual tools can also be run independently, see <a href="advanced_usage/">Advanced Usage</a>.</p>
+<p>See the help, here:</p>
+<div class="codehilite"><pre><span></span>./run_eelpond -h
+</pre></div>
+
+
 <p><strong>available workflows:</strong>  </p>
 <ul>
 <li>preprocess: Read Quality Trimming and Filtering (fastqc, trimmomatic)</li>
@@ -501,6 +729,18 @@ The essential component is the <code>samples.tsv</code> file, which points <code
 <li>annotate : Annotate the transcriptome (dammit, sourmash)</li>
 <li>quantify: Quantify transcripts (salmon) </li>
 <li>full: preprocess, kmer_trim, assemble, annotate, quantify </li>
+</ul>
+<p>You can see the available workflows (and which programs they run) by using the <code>--print_workflows</code> flag:</p>
+<div class="codehilite"><pre><span></span>./run_eelpond nema-test --print_workflows
+</pre></div>
+
+
+<p><strong>References:</strong>  </p>
+<ul>
+<li><a href="https://khmer-protocols.readthedocs.io/en/ctb/mrnaseq/">original eel-pond protocol docs, last updated 2015</a></li>
+<li><a href="http://eel-pond.readthedocs.io/en/latest/">eel-pond protocol docs, last updated 2016</a></li>
+<li><a href="http://dibsi-rnaseq.readthedocs.io/en/latest/">DIBSI, nonmodel RNAseq workshop, July 2017</a></li>
+<li><a href="http://rnaseq-workshop-2017.readthedocs.io/en/latest/index.html">SIO-BUG, nonmodel RNAseq workshop, October 2017</a></li>
 </ul>
                 
                   
@@ -524,13 +764,13 @@ The essential component is the <code>samples.tsv</code> file, which points <code
       <nav class="md-footer-nav__inner md-grid">
         
         
-          <a href="QC/" title="Read Quality Trimming and Filtering" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="Eel_Pond_workflow/" title="Eel Pond Protocol" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
               <span class="md-flex__ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Read Quality Trimming and Filtering
+                Eel Pond Protocol
               </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink">
