@@ -15,7 +15,7 @@ rule dammit_annotate:
         join(LOGS_DIR, 'dammit', '{assembly}_dammit.log')
     params:
         db_dir = dammit_params.get('db_dir', 'databases'),
-        db_extra= dammit_params.get('db_extra', "--quick"),
+        db_extra= dammit_params.get('db_extra', ""),
         annot_extra= dammit_params.get('annot_extra', "--quick"),
         busco_dbs= dammit_params.get('busco_group', ["metazoa"]),
     threads: 32

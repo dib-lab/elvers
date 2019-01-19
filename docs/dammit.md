@@ -88,15 +88,15 @@ To get a dammit configfile you can modify, run:
 ```
 ./run_eelpond dammit.yaml dammit --build_config
 ```
-The output should be a small `yaml` configfile that contains:
+The output should be a small `yaml` configfile that will look something like this:
 ```
   ####################  dammit  ####################
 dammit:
-  busco_group: 
-    - metazoa
-    - eukaryota
+  busco_group:
+  - metazoa
+  - eukaryota
   db_dir: databases
-  db_extra: ''
+  db_extra:
   annot_extra: ' --quick '
 ```
 
