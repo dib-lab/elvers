@@ -36,9 +36,9 @@ Next, build a configfile to edit:
 ```
 ./run_eelpond my-config.yaml --build_config
 ```
-This configfile will contain all the default paramters for each step of the pipeline you target. If you don't specify any targets, it will default to the "full" Eel Pond Protocol pipeline, which executes read preprocessing, assembly, annotation, and quantification.
+This configfile will contain all the default parameters for each step of the pipeline you target. If you don't specify any targets, it will default to the "full" Eel Pond Protocol pipeline, which executes read preprocessing, assembly, annotation, and quantification.
 
-Please see the documentation file for each individual program (linked above) for what paramters to modify.
+Please see the documentation file for each individual program (linked above) for what parameters to modify.
 
 The configfile should look something like this:
 ```
