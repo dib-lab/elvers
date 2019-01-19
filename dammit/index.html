@@ -775,14 +775,14 @@ dammit databases --install --busco-group metazoa --busco-group eukaryota
 </pre></div>
 
 
-<p>The output should be a small <code>yaml</code> configfile that contains:</p>
+<p>The output should be a small <code>yaml</code> configfile that will look something like this:</p>
 <div class="codehilite"><pre><span></span>  ####################  dammit  ####################
 dammit:
-  busco_group: 
-    - metazoa
-    - eukaryota
+  busco_group:
+  - metazoa
+  - eukaryota
   db_dir: databases
-  db_extra: &#39;&#39;
+  db_extra:
   annot_extra: &#39; --quick &#39;
 </pre></div>
 
