@@ -40,7 +40,7 @@ nav:
   - 'About' : 'index.md'
   - 'Available Workflows':
     - 'Eel Pond Protocol': 'Eel_Pond_workflow.md'
-    - 'PLASS Assembly': 'Protein_assembly_workflow.md'
+    - 'Protein-level Assembly Workflow': 'Protein_assembly_workflow.md'
     #- 'Subworkflows':
     #  - 'preprocess': preprocess.md
     #  - 'kmer_trim': kmer_trim.md

@@ -32,7 +32,7 @@ Now modify  `my-samples.tsv` with your sample information.
 
 Next, build a configfile to edit:
 ```
-./run_eelpond my-config.yaml plass_assemble paladin_map--build_config
+./run_eelpond my-config.yaml plass_assemble paladin_map --build_config
 ```
 This configfile will contain all the default paramters for each step of the targeted workflows. 
 

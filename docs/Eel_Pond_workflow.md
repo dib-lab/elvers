@@ -1,4 +1,4 @@
-# Eel Pond Workflow
+# Eel Pond Protocol Workflow
 
 The Eel Pond protocol (which inspired the eelpond name) included line-by-line commands that the user could follow along with using a test dataset provided in the instructions. We have re-implemented the protocol here to enable automated de novo transcriptome assembly, annotation, and quick differential expression analysis on a set of short-read Illumina data using a single command. See more about this protocol [here](https://github.com/dib-lab/eelpond/blob/master/docs/eel_pond_protocol.md).
 
