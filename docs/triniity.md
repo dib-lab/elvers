@@ -1,5 +1,14 @@
 # Trinity
 
+## Quickstart: running trinity via eelpond:
+
+```
+./run_eelpond nema-test assemble
+```
+This will run preprocessing and kmer-trimming for you prior to assembly. For more options, read below!
+
+## Trinity
+
 The Eel Pond protocol uses  the [Trinity *de novo* transcriptome assembler](https://github.com/trinityrnaseq/trinityrnaseq/wiki) to take short, trimmed/diginorm Illumina reads data and assemble (predict) full-length transcripts into a single fasta file output. Each contig in the fasta assembly file represents one unique transcript. Trinity is a single-ksize assembler, with a default of *k* = 25.
 
 We recommend using kmer-trimmed reads (output of khmer) as input into Triniity to reduce dataset complexity without losing valuable kmers. The resulting output assembly fasta file can then be used to align the trimmed (not diginorm) short Illumina reads and quantify expression per transcript.
@@ -35,9 +44,9 @@ The output should be a small `yaml` configfile that contains:
 ```
 ####################  trinity  ####################
 trinity:
-  add_single_to_paired: false
   input_kmer_trimmed: true
   input_trimmomatic_trimmed: false
+  add_single_to_paired: false # would you like to add the orphaned reads to the trinity assembly?
   max_memory: 30G
   seqtype: fq
   extra: ''

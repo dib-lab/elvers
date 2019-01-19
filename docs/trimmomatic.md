@@ -1,5 +1,14 @@
 # Trimmomatic
 
+## Quickstart: Running Trimmomatic with eelpond
+```
+./run_eelpond nema-test preprocess
+```
+This will run trimmomatic trimming and fastqc on pre-trim and post-trim data.
+
+
+## Trimmomatic
+
 We use [Trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic) (version 0.36) to trim off residual Illumina adapters that were left behind after demultiplexing.
 
 Here we use a set TruSeq Illumina adapters. However, if running this on your own data and you know you have different adapters, you'll want to input them in the configfile (see `params` section, below). If you're using the right adapters,  you should see that some of the reads are trimmed; if they’re not, you won’t see anything get trimmed.

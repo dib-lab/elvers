@@ -1,5 +1,14 @@
 # FastQC
 
+
+## Quickstart: Running FastQC with eelpond
+```
+./run_eelpond nema-test preprocess
+```
+This will run trimmomatic trimming and fastqc on pre-trim and post-trim data.
+
+## FastQC
+
 We use [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) to assess quality of sequencing data before and after adapter trimming. 
 
 From the [FastQC documentation](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/):  
@@ -17,7 +26,7 @@ There are several caveats about FastQC - the main one is that it only calculates
 Check out these examples of [good](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/good_sequence_short_fastqc.html) and [bad](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/bad_sequence_fastqc.html) Illumina data.
 
 
-## Fastqc Params
+## FastQC Params
 
 To modify any program params, you need to add a couple lines to the config file you provide to `eelpond`. 
 
@@ -37,12 +46,11 @@ There's almost nothing in here because we use default params. However, you can m
 ```
 Be sure the modified lines go into the config file you're using to run `eelpond`.
 
-## Fastqc rule
+## FastQC rule
 
 We use a local copies of the [fastqc snakemake wrapper](https://snakemake-wrappers.readthedocs.io/en/stable/wrappers/fastqc.html) to run Fastqc.
 
 For snakemake afficionados, Here's the basic structure of the fastqc rules. Directories and parameters are specified via the configfile (see the rule on [github](https://github.com/dib-lab/eelpond/blob/master/rules/fastqc/fastqc.rule)).
-
 
 
 ```
@@ -80,3 +88,4 @@ rule fastqc_pretrim:
     conda: "fastqc-env.yaml"
     script: "wrapper.py"
 ```
+

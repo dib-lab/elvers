@@ -11,13 +11,15 @@ from snakemake.shell import shell
 # handle database params
 db_dir = snakemake.params.get("db_dir")
 db_dir = path.abspath(db_dir)
-busco_dbs = snakemake.params.get("busco_dbs", "")
+busco_dbs = snakemake.params.get("busco_dbs", [])
 db_extra = snakemake.params.get("db_extra", "")
 db_only = snakemake.params.get('db_install_only', False)
 
 db_cmd = ' --database-dir ' + db_dir if db_dir is not None else ""
-busco_cmd = ' --busco-group '.join(busco_dbs) if busco_dbs is not None else ""
-log = snakemake.log_fmt_shell(stdout=True, stderr=True)
+log = snakemake.log_fmt_shell(stdout=False, stderr=True)
+
+busco_dbs = [busco_dbs] if isinstance(busco_dbs, str) else busco_dbs
+busco_cmd = ' --busco-group ' + ' --busco-group '.join(busco_dbs) if busco_dbs is not None else ""
 
 # handle annotate params
 outdir = path.dirname(snakemake.output[0])
@@ -30,7 +32,7 @@ dammit_fasta = path.join(dammit_dir, assembly_name + '.dammit.fasta')
 dammit_gff3 = path.join(dammit_dir, assembly_name + '.dammit.fasta')
 
 # install databases
-shell("dammit databases {db_cmd} {busco_cmd} --install --n_threads {snakemake.threads} {db_extra} {log}")
+shell("dammit databases --install {db_cmd} {busco_cmd} --n_threads {snakemake.threads} {db_extra} {log}")
 
 if not db_only:
 # run annotation

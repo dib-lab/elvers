@@ -197,7 +197,8 @@ def main(args):
                                  cores=args.threads, cleanup_conda= args.cleanup_conda,
                                  dryrun=args.dry_run, lock=not args.nolock,
                                  verbose=args.verbose, debug_dag=args.debug, 
-                                 printdag=args.dag, keepgoing=args.keep_going)
+                                 printdag=args.dag, keepgoing=args.keep_going,
+                                 forcetargets=args.forcetargets,forceall=args.forceall)
     
         if status: # translate "success" into shell exit code of 0
            return 0
