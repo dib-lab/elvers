@@ -702,8 +702,8 @@ salmon:
 </pre></div>
 
 
-<p>In addition to changing parameters we've specifically enabled, you can modify the <code>extra</code> param to pass any extra parameters.In salmon, both <code>index</code> and <code>quantification</code> steps can accept an <code>extra</code> param.
-Override default params by modifying any of these lines, and placing them in the config file you're using to run <code>eelpond</code>.</p>
+<p>In addition to changing parameters we've specifically enabled, you can modify the <code>extra</code> param to pass any extra parameters.In salmon, both <code>index</code> and <code>quantification</code> steps can accept an <code>extra</code> param.</p>
+<p>Override default params by modifying any of these lines, and placing them in the config file you're using to run <code>eelpond</code>. Here, we just generated params for <code>salmon</code>, but if you're running a larger workflow, we recommend that you generate all params for your workflow in a single file, e.g. <code>./run_eelpond my-workflow.yaml full --build_config</code> and edit parameters there.</p>
 <h2 id="salmon-output">Salmon Output<a class="headerlink" href="#salmon-output" title="Permanent link">&para;</a></h2>
 <p>The two most interesting files are <code>salmon_quant.log</code> and <code>quant.sf</code>. The latter contains the counts; the former contains the log information from running things.</p>
 <p>We recommend quantifying using the Trinity transcriptome assembly fasta file, which will give expression values for each contig, like this in <code>quant.sf</code>:</p>

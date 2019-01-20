@@ -414,9 +414,66 @@
       
     
     
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        plass
+      </label>
+    
     <a href="./" title="plass" class="md-nav__link md-nav__link--active">
       plass
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#quickstart-running-plass-via-eelpond" title="Quickstart: running PLASS via eelpond:" class="md-nav__link">
+    Quickstart: running PLASS via eelpond:
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#protein-assembly-with-plass" title="Protein Assembly with PLASS" class="md-nav__link">
+    Protein Assembly with PLASS
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#plass-command" title="PLASS Command" class="md-nav__link">
+    PLASS Command
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#customizing-plass-parameters" title="Customizing PLASS parameters" class="md-nav__link">
+    Customizing PLASS parameters
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#plass-eelpond-rule" title="PLASS eelpond rule" class="md-nav__link">
+    PLASS eelpond rule
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
     
   </li>
 
@@ -532,6 +589,50 @@
     
   
   
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#quickstart-running-plass-via-eelpond" title="Quickstart: running PLASS via eelpond:" class="md-nav__link">
+    Quickstart: running PLASS via eelpond:
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#protein-assembly-with-plass" title="Protein Assembly with PLASS" class="md-nav__link">
+    Protein Assembly with PLASS
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#plass-command" title="PLASS Command" class="md-nav__link">
+    PLASS Command
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#customizing-plass-parameters" title="Customizing PLASS parameters" class="md-nav__link">
+    Customizing PLASS parameters
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#plass-eelpond-rule" title="PLASS eelpond rule" class="md-nav__link">
+    PLASS eelpond rule
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -544,7 +645,57 @@
                 
                 
                 <h1 id="assembling-with-plass">Assembling with PLASS<a class="headerlink" href="#assembling-with-plass" title="Permanent link">&para;</a></h1>
-<p><em>coming soon!</em></p>
+<h2 id="quickstart-running-plass-via-eelpond">Quickstart: running PLASS via eelpond:<a class="headerlink" href="#quickstart-running-plass-via-eelpond" title="Permanent link">&para;</a></h2>
+<div class="codehilite"><pre><span></span>./run_eelpond nema-test plass_assemble
+</pre></div>
+
+
+<p>This will run preprocessing and kmer-trimming for you prior to assembly. </p>
+<h2 id="protein-assembly-with-plass">Protein Assembly with PLASS<a class="headerlink" href="#protein-assembly-with-plass" title="Permanent link">&para;</a></h2>
+<p>The basic idea with any transcriptome or metatranscriptome assembly is you feed in your reads and you get out a bunch of <em>contigs</em> that represent transcripts, or stretches of RNA present in the reads. You run a transcriptome assembly program using the adapter &amp; k-mer trimmed reads as input and get out a pile of assembled RNA. </p>
+<p>Most assemblers work in <em>nucleotide</em> space. This means that they find direct overlaps between the As, Ts, Cs, and Gs in the reads and use information about those overlaps to make contigs. Although this is a powerful method, it often fails when:</p>
+<ul>
+<li>There is sequencing errors</li>
+<li>There are repetitive regions</li>
+<li>There is strain variation</li>
+</ul>
+<p>When assembly fails, contigs either break or don't assemble at all. </p>
+<p>Given that nucleotide sequences are far more variable than protein sequences (third base pair wobble in strain variation in particular), assembling in amino acid space can overcome a lot of the difficulties encountered when assembling in nucleotide space. </p>
+<p><a href="https://plass.mmseqs.org">PLASS</a> is a new assembler that assembles in amino acid space. Unlike many other assemblers, including <a href="../trinity/">Trinity</a>, it does not have built in error correction and so it is best to adapter and k-mer trim the reads before using it. It sometimes performs better than nucleotide assemblers and so is good to test on samples to see what type of improvement it can give. </p>
+<h2 id="plass-command">PLASS Command<a class="headerlink" href="#plass-command" title="Permanent link">&para;</a></h2>
+<p>On the command line, the command eelpond runs is approximately:</p>
+<div class="codehilite"><pre><span></span>plass assemble input_1.fq input_2.fq \
+  output.fasta --threads snakemake.threads extra_params
+</pre></div>
+
+
+<h2 id="customizing-plass-parameters">Customizing PLASS parameters<a class="headerlink" href="#customizing-plass-parameters" title="Permanent link">&para;</a></h2>
+<p>To modify any program params, you need to add a couple lines to the config file you provide to <code>eelpond</code>.</p>
+<p>To get a PLASS configfile you can modify, run:</p>
+<div class="codehilite"><pre><span></span>./run_eelpond plass.yaml plass --build_config
+</pre></div>
+
+
+<p>The output should be a small <code>yaml</code> configfile that contains:</p>
+<div class="codehilite"><pre><span></span>  ####################  plass  ####################
+plass:
+  input_kmer_trimmed: true
+  input_trimmomatic_trimmed: false
+  add_single_to_paired: false # would you like to add the orphaned reads to the plass assembly?
+  extra: &#39;&#39;
+</pre></div>
+
+
+<p>We recommend using kmer-trimmed reads as input. If both <code>input_kmer_trimmed</code> and <code>input_trimmomatic_trimmed</code> are <code>False</code>, we will just use raw reads from the <code>samples.tsv</code> file.</p>
+<p>In addition to changing parameters we've specifically enabled, you can modify the <code>extra</code> param to pass any extra plass parameters,  e.g.:</p>
+<div class="codehilite"><pre><span></span>  extra: &#39;--someflag someparam --someotherflag thatotherparam&#39;
+</pre></div>
+
+
+<p>Override default params by modifying any of these lines, and placing them in the config file you're using to run <code>eelpond</code>. Here, we just generated params for <code>plass</code>, but if you're running a larger workflow, we recommend that you generate all params for your workflow in a single file, e.g. <code>./run_eelpond my-workflow.yaml full --build_config</code> and edit parameters there. </p>
+<h2 id="plass-eelpond-rule">PLASS eelpond rule<a class="headerlink" href="#plass-eelpond-rule" title="Permanent link">&para;</a></h2>
+<p>We wrote a <a href="https://github.com/dib-lab/eelpond/blob/master/rules/plass/plass-wrapper.py">PLASS snakemake wrapper</a> to run PLASS via snakemake. This wrapper has not yet been submitted to the snakemake-wrappers repository, but feel free to use it as needed.</p>
+<p>For snakemake afficionados, see our PLASS rule on <a href="https://github.com/dib-lab/eelpond/blob/master/rules/plass/plass.rule">github</a>.</p>
                 
                   
                 

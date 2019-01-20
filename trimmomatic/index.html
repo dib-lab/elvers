@@ -706,6 +706,7 @@ you can modify the "extra" param to pass any extra trimmomatic parameters, e.g.:
 
 
 <p>Be sure the modified lines go into the config file you're using to run <code>eelpond</code>. For more on what parameters are available, see the <a href="http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/TrimmomaticManual_V0.32.pdf">Trimmomatic documentation</a>.</p>
+<p>Here, we just generated params for <code>trimmomatic</code>, but if you're running a larger workflow, we recommend that you generate all params for your workflow in a single file, e.g. <code>./run_eelpond my-workflow.yaml full --build_config</code> and edit parameters there.</p>
 <h2 id="trimmomatic-rule">Trimmomatic Rule<a class="headerlink" href="#trimmomatic-rule" title="Permanent link">&para;</a></h2>
 <p>We use a local copies of the <a href="https://snakemake-wrappers.readthedocs.io/en/stable/wrappers/trimmomatic.html">trimmomatic snakemake wrappers</a> to run Trimmomatic.</p>
 <p>For snakemake afficionados, here's the basic structure of the trimmomatic eelpond rules. Directories and parameters are specified via the configfile (see the rule on <a href="https://github.com/dib-lab/eelpond/blob/master/rules/trimmomatic/trimmomatic.rule">github</a>).</p>

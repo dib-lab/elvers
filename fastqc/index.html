@@ -665,12 +665,12 @@ fastqc:
 </pre></div>
 
 
-<p>There's almost nothing in here because we use default params. However, you can modify the <code>extra</code> param to pass any extra trimmomatic parameters, e.g.:</p>
+<p>There's almost nothing in here because we use default params. However, you can modify the <code>extra</code> param to pass any extra fastqc parameters, e.g.:</p>
 <div class="codehilite"><pre><span></span>  extra: &#39;--someflag someparam --someotherflag thatotherparam&#39;
 </pre></div>
 
 
-<p>Be sure the modified lines go into the config file you're using to run <code>eelpond</code>.</p>
+<p>Be sure the modified lines go into the config file you're using to run <code>eelpond</code>. Here, we just generated params for <code>fastqc</code>, but if you're running a larger workflow, we recommend that you generate all params for your workflow in a single file, e.g. <code>./run_eelpond my-workflow.yaml full --build_config</code> and edit parameters there.</p>
 <h2 id="fastqc-rule">FastQC rule<a class="headerlink" href="#fastqc-rule" title="Permanent link">&para;</a></h2>
 <p>We use a local copies of the <a href="https://snakemake-wrappers.readthedocs.io/en/stable/wrappers/fastqc.html">fastqc snakemake wrapper</a> to run Fastqc.</p>
 <p>For snakemake afficionados, Here's the basic structure of the fastqc rules. Directories and parameters are specified via the configfile (see the rule on <a href="https://github.com/dib-lab/eelpond/blob/master/rules/fastqc/fastqc.rule">github</a>).</p>

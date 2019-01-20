@@ -795,7 +795,7 @@ dammit:
 </pre></div>
 
 
-<p>Override default params by modifying any of these lines, and placing them in the config file you're using to run <code>eelpond</code>.</p>
+<p>Be sure the modified lines go into the config file you're using to run <code>eelpond</code>. Here, we just generated params for <code>dammit</code>, but if you're running a larger workflow, we recommend that you generate all params for your workflow in a single file, e.g. <code>./run_eelpond my-workflow.yaml full --build_config</code> and edit parameters there.</p>
 <h2 id="dammit-output">Dammit Output<a class="headerlink" href="#dammit-output" title="Permanent link">&para;</a></h2>
 <p>After a successful run, you'll have a new directory called <code>BASENAME.fasta.dammit</code>. If you look inside, you'll see a lot of files. For example, for a transcriptome with basename <code>trinity.nema</code>, the folder <code>trinity.nema.fasta.dammit</code> should contain the following files after a standard (not <code>--quick</code>) run:</p>
 <div class="codehilite"><pre><span></span>ls trinity.nema.fasta.dammit/

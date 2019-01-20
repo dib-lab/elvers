@@ -386,6 +386,27 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#trinity-command" title="Trinity Command" class="md-nav__link">
+    Trinity Command
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#customizing-trinity-parameters" title="Customizing Trinity parameters" class="md-nav__link">
+    Customizing Trinity parameters
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trinity-eelpond-rule" title="Trinity eelpond rule" class="md-nav__link">
+    Trinity eelpond rule
+  </a>
+  
+</li>
+      
       
       
       
@@ -585,6 +606,27 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#trinity-command" title="Trinity Command" class="md-nav__link">
+    Trinity Command
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#customizing-trinity-parameters" title="Customizing Trinity parameters" class="md-nav__link">
+    Customizing Trinity parameters
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trinity-eelpond-rule" title="Trinity eelpond rule" class="md-nav__link">
+    Trinity eelpond rule
+  </a>
+  
+</li>
+      
       
       
       
@@ -618,7 +660,7 @@
 </pre></div>
 
 
-<h1 id="trinity-command">Trinity Command<a class="headerlink" href="#trinity-command" title="Permanent link">&para;</a></h1>
+<h2 id="trinity-command">Trinity Command<a class="headerlink" href="#trinity-command" title="Permanent link">&para;</a></h2>
 <p>On the command line, the command eelpond runs is approximately:</p>
 <div class="codehilite"><pre><span></span>Trinity --left left.fq \
   --right right.fq --seqType fq --max_memory 10G \
@@ -646,6 +688,7 @@ trinity:
 </pre></div>
 
 
+<p>We recommend using kmer-trimmed reads as input. If both <code>input_kmer_trimmed</code> and <code>input_trimmomatic_trimmed</code> are <code>False</code>, we will just use raw reads from the <code>samples.tsv</code> file. </p>
 <p>In addition to changing parameters we've specifically enabled, you can modify the <code>extra</code> param to pass any extra trinity parameters, e.g.:</p>
 <div class="codehilite"><pre><span></span>  extra: &#39;--someflag someparam --someotherflag thatotherparam&#39;
 </pre></div>
@@ -656,8 +699,8 @@ trinity:
 </pre></div>
 
 
-<p>Override default params by modifying any of these lines, and placing them in the config file you're using to run <code>eelpond</code>.</p>
-<h2 id="eelpond-rule">eelpond rule<a class="headerlink" href="#eelpond-rule" title="Permanent link">&para;</a></h2>
+<p>Override default params by modifying any of these lines, and placing them in the config file you're using to run <code>eelpond</code>. Here, we just generated params for <code>trinity</code>, but if you're running a larger workflow, we recommend that you generate all params for your workflow in a single file, e.g. <code>./run_eelpond my-workflow.yaml full --build_config</code> and edit parameters there.</p>
+<h2 id="trinity-eelpond-rule">Trinity eelpond rule<a class="headerlink" href="#trinity-eelpond-rule" title="Permanent link">&para;</a></h2>
 <p>We wrote a <a href="https://snakemake-wrappers.readthedocs.io/en/stable/wrappers/trinity.html">Trinity snakemake wrapper</a> to run Trinity.</p>
 <p>For snakemake afficionados, here's the basic structure of the trinity eelpond rule. Directories and parameters are specified via the configfile, for more, see the rule on <a href="https://github.com/dib-lab/eelpond/blob/master/rules/trinity/trinity.rule">github</a>.</p>
 <div class="codehilite"><pre><span></span>rule trinity:
