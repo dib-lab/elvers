@@ -438,9 +438,66 @@
       
     
     
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        paladin
+      </label>
+    
     <a href="./" title="paladin" class="md-nav__link md-nav__link--active">
       paladin
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#quickstart-running-paladin-with-eelpond" title="Quickstart: Running Paladin with eelpond" class="md-nav__link">
+    Quickstart: Running Paladin with eelpond
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#paladin-commands" title="Paladin Commands" class="md-nav__link">
+    Paladin Commands
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#customizing-paladin-parameters" title="Customizing Paladin parameters" class="md-nav__link">
+    Customizing Paladin parameters
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#paladin-eelpond-rule" title="PALADIN eelpond rule" class="md-nav__link">
+    PALADIN eelpond rule
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#citation" title="Citation" class="md-nav__link">
+    Citation
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
     
   </li>
 
@@ -532,6 +589,50 @@
     
   
   
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#quickstart-running-paladin-with-eelpond" title="Quickstart: Running Paladin with eelpond" class="md-nav__link">
+    Quickstart: Running Paladin with eelpond
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#paladin-commands" title="Paladin Commands" class="md-nav__link">
+    Paladin Commands
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#customizing-paladin-parameters" title="Customizing Paladin parameters" class="md-nav__link">
+    Customizing Paladin parameters
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#paladin-eelpond-rule" title="PALADIN eelpond rule" class="md-nav__link">
+    PALADIN eelpond rule
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#citation" title="Citation" class="md-nav__link">
+    Citation
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -545,6 +646,69 @@
                 
                 <h1 id="mapping-to-protein-assemblies-using-paladin">Mapping to Protein Assemblies using Paladin<a class="headerlink" href="#mapping-to-protein-assemblies-using-paladin" title="Permanent link">&para;</a></h1>
 <p>We use <code>Paladin</code> to map back to protein assemblies (<a href="../plass/">plass</a>). <code>Paladin</code> solves the problem of mapping <em>nucleotide</em> sequences back to <em>amino acid</em> sequences.</p>
+<p>From the <a href="https://github.com/twestbrookunh/paladin">documentation</a>:</p>
+<p>Protein ALignment And Detection INterface</p>
+<p>PALADIN is a protein sequence alignment tool designed for the accurate functional characterization of metagenomes.</p>
+<p>PALADIN is based on BWA, and aligns sequences via read-mapping using BWT. PALADIN, however, offers the novel approach of aligning in the protein space. During the index phase, it processes the reference genome's nucleotide sequences and GTF/GFF annotation containing CDS entries, first converting these transcripts into the corresponding protein sequences, then creating the BWT and suffix array from these proteins. The process of translatation is skiped when providing a protein reference file (e.g., UniProt) for mapping. During the alignment phase, it attempts to find ORFs in the read sequences, then converts these to protein sequences, and aligns to the reference protein sequences.</p>
+<p>PALADIN currently only supports single-end reads (or reads merged with FLASH, PEAR, abyss-mergepairs), and BWA-MEM based alignment. It makes use of many BWA parameters and is therefore compatible with many of its command line arguments.</p>
+<p>PALADIN may output a standard SAM file, or a text file containing a UniProt-generated functional profile. This text file may be used for all downstream characterizations.</p>
+<h2 id="quickstart-running-paladin-with-eelpond">Quickstart: Running Paladin with eelpond<a class="headerlink" href="#quickstart-running-paladin-with-eelpond" title="Permanent link">&para;</a></h2>
+<p>We recommend you run <code>paladin</code> as part of the <code>paladin_map</code> pipeline</p>
+<div class="codehilite"><pre><span></span>./run_eelpond nema-test paladin_map
+</pre></div>
+
+
+<p>This will run trimmomatic trimming prior to PEAR merging (for paired end reads) and paladin mapping. </p>
+<p>Note, <code>PEAR</code> only works on paired end reads, as there's nothing to do for single end reads. By default, SE reads are taken directly from <code>trimmomatic</code> output.</p>
+<h2 id="paladin-commands">Paladin Commands<a class="headerlink" href="#paladin-commands" title="Permanent link">&para;</a></h2>
+<p>Eelpond first indexes the protein assembly, and then maps reads back. On the command line, these commands would look like this: </p>
+<div class="codehilite"><pre><span></span>paladin index 3 index_basename \ 
+  gff_annotation extra
+</pre></div>
+
+
+<p>We have not yet added dammit annotation gff at this step, but this could be done :). You can also add any <code>gff3</code> annotation via the params.</p>
+<div class="codehilite"><pre><span></span>paladin align -f 250 -t snakemake.threads \
+  index_basename reads_file | samtools view -Sb - &gt; output.bam
+</pre></div>
+
+
+<h2 id="customizing-paladin-parameters">Customizing Paladin parameters<a class="headerlink" href="#customizing-paladin-parameters" title="Permanent link">&para;</a></h2>
+<p>To modify any program params, you need to add a couple lines to the config file you provide to <code>eelpond</code>.</p>
+<p>To get a Paladin configfile you can modify, run:</p>
+<div class="codehilite"><pre><span></span>./run_eelpond paladin.yaml paladin --build_config
+</pre></div>
+
+
+<p>The output should be a small <code>yaml</code> configfile that contains:</p>
+<div class="codehilite"><pre><span></span>  ####################  paladin  ####################
+paladin:
+  alignment_params:
+    extra: &#39;&#39;
+    f: 125
+  index_params:
+    reference_type: &#39;3&#39;
+    gff_file: &#39;&#39;
+</pre></div>
+
+
+<p>In addition to changing parameters we've specifically enabled, you can modify the <code>extra</code> param to pass in additional parameters to <code>paladin align</code>,  e.g.:</p>
+<div class="codehilite"><pre><span></span>  extra: &#39; --some_param that_param &#39;
+</pre></div>
+
+
+<p>Please see the <a href="https://github.com/twestbrookunh/paladin">Paladin documentation</a> for info on the params.</p>
+<p>Override default params by modifying any of these lines, and placing them in the config file you're using to run <code>eelpond</code>. Here, we just generated params for <code>PALADIN</code>, but if you're running a larger workflow, we recommend that you generate all params for your workflow in a single file. </p>
+<p>For example, run the following to build default parameters for <code>trimmomatic</code>, <code>fastqc</code>, <code>khmer</code>, <code>plass</code>, <code>pear</code>, and <code>paladin</code>, which you can then edit in <code>my-workflow.yaml</code>:</p>
+<div class="codehilite"><pre><span></span>./run_eelpond my-workflow.yaml plass_assemble paladin_map --build_config
+</pre></div>
+
+
+<h2 id="paladin-eelpond-rule">PALADIN eelpond rule<a class="headerlink" href="#paladin-eelpond-rule" title="Permanent link">&para;</a></h2>
+<p>We wrote new snakemake wrappers for <a href="https://github.com/dib-lab/eelpond/blob/master/rules/paladin/paladin-index.py">paladin index</a> and <a href="https://github.com/dib-lab/eelpond/blob/master/rules/paladin/paladin-align.py">paladin align</a> to run PALADIN via snakemake. These wrappers have not been added to the official repo yet, but feel free to use as needed.</p>
+<p>For snakemake afficionados, see our paladin rule on <a href="https://github.com/dib-lab/eelpond/blob/master/rules/paladin/paladin.rule">github</a>.</p>
+<h2 id="citation">Citation<a class="headerlink" href="#citation" title="Permanent link">&para;</a></h2>
+<p>If you use PALADIN, please cite <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5423455/">Westbrook et al., 2017</a>.</p>
                 
                   
                 
