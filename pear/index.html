@@ -426,9 +426,59 @@
       
     
     
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        pear
+      </label>
+    
     <a href="./" title="pear" class="md-nav__link md-nav__link--active">
       pear
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#quickstart-running-pear-with-eelpond" title="Quickstart: Running PEAR with eelpond" class="md-nav__link">
+    Quickstart: Running PEAR with eelpond
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pear-command" title="PEAR Command" class="md-nav__link">
+    PEAR Command
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#customizing-pear-parameters" title="Customizing PEAR parameters" class="md-nav__link">
+    Customizing PEAR parameters
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pear-eelpond-rule" title="PEAR eelpond rule" class="md-nav__link">
+    PEAR eelpond rule
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
     
   </li>
 
@@ -532,6 +582,43 @@
     
   
   
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#quickstart-running-pear-with-eelpond" title="Quickstart: Running PEAR with eelpond" class="md-nav__link">
+    Quickstart: Running PEAR with eelpond
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pear-command" title="PEAR Command" class="md-nav__link">
+    PEAR Command
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#customizing-pear-parameters" title="Customizing PEAR parameters" class="md-nav__link">
+    Customizing PEAR parameters
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pear-eelpond-rule" title="PEAR eelpond rule" class="md-nav__link">
+    PEAR eelpond rule
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -544,7 +631,64 @@
                 
                 
                 <h1 id="merging-read-pairs-with-pear">Merging Read Pairs with PEAR<a class="headerlink" href="#merging-read-pairs-with-pear" title="Permanent link">&para;</a></h1>
-<p><em>coming soon</em></p>
+<p>In order to map PE nucleotide reads to protein assemblies with <code>Paladin</code>, which cannot yet use paired end reads, we use <code>PEAR</code> to merge PE reads prior to mapping.</p>
+<p>From the <code>PEAR</code> <a href="https://cme.h-its.org/exelixis/web/software/pear/doc.html">documentation</a>:</p>
+<p>PEAR is an ultrafast, memory-efficient and highly accurate pair-end read merger. It is fully parallelized and can run with as low as just a few kilobytes of memory.</p>
+<p>PEAR evaluates all possible paired-end read overlaps and without requiring the target fragment size as input. In addition, it implements a statistical test for minimizing false-positive results. Together with a highly optimized implementation, it can merge millions of paired end reads within a couple of minutes on a standard desktop computer.</p>
+<h2 id="quickstart-running-pear-with-eelpond">Quickstart: Running PEAR with eelpond<a class="headerlink" href="#quickstart-running-pear-with-eelpond" title="Permanent link">&para;</a></h2>
+<p>We recommend you run <code>pear</code> as part of the <code>paladin_map</code> pipeline</p>
+<div class="codehilite"><pre><span></span>./run_eelpond nema-test paladin_map
+</pre></div>
+
+
+<p>This will run trimmomatic trimming prior to PEAR merging of paired end reads and paladin mapping. If you'd like to just run <code>PEAR</code>, you can run it by including the <code>get_data</code> and <code>trimmomatic</code> rules in your pipeline:</p>
+<div class="codehilite"><pre><span></span>./run_eelpond nema-test get_data trimmomatic pear
+</pre></div>
+
+
+<p>Note, <code>PEAR</code> only works on paired end reads, as there's nothing to do for single end reads!</p>
+<h2 id="pear-command">PEAR Command<a class="headerlink" href="#pear-command" title="Permanent link">&para;</a></h2>
+<p>On the command line, the command eelpond runs for each set of files is approximately:</p>
+<div class="codehilite"><pre><span></span>pear -f forward_reads -r reverse_reads \ 
+  -p p_value -j snakemake.threads -y max_memory \  
+  extra -o output_basename 
+</pre></div>
+
+
+<h2 id="customizing-pear-parameters">Customizing PEAR parameters<a class="headerlink" href="#customizing-pear-parameters" title="Permanent link">&para;</a></h2>
+<p>To modify any program params, you need to add a couple lines to the config file you provide to <code>eelpond</code>.</p>
+<p>To get a PEAR configfile you can modify, run:</p>
+<div class="codehilite"><pre><span></span>./run_eelpond pear.yaml pear --build_config
+</pre></div>
+
+
+<p>The output should be a small <code>yaml</code> configfile that contains:</p>
+<div class="codehilite"><pre><span></span>  ####################  pear  ####################
+pear:
+  input_kmer_trimmed: false
+  input_trimmomatic_trimmed: true
+  max_memory: 4G
+  pval: 0.01
+  extra: &#39;&#39;
+</pre></div>
+
+
+<p><strong>Please modify the <code>max_memory</code> parameter to fit the needs of your reads and system.</strong></p>
+<p>In addition to changing parameters we've specifically enabled, you can modify the <code>extra</code> param to pass in additional parameters,  e.g.:</p>
+<div class="codehilite"><pre><span></span>  extra: &#39; --some_param that_param &#39;
+</pre></div>
+
+
+<p>Please see the <a href="https://cme.h-its.org/exelixis/web/software/pear/doc.html">PEAR documentation</a> for info on the params.</p>
+<p>Override default params by modifying any of these lines, and placing them in the config file you're using to run <code>eelpond</code>. Here, we just generated params for <code>PEAR</code>, but if you're running a larger workflow, we recommend that you generate all params for your workflow in a single file. </p>
+<p>For example, run the following to build default parameters for <code>trimmomatic</code>, <code>fastqc</code>, <code>khmer</code>, <code>plass</code>, <code>pear</code>, and <code>paladin</code>, which you can then edit in <code>my-workflow.yaml</code>:</p>
+<div class="codehilite"><pre><span></span>./run_eelpond my-workflow.yaml plass_assemble paladin_map --build_config
+</pre></div>
+
+
+<h2 id="pear-eelpond-rule">PEAR eelpond rule<a class="headerlink" href="#pear-eelpond-rule" title="Permanent link">&para;</a></h2>
+<p>We wrote a new <a href="https://github.com/dib-lab/eelpond/blob/master/rules/pear/pear-wrapper.py">PEAR snakemake wrapper</a> to run PEAR via snakemake. This wrapper has not been added to the official repo yet, but feel free to use as needed.</p>
+<p>For snakemake afficionados, see our pear rule on <a href="https://github.com/dib-lab/eelpond/blob/master/rules/pear/pear.rule">github</a>.</p>
                 
                   
                 
