@@ -31,9 +31,6 @@ We will use [Salmon](http://salmon.readthedocs.org/en/latest/) to
 quantify expression. Salmon is a new breed of software for quantifying RNAseq reads that is both really fast and takes
 transcript length into consideration ([Patro et al. 2015](https://doi.org/10.1038/nmeth.4197)).
 
-
-
-
 ## Salmon Commands 
 
 There are two commands for salmon, `salmon index` and `salmon quant`. The first command, `salmon index` will index the transcriptome:
