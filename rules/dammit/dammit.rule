@@ -18,6 +18,7 @@ rule dammit_annotate:
         db_extra= dammit_params.get('db_extra', ""),
         annot_extra= dammit_params.get('annot_extra', "--quick"),
         busco_dbs= dammit_params.get('busco_group', ["metazoa"]),
-    threads: 32
+        db_install_only = dammit_params.get('db_install_only', False)
+    threads: 32 
     conda: "dammit-env.yaml"
     script: "dammit-wrapper.py"

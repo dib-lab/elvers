@@ -8,6 +8,7 @@ dammit:
   program_params:
     db_dir: databases
     db_extra: '' 
+    db_install_only: False
     annot_extra: " --quick "
     busco_group:  
       - metazoa

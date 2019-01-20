@@ -92,11 +92,12 @@ The output should be a small `yaml` configfile that will look something like thi
 ```
   ####################  dammit  ####################
 dammit:
-  busco_group:
+  busco_group:     # specify all busco groups below here
   - metazoa
   - eukaryota
-  db_dir: databases
-  db_extra:
+  db_dir: databases   # specify location for databases (or previously installed databases)
+  db_install_only: False   # just install databases, don't run annotation
+  db_extra:  
   annot_extra: ' --quick '
 ```
 
