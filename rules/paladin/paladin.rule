@@ -28,7 +28,8 @@ rule paladin_index:
     input: join(assembly_dir, "{assembly}.fasta")
     output: join(paladin_dir, "{assembly}.fasta.bwt"),
     params: 
-        reference_type= index_params.get('reference_type', '3')
+        reference_type= index_params.get('reference_type', '3'),
+        gff = index_params.get('gff_file', '')
     conda: "paladin-env.yaml"
     script: 'paladin-index.py'
    
