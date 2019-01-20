@@ -778,11 +778,12 @@ dammit databases --install --busco-group metazoa --busco-group eukaryota
 <p>The output should be a small <code>yaml</code> configfile that will look something like this:</p>
 <div class="codehilite"><pre><span></span>  ####################  dammit  ####################
 dammit:
-  busco_group:
+  busco_group:     # specify all busco groups below here
   - metazoa
   - eukaryota
-  db_dir: databases
-  db_extra:
+  db_dir: databases   # specify location for databases (or previously installed databases)
+  db_install_only: False   # just install databases, don&#39;t run annotation
+  db_extra:  
   annot_extra: &#39; --quick &#39;
 </pre></div>
 
