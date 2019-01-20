@@ -55,6 +55,13 @@ eelpond_workflows:
       - trimmomatic
     targets:
       - salmon
+  diffexp:
+    include:
+      - get_data
+      - trimmomatic
+      - salmon
+    targets:
+      - deseq2
   plass_assemble:
     include:
       - get_data
@@ -77,10 +84,3 @@ eelpond_workflows:
       - trimmomatic
     targets:
       - rcorrector
-  diffexp:
-    include:
-      - get_data
-      - trimmomatic
-      - salmon
-    targets:
-      - deseq2

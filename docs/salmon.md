@@ -76,8 +76,8 @@ salmon:
     extra: ''
 ```
 In addition to changing parameters we've specifically enabled, you can modify the `extra` param to pass any extra parameters.In salmon, both `index` and `quantification` steps can accept an `extra` param.
-Override default params by modifying any of these lines, and placing them in the config file you're using to run `eelpond`.
 
+Override default params by modifying any of these lines, and placing them in the config file you're using to run `eelpond`. Here, we just generated params for `salmon`, but if you're running a larger workflow, we recommend that you generate all params for your workflow in a single file, e.g. `./run_eelpond my-workflow.yaml full --build_config` and edit parameters there.
 
 ## Salmon Output
 

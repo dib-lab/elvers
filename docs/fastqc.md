@@ -40,11 +40,11 @@ The output should be a small `yaml` configfile that contains:
 fastqc:
   extra: ''
 ```
-There's almost nothing in here because we use default params. However, you can modify the `extra` param to pass any extra trimmomatic parameters, e.g.:
+There's almost nothing in here because we use default params. However, you can modify the `extra` param to pass any extra fastqc parameters, e.g.:
 ```
   extra: '--someflag someparam --someotherflag thatotherparam'
 ```
-Be sure the modified lines go into the config file you're using to run `eelpond`.
+Be sure the modified lines go into the config file you're using to run `eelpond`. Here, we just generated params for `fastqc`, but if you're running a larger workflow, we recommend that you generate all params for your workflow in a single file, e.g. `./run_eelpond my-workflow.yaml full --build_config` and edit parameters there.
 
 ## FastQC rule
 

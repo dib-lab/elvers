@@ -78,6 +78,8 @@ Or in Trimmomatic params:
 
 Be sure the modified lines go into the config file you're using to run `eelpond`. For more on what parameters are available, see the [Trimmomatic documentation](http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/TrimmomaticManual_V0.32.pdf).
 
+Here, we just generated params for `trimmomatic`, but if you're running a larger workflow, we recommend that you generate all params for your workflow in a single file, e.g. `./run_eelpond my-workflow.yaml full --build_config` and edit parameters there.
+
 ## Trimmomatic Rule 
 
 We use a local copies of the [trimmomatic snakemake wrappers](https://snakemake-wrappers.readthedocs.io/en/stable/wrappers/trimmomatic.html) to run Trimmomatic.

@@ -108,7 +108,7 @@ In dammit, both `databases` and `annotation` take an `extra` param:
   db_extra: '--someflag someparam --someotherflag thatotherparam'
   annot_extra: '--someflag someparam --someotherflag thatotherparam'
 ```
-Override default params by modifying any of these lines, and placing them in the config file you're using to run `eelpond`.
+Be sure the modified lines go into the config file you're using to run `eelpond`. Here, we just generated params for `dammit`, but if you're running a larger workflow, we recommend that you generate all params for your workflow in a single file, e.g. `./run_eelpond my-workflow.yaml full --build_config` and edit parameters there.
 
 ## Dammit Output
 

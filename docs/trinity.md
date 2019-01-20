@@ -21,7 +21,7 @@ The ID for each transcript is output (version 2.2.0 to current) as follows, wher
 TRINITY_DN2202_c0_g1_i1
 ```
 
-# Trinity Command
+## Trinity Command
 
 On the command line, the command eelpond runs is approximately:
 ```
@@ -51,6 +51,7 @@ trinity:
   seqtype: fq
   extra: ''
 ```
+We recommend using kmer-trimmed reads as input. If both `input_kmer_trimmed` and `input_trimmomatic_trimmed` are `False`, we will just use raw reads from the `samples.tsv` file. 
 
 In addition to changing parameters we've specifically enabled, you can modify the `extra` param to pass any extra trinity parameters, e.g.:
 ```
@@ -60,10 +61,10 @@ Or in Trinity params:
 ```
   extra: '--no_normalize_reads' # to turn off Trinity's digital normalization steps 
 ```
-Override default params by modifying any of these lines, and placing them in the config file you're using to run `eelpond`.
+Override default params by modifying any of these lines, and placing them in the config file you're using to run `eelpond`. Here, we just generated params for `trinity`, but if you're running a larger workflow, we recommend that you generate all params for your workflow in a single file, e.g. `./run_eelpond my-workflow.yaml full --build_config` and edit parameters there.
 
 
-## eelpond rule
+## Trinity eelpond rule
 
 We wrote a [Trinity snakemake wrapper](https://snakemake-wrappers.readthedocs.io/en/stable/wrappers/trinity.html) to run Trinity.
 
