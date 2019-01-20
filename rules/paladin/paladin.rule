@@ -16,8 +16,9 @@ assembly_extension = ep_params['extensions']['assembly_extensions'][0]
 def get_paladin_input(w):
     readsD = {}
     if not is_single_end(**w): 
+        pear_dir = join(input_dir, 'pear')
         ext = '.pear_assembled.fq.gz' # requires pear merging of pe reads
-        readsD['r'] = join(paladin_dir, f'{w.sample}_{w.unit}{ext}')
+        readsD['r'] = join(pear_dir, f'{w.sample}_{w.unit}{ext}')
         return readsD
     ext = '.trim.fq.gz'
     readsD['r'] = join(input_dir, f'{w.sample}_{w.unit}{ext}')
