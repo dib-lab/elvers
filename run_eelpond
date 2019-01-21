@@ -139,7 +139,7 @@ def main(args):
     targs = args.targets
     # handle "full" target:
     if 'full' in targs:
-        targs = ['assemble', 'annotate', 'quantify', 'diffexp']
+        targs = ['assemble', 'annotate', 'quantify']
     if args.build_config:
         configfile = args.configfile
         if not any(ext in args.configfile for ext in ['.yaml', '.yml']):
