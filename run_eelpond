@@ -211,6 +211,7 @@ def main(args):
     
         if status and reportfile:
             snakemake.snakemake(snakefile, configfile=paramsfile, report=reportfile)
+            print(f"\t see the report file at {reportfile}\n\n ")
         if status: # translate "success" into shell exit code of 0
            return 0
         return 1
