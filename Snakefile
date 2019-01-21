@@ -62,7 +62,7 @@ onsuccess:
     print("\n--- Workflow executed successfully! ---\n")
     
     ## this could be done better, but should work for now :)
-    print("  Outputs:") 
+    print("  Outputs for all workflow steps:\n") 
     for key, val in config.items():
         if isinstance(val, dict):
             if val.get('eelpond_params', None):
