@@ -181,6 +181,12 @@ def main(args):
         paramsfile = os.path.join(os.path.dirname(configfile), '.ep_' + os.path.basename(configfile))
         sys.stderr.write('\tAdded default parameters from rule-specific params files.\n\tWriting full params to {}\n'.format(paramsfile))
         write_yaml(paramsD, paramsfile)
+        reportfile = None
+        if args.report:
+            if os.path.isabs(args.report):
+                reportfile = args.report
+            else:
+                reportfile = os.path.join(paramsD['eelpond_directories']['logs'], args.report)
 
         print('--------')
         print('details!')
@@ -188,6 +194,7 @@ def main(args):
         print('\tconfig: {}'.format(configfile))
         print('\tparams: {}'.format(paramsfile))
         print('\ttargets: {}'.format(repr(targs)))
+        print('\treport: {}'.format(repr(reportfile)))
         print('--------')
 
         # run!!
@@ -199,6 +206,7 @@ def main(args):
                                  verbose=args.verbose, debug_dag=args.debug, 
                                  conda_prefix=args.conda_prefix, 
                                  create_envs_only=args.create_envs_only,
+                                 report=reportfile,
                                  printdag=args.dag, keepgoing=args.keep_going,
                                  forcetargets=args.forcetargets,forceall=args.forceall)
     
@@ -245,6 +253,7 @@ To build an editable configfile to start work on your own data, run:
     parser.add_argument('--build_config', action='store_true', help='just build the default parameter file')
     
     # advanced args below (maybe separate so these don't always print out)
+    parser.add_argument('--report', default='report.html', help='filename for a final report of this run. This will be in the logs dir, unless you provide an absolute path.')
     parser.add_argument('--conda_prefix', default=None, help='location for conda environment installs')
     parser.add_argument('--create_envs_only', action='store_true', help="just install software in conda envs, don't execute workflows")
     parser.add_argument('-d', '--debug', action='store_true')

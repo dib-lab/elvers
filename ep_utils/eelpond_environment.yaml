@@ -8,3 +8,5 @@ dependencies:
   - yaml
   - pandas
   - graphviz
+  - networkx
+  - pygraphviz

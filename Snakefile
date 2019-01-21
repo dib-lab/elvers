@@ -69,9 +69,6 @@ onsuccess:
     ##
     shell('cat {fish}')
 
-    ##### report #####
-    #report: "report/workflow.rst"
-
 rule eelpond:
     input: generate_all_targs(config, samples)
 
