@@ -44,6 +44,11 @@ fish = animalsD['fish']
 
 #### snakemake ####
 
+# include all rule files
+includeRules = config['include_rules']
+for r in includeRules:
+    include: r
+
 onstart: 
     shell('cat {octopus}')
     print('-----------------------------------------------------------------')
@@ -51,19 +56,25 @@ onstart:
     print('-----------------------------------------------------------------')
 
 onsuccess:
-    print("\n--- Eel Pond Workflow executed successfully! ---\n")
+    print("\n--- Workflow executed successfully! ---\n")
+    
+    ## this could be done better, but should work for now :)
+    print("  Outputs:") 
+    for key, val in config.items():
+        if isinstance(val, dict):
+            if val.get('eelpond_params', None):
+                outdir = val['eelpond_params']['outdir']
+                sys.stdout.write("\t" + key + ":  " + outdir + '\n')
+    print("\n\n")
+    ##
     shell('cat {fish}')
 
-# include rule files
-includeRules = config['include_rules']
-for r in includeRules:
-    include: r
+    ##### report #####
+    #report: "report/workflow.rst"
 
 rule eelpond:
     input: generate_all_targs(config, samples)
 
-##### report #####
-#report: "report/workflow.rst"
 
 shell('cat {animal_targs[1]}')
 
