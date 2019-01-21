@@ -55,6 +55,9 @@ onstart:
     print('Welcome to the Eel Pond, de novo transcriptome assembly pipeline.')
     print('-----------------------------------------------------------------')
 
+
+documentation_base = "https://dib-lab.github.io/eelpond/"
+
 onsuccess:
     print("\n--- Workflow executed successfully! ---\n")
     
@@ -65,6 +68,7 @@ onsuccess:
             if val.get('eelpond_params', None):
                 outdir = val['eelpond_params']['outdir']
                 sys.stdout.write("\t" + key + ":  " + outdir + '\n')
+                sys.stdout.write("\t" + "go here for explanation of this step: " + documentation_base + key +"\n")
     print("\n\n")
     ##
     shell('cat {fish}')

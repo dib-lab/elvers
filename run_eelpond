@@ -186,7 +186,7 @@ def main(args):
             if os.path.isabs(args.report):
                 reportfile = args.report
             else:
-                reportfile = os.path.join(paramsD['eelpond_directories']['logs'], args.report)
+                reportfile = os.path.abspath(os.path.join(paramsD['eelpond_directories']['logs'], args.report))
 
         print('--------')
         print('details!')
@@ -253,7 +253,7 @@ To build an editable configfile to start work on your own data, run:
     parser.add_argument('--build_config', action='store_true', help='just build the default parameter file')
     
     # advanced args below (maybe separate so these don't always print out)
-    parser.add_argument('--report', default='report.html', help='filename for a final report of this run. This will be in the logs dir, unless you provide an absolute path.')
+    parser.add_argument('--report', default=None, help='filename for a final report of this run. This will be in the logs dir, unless you provide an absolute path.')
     parser.add_argument('--conda_prefix', default=None, help='location for conda environment installs')
     parser.add_argument('--create_envs_only', action='store_true', help="just install software in conda envs, don't execute workflows")
     parser.add_argument('-d', '--debug', action='store_true')
