@@ -50,9 +50,7 @@ conda env create --file ep_utils/eelpond_environment.yaml -n eelpond
 
 Activate that environment. You'll need to do this anytime you want to run eelpond
 ```
-source activate eelpond 
-# or
-# conda activate eelpond
+conda activate eelpond
 ```
 Now you can start running workflows!
 
