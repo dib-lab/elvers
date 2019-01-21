@@ -78,5 +78,5 @@ rule eelpond:
     input: generate_all_targs(config, samples)
 
 
-shell('cat {animal_targs[1]}')
+#shell('cat {animal_targs[1]}')
 
