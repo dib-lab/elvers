@@ -53,10 +53,12 @@ nav:
     #  - 'correct_reads': correct_reads:.md
     #  - 'diffexp': diffexp.md
     - 'Programs Used':
+      - 'get_data': get_data.md
       - 'fastqc': fastqc.md
       - 'trimmomatic': trimmomatic.md
       - 'khmer': khmer.md
       - 'trinity': trinity.md
+      - 'assemblyinput': assemblyinput.md
       - 'dammit': dammit.md
       - 'sourmash': sourmash.md
       - 'salmon': salmon.md
