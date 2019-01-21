@@ -67,9 +67,10 @@ onsuccess:
         if isinstance(val, dict):
             if val.get('eelpond_params', None):
                 outdir = val['eelpond_params']['outdir']
-                sys.stdout.write("\t" + key + ":  " + outdir + '\n')
-                sys.stdout.write("\t" + "go here for explanation of this step: " + documentation_base + key +"\n")
-    print("\n\n")
+                sys.stdout.write(f"\t{key}: {outdir}\n")
+                docs = documentation_base + key
+                sys.stdout.write(f"\t\t     for explanation of this step, see: {docs} \n\n")
+    print("\n")
     ##
     shell('cat {fish}')
 
