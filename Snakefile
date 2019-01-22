@@ -15,6 +15,10 @@ import glob
 
 min_version("5.1.2") #minimum snakemake version
 
+from snakemake.remote import FTP, HTTP
+FTP = FTP.RemoteProvider()
+HTTP = HTTP.RemoteProvider()
+
 # read in sample info 
 samples = pd.read_table(config["samples"],dtype=str).set_index(["sample", "unit"], drop=False)
 #validate(samples, schema="schemas/samples_v2.schema.yaml") # new version
