@@ -36,7 +36,7 @@ shell("dammit databases --install {db_cmd} --n_threads {snakemake.threads} {db_e
 
 # busco groups need to be installed separately
 for busco_grp in busco_dbs:
-    shell("dammit databases --install {db_cmd} --busco-group {busco_grp} --n_threads {snakemake.threads} {db_extra} {log}")
+    shell("dammit databases --install {db_cmd} --busco-group {busco_grp} {db_extra} {log}") #--n_threads {snakemake.threads}
 
 if not db_only:
 # run annotation
