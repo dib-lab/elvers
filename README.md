@@ -53,6 +53,12 @@ Activate that environment. You'll need to do this anytime you want to run eelpon
 conda activate eelpond
 ```
 
+Now, grab the test data, and untar:
+```
+curl -L https://osf.io/chb7z/download -o nema_testdata.tar.gz
+tar xvf nema_testdata.tar.gz
+```
+
 Now you can start running eelpond!
 
 To test a "full" workflow, consisting of read pre-processing, kmer trimming, Trinity assembly, dammit annotation and salmon quantification:
