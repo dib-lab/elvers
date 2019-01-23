@@ -10,7 +10,7 @@ install:
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
   - conda info -a
-  - conda create -q -n test-env -f ep_utils/eelpond_environment.yaml
+  - conda create -q -n test-env --file=ep_utils/eelpond_environment.yaml
   - source activate test-env
 
 script:
