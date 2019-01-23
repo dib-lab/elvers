@@ -220,7 +220,7 @@ def main(args):
                                  printdag=args.dag, keepgoing=args.keep_going,
                                  forcetargets=args.forcetargets,forceall=args.forceall)
     
-        if status and reportfile:
+        if status and reportfile and not args.dry_run:
             snakemake.snakemake(snakefile, configfile=paramsfile, report=reportfile)
             print(f"\t see the report file at {reportfile}\n\n ")
         if status: # translate "success" into shell exit code of 0
