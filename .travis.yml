@@ -32,5 +32,5 @@ install:
   - source activate test-env
 
 script:
-  - ./run_eelpond nema-download.yaml assemble
+  - ./run_eelpond nema-download.yaml assemble -t 6
   - rm -fr miniconda/env/test-env
