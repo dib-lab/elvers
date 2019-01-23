@@ -3,17 +3,20 @@ os: linux
 dist: xenial
 
 cache:
+  timeout: 1000
   directories:
     - $HOME/miniconda
 
-
 before_install:
+- ls -FC $HOME/miniconda
 - if test -e $HOME/miniconda/bin; then
     echo "miniconda already installed.";
   else
     echo "Installing miniconda.";
+    rm -fr $HOME/miniconda;
     wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
     bash miniconda.sh -b -p $HOME/miniconda;
+    ls -FC $HOME/miniconda;
   fi
 
 install:
@@ -25,9 +28,10 @@ install:
   - conda config --add channels defaults
   - conda config --add channels bioconda
   - conda config --add channels conda-forge
-  - rm -fr miniconda/env/test-env
-  - conda env create --file ep_utils/eelpond_environment.yaml -n test-env
+  - rm -fr $HOME/miniconda/envs/test-env
+  - conda env create --file environment.yml -n test-env
   - source activate test-env
 
 script:
-  - ./run_eelpond nema-download.yaml
+  - ./run_eelpond nema-download.yaml assemble -t 4
+  - rm -fr $HOME/miniconda/envs/test-env
