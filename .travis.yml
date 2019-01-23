@@ -13,7 +13,7 @@ install:
   - conda config --add channels defaults
   - conda config --add channels bioconda
   - conda config --add channels conda-forge
-  - conda env create --file ep_utils/eelpond_environment.yaml -n test-env
+  - conda env create --file environment.yml -n test-env
   - source activate test-env
 
 script:
