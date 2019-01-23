@@ -34,4 +34,4 @@ install:
 
 script:
   - ./run_eelpond nema-download.yaml assemble -t 4
-  - rm -fr $HOME/miniconda/env/test-env
+  - rm -fr $HOME/miniconda/envs/test-env
