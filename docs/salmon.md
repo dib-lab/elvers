@@ -1,6 +1,8 @@
 # Quantification with Salmon
 
-## Quickstart: Running salmon quantificaton with eelpond
+We can use [Salmon](http://salmon.readthedocs.org/en/latest/) to quantify expression. Salmon is a (relatively) new breed of software for quantifying RNAseq reads that is both really fast and takes transcript length into consideration ([Patro et al. 2015](https://doi.org/10.1038/nmeth.4197)).
+
+## Quickstart: Running salmon quantification with eelpond
 
 ```
 ./run_eelpond nema-test quantify
@@ -27,9 +29,6 @@ If you have not already run `./run_eelpond nema-test assemble`:
     This is commented out in the test data yaml, but go ahead and uncomment (remove leading `#`) in order to use this option. If you have these in your configfile, `eelpond` will automatically assume you want to run the `assemblyinput` rules, but it's nice to specify them in the command anyway :).
 
 
-We will use [Salmon](http://salmon.readthedocs.org/en/latest/) to
-quantify expression. Salmon is a new breed of software for quantifying RNAseq reads that is both really fast and takes
-transcript length into consideration ([Patro et al. 2015](https://doi.org/10.1038/nmeth.4197)).
 
 ## Salmon Commands 
 
