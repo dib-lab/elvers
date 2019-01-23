@@ -33,3 +33,4 @@ install:
 
 script:
   - ./run_eelpond nema-download.yaml assemble
+  - rm -fr miniconda/env/test-env
