@@ -157,15 +157,6 @@ def main(args):
             sys.exit(-1)
         # first, grab all params in user config file
         configD = import_configfile(configfile)
-        extra_configs = {}
-        for c in args.extra_config:
-            extra_configs = import_configfile(find_yaml(thisdir, c, 'extra_config'), extra_configs)
-        
-        
-        # this only updates keys that already exist in configD, throws out rest of keys
-        update_nested_dict(extra_configs, configD)
-        
-        
         # build info for assemblyInput
         assembInput = configD.get('assemblyinput', None)
         if assembInput:
@@ -178,11 +169,21 @@ def main(args):
             sys.exit(-1)
         # next, grab all eelpond defaults, including rule-specific default parameters (*_params.yaml files) 
         paramsD = build_default_params(thisdir, targs)
+        # add any configuration from extra config files
+        extra_configs = {}
+        for c in args.extra_config:
+            extra_configs = import_configfile(find_yaml(thisdir, c, 'extra_config'), extra_configs)
+        # this function only updates keys that already exist. so we need to wait till here (after importing params) to read in extra_configs,
+        # rather than doing this when reading in the main configfile
+        # first update with extra configs, then with main configfile
+        update_nested_dict(paramsD,extra_configs)
         # update defaults with user-specified parameters
         update_nested_dict(paramsD,configD) # configD takes priority over default params 
+
         # add extension to overall assembly_extensions info
         if assemblyinput_ext: # note, need to do it here to prevent override with defaults
             paramsD['assembly_extensions'] = list(set(paramsD.get('assembly_extensions', []) + [assemblyinput_ext]))
+        
         # use params to build directory structure
         paramsD = build_dirs(thisdir, paramsD)
         # Note: Passing a configfile allows nested yaml/dictionary format. 

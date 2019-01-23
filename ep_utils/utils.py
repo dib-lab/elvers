@@ -56,6 +56,7 @@ def import_configfile(config_file, configD=None):
 
 def update_nested_dict(d, other):
 # Can't just update at top level, need to update nested params
+# Note that this only keeps keys that already exist in other
 #https://code.i-harness.com/en/q/3154af
     for k, v in other.items():
         if isinstance(v, collections.Mapping):
