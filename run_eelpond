@@ -233,7 +233,7 @@ Run eelpond snakemake workflows, using the given configfile.
 
 Available Workflows:
 
-   eel_pond               - run full eel_pond workflow (default)
+   eel_pond           - run full eel_pond workflow (default)
    preprocess         - preprocess reads 
    assemble           - transcriptome assembly 
    annotate           - annotate transcriptome assembly
