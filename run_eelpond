@@ -60,6 +60,7 @@ def build_default_params(workdir, targets):
 def build_dirs(ep_dir, params):
     # build main eelpond dir info
     rules_dir = params['eelpond_directories']['rules']
+    params['eelpond_directories']['base_dir'] = ep_dir
     params['eelpond_directories']['rules'] = os.path.join(ep_dir, rules_dir)
     animals_dir =  params['eelpond_directories']['animals']
     params['eelpond_directories']['animals'] = os.path.join(ep_dir, 'ep_utils', animals_dir)
@@ -215,6 +216,7 @@ def main(args):
                                  verbose=args.verbose, debug_dag=args.debug, 
                                  conda_prefix=args.conda_prefix, 
                                  create_envs_only=args.create_envs_only,
+                                 restart_times=2,
                                  printdag=args.dag, keepgoing=args.keep_going,
                                  forcetargets=args.forcetargets,forceall=args.forceall)
     

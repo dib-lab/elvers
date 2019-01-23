@@ -48,7 +48,6 @@ eelpond_workflows:
   annotate:
     targets:
       - dammit
-      - sourmash
   quantify:
     include:
       - get_data
