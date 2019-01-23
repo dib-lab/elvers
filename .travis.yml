@@ -12,7 +12,7 @@ before_install:
     echo "miniconda already installed.";
   else
     echo "Installing miniconda.";
-    rm -fr miniconda;
+    rm -fr $HOME/miniconda;
     wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
     bash miniconda.sh -b -p $HOME/miniconda;
     ls -FC $HOME/miniconda;
