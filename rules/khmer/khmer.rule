@@ -37,6 +37,7 @@ if diginorm:
             extra = khmer_params.get('extra', '')
         threads: 10
         log: join(LOGS_DIR, 'khmer/{sample}_{unit}.pe.diginorm.log')
+        benchmark: join(LOGS_DIR, 'khmer/{sample}_{unit}.pe.diginorm.benchmark')
         conda:  'khmer-env.yaml'
         shell: " (interleave-reads.py {input.r1} {input.r2} ) | "
                " (trim-low-abund.py -V -k {params.k} -Z {params.Z} -C {params.C} - -o - -M {params.memory} "
@@ -61,6 +62,7 @@ if diginorm:
             extra = khmer_params['extra']
         threads: 2
         log: join(LOGS_DIR, 'khmer/{sample}_{unit}.se.diginorm.log')
+        benchmark: join(LOGS_DIR, 'khmer/{sample}_{unit}.se.diginorm.benchmark')
         conda: 'khmer-env.yaml'
         shell:
                "(trim-low-abund.py {input} -V -k {params.k} -Z {params.Z} -C {params.C} -o {output} "
@@ -84,6 +86,7 @@ else:
             extra = khmer_params.get('extra', '')
         threads: 10
         log: join(LOGS_DIR, 'khmer/{sample}_{unit}.pe.log')
+        benchmark: join(LOGS_DIR, 'khmer/{sample}_{unit}.pe.benchmark')
         conda:  'khmer-env.yaml'
         shell: " (interleave-reads.py {input.r1} {input.r2} )| "
                " (trim-low-abund.py -V -k {params.k} -Z {params.Z} -C {params.C} - -o - -M {params.memory})"
@@ -105,6 +108,7 @@ else:
             extra = khmer_params['extra']
         threads: 2
         log: join(LOGS_DIR, 'khmer/{sample}_{unit}.se.log')
+        benchmark: join(LOGS_DIR, 'khmer/{sample}_{unit}.se.benchmark')
         conda: 'khmer-env.yaml'
         shell:
                "(trim-low-abund.py {input} -V -k {params.k} -Z {params.Z} -C {params.C} -o {output} "
@@ -118,7 +122,8 @@ rule khmer_split_paired:
         r1=join(khmer_dir, '{sample}_{unit}_1.khmer.fq.gz'),
         r2=join(khmer_dir, '{sample}_{unit}_2.khmer.fq.gz'),
     threads: 2 
-    log: join(LOGS_DIR, 'khmer/{sample}_{unit}_split_paired' + BASE + '.log') 
+    log: join(LOGS_DIR, 'khmer/{sample}_{unit}.split_pe.log')
+    benchmark: join(LOGS_DIR, 'khmer/{sample}_{unit}.split_pe.benchmark')
     conda: "khmer-env.yaml"
     shell: """
         split-paired-reads.py {input} --gzip -1 {output.r1} -2 {output.r2} >> {log}

@@ -48,7 +48,8 @@ rule trinity:
         seqtype=assembly_params.get('seqtype', 'fq'),
         extra=assembly_params.get('extra', '')
     threads: 4
-    log: join(LOGS_DIR, 'trinity/trinity.log')
+    log: join(LOGS_DIR, 'trinity', 'trinity.log')
+    benchmark: join(LOGS_DIR, 'trinity', 'trinity.benchmark')
     conda: "trinity-env.yaml"
 	script: "trinity-wrapper.py"
 
