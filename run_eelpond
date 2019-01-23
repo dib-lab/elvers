@@ -100,7 +100,7 @@ def build_dirs(ep_dir, params):
 
 def handle_assemblyInput(assembInput, config):
     # find files
-    program_params = config.get('assemblyinput')
+    program_params = config['assemblyinput'].get('program_params')
     assemblyfile = program_params.get('assembly', None)
     assert os.path.exists(assemblyfile), 'Error: cannot find input assembly at {}\n'.format(assemblyfile)
     sys.stderr.write('\tFound input assembly at {}\n'.format(assemblyfile))
@@ -159,7 +159,7 @@ def main(args):
         # first, grab all params in user config file
         configD = read_yaml(configfile)
         # need to modify this. Since we now use 'program_params' in the configfiles, this won't upd all as desired
-        # use a function instead, but here's a hacky fix first:
+        # use a function instead, but here's a hacky fix first. This might simplify handle_assemblyinput!
         newConfig = {}
         for key, val in configD.items():
             if isinstance(val, dict):

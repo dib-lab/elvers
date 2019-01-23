@@ -14,11 +14,11 @@ We use [Trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic) (version 0.
 
 Here we use a set TruSeq Illumina adapters. However, if running this on your own data and you know you have different adapters, you'll want to input them in the configfile (see `params` section, below). If you're using the right adapters,  you should see that some of the reads are trimmed; if they’re not, you won’t see anything get trimmed.
 
-See excellent paper on trimming parameters by [MacManes 2014](https://www.frontiersin.org/articles/10.3389/fgene.2014.00013/full).
+See this excellent paper on trimming parameters by [MacManes 2014](https://www.frontiersin.org/articles/10.3389/fgene.2014.00013/full).
 
 ## Trimmomatic Command
 
-Based on these recommendations by MacManes 2014, we use this command in this pipeline:
+Based on recommendations from [MacManes 2014](https://www.frontiersin.org/articles/10.3389/fgene.2014.00013/full), we use this command by default:
 
 ```
 TrimmomaticPE ${base}.fastq.gz ${baseR2}.fastq.gz \
