@@ -8,6 +8,8 @@ cache:
 
 
 before_install:
+- ls -FC $HOME/miniconda
+- rm -fr $HOME/miniconda
 - if test -e $HOME/miniconda/bin; then
     echo "miniconda already installed.";
   else
