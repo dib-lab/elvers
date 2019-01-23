@@ -1,5 +1,7 @@
 # eelpond
 
+[![Build Status](https://travis-ci.org/dib-lab/eelpond.svg?branch=master)](https://travis-ci.org/dib-lab/eelpond)
+
 ```
                            ___
                         .-'   `'.
@@ -45,7 +47,7 @@ cd eelpond
 
 Create a conda environment with all the dependencies for eelpond
 ```
-conda env create --file ep_utils/eelpond_environment.yaml -n eelpond
+conda env create --file environment.yml -n eelpond
 ```
 
 Activate that environment. You'll need to do this anytime you want to run eelpond
