@@ -3,6 +3,7 @@ os: linux
 dist: xenial
 
 cache:
+  timeout: 1000
   directories:
     - $HOME/miniconda
 
