@@ -7,15 +7,17 @@ We can use [Salmon](http://salmon.readthedocs.org/en/latest/) to quantify expres
 ```
 ./run_eelpond nema-test quantify
 ```
-If you haven't already trimmed reads with trimmomatic, that will happen automatically for you. However, you do need to either 1) have already run an assembly, such that a `fasta` file is sitting in the `eelpond/assembly` directory, 2) Run an assembly at the same time, or 3) pass an assembly in via `assemblyinput`
+If you haven't already trimmed reads with trimmomatic, that will happen automatically for you. However, you do need to either 1) Run an assembly function at the same time (or have already run an assembly, such that a `fasta` file is sitting in the `eelpond/assembly` directory) or 2) pass an assembly in via `assemblyinput`
 
-If you have not already run `./run_eelpond nema-test assemble`:
+If you've generated an assembly, even if you've already run `./run_eelpond nema-test assemble`:
 
-   2) Run trinity assembly at the same time:
+   1) "Run" trinity assembly at the same time:
    ```
-   ./run_eelpond nema-test assemble annotate
+   ./run_eelpond nema-test assemble quantify
    ```
-   3) OR, Pass an assembly in via `assemblyinput`
+   If you've already run the assembly, it will not run again.
+
+   2) OR, Pass an assembly in via `assemblyinput`
    ```
    ./run_eelpond assemblyinput annotate
    ```
