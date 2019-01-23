@@ -28,10 +28,10 @@ install:
   - conda config --add channels defaults
   - conda config --add channels bioconda
   - conda config --add channels conda-forge
-  - rm -fr miniconda/env/test-env
+  - rm -fr $HOME/miniconda/env/test-env
   - conda env create --file environment.yml -n test-env
   - source activate test-env
 
 script:
   - ./run_eelpond nema-download.yaml assemble -t 4
-  - rm -fr miniconda/env/test-env
+  - rm -fr $HOME/miniconda/env/test-env
