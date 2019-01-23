@@ -63,9 +63,9 @@ tar xvf nema_testdata.tar.gz
 
 Now you can start running eelpond!
 
-To test a "full" workflow, consisting of read pre-processing, kmer trimming, Trinity assembly, dammit annotation and salmon quantification:
+To test a full "eel_pond" workflow, consisting of read pre-processing, kmer trimming, Trinity assembly, dammit annotation and salmon quantification:
 ```
-./run_eelpond nema-test full
+./run_eelpond nema-test eel_pond
 ```
 These will run a small set of _Nematostella vectensis_ test data (from [Tulin et al., 2013](https://evodevojournal.biomedcentral.com/articles/10.1186/2041-9139-4-16))
 
@@ -98,7 +98,7 @@ Next, build a configfile to edit:
 
 ```
 This configfile will contain all the default paramters for each step of the pipeline you target.
-If you don't specify any targets, it will default to the "full" pipeline, which executes read
+If you don't specify any targets, it will default to the full "eel_pond" pipeline, which executes read
 preprocessing, assembly, annotation, and quantification.
 
 Then, modify this configfile as necessary. 
@@ -119,9 +119,12 @@ The essential component is the `samples.tsv` file, which points `eelpond` to you
   - kmer_trim: Kmer Trimming and/or Digital Normalization (khmer)
   - assemble: Transcriptome Assembly (trinity)
   - assemblyinput: Specify assembly for downstream steps
-  - annotate : Annotate the transcriptome (dammit, sourmash)
+  - annotate: Annotate the transcriptome (dammit, sourmash)
   - quantify: Quantify transcripts (salmon) 
-  - full: preprocess, kmer_trim, assemble, annotate, quantify 
+  - eel_pond: preprocess, kmer_trim, assemble, annotate, quantify 
 
 
-
+You can see the available workflows (and which programs they run) by using the `--print_workflows` flag:
+```
+./run_eelpond nema-test --print_workflows
+```
