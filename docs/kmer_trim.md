@@ -1,27 +1,28 @@
-# Preprocess Subworkflow
+# Kmer_trim Subworkflow
 
-The "preprocess" subworkflow conducts read quality trimming. At the moment, this workflow consists of:
+The "kmer_trim" subworkflow conducts read quality trimming and kmer trimming. At the moment, this workflow consists of:
  
   - [get_data](get_data.md) - an `eelpond` utility
   - [trimmomatic](trimmomatic.md)
   - [fastqc](fastqc.md), run on both pre-trim and post-trim data
+  - [khmer](khmer.md)
 
 
 # Quickstart
 
-To run the preprocess subworkflow, run: 
+To run the kmer_trim subworkflow, run: 
 
 ```
-./run_eelpond nema-test preprocess
+./run_eelpond nema-test kmer_trim
 ```
 
-## Configuring the preprocess workflow 
+## Configuring the kmer_trim subworkflow 
 
 To set up your sample info and build a configfile, see [Understanding and Configuring Workflows](about_and_configure.md).
 
-If you want to add the `preprocess` program parameters to a previously built configfile, run:
+If you want to add the `kmer_trim` program parameters to a previously built configfile, run:
 ```
-./run_eelpond config.yaml preprocess --print_params
+./run_eelpond config.yaml kmer_trim --print_params
 ```
 
 A small set of parameters should print to your console:
