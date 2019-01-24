@@ -49,6 +49,13 @@ khmer:
   extra: ''
   ksize: 20
   memory: 4e9
+trinity:
+  add_single_to_paired: false
+  input_kmer_trimmed: true
+  input_trimmomatic_trimmed: false
+  max_memory: 30G
+  seqtype: fq
+  extra: ''
   #######################################################
 ```
 
