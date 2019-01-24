@@ -18,7 +18,7 @@ This is the default workflow. To run:
 ```
 ./run_eelpond nema-test.yaml
 # or
-./run_eelpond nema-test.yaml eel_pond
+./run_eelpond nema-test.yaml default
 ```
 This will run a small set of Nematostella vectensis test data (from [Tulin et al., 2013](https://evodevojournal.biomedcentral.com/articles/10.1186/2041-9139-4-16)).
 
@@ -36,7 +36,7 @@ Next, build a configfile to edit:
 ```
 ./run_eelpond my-config.yaml --build_config
 ```
-This configfile will contain all the default parameters for each step of the pipeline you target. If you don't specify any targets, it will default to the full "eel_pond" Eel Pond Protocol pipeline, which executes read preprocessing, assembly, annotation, and quantification.
+This configfile will contain all the default parameters for each step of the pipeline you target. If you don't specify any targets, it will run the default Eel Pond Protocol pipeline, which executes read preprocessing, assembly, annotation, and quantification.
 
 Please see the documentation file for each individual program (linked above) for what parameters to modify.
 

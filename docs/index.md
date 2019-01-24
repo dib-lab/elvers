@@ -67,7 +67,7 @@ The Eel Pond protocol (which inspired the `eelpond` name) included line-by-line 
 
 To test the default workflow:
 ```
-./run_eelpond nema-test eel_pond
+./run_eelpond nema-test default
 ```
 This will run a small set of _Nematostella vectensis_ test data (from [Tulin et al., 2013](https://evodevojournal.biomedcentral.com/articles/10.1186/2041-9139-4-16))
 
@@ -91,7 +91,7 @@ Next, build a configfile to edit:
 ```
 
 This configfile will contain all the default paramters for each step of the workflow you target.
-If you don't specify any targets, it will default to the full "eel_pond" pipeline, which executes read
+If you don't specify any targets, it will run the default eel_pond pipeline, which executes read
 preprocessing, assembly, annotation, and quantification. 
 
 Then, modify this configfile as necessary. 
@@ -119,7 +119,7 @@ See the help, here:
   - assemblyinput: Specify assembly for downstream steps
   - annotate : Annotate the transcriptome (dammit, sourmash)
   - quantify: Quantify transcripts (salmon) 
-  - eel_pond: preprocess, kmer_trim, assemble, annotate, quantify 
+  - default: preprocess, kmer_trim, assemble, annotate, quantify 
 
 You can see the available workflows (and which programs they run) by using the `--print_workflows` flag:
 ```
