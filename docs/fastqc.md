@@ -15,6 +15,12 @@ Check out these examples of [good](https://www.bioinformatics.babraham.ac.uk/pro
 
 Note that FastQC only calculates certain statistics (like duplicated sequences) for subsets of the data (e.g. duplicate sequences are only analyzed for the first 100,000 sequences in each file). 
 
+## Output files:
+
+Your main output directory will be determined by your config file: by default it is `BASENAME_out` (you specify BASENAME).
+
+FastQC will output quality control files in the `preprocess/fastqc` subdirectory of this output directory. All outputs will contain `*.fastqc.html` or `*.fastqc.zip`.
+
 
 ## Modifying Params for FastQC:
 
@@ -44,7 +50,7 @@ See the [FastQC documentation](https://www.bioinformatics.babraham.ac.uk/project
 
 You can run fastqc as a standalone rule, instead of withing a larger `eelpond` workflow. However, to do this, you need to make sure the input files are available.
 
-For FastQC, the input files are your input data - either downloaded or linked into the `input_data` directory via `get_data`.
+For FastQC, the input files are your input data - either downloaded or linked into the `input_data` directory via `get_data`, and the files that have been quality trimmed.
 
 If you've already done this, you can run:
 ```
@@ -52,11 +58,11 @@ If you've already done this, you can run:
 ```
 If not, you can run both at once to make sure fastqc can run properly.
 ```
-./run_eelpond my_config get_data fastqc
+./run_eelpond my_config get_data trimmomatic fastqc
 ```
 
 
-## FastQC rule
+## Snakemake rule
 
 We use a local copy of the [fastqc snakemake wrapper](https://snakemake-wrappers.readthedocs.io/en/stable/wrappers/fastqc.html) to run FastQC.
 

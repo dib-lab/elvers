@@ -18,68 +18,54 @@ Finally, since Trinity expects separate `left` and `right` files, we use `split-
 split-paired-reads.py sample.paired.gz
 ```
 
-## Customizing Khmer parameters
+## Output files:
 
-To modify any program params, you need to add a couple lines to the config file you provide to `eelpond`.
+Your main output directory will be determined by your config file: by default it is `BASENAME_out` (you specify BASENAME).
 
-To get a khmer configfile you can modify, run:
+Khmer will output quality control files in the `preprocess` subdirectory of this output directory. All outputs will contain `*.khmer.fq.gz`.
+
+
+## Modifying Params for Khmer:
+
+Be sure to set up your sample info and build a configfile first (see [Understanding and Configuring Workflows](about_and_configure.md)).
+
+To see the available parameters for the `trimmomatic` rule, run
 ```
-./run_eelpond khmer.yaml khmer --build_config
+./run_eelpond config trimmomatic --print_params
 ```
-The output should be a small `yaml` configfile that contains:
+
+In here, you'll see a section for "trimmomatic" parameters that looks like this:
+
 ```
-  ####################  khmer  ####################
+    ####################  khmer  ####################
 khmer:
   C: 3
   Z: 18
   coverage: 20
   diginorm: true
-  extra: ''
   ksize: 20
   memory: 4e9
+  #####################################################
 ```
-Override default params by modifying any of these lines, and placing them in the config file you're using to run `eelpond`.
 
-## eelpond rule
+See the [Khmer documentation]([khmer](https://khmer.readthedocs.io/)) to learn more about these parameters. Be sure the modified lines go into the config file you're using to run `eelpond` (see [Understanding and Configuring Workflows](about_and_configure.md)).
 
-For snakemake afficionados, here's the basic structure of the khmer eelpond rules. Directories and parameters are specified via the configfile, for more, see the rule on [github](https://github.com/dib-lab/eelpond/blob/master/rules/khmer/khmer.rule).
+## Advanced Usage: Running Khmer as a standalone rule
 
+You can run khmer as a standalone rule, instead of withing a larger `eelpond` workflow. However, to do this, you need to make sure the input files are available.
+
+For khmer, the input files are trimmed input data (e.g. output of trimmomatic). 
+
+If you've already done this, you can run:
 ```
-rule khmer_pe_diginorm:
-    """
-    kmer trim and diginorm with khmer
-    """
-    input: unpack(get_trimmed)
-    output: 
-        paired=join(khmer_dir,'{sample}_{unit}.paired.khmer.fq.gz'),
-        single=join(khmer_dir,'{sample}_{unit}.single.khmer.fq.gz'),
-    message:
-        """--- khmer trimming of low-abundance kmers and digital normalization ---"""
-    params:
-        k = khmer_params.get('ksize', 20),
-        Z = khmer_params.get('Z', 18), 
-        C = khmer_params.get('C', 3), 
-        memory = khmer_params.get('memory', 4e9),
-        cov = khmer_params.get('coverage', 20),
-        extra = khmer_params.get('extra', '')
-    threads: 10
-    log: join(LOGS_DIR, 'khmer/{sample}_{unit}.pe.diginorm.log')
-    conda:  'khmer-env.yaml'
-    shell: " (interleave-reads.py {input.r1} {input.r2} ) | "
-           " (trim-low-abund.py -V -k {params.k} -Z {params.Z} -C {params.C} - -o - -M {params.memory} "
-           " --diginorm --diginorm-coverage={params.cov}) | (extract-paired-reads.py --gzip "
-           " -p {output.paired} -s {output.single}) > {log}"
-
-rule khmer_split_paired:
-    input: join(khmer_dir,'{sample}_{unit}.paired.khmer.fq.gz'),
-    output:
-        r1=join(khmer_dir, '{sample}_{unit}_1.khmer.fq.gz'),
-        r2=join(khmer_dir, '{sample}_{unit}_2.khmer.fq.gz'),
-    threads: 2
-    log: join(LOGS_DIR, 'khmer/{sample}_{unit}_split_paired' + BASE + '.log')
-    conda: "khmer-env.yaml"
-    shell: """
-        split-paired-reads.py {input} --gzip -1 {output.r1} -2 {output.r2} >> {log}
-        """
-
+./run_eelpond my_config khmer
 ```
+If not, you can run the prior steps at the same time to make sure khmer can find these input files: 
+```
+./run_eelpond my_config get_data trimmomatic khmer
+```
+
+
+## Snakemake Rule
+
+For snakemake afficionados, see the khmer rule on [github](https://github.com/dib-lab/eelpond/blob/master/rules/khmer/khmer.rule).

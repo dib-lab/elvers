@@ -1,5 +1,6 @@
 fastqc:
   eelpond_params:
+    outdir: preprocess/fastqc
     extensions: 
       read:
         pe:
