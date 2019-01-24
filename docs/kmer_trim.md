@@ -1,6 +1,6 @@
 # Kmer_trim Subworkflow
 
-The "kmer_trim" subworkflow conducts read quality trimming and kmer trimming. At the moment, this workflow consists of:
+Subworkflows combine tools in the right order to facilitate file targeting withing `eelpond`. The "kmer_trim" subworkflow conducts read quality trimming and kmer trimming. At the moment, this workflow consists of:
  
   - [get_data](get_data.md) - an `eelpond` utility
   - [trimmomatic](trimmomatic.md)
@@ -31,6 +31,7 @@ A small set of parameters should print to your console:
  ####################  kmer_trim  ####################
 get_data:
   download_data: false
+  use_ftp: false
 trimmomatic:
   adapter_file:
     pe_path: ep_utils/TruSeq3-PE-2.fa
