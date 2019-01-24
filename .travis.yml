@@ -34,5 +34,5 @@ install:
 
 script:
   - ./run_eelpond nema-download.yaml assemble -t 4
-  - rm -fr $HOME/miniconda/envs/test-env
+  - rm -fr $HOME/miniconda/envs/test-env $HOME/miniconda/pkgs/cache
   - find $HOME/miniconda -type f -printf '%TY-%Tm-%Td %TT %p\n' | sort -r | head
