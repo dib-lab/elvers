@@ -27,6 +27,10 @@ trimmomatic:
   trim_cmd:  "ILLUMINACLIP:{}:2:40:15 LEADING:2 TRAILING:2 SLIDINGWINDOW:4:15 MINLEN:25"
   extra: ''
 ```
+## Quickstart
+
+Run Trimmomatic via the "default" [Eel Pond workflow](eel_pond_workflow.md) or via the [preprocess subworkflow](preprocess.md). To run Trimmomatic as a standalone program, see "Advanced Usage" section below.
+
 ## Output files:
 
 Your main output directory will be determined by your config file: by default it is `BASENAME_out` (you specify BASENAME).

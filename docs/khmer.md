@@ -17,6 +17,9 @@ Finally, since Trinity expects separate `left` and `right` files, we use `split-
 ```
 split-paired-reads.py sample.paired.gz
 ```
+## Quickstart
+
+Run Khmer via the "default" [Eel Pond workflow](eel_pond_workflow.md) or via the [kmer_trim subworkflow](kmer_trim.md). To run Khmer as a standalone program, see "Advanced Usage" section below.
 
 ## Output files:
 

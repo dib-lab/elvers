@@ -15,6 +15,10 @@ Check out these examples of [good](https://www.bioinformatics.babraham.ac.uk/pro
 
 Note that FastQC only calculates certain statistics (like duplicated sequences) for subsets of the data (e.g. duplicate sequences are only analyzed for the first 100,000 sequences in each file). 
 
+## Quickstart
+
+Run FastQC via the "default" [Eel Pond workflow](eel_pond_workflow.md) or via the [preprocess subworkflow](preprocess.md). To run FastQC as a standalone program, see "Advanced Usage" section below.
+
 ## Output files:
 
 Your main output directory will be determined by your config file: by default it is `BASENAME_out` (you specify BASENAME).
