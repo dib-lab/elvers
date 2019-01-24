@@ -44,15 +44,15 @@ nav:
     - 'Protein-level Assembly Workflow': protein_assembly_workflow.md
     - 'Subworkflows':
       - 'preprocess': preprocess.md
-    #  - 'kmer_trim': kmer_trim.md
-    #  - 'assemble': assemble.md
-      #- 'assemblyinput': assemblyinput.md
-      #- 'annotate': annotate:.md
-      #- 'quantify': quantify.md
+      - 'kmer_trim': kmer_trim.md
+      - 'assemble': assemble.md
+      - 'assemblyinput': assemblyinput.md
+      - 'annotate': annotate:.md
+      - 'quantify': quantify.md
+      - 'diffexp': diffexp.md
       #- 'plass_assemble': plass_assemble:.md
       #- 'paladin_map': .paladin_mapmd
       #- 'correct_reads': correct_reads:.md
-      #- 'diffexp': diffexp.md
     - 'Programs Used':
       - 'get_data': get_data.md
       - 'fastqc': fastqc.md
