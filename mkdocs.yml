@@ -37,21 +37,22 @@ extra_css:
 
 # give a title for each page
 nav:
-  - 'About' : 'index.md'
+  - 'Quickstart' : 'index.md'
+  - 'Choosing and Configuring Workflows': about_and_configure.md
   - 'Available Workflows':
-    - 'Eel Pond Protocol': 'Eel_Pond_workflow.md'
-    - 'Protein-level Assembly Workflow': 'Protein_assembly_workflow.md'
-    #- 'Subworkflows':
-    #  - 'preprocess': preprocess.md
-    #  - 'kmer_trim': kmer_trim.md
-    #  - 'assemble': assemble.md
-    #  - 'assemblyinput': assemblyinput.md
-    #  - 'annotate': annotate:.md
-    #  - 'quantify': quantify.md
-    #  - 'plass_assemble': plass_assemble:.md
-    #  - 'paladin_map': .paladin_mapmd
-    #  - 'correct_reads': correct_reads:.md
-    #  - 'diffexp': diffexp.md
+    - 'Eel Pond Protocol': eel_pond_workflow.md
+    - 'Protein-level Assembly Workflow': protein_assembly_workflow.md
+    - 'Subworkflows':
+      - 'preprocess': preprocess.md
+      - 'kmer_trim': kmer_trim.md
+      - 'assemble': assemble.md
+      - 'annotate': annotate.md
+      - 'quantify': quantify.md
+      - 'diffexp': diffexp.md
+      - 'sourmash_compute': sourmash_compute.md
+      - 'plass_assemble': plass_assemble.md
+      - 'paladin_map': paladin_map.md
+      #- 'correct_reads': correct_reads:.md
     - 'Programs Used':
       - 'get_data': get_data.md
       - 'fastqc': fastqc.md
@@ -68,8 +69,7 @@ nav:
       - 'paladin': paladin.md
       - 'rcorrector': rcorrector.md
   - 'For Developers':
-    - 'dev_tips.md'
-    - 'Configuration.md'
+    - 'Under the Hood': under_the_hood.md
 
 
 # Extensions

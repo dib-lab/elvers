@@ -1,15 +1,6 @@
 # Trinity
 
-## Quickstart: running trinity via eelpond:
-
-```
-./run_eelpond nema-test assemble
-```
-This will run preprocessing and kmer-trimming for you prior to assembly. For more options, read below!
-
-## Trinity
-
-The Eel Pond protocol uses  the [Trinity *de novo* transcriptome assembler](https://github.com/trinityrnaseq/trinityrnaseq/wiki) to take short, trimmed/diginorm Illumina reads data and assemble (predict) full-length transcripts into a single fasta file output. Each contig in the fasta assembly file represents one unique transcript. Trinity is a single-ksize assembler, with a default of *k* = 25.
+The Eel Pond protocol uses the [Trinity *de novo* transcriptome assembler](https://github.com/trinityrnaseq/trinityrnaseq/wiki) to take short, trimmed/diginorm Illumina reads data and assemble (predict) full-length transcripts into a single fasta file output. Each contig in the fasta assembly file represents one unique transcript. Trinity is a single-ksize assembler, with a default of *k* = 25.
 
 We recommend using kmer-trimmed reads (output of khmer) as input into Triniity to reduce dataset complexity without losing valuable kmers. The resulting output assembly fasta file can then be used to align the trimmed (not diginorm) short Illumina reads and quantify expression per transcript.
 
@@ -32,17 +23,29 @@ Trinity --left left.fq \
 
 But we **highly recommend** you modify `max_memory` and `CPU` to fit your data and compute resources.
 
-## Customizing Trinity parameters
 
-To modify any program params, you need to add a couple lines to the config file you provide to `eelpond`.
+## Quickstart
 
-To get a trinity configfile you can modify, run:
+Run Trinity via the "default" [Eel Pond workflow](eel_pond_workflow.md) or via the [assemble subworkflow](assemble.md). To run Trinity as a standalone program, see "Advanced Usage" section below.
+
+## Output files:
+
+Your main output directory will be determined by your config file: by default it is `BASENAME_out` (you specify BASENAME).
+
+Trinity will output files in the `assembly` subdirectory of this output directory. The fasta file will be `BASENAME_trinity.fasta` and the gene-trans map will be `BASENAME_trinity.fasta.gene_trans_map`. 
+
+
+## Modifying Params for Trinity:
+
+Be sure to set up your sample info and build a configfile first (see [Understanding and Configuring Workflows](about_and_configure.md)).
+
+To see the available parameters for the `trinity` rule, run
 ```
-./run_eelpond trinity.yaml trinity --build_config
+./run_eelpond config trinity --print_params
 ```
-The output should be a small `yaml` configfile that contains:
+This will print the following:
 ```
-####################  trinity  ####################
+  ####################  trinity  ####################
 trinity:
   input_kmer_trimmed: true
   input_trimmomatic_trimmed: false
@@ -50,54 +53,34 @@ trinity:
   max_memory: 30G
   seqtype: fq
   extra: ''
+  #####################################################
 ```
-We recommend using kmer-trimmed reads as input. If both `input_kmer_trimmed` and `input_trimmomatic_trimmed` are `False`, we will just use raw reads from the `samples.tsv` file. 
-
 In addition to changing parameters we've specifically enabled, you can modify the `extra` param to pass any extra trinity parameters, e.g.:
-```
-  extra: '--someflag someparam --someotherflag thatotherparam'
-```
-Or in Trinity params:
 ```
   extra: '--no_normalize_reads' # to turn off Trinity's digital normalization steps 
 ```
-Override default params by modifying any of these lines, and placing them in the config file you're using to run `eelpond`. Here, we just generated params for `trinity`, but if you're running a larger workflow, we recommend that you generate all params for your workflow in a single file, e.g. `./run_eelpond my-workflow.yaml full --build_config` and edit parameters there.
 
+Within the "default" [Eel Pond workflow](eel_pond_workflow.md) or the [assemble subworkflow](assemble.md), these options enable you to choose kmer-trimmed, quality-trimmed, or raw sequencing data as input. We recommend using kmer-trimmed reads as input. If both `input_kmer_trimmed` and `input_trimmomatic_trimmed` are `False`, we will just use raw reads from the `samples.tsv` file. 
 
-## Trinity eelpond rule
+See the [Trinity documentation](https://github.com/trinityrnaseq/trinityrnaseq/wiki) to learn more about these parameters. Be sure the modified lines go into the config file you're using to run `eelpond` (see [Understanding and Configuring Workflows](about_and_configure.md)).
+
+## Advanced Usage: Running Trinity as a standalone rule
+
+You can run trinity as a standalone rule, instead of withing a larger `eelpond` workflow. However, to do this, you need to make sure the input files are available.
+
+For trinity, the default input files are kmer-trimmed input data (e.g. output of khmer).
+
+If you've already done this, you can run:
+```
+./run_eelpond my_config trinity
+```
+If not, you can run the prior steps at the same time to make sure khmer can find these input files:
+```
+./run_eelpond my_config get_data trimmomatic khmer trinity
+```
+
+## Snakemake rule
 
 We wrote a [Trinity snakemake wrapper](https://snakemake-wrappers.readthedocs.io/en/stable/wrappers/trinity.html) to run Trinity.
 
-For snakemake afficionados, here's the basic structure of the trinity eelpond rule. Directories and parameters are specified via the configfile, for more, see the rule on [github](https://github.com/dib-lab/eelpond/blob/master/rules/trinity/trinity.rule).
-
-```
-rule trinity:
-    input:
-        unpack(get_assembly_input)
-    output:
-        fasta = join(assembly_dir,"trinity_out_dir/Trinity.fasta"),
-        gene_trans_map = join(assembly_dir,"trinity_out_dir/Trinity.fasta.gene_trans_map"),
-    message:
-        """--- Assembling read data with Trinity --- """
-    params:
-        # optional parameters
-        seqtype=assembly_params.get('seqtype', 'fq'),
-        extra=assembly_params.get('extra', '')
-    threads: 4
-    log: join(LOGS_DIR, 'trinity/trinity.log')
-    conda: "trinity-env.yaml"
-	script: "trinity-wrapper.py"
-
-rule rename_trinity_fasta:
-    input: rules.trinity.output.fasta
-    output: join(assembly_dir, BASE + assembly_extension + '.fasta')
-    log: join(LOGS_DIR, 'trinity/cp_assembly.log')
-    shell: ("cp {input} {output}") 
-
-rule rename_trinity_gene_trans_map:
-    input: rules.trinity.output.gene_trans_map
-    output: join(assembly_dir, BASE + assembly_extension + '.fasta.gene_trans_map')
-    log: join(LOGS_DIR, 'trinity/cp_gt_map.log')
-    shell: ("cp {input} {output}") 
-```
-
+For snakemake afficionados, see the Trinity rule on [github](https://github.com/dib-lab/eelpond/blob/master/rules/trinity/trinity.rule).

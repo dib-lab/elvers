@@ -1,6 +1,6 @@
 # Eel Pond Protocol Workflow
 
-The Eel Pond protocol (which inspired the eelpond name) included line-by-line commands that the user could follow along with using a test dataset provided in the instructions. We have re-implemented the protocol here to enable automated de novo transcriptome assembly, annotation, and quick differential expression analysis on a set of short-read Illumina data using a single command. See more about this protocol [here](https://github.com/dib-lab/eelpond/blob/master/docs/eel_pond_protocol.md).
+The Eel Pond protocol (which inspired the eelpond name) included line-by-line commands that the user could follow along with using a test dataset provided in the instructions. We have re-implemented the protocol here to enable automated de novo transcriptome assembly, annotation, and quick differential expression analysis on a set of short-read Illumina data using a single command. See more about this protocol [here](https://eel-pond.readthedocs.io/en/latest/).
 
 The "Eel Pond" Protocol for RNAseq consists of:
 
@@ -14,33 +14,26 @@ The "Eel Pond" Protocol for RNAseq consists of:
 
 ## Running Test Data
 
-This is the default workflow for `eelpond`. To run:
+This is the default workflow. To run:
 ```
 ./run_eelpond nema-test.yaml
 # or
-./run_eelpond nema-test.yaml full
+#./run_eelpond nema-test.yaml default
 ```
 This will run a small set of Nematostella vectensis test data (from [Tulin et al., 2013](https://evodevojournal.biomedcentral.com/articles/10.1186/2041-9139-4-16)).
 
 ## Running Your Own Data
 
-To run your own data, you'll need to create two files, a tsv file containing your sample info, and a yaml file containing basic configuration info. 
+Set sample info and build a configfile first (see [Understanding and Configuring Workflows](about_and_configure.md)).
 
-IMPORTANT: The sample info must be in a **properly formatted** tsv file. The easiest way to do this is to copy the test data tsv and modify:
-```
-cp nema_samles.tsv my-samples.tsv
-```
-Now modify  `my-samples.tsv` with your sample information.
+To build a config, run:
 
-Next, build a configfile to edit:
 ```
-./run_eelpond my-config.yaml --build_config
+./run_eelpond ep.yaml --build_config
 ```
-This configfile will contain all the default parameters for each step of the pipeline you target. If you don't specify any targets, it will default to the "full" Eel Pond Protocol pipeline, which executes read preprocessing, assembly, annotation, and quantification.
 
-Please see the documentation file for each individual program (linked above) for what parameters to modify.
+The resulting `ep.yaml` configfile for this workflow will look something like this. The order of the parameters may be different and does not affect the order in which steps are run. Please see the documentation file for each individual program (linked above) for what parameters to modify.
 
-The configfile should look something like this:
 ```
   ####################  Eelpond Pipeline Configfile  ####################
 basename: eelpond
@@ -86,6 +79,7 @@ sourmash:
 
   ####################  quantify  ####################
 salmon:
+  input_trimmomatic_trimmed: True
   index_params:
     extra: ''
   quant_params:

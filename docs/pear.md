@@ -10,17 +10,12 @@ PEAR evaluates all possible paired-end read overlaps and without requiring the t
 
 ## Quickstart: Running PEAR with eelpond
 
-We recommend you run `pear` as part of the `paladin_map` pipeline
+We recommend you run `pear` as part of the [paladin_map](paladin_map.md) subworkflow
 
 ```
 ./run_eelpond nema-test paladin_map
 ```
-This will run trimmomatic trimming prior to PEAR merging of paired end reads and paladin mapping. If you'd like to just run `PEAR`, you can run it by including the `get_data` and `trimmomatic` rules in your pipeline:
-
-```
-./run_eelpond nema-test get_data trimmomatic pear
-```
-Note, `PEAR` only works on paired end reads, as there's nothing to do for single end reads!
+This will run trimmomatic trimming prior to PEAR merging of paired end reads and then paladin mapping. If you'd like to just run `PEAR`, see "Advanced Usage" below.
 
 ## PEAR Command
 
@@ -31,15 +26,21 @@ pear -f forward_reads -r reverse_reads \
   extra -o output_basename 
 ```
 
-## Customizing PEAR parameters
+## Output files:
 
-To modify any program params, you need to add a couple lines to the config file you provide to `eelpond`.
+Your main output directory will be determined by your config file: by default it is `BASENAME_out` (you specify BASENAME).
 
-To get a PEAR configfile you can modify, run:
+PEAR will output files in the `preprocess/pear` subdirectory of this output directory. PEAR output will have the same sample name as input, but end with `.pear.fq.gz`. 
+
+## Modifying Params for PEAR:
+
+Be sure to set up your sample info and build a configfile first (see [Understanding and Configuring Workflows](about_and_configure.md)).
+
+To see the available parameters for the `PEAR` rule, run
 ```
-./run_eelpond pear.yaml pear --build_config
+./run_eelpond config pear --print_params
 ```
-The output should be a small `yaml` configfile that contains:
+This will print the following:
 ```
   ####################  pear  ####################
 pear:
@@ -48,25 +49,39 @@ pear:
   max_memory: 4G
   pval: 0.01
   extra: ''
+  #####################################################
 ```
 **Please modify the `max_memory` parameter to fit the needs of your reads and system.**
+Within the [Protein Assembly workflow](protein_assembly_workflow.md) or the [paladin_map subworkflow](paladin_map.md), these options enable you to choose kmer-trimmed, quality-trimmed, or raw sequencing data as input. We recommend using quality-trimmed reads as input. If both `input_kmer_trimmed` and `input_trimmomatic_trimmed` are `False`, we will just use raw reads from the `samples.tsv` file.
 
 In addition to changing parameters we've specifically enabled, you can modify the `extra` param to pass in additional parameters,  e.g.:
 
 ```
   extra: ' --some_param that_param '
 ```
-Please see the [PEAR documentation](https://cme.h-its.org/exelixis/web/software/pear/doc.html) for info on the params.
+Please see the [PEAR documentation](https://cme.h-its.org/exelixis/web/software/pear/doc.html) for info on the params you can pass into PEAR.
 
-Override default params by modifying any of these lines, and placing them in the config file you're using to run `eelpond`. Here, we just generated params for `PEAR`, but if you're running a larger workflow, we recommend that you generate all params for your workflow in a single file. 
+Be sure the modified lines go into the config file you're using to run `eelpond` (see [Understanding and Configuring Workflows](about_and_configure.md)).
 
-For example, run the following to build default parameters for `trimmomatic`, `fastqc`, `khmer`, `plass`, `pear`, and `paladin`, which you can then edit in `my-workflow.yaml`:
+
+## Advanced Usage: Running PEAR as a standalone rule
+
+You can run pear as a standalone rule, instead of withing a larger `eelpond` workflow. However, to do this, you need to make sure the input files are available.
+
+For pear, the default input files are quality-trimmed input data (e.g. output of trimmomatic).
+
+If you've already done this, you can run:
 ```
-./run_eelpond my-workflow.yaml plass_assemble paladin_map --build_config
-``` 
+./run_eelpond my_config pear
+```
+If not, you can run the prior steps at the same time to make sure pear can find these input files:
+```
+./run_eelpond my_config get_data trimmomatic pear
+```
+Note, `PEAR` only works on paired end reads, as there's nothing to do for single end reads!
 
-## PEAR eelpond rule
+## Snakemake Rule
 
-We wrote a new [PEAR snakemake wrapper](https://github.com/dib-lab/eelpond/blob/master/rules/pear/pear-wrapper.py) to run PEAR via snakemake. This wrapper has not been added to the official repo yet, but feel free to use as needed.
+We wrote a new [PEAR snakemake wrapper](https://github.com/dib-lab/eelpond/blob/master/rules/pear/pear-wrapper.py) to run PEAR via snakemake. This wrapper has not been added to the official snakemake-wrappers repo yet, but feel free to use as needed.
 
 For snakemake afficionados, see our pear rule on [github](https://github.com/dib-lab/eelpond/blob/master/rules/pear/pear.rule).

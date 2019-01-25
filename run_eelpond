@@ -128,6 +128,14 @@ def main(args):
         pipeline_defaultsFile = find_yaml(thisdir, os.path.join('ep_utils', 'pipeline_defaults'), 'pipeline_defaults')
         print_available_workflows_and_tools(read_yaml(pipeline_defaultsFile), args.print_workflows, args.print_rules)
         sys.exit(0)
+    targs = args.targets
+    # handle "full" target:
+    if 'full' in targs:
+        targs = ['assemble', 'annotate', 'quantify']
+    if args.print_params:
+        default_params = build_default_params(thisdir, targs)
+        write_config(default_params, targs)
+        sys.exit(0)
     
     # first, find the Snakefile and configfile
     print('\n--------')
@@ -136,10 +144,6 @@ def main(args):
     
     snakefile = find_Snakefile(thisdir)
     
-    targs = args.targets
-    # handle "full" target:
-    if 'full' in targs:
-        targs = ['assemble', 'annotate', 'quantify']
     if args.build_config:
         configfile = args.configfile
         if not any(ext in args.configfile for ext in ['.yaml', '.yml']):
@@ -237,7 +241,7 @@ Run eelpond snakemake workflows, using the given configfile.
 
 Available Workflows:
 
-   full               - run full workflow (default)
+   default           - run full eel_pond workflow
    preprocess         - preprocess reads 
    assemble           - transcriptome assembly 
    annotate           - annotate transcriptome assembly
@@ -258,13 +262,14 @@ To build an editable configfile to start work on your own data, run:
 ''')
 
     parser.add_argument('configfile')
-    parser.add_argument('targets', nargs='*', default=['full'])
+    parser.add_argument('targets', nargs='*', default=['default'])
     parser.add_argument('-t', '--threads', type=int, default=1)
     parser.add_argument('--extra_config', action='append', default = None)
     parser.add_argument('-n', '--dry-run', action='store_true')
     parser.add_argument('-v', '--verbose', action='store_true')
     parser.add_argument('-w', '--print_workflows', action='store_true', help='just show available workflows')
     parser.add_argument('-r', '--print_rules', action='store_true', help='just show available rules')
+    parser.add_argument('-p', '--print_params', action='store_true', help='print parameters for chosen workflows or rules')
     parser.add_argument('--build_config', action='store_true', help='just build the default parameter file')
     
     # advanced args below (maybe separate so these don't always print out)
