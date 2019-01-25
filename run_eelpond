@@ -138,9 +138,6 @@ def main(args):
     snakefile = find_Snakefile(thisdir)
     
     targs = args.targets
-    # handle "full" target:
-    if 'full' in targs:
-        targs = ['assemble', 'annotate', 'quantify']
     if args.build_config:
         configfile = args.configfile
         if not any(ext in args.configfile for ext in ['.yaml', '.yml']):
@@ -216,7 +213,7 @@ def main(args):
                                  verbose=args.verbose, debug_dag=args.debug, 
                                  conda_prefix=args.conda_prefix, 
                                  create_envs_only=args.create_envs_only,
-                                 restart_times=2,
+                                 restart_times=args.restart_times,
                                  printdag=args.dag, keepgoing=args.keep_going,
                                  forcetargets=args.forcetargets,forceall=args.forceall)
     
@@ -236,7 +233,7 @@ Run eelpond snakemake workflows, using the given configfile.
 
 Available Workflows:
 
-   full               - run full workflow (default)
+   default           - run full eel_pond workflow
    preprocess         - preprocess reads 
    assemble           - transcriptome assembly 
    annotate           - annotate transcriptome assembly
@@ -257,7 +254,7 @@ To build an editable configfile to start work on your own data, run:
 ''')
 
     parser.add_argument('configfile')
-    parser.add_argument('targets', nargs='*', default=['full'])
+    parser.add_argument('targets', nargs='*', default=['default'])
     parser.add_argument('-t', '--threads', type=int, default=1)
     parser.add_argument('-n', '--dry-run', action='store_true')
     parser.add_argument('-v', '--verbose', action='store_true')
@@ -277,6 +274,7 @@ To build an editable configfile to start work on your own data, run:
     parser.add_argument('--cleanup_conda', action='store_true')
     parser.add_argument('--forcetargets', action='store_true', help='force given targets to be re-created (default False)')
     parser.add_argument('--forceall', action='store_true', help='force all output files to be re-created (default False)')
+    parser.add_argument('--restart_times',type=int, default=0, help='let snakemake try rerunning any failed tools (input number of times to try rerunning). default = 0')
     args = parser.parse_args()
 
     sys.exit(main(args))
