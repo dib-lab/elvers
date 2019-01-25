@@ -10,3 +10,4 @@ get_data:
           - ".se.fq.gz" 
   program_params:
     download_data: False
+    use_ftp: False

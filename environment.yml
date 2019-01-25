@@ -10,3 +10,4 @@ dependencies:
   - graphviz
   - networkx
   - pygraphviz
+  - psutil

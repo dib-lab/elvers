@@ -42,6 +42,8 @@ if deseq_params.get('gene_trans_map'):
             "deseq2-env.yaml"
         log:
             join(LOGS_DIR,  'deseq2', "{assembly}.deseq2.init.log")
+        benchmark:
+            join(LOGS_DIR,  'deseq2', "{assembly}.deseq2.init.benchmark")
         threads: get_deseq2_threads()
         script:
             "deseq2-init-tx2gene.R"
@@ -57,6 +59,8 @@ else:
             "deseq2-env.yaml"
         log:
             join(LOGS_DIR,  'deseq2', "{assembly}.deseq2.init.log")
+        benchmark:
+            join(LOGS_DIR,  'deseq2', "{assembly}.deseq2.init.benchmark")
         threads: get_deseq2_threads()
         script:
             "deseq2-init-txOut.R"
@@ -73,6 +77,8 @@ rule deseq2_pca:
         "deseq2-env.yaml"
     log:
         join(LOGS_DIR, 'deseq2', "{assembly}.deseq2.pca.log")
+    benchmark:
+        join(LOGS_DIR, 'deseq2', "{assembly}.deseq2.pca.benchmark")
     script:
         "deseq2_plot_pca.R"
 
@@ -96,6 +102,8 @@ rule deseq2:
         "deseq2-env.yaml"
     log:
         join(LOGS_DIR, 'deseq2', "{assembly}.c{contrast}.deseq2.log")
+    benchmark:
+        join(LOGS_DIR, 'deseq2', "{assembly}.c{contrast}.deseq2.benchmark")
     threads: get_deseq2_threads
     script:
         "deseq2.R"
