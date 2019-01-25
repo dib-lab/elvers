@@ -24,23 +24,10 @@ This will run a small set of Nematostella vectensis test data (from [Tulin et al
 
 ## Running Your Own Data
 
-To run your own data, you'll need to create two files, a tsv file containing your sample info, and a yaml file containing basic configuration info. 
+Set sample info and build a configfile first (see [Understanding and Configuring Workflows](about_and_configure.md)).
 
-IMPORTANT: The sample info must be in a **properly formatted** tsv file. The easiest way to do this is to copy the test data tsv and modify:
-```
-cp nema_samles.tsv my-samples.tsv
-```
-Now modify  `my-samples.tsv` with your sample information.
+When you build a configfile for this workflow, it should look something like this. Please see the documentation file for each individual program (linked above) for what parameters to modify.
 
-Next, build a configfile to edit:
-```
-./run_eelpond my-config.yaml --build_config
-```
-This configfile will contain all the default parameters for each step of the pipeline you target. If you don't specify any targets, it will run the default Eel Pond Protocol pipeline, which executes read preprocessing, assembly, annotation, and quantification.
-
-Please see the documentation file for each individual program (linked above) for what parameters to modify.
-
-The configfile should look something like this:
 ```
   ####################  Eelpond Pipeline Configfile  ####################
 basename: eelpond
