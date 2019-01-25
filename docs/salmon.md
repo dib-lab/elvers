@@ -105,7 +105,7 @@ Specifying an assembly:
 
     2) Alternatively, you can input an assembly via the [assemblyinput](assemblyinput.md) utility rule:
     ```
-    ./run_eelpond assemblyinput quantify
+    ./run_eelpond assemblyinput salmon
      ```
     with an assembly in your `yaml` configfile, e.g.:
     ```

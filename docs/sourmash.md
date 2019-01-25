@@ -4,8 +4,11 @@ sourmash is a command-line tool and Python library for computing MinHash sketche
 
 Sourmash is [dib-lab](http://ivory.idyll.org/lab/) software! Please see the [sourmash documentation](https://sourmash.readthedocs.io/en/latest/index.html) for more on sourmash. Sourmash 2.0 is coming soon. In the meantime, please cite [Brown and Irber, 2016](https://joss.theoj.org/papers/3d793c6e7db683bee7c03377a4a7f3c9)
 
-## Quickstart: running sourmash via eelpond:
+**At the moment we have only enabled _sourmash compute_ functionality.**
 
+## Quickstart
+
+Run Sourmash as part of the "default" [Eel Pond workflow](eel_pond_workflow.md) or via the [sourmash_compute subworkflow](sourmash_compute.md). To run Sourmash as a standalone program, see "Advanced Usage" section below.
 ```
 ./run_eelpond nema-test sourmash_compute
 ```
@@ -38,30 +41,74 @@ sourmash compute --scaled 1000 \
   -k 31 input_file -o output.sig
 ```
 
-## Customizing Sourmash parameters
+## Output files:
 
-To modify any program params, you need to add a couple lines to the config file you provide to `eelpond`.
+Your main output directory will be determined by your config file: by default it is `BASENAME_out` (you specify BASENAME).
 
-To get a Sourmash configfile you can modify, run:
+Sourmash will output files in the `sourmash` subdirectory of this output directory. Sourmash signatures will have the same name as the file they're generated from, but end with `.sig` instead of `.fasta` or `.fq.gz`.
+
+
+## Modifying Params for Sourmash:
+
+Be sure to set up your sample info and build a configfile first (see [Understanding and Configuring Workflows](about_and_configure.md)).
+
+To see the available parameters for the `sourmash` rule, run
 ```
-./run_eelpond sourmash.yaml sourmash --build_config
+./run_eelpond config sourmash --print_params
 ```
-The output should be a small `yaml` configfile that contains:
+This will print the following:
 ```
   ####################  sourmash  ####################
 sourmash:
   k_size: 31
   scaled: 1000
-  extra: ''
+  extra: '' 
+  #####################################################
 ```
 In addition to changing parameters we've specifically enabled, you can modify the `extra` param to pass any extra sourmash parameters,  e.g.:
 ```
   extra: ' --track-abundance '
 ```
-Override default params by modifying any of these lines, and placing them in the config file you're using to run `eelpond`. Here, we just generated params for `sourmash`, but if you're running a larger workflow, we recommend that you generate all params for your workflow in a single file, e.g. `./run_eelpond my-workflow.yaml full --build_config` and edit parameters there.
+Be sure the modified lines go into the config file you're using to run `eelpond` (see [Understanding and Configuring Workflows](about_and_configure.md)). 
+
+See the [sourmash documentation](https://sourmash.readthedocs.io/en/latest/index.html) to learn more about the parameters you can use with sourmash compute. 
+
+
+## Advanced Usage: Running Sourmashas a standalone rule
+
+You can run sourmash as a standalone rule, instead of withing a larger `eelpond` workflow. However, to do this, you need to make sure the input files are available.
+
+At the moment, sourmash requires both 1) an assembly, and 2) trimmed input files. The assembly can be generated via another workflow, or passed to `eelpond` via the configfile.
+
+Specifying an assembly:
+    1) If you've alread run read trimming and want to use a Trinity assembly generated via `eelpond`, you can run:
+    ```
+    ./run_eelpond my_config assemble sourmash
+    ```
+    If you've already run the assembly, `eelpond` will just use this info to locate that assembly.
+
+    2) Alternatively, you can input an assembly via the [assemblyinput](assemblyinput.md) utility rule:
+    ```
+    ./run_eelpond assemblyinput sourmash
+     ```
+    with an assembly in your `yaml` configfile, e.g.:
+    ```
+    assemblyinput:
+      assembly: rna_testdata/nema.fasta
+      gene_trans_map:  rna_testdata/nema.fasta.gene_trans_map #optional
+      assembly_extension: '_input'
+    ```
+    This is commented out in the test data yaml, but go ahead and uncomment (remove leading `#`) in order to use this option. If you have a gene to transcript map, please specify it as well. If not, delete this line from    your `config`. The `assembly_extension` parameter is important: this is what allows us to build assemblies from several different assemblers on the same dataset. Feel free to use `_input`, as specified above, or pick        something equally simple yet more informative. **Note: Please don't use additional underscores (`_`) in this extension!**. For more details, see the [assemblyinput documentation](assemblyinput.md).
+
+Specifying input reads:
+
+    If you haven't yet run read trimming, you'll also need to run those steps:
+    ```
+    ./run_eelpond myconfig get_data trimmomatic sourmash
+    ```
 
 ## Sourmash eelpond rule
 
-We use a slightly modified version of the [sourmash snakemake wrapper](https://github.com/dib-lab/eelpond/blob/master/rules/sourmash/sourmash-wrapper.py) to run Sourmash via snakemake. 
+We use a slightly modified version of the [sourmash snakemake wrapper](https://github.com/dib-lab/eelpond/blob/master/rules/sourmash/sourmash-wrapper.py) to run Sourmash compute via snakemake. 
 
 For snakemake afficionados, see our sourmash rules on [github](https://github.com/dib-lab/eelpond/blob/master/rules/sourmash/sourmash.rule).
