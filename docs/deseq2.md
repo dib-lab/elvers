@@ -4,31 +4,21 @@ We can use [DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.h
 
 ## Quickstart: Running DESeq2 via eelpond
 
-Test data:
-```
-./run_eelpond nema-test diffexp
-```
-Note that you either need to 1) have already run an assembly, such that a `fasta` file is sitting in the `eelpond/assembly` directory, 2) Run an assembly at the same time, or 3) pass an assembly in via `assemblyinput`. If you haven't run read trimming via [trimmomatic](trimmomatic.md), and read quantification via [salmon](salmon.md), `diffexp` will run these for you.
+We recommend you run `deseq2 via the [diffexp](diffexp.md) subworkflow.
 
-If you have not already run `./run_eelpond nema-test assemble`:
+If you want to run it as a standalone program instead, you need to have generated read quantification data via `salmon`.
 
-   2) Run trinity assembly at the same time:
+   1) If you have salmon results, run:
+   
    ```
-   ./run_eelpond nema-test assemble diffexp
+   ./run_eelpond nema-test deseq2
    ```
-   3) OR, Pass an assembly in via `assemblyinput`
-   ```
-   ./run_eelpond assemblyinput diffexp
-   ```
-   with an assembly in your `yaml` configfile, e.g.:
-   ```
-   assemblyinput:
-     assembly: rna_testdata/nema.fasta
-     gene_trans_map:  rna_testdata/nema.fasta.gene_trans_map
-     assembly_extension: '_input'
-     ```
-    This is commented out in the test data yaml, but go ahead and uncomment (remove leading `#`) in order to use this option
 
+   2) If not, you need to run `salmon` and any other missing steps. It's probably best to run the [diffexp](diffexp.md) subworkflow, but you can also try: 
+
+   ```
+   ./run_eelpond nema-test salmon deseq2
+   ```
 
 ## DESeq2 Commands
 
@@ -41,17 +31,17 @@ the deseq2 params.
 
 You can find these R scripts in the `eelpond` [github repo](https://github.com/dib-lab/eelpond/tree/master/rules/deseq2). The snakemake rules and scripts were modified from [rna-seq-star-deseq2 workflow](https://github.com/snakemake-workflows/rna-seq-star-deseq2) and our own data analysis and workshops, e.g.[DIBSI-RNAseq](https://dibsi-rnaseq.readthedocs.io/en/latest/DE.html). 
 
-## Customizing DESeq2 parameters
+## Modifying Params for DESeq2
 
-To modify any program params, you need to add a couple lines to the config file you provide to `eelpond`.
+Be sure to set up your sample info and build a configfile first (see [Understanding and Configuring Workflows](about_and_configure.md)).
 
-To get a deseq2 configfile you can modify, run:
+To see the available parameters for the `deseq2` rule, run
 ```
-./run_eelpond deseq2.yaml deseq2 --build_config
+./run_eelpond config deseq2 --print_params
 ```
-The output should be a small `yaml` configfile that contains:
+This will print the following:
 ```
-  ####################  deseq2  ####################
+  ####################  salmon  ####################
 deseq2:
   contrasts:
     time0-vs-time6:
@@ -61,8 +51,8 @@ deseq2:
   pca:
     labels:
     - condition
+  #####################################################
 ```
-
 The default `contrasts` reflect the `condition` information in the test data `nema_samples.tsv`. Please modify the contrasts to the reflect your data. Multiple contrasts should be supported: each contrast needs a name, and a list below it specifying the conditions to compare, e.g.:
 ```
   contrasts:
@@ -72,7 +62,8 @@ The default `contrasts` reflect the `condition` information in the test data `ne
 ```
 The `pca labels` should not be changed unless you need to change the name of the `condition` column in the `samples.tsv`. This functionality hasn't been extensively tested, so file an issue if something goes wrong!
 
-Remember that the deseq2 parameters need to be placed in the config file you're using to run `eelpond`. Here, we just generated params for `deseq2`. If you're running a larger workflow, you can alternatively generate all params, e.g. `./run_eelpond my-workflow.yaml full --build_config` and edit parameters there.
+Be sure the modified lines go into the config file you're using to run `eelpond` (see [Understanding and Configuring Workflows](about_and_configure.md)).
+
 
 ## References
 
@@ -87,7 +78,7 @@ Additional links:
   * [A Review of Differential Gene Expression Software for mRNA sequencing](https://github.com/ljcohen/ECE221_final_project/blob/master/Cohen_Li_ECE221_review-differential-gene.pdf)
 
 
-## Eelpond Rules
+## Snakemake Rules
 
 For snakemake afficionados, see the deseq2 rules on [github](https://github.com/dib-lab/eelpond/blob/master/rules/deseq2/deseq2.rule).
 

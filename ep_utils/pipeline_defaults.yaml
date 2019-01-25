@@ -31,6 +31,17 @@ eelpond_workflows:
       - dammit
       - salmon
       - sourmash
+  protein_assembly:
+    include:
+      - get_data
+      - trimmomatic
+      - khmer
+      - plass
+      - pear
+    targets:
+      - fastqc
+      - paladin
+      - sourmash
   input_data:
     targets:
       - get_data
