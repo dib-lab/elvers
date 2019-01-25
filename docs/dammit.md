@@ -1,35 +1,6 @@
 # Annotating de novo transcriptomes with dammit
 
-## Quickstart: Running dammit via eelpond
-
-Test data:
-```
-./run_eelpond nema-test annotate
-```
-Note that you either need to 1) have already run an assembly, such that a `fasta` file is sitting in the `eelpond/assembly` directory, 2) Run an assembly at the same time, or 3) pass an assembly in via `assemblyinput`
-
-If you have not already run `./run_eelpond nema-test assemble`:
-
-   2) Run trinity assembly at the same time:
-   ```
-   ./run_eelpond nema-test assemble annotate
-   ```
-   3) OR, Pass an assembly in via `assemblyinput`
-   ```
-   ./run_eelpond assemblyinput annotate
-   ```
-   with an assembly in your `yaml` configfile, e.g.:
-   ```
-   assemblyinput:
-     assembly: rna_testdata/nema.fasta
-     gene_trans_map:  rna_testdata/nema.fasta.gene_trans_map
-     assembly_extension: '_input'
-     ```
-    This is commented out in the test data yaml, but go ahead and uncomment (remove leading `#`) in order to use this option
-
-## dammit!
-
-[dammit](http://www.camillescott.org/dammit/index.html) is an annotation pipeline written by [Camille Scott](http://www.camillescott.org/). dammit runs a relatively standard annotation protocol for transcriptomes: it begins by building gene models with [Transdecoder](http://transdecoder.github.io/), and then uses the following protein databases as evidence for annotation:
+[dammit](http://dib-lab.github.io/dammit/) is an annotation pipeline written by [Camille Scott](http://www.camillescott.org/). dammit runs a relatively standard annotation protocol for transcriptomes: it begins by building gene models with [Transdecoder](http://transdecoder.github.io/), and then uses the following protein databases as evidence for annotation:
   -  [Swiss-Prot](https://www.ebi.ac.uk/uniprot) (manually reviewed and curated)
   -  [Pfam-A](http://pfam.xfam.org/)
   -  [Rfam](http://rfam.xfam.org/)
@@ -80,15 +51,19 @@ dammit annotate trinity.nema.fasta --busco-group metazoa --user-databases <your-
 ```
 If you want to run a quick version of the pipeline, add a parameter, `--quick`, to omit OrthoDB, Uniref, Pfam, and Rfam. A "full" run will take longer to install and run, but you'll have access to the full annotation pipeline.
 
-## Customizing Dammit parameters
+## Running Dammit
 
-To modify any program params, you need to add a couple lines to the config file you provide to `eelpond`.
+Run Dammit via the "default" [Eel Pond workflow](eel_pond_workflow.md) or via the [annotate subworkflow](annotate.md). To run Dammit as a standalone program, see "Advanced Usage" section below.
 
-To get a dammit configfile you can modify, run:
+## Modifying Params for Dammit:
+
+Be sure to set up your sample info and build a configfile first (see [Understanding and Configuring Workflows](about_and_configure.md)).
+
+To see the available parameters for the `dammit` rule, run
 ```
-./run_eelpond dammit.yaml dammit --build_config
+./run_eelpond config dammit --print_params
 ```
-The output should be a small `yaml` configfile that will look something like this:
+This will print the following:
 ```
   ####################  dammit  ####################
 dammit:
@@ -97,10 +72,10 @@ dammit:
   - eukaryota
   db_dir: databases   # specify location for databases (or previously installed databases)
   db_install_only: False   # just install databases, don't run annotation
-  db_extra:  
+  db_extra:
   annot_extra: ' --quick '
+  #####################################################
 ```
-
 In addition to changing parameters we've specifically enabled, you can modify the `extra` param to pass any extra parameters.
 
 In dammit, both `databases` and `annotation` take an `extra` param:
@@ -108,9 +83,15 @@ In dammit, both `databases` and `annotation` take an `extra` param:
   db_extra: '--someflag someparam --someotherflag thatotherparam'
   annot_extra: '--someflag someparam --someotherflag thatotherparam'
 ```
-Be sure the modified lines go into the config file you're using to run `eelpond`. Here, we just generated params for `dammit`, but if you're running a larger workflow, we recommend that you generate all params for your workflow in a single file, e.g. `./run_eelpond my-workflow.yaml full --build_config` and edit parameters there.
+
+Within the "default" [Eel Pond workflow](eel_pond_workflow.md), this will annotate the Trinity assembly. Since `Dammit` requires an assembly as input, see the [annotate subworkflow](annotate.md) instructions for how to run dammit as a standalone rule. See the [dammit documentation](http://dib-lab.github.io/dammit/) for all params you can pass into Dammit.
+
 
 ## Dammit Output
+
+Your main output directory will be determined by your config file: by default it is `BASENAME_out` (you specify BASENAME).
+
+Dammit will output files in the `annotation` subdirectory of this output directory. The annotated fasta file will be `ASSEMBLY.dammit.fasta` and the annotation `gff3` file will be `ASSEMBLY.dammit.gff3`. Dammit will also produce a number of intermediate files that will be contained within an `ASSEMBLY.fasta.dammit` folder.
 
 After a successful run, you'll have a new directory called `BASENAME.fasta.dammit`. If you look inside, you'll see a lot of files. For example, for a transcriptome with basename `trinity.nema`, the folder `trinity.nema.fasta.dammit` should contain the following files after a standard (not `--quick`) run:
 

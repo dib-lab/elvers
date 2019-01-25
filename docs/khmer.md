@@ -25,7 +25,7 @@ Run Khmer via the "default" [Eel Pond workflow](eel_pond_workflow.md) or via the
 
 Your main output directory will be determined by your config file: by default it is `BASENAME_out` (you specify BASENAME).
 
-Khmer will output quality control files in the `preprocess` subdirectory of this output directory. All outputs will contain `*.khmer.fq.gz`.
+Khmer will output files in the `preprocess` subdirectory of this output directory. All outputs will contain `*.khmer.fq.gz`.
 
 
 ## Modifying Params for Khmer:

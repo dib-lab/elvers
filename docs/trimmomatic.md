@@ -35,7 +35,7 @@ Run Trimmomatic via the "default" [Eel Pond workflow](eel_pond_workflow.md) or v
 
 Your main output directory will be determined by your config file: by default it is `BASENAME_out` (you specify BASENAME).
 
-Trimmomatic will output quality control files in the `preprocess` subdirectory of this output directory. All outputs will contain `*.trim.fq.gz`.
+Trimmomatic will output files in the `preprocess` subdirectory of this output directory. All outputs will contain `*.trim.fq.gz`.
 
 ## Modifying Params for Trimmomatic:
 

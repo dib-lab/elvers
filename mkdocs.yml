@@ -47,7 +47,7 @@ nav:
       - 'kmer_trim': kmer_trim.md
       - 'assemble': assemble.md
       - 'assemblyinput': assemblyinput.md
-      - 'annotate': annotate:.md
+      - 'annotate': annotate.md
       - 'quantify': quantify.md
       - 'diffexp': diffexp.md
       #- 'plass_assemble': plass_assemble:.md

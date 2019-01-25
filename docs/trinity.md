@@ -32,7 +32,7 @@ Run Trinity via the "default" [Eel Pond workflow](eel_pond_workflow.md) or via t
 
 Your main output directory will be determined by your config file: by default it is `BASENAME_out` (you specify BASENAME).
 
-Trinity will output quality control files in the `assembly` subdirectory of this output directory. The fasta file will be `BASENAME_trinity.fasta` and the gene-trans map will be `BASENAME_trinity.fasta.gene_trans_map`. 
+Trinity will output files in the `assembly` subdirectory of this output directory. The fasta file will be `BASENAME_trinity.fasta` and the gene-trans map will be `BASENAME_trinity.fasta.gene_trans_map`. 
 
 
 ## Modifying Params for Trinity:
