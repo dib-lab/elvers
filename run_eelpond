@@ -240,7 +240,7 @@ Run eelpond snakemake workflows, using the given configfile.
 
 Available Workflows:
 
-   full               - run full workflow (default)
+   default           - run full eel_pond workflow
    preprocess         - preprocess reads 
    assemble           - transcriptome assembly 
    annotate           - annotate transcriptome assembly
@@ -261,7 +261,7 @@ To build an editable configfile to start work on your own data, run:
 ''')
 
     parser.add_argument('configfile')
-    parser.add_argument('targets', nargs='*', default=['full'])
+    parser.add_argument('targets', nargs='*', default=['default'])
     parser.add_argument('-t', '--threads', type=int, default=1)
     parser.add_argument('-n', '--dry-run', action='store_true')
     parser.add_argument('-v', '--verbose', action='store_true')
