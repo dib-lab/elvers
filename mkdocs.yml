@@ -46,12 +46,11 @@ nav:
       - 'preprocess': preprocess.md
       - 'kmer_trim': kmer_trim.md
       - 'assemble': assemble.md
-      - 'assemblyinput': assemblyinput.md
       - 'annotate': annotate.md
       - 'quantify': quantify.md
       - 'diffexp': diffexp.md
-      #- 'plass_assemble': plass_assemble:.md
-      #- 'paladin_map': .paladin_mapmd
+      - 'plass_assemble': plass_assemble.md
+      - 'paladin_map': paladin_map.md
       #- 'correct_reads': correct_reads:.md
     - 'Programs Used':
       - 'get_data': get_data.md
@@ -69,8 +68,7 @@ nav:
       - 'paladin': paladin.md
       - 'rcorrector': rcorrector.md
   - 'For Developers':
-    - 'dev_tips.md'
-    - 'Configuration.md'
+    - 'Under the Hood': under_the_hood.md
 
 
 # Extensions

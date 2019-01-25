@@ -5,7 +5,9 @@
 The protein assembly workflow relies on the PLASS assembler and some downstream protein mapping tools.
 
 It consists of:  
-
+  - [fastqc](fastqc.md)
+  - [trimmomatic](trimmomatic.md)
+  - [khmer](khmer.md)
   - [PLASS](plass.md)
   - [pear](pear.md)
   - [paladin](paladin.md)
