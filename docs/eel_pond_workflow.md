@@ -26,7 +26,13 @@ This will run a small set of Nematostella vectensis test data (from [Tulin et al
 
 Set sample info and build a configfile first (see [Understanding and Configuring Workflows](about_and_configure.md)).
 
-When you build a configfile for this workflow, it should look something like this. Please see the documentation file for each individual program (linked above) for what parameters to modify.
+To build a config, run:
+
+```
+./run_eelpond ep.yaml --build_config
+```
+
+The resulting `ep.yaml` configfile for this workflow will look something like this. The order of the parameters may be different and does not affect the order in which steps are run. Please see the documentation file for each individual program (linked above) for what parameters to modify.
 
 ```
   ####################  Eelpond Pipeline Configfile  ####################

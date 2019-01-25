@@ -21,8 +21,15 @@ This will run a small set of Nematostella vectensis test data (from [Tulin et al
 
 Set up your sample info and build a configfile first (see [Understanding and Configuring Workflows](about_and_configure.md)).
 
-When you build a default configfile for this workflow, it will look something like this. The order of the parameters may be different and does not affect the order in which steps are run.
+To build a config, run:
 
+```
+./run_eelpond prot.yaml protein_assembly --build_config
+```
+
+The resulting `prot.yaml` configfile for this workflow will look something like this. The order of the parameters may be different and does not affect the order in which steps are run. Please see the documentation file for each individual program (linked above) for what parameters to modify.
+
+```
   ####################  Eelpond Pipeline Configfile  ####################
 basename: eelpond
 experiment: _experiment1
@@ -68,3 +75,4 @@ trimmomatic:
     se_path: ep_utils/TruSeq3-SE.fa
   extra: ''
   trim_cmd: ILLUMINACLIP:{}:2:40:15 LEADING:2 TRAILING:2 SLIDINGWINDOW:4:15 MINLEN:25
+```
