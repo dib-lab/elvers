@@ -86,6 +86,7 @@ sourmash:
 
   ####################  quantify  ####################
 salmon:
+  input_trimmomatic_trimmed: True
   index_params:
     extra: ''
   quant_params:

@@ -55,6 +55,7 @@ trimmomatic:
   extra: ''
   trim_cmd: ILLUMINACLIP:{}:2:40:15 LEADING:2 TRAILING:2 SLIDINGWINDOW:4:15 MINLEN:25
 salmon:
+  input_trimmomatic_trimmed: True
     index_params:
       extra: '' 
     quant_params:
