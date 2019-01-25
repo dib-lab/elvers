@@ -20,6 +20,17 @@ eelpond_directories:
 # change these if you're sure you have new program 
 # params and targets right.
 eelpond_workflows:
+  default:
+    include:
+      - get_data
+      - trimmomatic
+      - khmer
+      - trinity
+    targets:
+      - fastqc
+      - dammit
+      - salmon
+      - sourmash
   input_data:
     targets:
       - get_data
