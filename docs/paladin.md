@@ -63,7 +63,7 @@ In addition to changing parameters we've specifically enabled, you can modify th
 ```
   extra: ' --some_param that_param '
 ```
-Please see the [Paladin documentation](https://github.com/twestbrookunh/paladin) for info on the params.
+Please see the [Paladin documentation](https://github.com/twestbrookunh/paladin) for info on the params you can pass into `paladin`.
 
 Be sure the modified lines go into the config file you're using to run `eelpond` (see [Understanding and Configuring Workflows](about_and_configure.md)).
 
@@ -74,24 +74,24 @@ You can run paladin as a standalone rule, instead of withing a larger `eelpond` 
 For paladin, you need both 1) an assembly, and 2) trimmed (and merged) input files. The assembly can be generated via another workflow, or passed to `eelpond` via the configfile.
 
 Specifying an assembly:
-    1) If you've alread run read trimming and want to use a Trinity assembly generated via `eelpond`, you can run:
-    ```
-    ./run_eelpond my_config plass_assemble paladin
-    ```
-    If you've already run the assembly, `eelpond` will just use this info to locate that assembly.
 
-    2) Alternatively, you can input an assembly via the [assemblyinput](assemblyinput.md) utility rule:
-    ```
+  1) If you've already run read trimming and want to use a Trinity assembly generated via `eelpond`, run the following:
+    
+    ./run_eelpond my_config plass_assemble paladin # eelpond will run or locate the plass assembly
+
+  2) Alternatively, you can input an assembly via the [assemblyinput](assemblyinput.md) utility rule, with an assembly in your `yaml` configfile.
+    
     ./run_eelpond assemblyinput paladin
-     ```
-    with an assembly in your `yaml` configfile, e.g.:
-    ```
+    
+  In config file:
+
     assemblyinput:
       assembly: rna_testdata/nema.fasta
       gene_trans_map:  rna_testdata/nema.fasta.gene_trans_map #optional
       assembly_extension: '_plass'
-    ```
-    This is commented out in the test data yaml, but go ahead and uncomment (remove leading `#`) in order to use this option. If you have a gene to transcript map, please specify it as well. If not, delete this line from    your `config`. The `assembly_extension` parameter is important: this is what allows us to build assemblies from several different assemblers on the same dataset. Make sure you set the `assembly_extension` parameter to plass, as paladin only works on plassassemblies (for the
+    
+
+This is commented out in the test data yaml, but go ahead and uncomment (remove leading `#`) in order to use this option. If you have a gene to transcript map, please specify it as well. If not, delete this line from    your `config`. The `assembly_extension` parameter is important: this is what allows us to build assemblies from several different assemblers on the same dataset. Make sure you set the `assembly_extension` parameter to plass, as paladin only works on plassassemblies (for the
     moment). **Note: Please don't use additional underscores (`_`) in this extension!**. For more details, see the [assemblyinput documentation](assemblyinput.md).
 
 Specifying input reads:

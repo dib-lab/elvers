@@ -16,7 +16,7 @@ Given that nucleotide sequences are far more variable than protein sequences (th
 
 ## Quickstart
 
-Run Trinity via the [Protein Assembly workflow](protein_assembly_workflow.md) or via the [plass_assemble subworkflow](plass_assemble.md). These workflows will run preprocessing and kmer-trimming for you prior to assembly, and may run additional downstream steps. To run PLASS as a standalone program, see "Advanced Usage" section below.
+Run PLASS via the [Protein Assembly workflow](protein_assembly_workflow.md) or via the [plass_assemble subworkflow](plass_assemble.md). These workflows will run preprocessing and kmer-trimming for you prior to assembly, and may run additional downstream steps. To run PLASS as a standalone program, see "Advanced Usage" section below.
 ```
 ./run_eelpond nema-test plass_assemble
 ```
@@ -78,7 +78,7 @@ If not, you can run the prior steps at the same time to make sure khmer can find
 ./run_eelpond my_config get_data trimmomatic khmer plass
 ```
 
-## PLASS eelpond rule
+## Snakemake Rules
 
 We wrote a [PLASS snakemake wrapper](https://github.com/dib-lab/eelpond/blob/master/rules/plass/plass-wrapper.py) to run PLASS via snakemake. This wrapper has not yet been submitted to the snakemake-wrappers repository, but feel free to use it as needed.
 

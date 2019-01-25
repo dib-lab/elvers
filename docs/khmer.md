@@ -2,7 +2,7 @@
 
 Before running transcriptome assembly, we recommend doing some kmer spectral error trimming on your dataset, and if you have lots of reads, also performing digital normalization. This has the effect of reducing the computational cost of assembly without negatively affecting the quality of the assembly. We use [khmer](https://khmer.readthedocs.io/) for both of these tasks.
 
-# Khmer Command
+## Khmer Command
 
 Here's the command as it would look on the command line:
 ```
@@ -32,12 +32,12 @@ Khmer will output files in the `preprocess` subdirectory of this output director
 
 Be sure to set up your sample info and build a configfile first (see [Understanding and Configuring Workflows](about_and_configure.md)).
 
-To see the available parameters for the `trimmomatic` rule, run
+To see the available parameters for the `khmer` rule, run
 ```
-./run_eelpond config trimmomatic --print_params
+./run_eelpond config khmer --print_params
 ```
 
-In here, you'll see a section for "trimmomatic" parameters that looks like this:
+In here, you'll see a section for "khmer" parameters that looks like this:
 
 ```
     ####################  khmer  ####################

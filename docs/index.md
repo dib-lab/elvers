@@ -52,14 +52,7 @@ Activate that environment. You'll need to do this anytime you want to run eelpon
 ```
 conda activate eelpond
 ```
-Now, grab the test data, and untar:
-```
-curl -L https://osf.io/chb7z/download -o nema_testdata.tar.gz
-tar xvf nema_testdata.tar.gz
-```
-
-Now you can start running workflows!
-
+Now you can start running workflows on test data!
 
 ## Default workflow: Eel Pond Protocol for *de novo* RNAseq analysis
 
@@ -67,51 +60,27 @@ The Eel Pond protocol (which inspired the `eelpond` name) included line-by-line 
 
 To test the default workflow:
 ```
-./run_eelpond nema-test default
+./run_eelpond nema-download default
 ```
-This will run a small set of _Nematostella vectensis_ test data (from [Tulin et al., 2013](https://evodevojournal.biomedcentral.com/articles/10.1186/2041-9139-4-16))
+This will download and run a small set of _Nematostella vectensis_ test data (from [Tulin et al., 2013](https://evodevojournal.biomedcentral.com/articles/10.1186/2041-9139-4-16))
 
 ## Running Your Own Data
 
-To run your own data, you'll need to create two files, a `tsv` file containing 
-your sample info, and a `yaml` file containing basic configuration info. To start,
-copy the test data files so you can modify them.
-```
-cp nema_samples.tsv <my-tsv-samples.tsv>
-```
-Modify this tab-separated file with your sample names and locations for each file. 
+To run your own data, you'll need to create two files:
 
-Notes:  
-    - `eelpond` is a bit finicky here: all columns must be separated by tabs, not spaces. If you get an immediate error about your samples file, this is likely the cause.   
-    - the `unit` column allows you to enter multiple files or file pairs for each samples, such as files that are from different lanes. If you don't have a `unit` bit of information, just add something short as placeholder (e.g. `a`). All units for a single sample are combined prior to the differential expression steps. At some point, we may enable a `no_units` version of the `eelpond`, but it's not in our immediate plans :). 
+  - a `tsv` file containing your sample info
+  - a `yaml` file containing basic configuration info
 
-Next, build a configfile to edit:
+Generate these by following instructions here: [Understanding and Configuring Workflows](about_and_configure.md).
+
+
+## Available Workflows
+You can see the available workflows (and which programs they run) by using the `--print_workflows` flag:
 ```
-./run_eelpond config_name --build_config
+./run_eelpond nema-test --print_workflows
 ```
 
-This configfile will contain all the default paramters for each step of the workflow you target.
-If you don't specify any targets, it will run the default eel_pond pipeline, which executes read
-preprocessing, assembly, annotation, and quantification. 
-
-Then, modify this configfile as necessary. 
-
-**The configfile must contain at least:**
-```
-samples: path/to/my-tsv-samples.tsv
-```
-**which directs `eelpond` to your sample files.**
-
-
-## Additional Info
-
-Each independent step is split into a smaller workflow that can be run independently, if desired, e.g. `./run_eelpond nema-test preprocess`. Individual tools can also be run independently, see [Advanced Usage](advanced_usage.md).
-
-See the help, here:
-```
-./run_eelpond -h
-```
-**available workflows:**  
+**subworkflows**
 
   - preprocess: Read Quality Trimming and Filtering (fastqc, trimmomatic)
   - kmer_trim: Kmer Trimming and/or Digital Normalization (khmer)
@@ -119,14 +88,22 @@ See the help, here:
   - assemblyinput: Specify assembly for downstream steps
   - annotate : Annotate the transcriptome (dammit, sourmash)
   - quantify: Quantify transcripts (salmon) 
-  - default: preprocess, kmer_trim, assemble, annotate, quantify 
+  - plass_assemble: assemble at the protein level with PLASS
+  - paladin_map: map to a protein assembly using paladin
 
-You can see the available workflows (and which programs they run) by using the `--print_workflows` flag:
+**main workflows:**  
+
+  - **default**: preprocess, kmer_trim, assemble, annotate, quantify 
+  - **protein assembly**: preprocess, kmer_trim, plass_assemble, paladin_map 
+
+Each included tool can also be run independently, if appropriate input files are provided. See each tool's documentation for details.
+
+## Additional Info
+
+See the help, here:
 ```
-./run_eelpond nema-test --print_workflows
+./run_eelpond -h
 ```
-
-
 
 **References:**  
 

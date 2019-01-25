@@ -49,6 +49,7 @@ nav:
       - 'annotate': annotate.md
       - 'quantify': quantify.md
       - 'diffexp': diffexp.md
+      - 'sourmash_compute': sourmash_compute.md
       - 'plass_assemble': plass_assemble.md
       - 'paladin_map': paladin_map.md
       #- 'correct_reads': correct_reads:.md

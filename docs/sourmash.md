@@ -8,30 +8,7 @@ Sourmash is [dib-lab](http://ivory.idyll.org/lab/) software! Please see the [sou
 
 ## Quickstart
 
-Run Sourmash as part of the "default" [Eel Pond workflow](eel_pond_workflow.md) or via the [sourmash_compute subworkflow](sourmash_compute.md). To run Sourmash as a standalone program, see "Advanced Usage" section below.
-```
-./run_eelpond nema-test sourmash_compute
-```
-Sourmash computes signatures for both assemblies and kmer-trimmed reads. If you haven't conducted quality and kmer trimming, this workflow will conduct those for you. However, you do need to either 1) have already run an assembly, such that a `fasta` file is sitting in the `eelpond/assembly` directory, 2) Run an assembly at the same time, or 3) pass an assembly in via `assemblyinput`
-
-If you have not already run `./run_eelpond nema-test assemble`:
-
-   2) Run trinity assembly at the same time:
-   ```
-   ./run_eelpond nema-test assemble sourmash
-   ```
-   3) OR, Pass an assembly in via `assemblyinput`
-   ```
-   ./run_eelpond assemblyinput sourmash
-   ```
-   with an assembly in your `yaml` configfile, e.g.:
-   ```
-   assemblyinput:
-     assembly: rna_testdata/nema.fasta
-     gene_trans_map:  rna_testdata/nema.fasta.gene_trans_map
-     assembly_extension: '_input'
-     ```
-    This is commented out in the test data yaml, but go ahead and uncomment (remove leading `#`) in order to use this option. If you have these in your configfile, `eelpond` will automatically assume you want to run the `assemblyinput` rules, but it's nice to specify them in the command anyway :).
+Run Sourmash as part of the "default" [Eel Pond workflow](eel_pond_workflow.md) or via the [sourmash_compute subworkflow](sourmash_compute.md). At the moment, sourmash compute requires both an assembly and a set of reads as input. Please see the [sourmash_compute subworkflow](sourmash_compute.md) for how to run sourmash compute properly. 
 
 ## Sourmash Command
 
@@ -73,39 +50,6 @@ Be sure the modified lines go into the config file you're using to run `eelpond`
 
 See the [sourmash documentation](https://sourmash.readthedocs.io/en/latest/index.html) to learn more about the parameters you can use with sourmash compute. 
 
-
-## Advanced Usage: Running Sourmashas a standalone rule
-
-You can run sourmash as a standalone rule, instead of withing a larger `eelpond` workflow. However, to do this, you need to make sure the input files are available.
-
-At the moment, sourmash requires both 1) an assembly, and 2) trimmed input files. The assembly can be generated via another workflow, or passed to `eelpond` via the configfile.
-
-Specifying an assembly:
-    1) If you've alread run read trimming and want to use a Trinity assembly generated via `eelpond`, you can run:
-    ```
-    ./run_eelpond my_config assemble sourmash
-    ```
-    If you've already run the assembly, `eelpond` will just use this info to locate that assembly.
-
-    2) Alternatively, you can input an assembly via the [assemblyinput](assemblyinput.md) utility rule:
-    ```
-    ./run_eelpond assemblyinput sourmash
-     ```
-    with an assembly in your `yaml` configfile, e.g.:
-    ```
-    assemblyinput:
-      assembly: rna_testdata/nema.fasta
-      gene_trans_map:  rna_testdata/nema.fasta.gene_trans_map #optional
-      assembly_extension: '_input'
-    ```
-    This is commented out in the test data yaml, but go ahead and uncomment (remove leading `#`) in order to use this option. If you have a gene to transcript map, please specify it as well. If not, delete this line from    your `config`. The `assembly_extension` parameter is important: this is what allows us to build assemblies from several different assemblers on the same dataset. Feel free to use `_input`, as specified above, or pick        something equally simple yet more informative. **Note: Please don't use additional underscores (`_`) in this extension!**. For more details, see the [assemblyinput documentation](assemblyinput.md).
-
-Specifying input reads:
-
-    If you haven't yet run read trimming, you'll also need to run those steps:
-    ```
-    ./run_eelpond myconfig get_data trimmomatic sourmash
-    ```
 
 ## Sourmash eelpond rule
 

@@ -12,24 +12,26 @@ Subworkflows combine tools in the right order to facilitate file targeting withi
 
 If you've generated an assembly, even if you've already run `./run_eelpond nema-test assemble`:
 
-   1) "Run" trinity assembly at the same time:
+   1) "Run" trinity assembly at the same time. If you've already run the assembly, `eelpond` will just locateyour assembly file for `paladin_map`.
+   
    ```
    ./run_eelpond nema-test assemble paladin_map
    ```
-   If you've already run the assembly, `eelpond` will just locateyour assembly file for `paladin_map`.
 
-   2) OR, Pass an assembly in via `assemblyinput`
+   2) OR, Pass an assembly in via `assemblyinput`, with an assembly in your `yaml` configfile, e.g.:
    ```
    ./run_eelpond assemblyinput paladin_map
    ```
-   with an assembly in your `yaml` configfile, e.g.:
-   ```
-   assemblyinput:
-     assembly: rna_testdata/nema.fasta
-     gene_trans_map:  rna_testdata/nema.fasta.gene_trans_map #optional
-     assembly_extension: '_input'
-     ```
-    This is commented out in the test data yaml, but go ahead and uncomment (remove leading `#`) in order to use this option. If you have a gene to transcript map, please specify it as well.   If not, delete this line from your `config`. The `assembly_extension` parameter is important: this is what allows us to build assemblies from several different assemblers on the same dataset. Feel free to use `_input`, as   specified above, or pick something equally simple yet more informative. **Note:
+
+   In the configfile:
+
+    assemblyinput:
+      assembly: rna_testdata/nema.fasta
+      gene_trans_map:  rna_testdata/nema.fasta.gene_trans_map #optional
+      assembly_extension: '_input'
+    
+    
+This is commented out in the test data yaml, but go ahead and uncomment (remove leading `#`) in order to use this option. If you have a gene to transcript map, please specify it as well.   If not, delete this line from your `config`. The `assembly_extension` parameter is important: this is what allows us to build assemblies from several different assemblers on the same dataset. Feel free to use `_input`, as   specified above, or pick something equally simple yet more informative. **Note:
     Please don't use additional underscores (`_`) in this extension!**. For more details, see the [assemblyinput documentation](assemblyinput.md). 
 
 ## Configuring the paladin_map subworkflow 

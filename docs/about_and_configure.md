@@ -10,25 +10,26 @@ To specify input data, we generate a `my-samples.tsv` file, with either file pat
 
 If we had our test data within the `nema_testdata` folder in the main `eelpond` directory, the file would look like this:
 
-    ```
     sample  unit    fq1 fq2 condition
     0Hour   001 nema_testdata/0Hour_ATCACG_L002_R1_001.extract.fastq.gz nema_testdata/0Hour_ATCACG_L002_R2_001.extract.fastq.gz time0
     0Hour   002 nema_testdata/0Hour_ATCACG_L002_R1_002.extract.fastq.gz nema_testdata/0Hour_ATCACG_L002_R2_002.extract.fastq.gz time0
     6Hour   001 nema_testdata/6Hour_CGATGT_L002_R1_001.extract.fastq.gz nema_testdata/6Hour_CGATGT_L002_R2_001.extract.fastq.gz time6
     6Hour   002 nema_testdata/6Hour_CGATGT_L002_R1_002.extract.fastq.gz nema_testdata/6Hour_CGATGT_L002_R2_002.extract.fastq.gz time6
-    ```
 
 If we want to download the test data instead:
 
-    ```
     sample  unit    fq1 fq2 condition
     0Hour   001 https://osf.io/vw4dt/download   https://osf.io/b47s2/download   time0
     0Hour   002 https://osf.io/92jr6/download   https://osf.io/qzea8/download   time0
     6Hour   001 https://osf.io/ft3am/download   https://osf.io/jqmsx/download   time6
     6Hour   002 https://osf.io/rnkq3/download   https://osf.io/bt9vh/download   time6
-    ```
 
-**Note that proper formatting means all columns must be separated by tabs, not spaces!**
+**Notes:**
+
+  - proper formatting means all columns must be separated by tabs, not spaces! `eelpond` is a bit finicky here: all columns must be separated by tabs, not spaces. If you get an immediate error about your samples file, this is likely the cause.
+  - the `unit` column allows you to enter multiple files or file pairs for each samples, such as files that are from different lanes. If you don't have a `unit` bit of information, just add something short as placeholder  (e.g. `a`). All units for a single sample are combined prior to the differential expression steps. At some point, we may enable a `no_units` version of the `eelpond`, but it's not in our immediate plans
+  - at the moment, `eelpond` assumes **all input data is gzipped**.
+
 
 If you'd like to start from a working version, copy the sample data:
 
@@ -36,22 +37,20 @@ If you'd like to start from a working version, copy the sample data:
 cp nema_samples.tsv my_samples.tsv
 ```
 
-Note: at the moment, `eelpond` assumes **all input data is gzipped**.
-
 ## Choosing and running a workflow
 
 The default workflow is the [Eel Pond RNAseq workflow](eel_pond_workflow.md), but we offer several other end-to-end workflows, as well as a number of "subworkflows" that facilitate running (or re-running) certain steps of the workflows. 
 
 To see the available workflows and subworkflows, run:
 ```
-./run_eelpond nema-test -w 
+./run_eelpond nema-test --print_workflows
 ```
 
 ## Configuring Programs in the workflow
 
 For any workflow, we need to provide a configuration file that specifies the path to your 
 
-To get a `preprocess` config you can modify, run:
+To get a default config you can modify, run:
 
 ```
 ./run_eelpond my_workflow.yaml --build_config
@@ -66,14 +65,20 @@ experiment: _experiment1
 samples: samples.tsv
 ```
 
-## Customizing the Output Location and Names
+## Customizing the Output Location and Basename
 
-First, change the `samples.tsv` name to your `my_samples.tsv` file. Then, modify the basename and any experiment info you'd like to add. The default output directory will be: `basename_experiment_out` within the main `eelpond` directory. If you'd like, you can add one more parameter to the top section: `out_path: OUTPUT_PATH`, if you'd like the output to go somewhere other than the `eelpond` directory. Note the basename and experiment are still used to determine the output directory name.
+First, change the `samples.tsv` name to the `my_samples.tsv` file you created above. Then, modify the basename and any experiment info you'd like to add. The default output directory will be: `basename_experiment_out` within the main `eelpond` directory. If you'd like, you can add one more parameter to the top section: `out_path: OUTPUT_PATH`, if you'd like the output to go somewhere other than the `eelpond` directory. Note the basename and experiment are still used to determine the output directory name.
+
+**A bare-bones configfile must contain at least:**
+```
+samples: path/to/my-tsv-samples.tsv
+```
+**which directs `eelpond` to your sample files.**
 
 
 ## Customizing program parameters:
 
-Below this section, you should see some parameters for each program run in this workflow. For example, here's the first few programs: a utility to download or link your data, quality trim with trimmomtic, and assess quality with fastqc. Program parameters do not always show up in order in this file - order in this file does not affect program run order.
+Below this section, you should see some parameters for each program run in this workflow. For example, here's the first few programs: a utility to download or link your data, quality trim with trimmomatic, and assess quality with fastqc. Program parameters do not always show up in order in this file - order in this file does not affect program run order.
 
 ```
 get_data:
@@ -89,7 +94,7 @@ fastqc:
   extra: ''
 ```
 
-Override default params for any program by modifying the values for any of the paramters under that program name. For example, if you'd like to download data instead of link it from another location on your machine, modify `download_data` to `True` under the `get_data` program. We provide an `extra` parameter wherever possible to give you access to additional command-line parameters for each program that we have not specifically enabled changes for.
+Override default params for any program by modifying the values for any of the parameters under that program name. For example, if you'd like to download data instead of link it from another location on your machine, modify `download_data` to `True` under the `get_data` program. We provide an `extra` parameter wherever possible to give you access to additional command-line parameters for each program that we have not specifically enabled changes for.
 
 For example, under the `trimmomatic` section, you can modify the "extra" param to pass any extra trimmomatic parameters, e.g.:
 
@@ -100,6 +105,8 @@ trimmomatic:
 
 For more on what parameters are available, see the docs for each specific program or utility rule.
 
+Here are a subset of available rules:
+
   - [get_data](get_data.md)
   - [trimmomatic](trimmomatic.md)
   - [fastqc](fastqc.md)
@@ -109,3 +116,20 @@ For more on what parameters are available, see the docs for each specific progra
   - [salmon](salmon.md)
   - [sourmash](sourmash.md)
 
+## Available workflows and rules
+
+See available workflows:
+```
+./run_eelpond config --print_workflows
+```
+
+See available rules:
+```
+./run_eelpond config --print_rules
+```
+
+See parameters for any rule or workflow:
+```
+./run_eelpond config WORKFLOW --print_params
+./run_eelpond config RULE --print_params
+```
