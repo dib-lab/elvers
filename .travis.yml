@@ -11,6 +11,8 @@ before_install:
 - ls -FC $HOME/miniconda
 - if test -e $HOME/miniconda/bin; then
     echo "miniconda already installed.";
+    chmod -R a-w $HOME/miniconda
+    chmod a+w $HOME/miniconda/env
   else
     echo "Installing miniconda.";
     rm -fr $HOME/miniconda;
