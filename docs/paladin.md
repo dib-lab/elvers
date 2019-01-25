@@ -16,10 +16,10 @@ PALADIN may output a standard SAM file, or a text file containing a UniProt-gene
 
 ## Quickstart: Running Paladin with eelpond
 
-We recommend you run `paladin` as part of the `paladin_map` pipeline
+We recommend you run `paladin` as part of the [Protein Assembly](protein_assembly_workflow.md) or [paladin_map](paladin_map.md) workflows.
 
 ```
-./run_eelpond nema-test paladin_map
+./run_eelpond nema-test protein_assembly
 ```
 This will run trimmomatic trimming prior to PEAR merging (for paired end reads) and paladin mapping. 
 
@@ -39,15 +39,15 @@ paladin align -f 250 -t snakemake.threads \
   index_basename reads_file | samtools view -Sb - > output.bam
 ```
 
-## Customizing Paladin parameters
+## Modifying Params for Paladin:
 
-To modify any program params, you need to add a couple lines to the config file you provide to `eelpond`.
+Be sure to set up your sample info and build a configfile first (see [Understanding and Configuring Workflows](about_and_configure.md)).
 
-To get a Paladin configfile you can modify, run:
+To see the available parameters for the `Paladin` rule, run
 ```
-./run_eelpond paladin.yaml paladin --build_config
+./run_eelpond config paladin --print_params
 ```
-The output should be a small `yaml` configfile that contains:
+This will print the following:
 ```
   ####################  paladin  ####################
 paladin:
@@ -56,21 +56,52 @@ paladin:
     f: 125
   index_params:
     reference_type: '3'
-    gff_file: ''
+    gff_file: '' 
+  #####################################################
 ```
 In addition to changing parameters we've specifically enabled, you can modify the `extra` param to pass in additional parameters to `paladin align`,  e.g.:
-
 ```
   extra: ' --some_param that_param '
 ```
-Please see the [Paladin documentation](https://github.com/twestbrookunh/paladin) for info on the params.
+Please see the [Paladin documentation](https://github.com/twestbrookunh/paladin) for info on the params you can pass into `paladin`.
 
-Override default params by modifying any of these lines, and placing them in the config file you're using to run `eelpond`. Here, we just generated params for `PALADIN`, but if you're running a larger workflow, we recommend that you generate all params for your workflow in a single file. 
+Be sure the modified lines go into the config file you're using to run `eelpond` (see [Understanding and Configuring Workflows](about_and_configure.md)).
 
-For example, run the following to build default parameters for `trimmomatic`, `fastqc`, `khmer`, `plass`, `pear`, and `paladin`, which you can then edit in `my-workflow.yaml`:
+## Advanced Usage: Running PALADIN as a standalone rule
+
+You can run paladin as a standalone rule, instead of withing a larger `eelpond` workflow. However, to do this, you need to make sure the input files are available.
+
+For paladin, you need both 1) an assembly, and 2) trimmed (and merged) input files. The assembly can be generated via another workflow, or passed to `eelpond` via the configfile.
+
+Specifying an assembly:
+
+  1) If you've already run read trimming and want to use a Trinity assembly generated via `eelpond`, run the following:
+    
+    ./run_eelpond my_config plass_assemble paladin # eelpond will run or locate the plass assembly
+
+  2) Alternatively, you can input an assembly via the [assemblyinput](assemblyinput.md) utility rule, with an assembly in your `yaml` configfile.
+    
+    ./run_eelpond assemblyinput paladin
+    
+  In config file:
+
+    assemblyinput:
+      assembly: rna_testdata/nema.fasta
+      gene_trans_map:  rna_testdata/nema.fasta.gene_trans_map #optional
+      assembly_extension: '_plass'
+    
+
+This is commented out in the test data yaml, but go ahead and uncomment (remove leading `#`) in order to use this option. If you have a gene to transcript map, please specify it as well. If not, delete this line from    your `config`. The `assembly_extension` parameter is important: this is what allows us to build assemblies from several different assemblers on the same dataset. Make sure you set the `assembly_extension` parameter to plass, as paladin only works on plassassemblies (for the
+    moment). **Note: Please don't use additional underscores (`_`) in this extension!**. For more details, see the [assemblyinput documentation](assemblyinput.md).
+
+Specifying input reads:
+
+If you haven't yet run read trimming and merging, you'll also need to run those steps:
 ```
-./run_eelpond my-workflow.yaml plass_assemble paladin_map --build_config
-``` 
+./run_eelpond my_config get_data trimmomatic pear paladin
+```
+with one of the options to specify an assembly (above).
+
 
 ## PALADIN eelpond rule
 
