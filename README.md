@@ -62,7 +62,7 @@ The Eel Pond protocol (which inspired the `eelpond` name) included line-by-line 
 
 To test the default workflow:
 ```
-./run_eelpond nema-download default
+./run_eelpond examples/nema.yaml default
 ```
 This will download and run a small set of _Nematostella vectensis_ test data (from [Tulin et al., 2013](https://evodevojournal.biomedcentral.com/articles/10.1186/2041-9139-4-16))
 
@@ -79,7 +79,7 @@ Generate these by following instructions here: [Understanding and Configuring Wo
 ## Available Workflows
 You can see the available workflows (and which programs they run) by using the `--print_workflows` flag:
 ```
-./run_eelpond nema-test --print_workflows
+./run_eelpond examples/nema.yaml --print_workflows
 ```
 
 **subworkflows**

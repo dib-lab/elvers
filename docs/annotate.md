@@ -8,12 +8,12 @@ At the moment, this workflow consists of:
 
 ## Quickstart
 
-If you've generated an assembly, even if you've already run `./run_eelpond nema-test assemble`:
+If you've generated an assembly, even if you've already run `./run_eelpond examples/nema.yaml assemble`:
 
    1) "Run" trinity assembly at the same time.If you've already run the assembly, `eelpond` will just locateyour assembly file for `annotate`. 
    
    ```
-   ./run_eelpond nema-test assemble annotate
+   ./run_eelpond examples/nema.yaml assemble annotate
    ```
   
    2) OR, Pass an assembly in via `assemblyinput` **with an assembly in your `yaml` configfile, e.g.:** 

@@ -19,7 +19,7 @@ PALADIN may output a standard SAM file, or a text file containing a UniProt-gene
 We recommend you run `paladin` as part of the [Protein Assembly](protein_assembly_workflow.md) or [paladin_map](paladin_map.md) workflows.
 
 ```
-./run_eelpond nema-test protein_assembly
+./run_eelpond examples/nema.yaml protein_assembly
 ```
 This will run trimmomatic trimming prior to PEAR merging (for paired end reads) and paladin mapping. 
 

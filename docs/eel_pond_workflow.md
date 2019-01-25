@@ -16,10 +16,11 @@ The "Eel Pond" Protocol for RNAseq consists of:
 
 This is the default workflow. To run:
 ```
-./run_eelpond nema-test.yaml
-# or
-#./run_eelpond nema-test.yaml default
+./run_eelpond examples/nema.yaml
 ```
+
+(You can be explicit and run the full default workflow with `./run_eelpond examples/nema.yaml default`)
+
 This will run a small set of Nematostella vectensis test data (from [Tulin et al., 2013](https://evodevojournal.biomedcentral.com/articles/10.1186/2041-9139-4-16)).
 
 ## Running Your Own Data

@@ -14,7 +14,7 @@ Subworkflows combine tools in the right order to facilitate file targeting withi
 To run the assemble subworkflow, run: 
 
 ```
-./run_eelpond nema-test assemble
+./run_eelpond examples/nema.yaml assemble
 ```
 
 ## Configuring the assemble subworkflow 

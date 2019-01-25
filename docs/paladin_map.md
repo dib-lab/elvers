@@ -10,12 +10,12 @@ Subworkflows combine tools in the right order to facilitate file targeting withi
 
 ## Quickstart
 
-If you've generated an assembly, even if you've already run `./run_eelpond nema-test assemble`:
+If you've generated an assembly, even if you've already run `./run_eelpond examples/nema.yaml assemble`:
 
    1) "Run" trinity assembly at the same time. If you've already run the assembly, `eelpond` will just locateyour assembly file for `paladin_map`.
    
    ```
-   ./run_eelpond nema-test assemble paladin_map
+   ./run_eelpond examples/nema.yaml assemble paladin_map
    ```
 
    2) OR, Pass an assembly in via `assemblyinput`, with an assembly in your `yaml` configfile, e.g.:
