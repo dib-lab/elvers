@@ -34,7 +34,7 @@ install:
 
 script:
   - ./run_eelpond examples/nema.yaml get_data -t 4 --restart_times=3
-  - ./run_eelpond nema-download.yaml assemble quantify -t 4
-  - ./run_eelpond nema-download.yaml plass_assemble paladin_map -t 4
+  - ./run_eelpond examples/nema.yaml assemble quantify -t 4
+  - ./run_eelpond examples/nema.yaml plass_assemble paladin_map -t 4
   - rm -fr $HOME/miniconda/envs/test-env $HOME/miniconda/pkgs/cache
   - find $HOME/miniconda -type f -printf '%TY-%Tm-%Td %TT %p\n' | sort -r | head
