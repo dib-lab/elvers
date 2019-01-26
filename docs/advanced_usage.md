@@ -1,7 +1,7 @@
 # Advanced Usage
 
 
-Each independent step is split into a smaller workflow that can be run independently, if desired, e.g. `./run_eelpond nema-test preprocess`. Individual tools can also be run independently, see [Advanced Usage](advanced_usage.md).
+Each independent step is split into a smaller workflow that can be run independently, if desired, e.g. `./run_eelpond examples/nema preprocess`. Individual tools can also be run independently, see [Advanced Usage](advanced_usage.md).
 
 See the help, here:
 ```
@@ -19,7 +19,7 @@ See the help, here:
 
 You can see the available workflows (and which programs they run) by using the `--print_workflows` flag:
 ```
-./run_eelpond nema-test --print_workflows
+./run_eelpond examples/nema.yaml --print_workflows
 ```
 
 *more info coming soon*

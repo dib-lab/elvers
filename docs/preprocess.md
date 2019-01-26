@@ -12,7 +12,7 @@ Subworkflows combine tools in the right order to facilitate file targeting withi
 To run the preprocess subworkflow, run: 
 
 ```
-./run_eelpond nema-test preprocess
+./run_eelpond examples/nema.yaml preprocess
 ```
 
 ## Configuring the preprocess workflow 

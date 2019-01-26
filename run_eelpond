@@ -250,7 +250,7 @@ Available Workflows:
 
 For a quickstart, run this:
 
-   ./run_eelpond nema-test
+   ./run_eelpond examples/nema.yaml
 
 from the main eelpond directory.
 

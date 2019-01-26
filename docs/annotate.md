@@ -8,12 +8,12 @@ At the moment, this workflow consists of:
 
 ## Quickstart
 
-If you've generated an assembly, even if you've already run `./run_eelpond nema-test assemble`:
+If you've generated an assembly, even if you've already run `./run_eelpond examples/nema.yaml assemble`:
 
    1) "Run" trinity assembly at the same time.If you've already run the assembly, `eelpond` will just locateyour assembly file for `annotate`. 
    
    ```
-   ./run_eelpond nema-test assemble annotate
+   ./run_eelpond examples/nema.yaml assemble annotate
    ```
   
    2) OR, Pass an assembly in via `assemblyinput` **with an assembly in your `yaml` configfile, e.g.:** 
@@ -25,8 +25,8 @@ If you've generated an assembly, even if you've already run `./run_eelpond nema-
    In the configfile:
     
     assemblyinput:
-      assembly: rna_testdata/nema.fasta
-      gene_trans_map:  rna_testdata/nema.fasta.gene_trans_map #optional
+      assembly: examples/nema.assembly.fasta
+      gene_trans_map: examples/nema.assembly.fasta.gene_trans_map #optional
       assembly_extension: '_input'
    
    This is commented out in the test data yaml, but go ahead and uncomment (remove leading `#`) in order to use this option. If you have a gene to transcript map, please specify it as well.   If not, delete this line from your `config`. The `assembly_extension` parameter is important: this is what allows us to build assemblies from several different assemblers on the same dataset. Feel free to use `_input`, as   specified above, or pick something equally simple yet more informative. **Note:
