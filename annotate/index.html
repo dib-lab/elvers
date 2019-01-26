@@ -11,7 +11,7 @@
       <meta http-equiv="x-ua-compatible" content="ie=edge">
       
       
-        <link rel="canonical" href="http://dib-lab.github.io/eelpond/sourmash/">
+        <link rel="canonical" href="http://dib-lab.github.io/eelpond/annotate/">
       
       
       
@@ -38,7 +38,7 @@
     
     
       
-        <title>sourmash - eelpond</title>
+        <title>annotate - eelpond</title>
       
     
     
@@ -102,7 +102,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="../#sourmash" tabindex="1" class="md-skip">
+      <a href="../#annotate-subworkflow" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -128,7 +128,7 @@
                 eelpond
               </span>
               <span class="md-header-nav__topic">
-                sourmash
+                annotate
               </span>
             
           
@@ -299,10 +299,12 @@
           
           
 
+  
 
-  <li class="md-nav__item md-nav__item--nested">
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3-3" type="checkbox" id="nav-3-3">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3-3" type="checkbox" id="nav-3-3" checked>
     
     <label class="md-nav__link" for="nav-3-3">
       Subworkflows
@@ -354,11 +356,63 @@
           
           
 
+  
 
-  <li class="md-nav__item">
-    <a href="../annotate/" title="annotate" class="md-nav__link">
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        annotate
+      </label>
+    
+    <a href="./" title="annotate" class="md-nav__link md-nav__link--active">
       annotate
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#quickstart" title="Quickstart" class="md-nav__link">
+    Quickstart
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#output-files" title="Output files:" class="md-nav__link">
+    Output files:
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuring-the-annotate-subworkflow" title="Configuring the annotate subworkflow" class="md-nav__link">
+    Configuring the annotate subworkflow
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
   </li>
 
         
@@ -431,12 +485,10 @@
           
           
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+  <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3-4" type="checkbox" id="nav-3-4" checked>
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3-4" type="checkbox" id="nav-3-4">
     
     <label class="md-nav__link" for="nav-3-4">
       Programs Used
@@ -536,77 +588,11 @@
           
           
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-      
-    
-    
-      <label class="md-nav__link md-nav__link--active" for="__toc">
-        sourmash
-      </label>
-    
-    <a href="./" title="sourmash" class="md-nav__link md-nav__link--active">
+  <li class="md-nav__item">
+    <a href="../sourmash/" title="sourmash" class="md-nav__link">
       sourmash
     </a>
-    
-      
-<nav class="md-nav md-nav--secondary">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">Table of contents</label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#quickstart" title="Quickstart" class="md-nav__link">
-    Quickstart
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#sourmash-command" title="Sourmash Command" class="md-nav__link">
-    Sourmash Command
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#output-files" title="Output files:" class="md-nav__link">
-    Output files:
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#modifying-params-for-sourmash" title="Modifying Params for Sourmash:" class="md-nav__link">
-    Modifying Params for Sourmash:
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#sourmash-eelpond-rule" title="Sourmash eelpond rule" class="md-nav__link">
-    Sourmash eelpond rule
-  </a>
-  
-</li>
-      
-      
-      
-      
-      
-    </ul>
-  
-</nav>
-    
   </li>
 
         
@@ -756,13 +742,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#sourmash-command" title="Sourmash Command" class="md-nav__link">
-    Sourmash Command
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#output-files" title="Output files:" class="md-nav__link">
     Output files:
   </a>
@@ -770,15 +749,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#modifying-params-for-sourmash" title="Modifying Params for Sourmash:" class="md-nav__link">
-    Modifying Params for Sourmash:
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#sourmash-eelpond-rule" title="Sourmash eelpond rule" class="md-nav__link">
-    Sourmash eelpond rule
+  <a href="#configuring-the-annotate-subworkflow" title="Configuring the annotate subworkflow" class="md-nav__link">
+    Configuring the annotate subworkflow
   </a>
   
 </li>
@@ -800,49 +772,56 @@
               
                 
                 
-                <h1 id="sourmash">Sourmash<a class="headerlink" href="#sourmash" title="Permanent link">&para;</a></h1>
-<p>sourmash is a command-line tool and Python library for computing MinHash sketches from DNA sequences, comparing them to each other, and plotting the results. This allows you to estimate sequence similarity between even very large data sets quickly and accurately. Please see the mash software and the mash paper <a href="http://biorxiv.org/content/early/2015/10/26/029827">(Ondov et al., 2016)</a> for background information on how and why MinHash sketches work.</p>
-<p>Sourmash is <a href="http://ivory.idyll.org/lab/">dib-lab</a> software! Please see the <a href="https://sourmash.readthedocs.io/en/latest/index.html">sourmash documentation</a> for more on sourmash. Sourmash 2.0 is coming soon. In the meantime, please cite <a href="https://joss.theoj.org/papers/3d793c6e7db683bee7c03377a4a7f3c9">Brown and Irber, 2016</a></p>
-<p><strong>At the moment we have only enabled <em>sourmash compute</em> functionality.</strong></p>
+                <h1 id="annotate-subworkflow">Annotate Subworkflow<a class="headerlink" href="#annotate-subworkflow" title="Permanent link">&para;</a></h1>
+<p>Subworkflows combine tools in the right order to facilitate file targeting withing <code>eelpond</code>. The "annotate" subworkflow annotates a transcriptome. It requires an assembly to be provided, either by running an assembly or providing one in your configfile. </p>
+<p>At the moment, this workflow consists of:</p>
+<ul>
+<li><a href="../dammit/">dammit</a></li>
+</ul>
 <h2 id="quickstart">Quickstart<a class="headerlink" href="#quickstart" title="Permanent link">&para;</a></h2>
-<p>Run Sourmash as part of the "default" <a href="../eel_pond_workflow/">Eel Pond workflow</a> or via the <a href="../sourmash_compute/">sourmash_compute subworkflow</a>. At the moment, sourmash compute requires both an assembly and a set of reads as input. Please see the <a href="../sourmash_compute/">sourmash_compute subworkflow</a> for how to run sourmash compute properly. </p>
-<h2 id="sourmash-command">Sourmash Command<a class="headerlink" href="#sourmash-command" title="Permanent link">&para;</a></h2>
-<p>On the command line, the command eelpond runs for each file is approximately:</p>
-<div class="codehilite"><pre><span></span>sourmash compute --scaled 1000 \
-  -k 31 input_file -o output.sig
+<p>If you've generated an assembly, even if you've already run <code>./run_eelpond examples/nema.yaml assemble</code>:</p>
+<p>1) "Run" trinity assembly at the same time.If you've already run the assembly, <code>eelpond</code> will just locateyour assembly file for <code>annotate</code>. </p>
+<p><code>./run_eelpond examples/nema.yaml assemble annotate</code></p>
+<p>2) OR, Pass an assembly in via <code>assemblyinput</code> <strong>with an assembly in your <code>yaml</code> configfile, e.g.:</strong> </p>
+<p><code>./run_eelpond assemblyinput annotate</code></p>
+<p>In the configfile:</p>
+<div class="codehilite"><pre><span></span>assemblyinput:
+  assembly: examples/nema.assembly.fasta
+  gene_trans_map: examples/nema.assembly.fasta.gene_trans_map #optional
+  assembly_extension: &#39;_input&#39;
 </pre></div>
 
 
+<p>This is commented out in the test data yaml, but go ahead and uncomment (remove leading <code>#</code>) in order to use this option. If you have a gene to transcript map, please specify it as well.   If not, delete this line from your <code>config</code>. The <code>assembly_extension</code> parameter is important: this is what allows us to build assemblies from several different assemblers on the same dataset. Feel free to use <code>_input</code>, as   specified above, or pick something equally simple yet more informative. <strong>Note:
+    Please don't use additional underscores (<code>_</code>) in this extension!</strong>. For more details, see the <a href="../assemblyinput/">assemblyinput documentation</a>. </p>
 <h2 id="output-files">Output files:<a class="headerlink" href="#output-files" title="Permanent link">&para;</a></h2>
 <p>Your main output directory will be determined by your config file: by default it is <code>BASENAME_out</code> (you specify BASENAME).</p>
-<p>Sourmash will output files in the <code>sourmash</code> subdirectory of this output directory. Sourmash signatures will have the same name as the file they're generated from, but end with <code>.sig</code> instead of <code>.fasta</code> or <code>.fq.gz</code>.</p>
-<h2 id="modifying-params-for-sourmash">Modifying Params for Sourmash:<a class="headerlink" href="#modifying-params-for-sourmash" title="Permanent link">&para;</a></h2>
-<p>Be sure to set up your sample info and build a configfile first (see <a href="../about_and_configure/">Understanding and Configuring Workflows</a>).</p>
-<p>To see the available parameters for the <code>sourmash</code> rule, run</p>
-<div class="codehilite"><pre><span></span>./run_eelpond config sourmash --print_params
+<p>Dammit will output files in the <code>annotation</code> subdirectory of this output directory. The annotated fasta file will be <code>ASSEMBLY.dammit.fasta</code> and the annotation <code>gff3</code> file will be <code>ASSEMBLY.dammit.gff3</code>. Dammit will also produce a number of intermediate files that will be contained within an <code>ASSEMBLY.fasta.dammit</code> folder.</p>
+<h2 id="configuring-the-annotate-subworkflow">Configuring the annotate subworkflow<a class="headerlink" href="#configuring-the-annotate-subworkflow" title="Permanent link">&para;</a></h2>
+<p>To set up your sample info and build a configfile, see <a href="../about_and_configure/">Understanding and Configuring Workflows</a>.</p>
+<p>If you want to add the <code>annotate</code> program parameters to a previously built configfile, run:</p>
+<div class="codehilite"><pre><span></span>./run_eelpond config.yaml annotate --print_params
 </pre></div>
 
 
-<p>This will print the following:</p>
-<div class="codehilite"><pre><span></span>  ####################  sourmash  ####################
-sourmash:
-  k_size: 31
-  scaled: 1000
-  extra: &#39;&#39; 
-  #####################################################
+<p>A small set of parameters should print to your console:</p>
+<div class="codehilite"><pre><span></span> ####################  annotate  ####################
+dammit:
+  busco_group:     # specify all busco groups below here
+  - metazoa
+  - eukaryota
+  db_dir: databases   # specify location for databases (or previously-installed databases)
+  db_install_only: False   # just install databases, don&#39;t run annotation
+  db_extra:
+  annot_extra: &#39; --quick &#39;
+  #######################################################
 </pre></div>
 
 
-<p>In addition to changing parameters we've specifically enabled, you can modify the <code>extra</code> param to pass any extra sourmash parameters,  e.g.:</p>
-<div class="codehilite"><pre><span></span>  extra: &#39; --track-abundance &#39;
-</pre></div>
-
-
-<p>Be sure the modified lines go into the config file you're using to run <code>eelpond</code> (see <a href="../about_and_configure/">Understanding and Configuring Workflows</a>). </p>
-<p>See the <a href="https://sourmash.readthedocs.io/en/latest/index.html">sourmash documentation</a> to learn more about the parameters you can use with sourmash compute. </p>
-<h2 id="sourmash-eelpond-rule">Sourmash eelpond rule<a class="headerlink" href="#sourmash-eelpond-rule" title="Permanent link">&para;</a></h2>
-<p>We use a slightly modified version of the <a href="https://github.com/dib-lab/eelpond/blob/master/rules/sourmash/sourmash-wrapper.py">sourmash snakemake wrapper</a> to run Sourmash compute via snakemake. </p>
-<p>For snakemake afficionados, see our sourmash rules on <a href="https://github.com/dib-lab/eelpond/blob/master/rules/sourmash/sourmash.rule">github</a>.</p>
+<p>Override default params for any program by placing these lines in your <code>yaml</code> config file, and modifying values as desired. For more details, see <a href="../about_and_configure/">Understanding and Configuring Workflows</a>.For more on what parameters are available, see the docs for each specific program or utility rule:</p>
+<ul>
+<li><a href="../dammit/">dammit</a></li>
+</ul>
                 
                   
                 
@@ -864,7 +843,7 @@ sourmash:
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
-          <a href="../dammit/" title="dammit" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../assemble/" title="assemble" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-flex__cell md-flex__cell--shrink">
               <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
             </div>
@@ -873,19 +852,19 @@ sourmash:
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                dammit
+                assemble
               </span>
             </div>
           </a>
         
         
-          <a href="../salmon/" title="salmon" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../quantify/" title="quantify" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
               <span class="md-flex__ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                salmon
+                quantify
               </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink">

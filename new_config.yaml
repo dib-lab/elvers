@@ -1,0 +1,11 @@
+
+  ####################  Eelpond Pipeline Configfile  ####################  
+basename: eelpond
+experiment: _experiment1
+samples: samples.tsv
+
+  ####################  assemblyinput  ####################  
+assemblyinput:
+  assembly: rna_testdata/nema.fasta
+  assembly_extension: _input
+  gene_trans_map: rna_testdata/nema.fasta.gene_trans_map

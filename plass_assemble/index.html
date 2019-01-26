@@ -11,7 +11,7 @@
       <meta http-equiv="x-ua-compatible" content="ie=edge">
       
       
-        <link rel="canonical" href="http://dib-lab.github.io/eelpond/Protein_assembly_workflow/">
+        <link rel="canonical" href="http://dib-lab.github.io/eelpond/plass_assemble/">
       
       
       
@@ -38,7 +38,7 @@
     
     
       
-        <title>Protein-level Assembly Workflow - eelpond</title>
+        <title>plass_assemble - eelpond</title>
       
     
     
@@ -102,7 +102,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="../#protein-assembly-workflow" tabindex="1" class="md-skip">
+      <a href="../#protein-assembly-subworkflow" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -128,7 +128,7 @@
                 eelpond
               </span>
               <span class="md-header-nav__topic">
-                Protein-level Assembly Workflow
+                plass_assemble
               </span>
             
           
@@ -232,8 +232,20 @@
 
 
   <li class="md-nav__item">
-    <a href=".." title="About" class="md-nav__link">
-      About
+    <a href=".." title="Quickstart" class="md-nav__link">
+      Quickstart
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../about_and_configure/" title="Choosing and Configuring Workflows" class="md-nav__link">
+      Choosing and Configuring Workflows
     </a>
   </li>
 
@@ -247,13 +259,13 @@
 
   <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" checked>
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3" checked>
     
-    <label class="md-nav__link" for="nav-2">
+    <label class="md-nav__link" for="nav-3">
       Available Workflows
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
-      <label class="md-nav__title" for="nav-2">
+      <label class="md-nav__title" for="nav-3">
         Available Workflows
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -265,8 +277,125 @@
 
 
   <li class="md-nav__item">
-    <a href="../Eel_Pond_workflow/" title="Eel Pond Protocol" class="md-nav__link">
+    <a href="../eel_pond_workflow/" title="Eel Pond Protocol" class="md-nav__link">
       Eel Pond Protocol
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../protein_assembly_workflow/" title="Protein-level Assembly Workflow" class="md-nav__link">
+      Protein-level Assembly Workflow
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3-3" type="checkbox" id="nav-3-3" checked>
+    
+    <label class="md-nav__link" for="nav-3-3">
+      Subworkflows
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-3-3">
+        Subworkflows
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../preprocess/" title="preprocess" class="md-nav__link">
+      preprocess
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../kmer_trim/" title="kmer_trim" class="md-nav__link">
+      kmer_trim
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../assemble/" title="assemble" class="md-nav__link">
+      assemble
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../annotate/" title="annotate" class="md-nav__link">
+      annotate
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../quantify/" title="quantify" class="md-nav__link">
+      quantify
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../diffexp/" title="diffexp" class="md-nav__link">
+      diffexp
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../sourmash_compute/" title="sourmash_compute" class="md-nav__link">
+      sourmash_compute
     </a>
   </li>
 
@@ -285,46 +414,27 @@
       
     
     
-      <label class="md-nav__link md-nav__link--active" for="__toc">
-        Protein-level Assembly Workflow
-      </label>
-    
-    <a href="./" title="Protein-level Assembly Workflow" class="md-nav__link md-nav__link--active">
-      Protein-level Assembly Workflow
+    <a href="./" title="plass_assemble" class="md-nav__link md-nav__link--active">
+      plass_assemble
     </a>
     
-      
-<nav class="md-nav md-nav--secondary">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">Table of contents</label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#running-test-data" title="Running Test Data" class="md-nav__link">
-    Running Test Data
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#running-your-own-data" title="Running Your Own Data" class="md-nav__link">
-    Running Your Own Data
-  </a>
-  
-</li>
-      
-      
-      
-      
-      
-    </ul>
-  
-</nav>
-    
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../paladin_map/" title="paladin_map" class="md-nav__link">
+      paladin_map
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
   </li>
 
         
@@ -335,13 +445,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2-3" type="checkbox" id="nav-2-3">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3-4" type="checkbox" id="nav-3-4">
     
-    <label class="md-nav__link" for="nav-2-3">
+    <label class="md-nav__link" for="nav-3-4">
       Programs Used
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-2-3">
+      <label class="md-nav__title" for="nav-3-4">
         Programs Used
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -532,13 +642,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
     
-    <label class="md-nav__link" for="nav-3">
+    <label class="md-nav__link" for="nav-4">
       For Developers
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
-      <label class="md-nav__title" for="nav-3">
+      <label class="md-nav__title" for="nav-4">
         For Developers
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -550,20 +660,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../dev_tips/" title="Notes for Developers" class="md-nav__link">
-      Notes for Developers
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../Configuration/" title="Configuring the pipeline" class="md-nav__link">
-      Configuring the pipeline
+    <a href="../under_the_hood/" title="Under the Hood" class="md-nav__link">
+      Under the Hood
     </a>
   </li>
 
@@ -590,29 +688,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">Table of contents</label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#running-test-data" title="Running Test Data" class="md-nav__link">
-    Running Test Data
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#running-your-own-data" title="Running Your Own Data" class="md-nav__link">
-    Running Your Own Data
-  </a>
-  
-</li>
-      
-      
-      
-      
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -624,36 +699,66 @@
               
                 
                 
-                <h1 id="protein-assembly-workflow">Protein Assembly Workflow<a class="headerlink" href="#protein-assembly-workflow" title="Permanent link">&para;</a></h1>
-<p><em>in progress</em></p>
-<p>The protein assembly workflow relies on the PLASS assembler and some downstream protein mapping tools.</p>
-<p>It consists of:  </p>
+                <h1 id="protein-assembly-subworkflow">Protein Assembly Subworkflow<a class="headerlink" href="#protein-assembly-subworkflow" title="Permanent link">&para;</a></h1>
+<p>Subworkflows combine tools in the right order to facilitate file targeting withing <code>eelpond</code>. The "plass_assemble"" subworkflow conducts read quality trimming, kmer trimming, and protein-level assembly with <a href="../plass/">plass</a>. At the moment, this workflow consists of:</p>
 <ul>
-<li><a href="../plass/">PLASS</a></li>
-<li><a href="../pear/">pear</a></li>
-<li><a href="../paladin/">paladin</a></li>
+<li><a href="../get_data/">get_data</a> - an <code>eelpond</code> utility</li>
+<li><a href="../trimmomatic/">trimmomatic</a></li>
+<li><a href="../fastqc/">fastqc</a>, run on both pre-trim and post-trim data</li>
+<li><a href="../khmer/">khmer</a></li>
+<li><a href="../plass/">plass</a></li>
 </ul>
-<h2 id="running-test-data">Running Test Data<a class="headerlink" href="#running-test-data" title="Permanent link">&para;</a></h2>
-<div class="codehilite"><pre><span></span>./run_eelpond nema-test.yaml plass_assemble paladin_map
+<h1 id="quickstart">Quickstart<a class="headerlink" href="#quickstart" title="Permanent link">&para;</a></h1>
+<p>To run the plass_assemble subworkflow, run: </p>
+<div class="codehilite"><pre><span></span>./run_eelpond examples/nema.yaml plass_assemble
 </pre></div>
 
 
-<p>This will run a small set of Nematostella vectensis test data (from <a href="https://evodevojournal.biomedcentral.com/articles/10.1186/2041-9139-4-16">Tulin et al., 2013</a>).</p>
-<h2 id="running-your-own-data">Running Your Own Data<a class="headerlink" href="#running-your-own-data" title="Permanent link">&para;</a></h2>
-<p>To run your own data, you'll need to create two files, a tsv file containing your sample info, and a yaml file containing basic configuration info.</p>
-<p>IMPORTANT: The sample info must be in a <strong>properly formatted</strong> tsv file. The easiest way to do this is to copy the test data tsv and modify:</p>
-<div class="codehilite"><pre><span></span>cp nema_samles.tsv my-samples.tsv
+<h2 id="configuring-the-assemble-subworkflow">Configuring the assemble subworkflow<a class="headerlink" href="#configuring-the-assemble-subworkflow" title="Permanent link">&para;</a></h2>
+<p>To set up your sample info and build a configfile, see <a href="../about_and_configure/">Understanding and Configuring Workflows</a>.</p>
+<p>If you want to add the <code>plass_assemble</code> program parameters to a previously built configfile, run:</p>
+<div class="codehilite"><pre><span></span>./run_eelpond config.yaml plass_assemble --print_params
 </pre></div>
 
 
-<p>Now modify  <code>my-samples.tsv</code> with your sample information.</p>
-<p>Next, build a configfile to edit:</p>
-<div class="codehilite"><pre><span></span>./run_eelpond my-config.yaml plass_assemble paladin_map --build_config
+<p>A small set of parameters should print to your console:</p>
+<div class="codehilite"><pre><span></span> ####################  plass_assemble  ####################
+get_data:
+  download_data: false
+  use_ftp: false
+trimmomatic:
+  adapter_file:
+    pe_path: ep_utils/TruSeq3-PE-2.fa
+    se_path: ep_utils/TruSeq3-SE.fa
+  extra: &#39;&#39;
+  trim_cmd: ILLUMINACLIP:{}:2:40:15 LEADING:2 TRAILING:2 SLIDINGWINDOW:4:15 MINLEN:25
+fastqc:
+  extra: &#39;&#39;
+khmer:
+  C: 3
+  Z: 18
+  coverage: 20
+  diginorm: true
+  extra: &#39;&#39;
+  ksize: 20
+  memory: 4e9
+plass:
+  input_kmer_trimmed: true
+  input_trimmomatic_trimmed: false
+  add_single_to_paired: false # would you like to add the orphaned reads to the plass assembly?
+  extra: &#39;&#39;
+  #######################################################
 </pre></div>
 
 
-<p>This configfile will contain all the default paramters for each step of the targeted workflows. </p>
-<p>Please see the documentation file for each individual program (linked above) for what paramters to modify.</p>
+<p>Override default params for any program by placing these lines in your <code>yaml</code> config file, and modifying values as desired. For more details, see <a href="../about_and_configure/">Understanding and Configuring Workflows</a>.For more on what parameters are available, see the docs for each specific program or utility rule:</p>
+<ul>
+<li><a href="../get_data/">get_data</a></li>
+<li><a href="../trimmomatic/">trimmomatic</a></li>
+<li><a href="../fastqc/">fastqc</a></li>
+<li><a href="../khmer/">khmer</a></li>
+<li><a href="../plass/">plass</a></li>
+</ul>
                 
                   
                 
@@ -675,7 +780,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
-          <a href="../Eel_Pond_workflow/" title="Eel Pond Protocol" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../sourmash_compute/" title="sourmash_compute" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-flex__cell md-flex__cell--shrink">
               <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
             </div>
@@ -684,19 +789,19 @@
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                Eel Pond Protocol
+                sourmash_compute
               </span>
             </div>
           </a>
         
         
-          <a href="../get_data/" title="get_data" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../paladin_map/" title="paladin_map" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
               <span class="md-flex__ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                get_data
+                paladin_map
               </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink">

@@ -2,97 +2,142 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
      <loc>http://dib-lab.github.io/eelpond/</loc>
-     <lastmod>2019-01-21</lastmod>
+     <lastmod>2019-01-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>http://dib-lab.github.io/eelpond/Eel_Pond_workflow/</loc>
-     <lastmod>2019-01-21</lastmod>
+     <loc>http://dib-lab.github.io/eelpond/about_and_configure/</loc>
+     <lastmod>2019-01-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>http://dib-lab.github.io/eelpond/Protein_assembly_workflow/</loc>
-     <lastmod>2019-01-21</lastmod>
+     <loc>http://dib-lab.github.io/eelpond/eel_pond_workflow/</loc>
+     <lastmod>2019-01-26</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    <url>
+     <loc>http://dib-lab.github.io/eelpond/protein_assembly_workflow/</loc>
+     <lastmod>2019-01-26</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    <url>
+     <loc>http://dib-lab.github.io/eelpond/preprocess/</loc>
+     <lastmod>2019-01-26</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    <url>
+     <loc>http://dib-lab.github.io/eelpond/kmer_trim/</loc>
+     <lastmod>2019-01-26</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    <url>
+     <loc>http://dib-lab.github.io/eelpond/assemble/</loc>
+     <lastmod>2019-01-26</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    <url>
+     <loc>http://dib-lab.github.io/eelpond/annotate/</loc>
+     <lastmod>2019-01-26</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    <url>
+     <loc>http://dib-lab.github.io/eelpond/quantify/</loc>
+     <lastmod>2019-01-26</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    <url>
+     <loc>http://dib-lab.github.io/eelpond/diffexp/</loc>
+     <lastmod>2019-01-26</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    <url>
+     <loc>http://dib-lab.github.io/eelpond/sourmash_compute/</loc>
+     <lastmod>2019-01-26</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    <url>
+     <loc>http://dib-lab.github.io/eelpond/plass_assemble/</loc>
+     <lastmod>2019-01-26</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    <url>
+     <loc>http://dib-lab.github.io/eelpond/paladin_map/</loc>
+     <lastmod>2019-01-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://dib-lab.github.io/eelpond/get_data/</loc>
-     <lastmod>2019-01-21</lastmod>
+     <lastmod>2019-01-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://dib-lab.github.io/eelpond/fastqc/</loc>
-     <lastmod>2019-01-21</lastmod>
+     <lastmod>2019-01-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://dib-lab.github.io/eelpond/trimmomatic/</loc>
-     <lastmod>2019-01-21</lastmod>
+     <lastmod>2019-01-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://dib-lab.github.io/eelpond/khmer/</loc>
-     <lastmod>2019-01-21</lastmod>
+     <lastmod>2019-01-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://dib-lab.github.io/eelpond/trinity/</loc>
-     <lastmod>2019-01-21</lastmod>
+     <lastmod>2019-01-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://dib-lab.github.io/eelpond/assemblyinput/</loc>
-     <lastmod>2019-01-21</lastmod>
+     <lastmod>2019-01-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://dib-lab.github.io/eelpond/dammit/</loc>
-     <lastmod>2019-01-21</lastmod>
+     <lastmod>2019-01-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://dib-lab.github.io/eelpond/sourmash/</loc>
-     <lastmod>2019-01-21</lastmod>
+     <lastmod>2019-01-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://dib-lab.github.io/eelpond/salmon/</loc>
-     <lastmod>2019-01-21</lastmod>
+     <lastmod>2019-01-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://dib-lab.github.io/eelpond/deseq2/</loc>
-     <lastmod>2019-01-21</lastmod>
+     <lastmod>2019-01-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://dib-lab.github.io/eelpond/plass/</loc>
-     <lastmod>2019-01-21</lastmod>
+     <lastmod>2019-01-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://dib-lab.github.io/eelpond/pear/</loc>
-     <lastmod>2019-01-21</lastmod>
+     <lastmod>2019-01-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://dib-lab.github.io/eelpond/paladin/</loc>
-     <lastmod>2019-01-21</lastmod>
+     <lastmod>2019-01-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>http://dib-lab.github.io/eelpond/rcorrector/</loc>
-     <lastmod>2019-01-21</lastmod>
+     <lastmod>2019-01-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>http://dib-lab.github.io/eelpond/dev_tips/</loc>
-     <lastmod>2019-01-21</lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-    <url>
-     <loc>http://dib-lab.github.io/eelpond/Configuration/</loc>
-     <lastmod>2019-01-21</lastmod>
+     <loc>http://dib-lab.github.io/eelpond/under_the_hood/</loc>
+     <lastmod>2019-01-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
 </urlset>
