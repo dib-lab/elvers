@@ -40,7 +40,7 @@ Note: at the moment, `eelpond` assumes **all input data is gzipped**.
 
 ## Choosing and running a workflow
 
-The default workflow is the [Eel Pond RNAseq workflow](Eel_Pond_workflow.md), but we offer several other end-to-end workflows, as well as a number of "subworkflows" that facilitate running (or re-running) certain steps of the workflows. 
+The default workflow is the [Eel Pond RNAseq workflow](eel_pond_workflow.md), but we offer several other end-to-end workflows, as well as a number of "subworkflows" that facilitate running (or re-running) certain steps of the workflows. 
 
 To see the available workflows and subworkflows, run:
 ```
