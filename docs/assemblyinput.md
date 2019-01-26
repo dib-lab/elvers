@@ -18,8 +18,8 @@ In here, you'll see a section for "assemblyinput" parameters that looks like thi
 ```
   ####################  assemblyinput  ####################
 assemblyinput:
-  assembly: data/nema.fasta
-  gene_trans_map: rna_testdata/nema.fasta.gene_trans_map
+  assembly: examples/nema.assembly.fasta
+  gene_trans_map: examples/nema.assembly.fasta.gene_trans_map
   assembly_extension: _input
 ```
 

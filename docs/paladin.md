@@ -86,8 +86,8 @@ Specifying an assembly:
   In config file:
 
     assemblyinput:
-      assembly: rna_testdata/nema.fasta
-      gene_trans_map:  rna_testdata/nema.fasta.gene_trans_map #optional
+      assembly: examples/nema.assembly.fasta
+      gene_trans_map:  examples/nema.assembly.fasta.gene_trans_map #optional
       assembly_extension: '_plass'
     
 

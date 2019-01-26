@@ -26,8 +26,8 @@ If you've generated an assembly, even if you've already run `./run_eelpond examp
 
     ```
     assemblyinput:
-      assembly: rna_testdata/nema.fasta
-      gene_trans_map:  rna_testdata/nema.fasta.gene_trans_map #optional
+      assembly: examples/nema.assemblyfasta
+      gene_trans_map:  examples/nema.assembly.fasta.gene_trans_map #optional
       assembly_extension: '_input'
     ```
     
