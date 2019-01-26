@@ -14,7 +14,7 @@ Subworkflows combine tools in the right order to facilitate file targeting withi
 To run the plass_assemble subworkflow, run: 
 
 ```
-./run_eelpond nema-test plass_assemble
+./run_eelpond examples/nema.yaml plass_assemble
 ```
 
 ## Configuring the assemble subworkflow 

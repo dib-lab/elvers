@@ -11,13 +11,13 @@ If you want to run it as a standalone program instead, you need to have generate
    1) If you have salmon results, run:
    
    ```
-   ./run_eelpond nema-test deseq2
+   ./run_eelpond examples/nema.yaml deseq2
    ```
 
    2) If not, you need to run `salmon` and any other missing steps. It's probably best to run the [diffexp](diffexp.md) subworkflow, but you can also try: 
 
    ```
-   ./run_eelpond nema-test salmon deseq2
+   ./run_eelpond examples/nema.yaml salmon deseq2
    ```
 
 ## DESeq2 Commands

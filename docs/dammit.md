@@ -115,7 +115,7 @@ If the above `dammit` command is run again, there will be a message:
 
 If you'd like to rerun the dammit pipeline, you'll need to use the `--forceall` flag, like so:
 ```
-./run_eelpond nema-test annotation --forceall
+./run_eelpond examples/nema.yaml annotation --forceall
 ```
 
 ## Additional Notes (non-eelpond): Parsing Dammit GFF3 files
