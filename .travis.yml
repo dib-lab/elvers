@@ -33,6 +33,7 @@ install:
   - source activate test-env
 
 script:
-  - ./run_eelpond nema-download.yaml assemble plass_assemble -t 4
+  - ./run_eelpond nema-download.yaml assemble quantify -t 4
+  - ./run_eelpond nema-download.yaml plass_assemble paladin_map -t 4
   - rm -fr $HOME/miniconda/envs/test-env $HOME/miniconda/pkgs/cache
   - find $HOME/miniconda -type f -printf '%TY-%Tm-%Td %TT %p\n' | sort -r | head
