@@ -28,7 +28,7 @@ If you've generated an assembly, even if you've already run `./run_eelpond examp
     assemblyinput:
       assembly: examples/nema.assembly.fasta
       gene_trans_map:  examples/nema.assembly.fasta.gene_trans_map #optional
-      assembly_extension: '_input'
+      assembly_extension: '_plass'
     
     
 This is commented out in the test data yaml, but go ahead and uncomment (remove leading `#`) in order to use this option. If you have a gene to transcript map, please specify it as well.   If not, delete this line from your `config`. The `assembly_extension` parameter is important: this is what allows us to build assemblies from several different assemblers on the same dataset. Feel free to use `_input`, as   specified above, or pick something equally simple yet more informative. **Note:
