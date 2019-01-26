@@ -797,7 +797,7 @@
                 
                 
                 <h1 id="understanding-and-configuring-eelpond-workflows">Understanding and Configuring Eelpond Workflows<a class="headerlink" href="#understanding-and-configuring-eelpond-workflows" title="Permanent link">&para;</a></h1>
-<p><code>eelpond</code> is designed to facilitate running standard workflows and analyses for sequence data. It integrates snakemake rules for commonly used tools, and provides several end-to-end protocols for analyzing RNAseq data. Workflows are highly customizable, and all command-line options for each tool are available for modification via modification of the configuration file.</p>
+<p><code>eelpond</code> is designed to facilitate running standard workflows and analyses for sequence data. It integrates snakemake rules for commonly used tools, and provides several end-to-end protocols for analyzing RNAseq data. Workflows are highly customizable, and all command-line options for each tool are available for modification via the configuration file.</p>
 <h2 id="specify-input-data">Specify Input Data<a class="headerlink" href="#specify-input-data" title="Permanent link">&para;</a></h2>
 <p>To run any workflow, we need to get reads (and any assemblies already generated) into the right format for <code>eelpond</code>. We can either (1) link the data from another location on your machine, or (2) download the data via http or ftp. This is done through a utility rule called <code>get_data</code>.</p>
 <p>To specify input data, we generate a <code>my-samples.tsv</code> file, with either file paths or download links</p>
@@ -831,15 +831,15 @@ sample  unit    fq1 fq2 condition
 
 <p>Note: at the moment, <code>eelpond</code> assumes <strong>all input data is gzipped</strong>.</p>
 <h2 id="choosing-and-running-a-workflow">Choosing and running a workflow<a class="headerlink" href="#choosing-and-running-a-workflow" title="Permanent link">&para;</a></h2>
-<p>The default workflow is the <a href="Eel_Pond_workflow.md">Eel Pond RNAseq workflow</a>, but we offer several other end-to-end workflows, as well as a number of "subworkflows" that facilitate running (or re-running) certain steps of the workflows. </p>
+<p>The default workflow is the <a href="../eel_pond_workflow/">Eel Pond RNAseq workflow</a>, but we offer several other end-to-end workflows, as well as a number of "subworkflows" that facilitate running (or re-running) certain steps of the workflows. </p>
 <p>To see the available workflows and subworkflows, run:</p>
 <div class="codehilite"><pre><span></span>./run_eelpond examples/nema.yaml -w 
 </pre></div>
 
 
 <h2 id="configuring-programs-in-the-workflow">Configuring Programs in the workflow<a class="headerlink" href="#configuring-programs-in-the-workflow" title="Permanent link">&para;</a></h2>
-<p>For any workflow, we need to provide a configuration file that specifies the path to your </p>
-<p>To get a <code>preprocess</code> config you can modify, run:</p>
+<p>For any workflow, we need to provide a configuration file that specifies the path to your samples file (generated above). </p>
+<p>To get a configfile for the default "eel pond" workflow, that you can modify, run:</p>
 <div class="codehilite"><pre><span></span>./run_eelpond my_workflow.yaml --build_config
 </pre></div>
 
@@ -877,17 +877,7 @@ fastqc:
 </pre></div>
 
 
-<p>For more on what parameters are available, see the docs for each specific program or utility rule.</p>
-<ul>
-<li><a href="../get_data/">get_data</a></li>
-<li><a href="../trimmomatic/">trimmomatic</a></li>
-<li><a href="../fastqc/">fastqc</a></li>
-<li><a href="../khmer/">khmer</a></li>
-<li><a href="../trinity/">trinity</a></li>
-<li><a href="../dammit/">dammit</a></li>
-<li><a href="../salmon/">salmon</a></li>
-<li><a href="../sourmash/">sourmash</a></li>
-</ul>
+<p>For more on what parameters are available, see the docs for each specific program or utility rule under the "Available Workflows" --&gt; "Programs Used" navigation tab.</p>
                 
                   
                 
