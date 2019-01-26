@@ -175,8 +175,9 @@ def main(args):
         paramsD = build_default_params(thisdir, targs)
         # add any configuration from extra config files
         extra_configs = {}
-        for c in args.extra_config:
-            extra_configs = import_configfile(find_yaml(thisdir, c, 'extra_config'), extra_configs)
+        if args.extra_config:
+            for c in args.extra_config:
+                extra_configs = import_configfile(find_yaml(thisdir, c, 'extra_config'), extra_configs)
         # this function only updates keys that already exist. so we need to wait till here (after importing params) to read in extra_configs,
         # rather than doing this when reading in the main configfile
         # first update with extra configs, then with main configfile
