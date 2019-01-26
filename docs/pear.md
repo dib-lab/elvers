@@ -13,7 +13,7 @@ PEAR evaluates all possible paired-end read overlaps and without requiring the t
 We recommend you run `pear` as part of the [paladin_map](paladin_map.md) subworkflow
 
 ```
-./run_eelpond nema-test paladin_map
+./run_eelpond examples/nema.yaml paladin_map
 ```
 This will run trimmomatic trimming prior to PEAR merging of paired end reads and then paladin mapping. If you'd like to just run `PEAR`, see "Advanced Usage" below.
 

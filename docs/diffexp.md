@@ -8,12 +8,12 @@ Subworkflows combine tools in the right order to facilitate file targeting withi
 
 ## Quickstart
 
-If you've generated an assembly, even if you've already run `./run_eelpond nema-test assemble`:
+If you've generated an assembly, even if you've already run `./run_eelpond examples/nema.yaml assemble`:
 
    1) "Run" trinity assembly at the same time. If you've already run the assembly, `eelpond` will just locate your assembly file for `diffexp`.
    
    ```
-   ./run_eelpond nema-test assemble diffexp
+   ./run_eelpond examples/nema.yaml assemble diffexp
    ```
 
    2) OR, Pass an assembly in via `assemblyinput` with an assembly in your `yaml` configfile, e.g.:
@@ -26,8 +26,8 @@ If you've generated an assembly, even if you've already run `./run_eelpond nema-
 
     ```
     assemblyinput:
-      assembly: rna_testdata/nema.fasta
-      gene_trans_map:  rna_testdata/nema.fasta.gene_trans_map #optional
+      assembly: examples/nema.assemblyfasta
+      gene_trans_map:  examples/nema.assembly.fasta.gene_trans_map #optional
       assembly_extension: '_input'
     ```
     

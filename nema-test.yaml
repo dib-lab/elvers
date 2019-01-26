@@ -1,8 +1,0 @@
-samples: "nema_samples.tsv"
-
-basename: 'nema'
-
-#assemblyinput:
-#  assembly: rna_testdata/nema.fasta
-#  gene_trans_map:  rna_testdata/nema.fasta.gene_trans_map
-#  assembly_extension: '_input'

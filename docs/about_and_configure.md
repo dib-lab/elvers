@@ -8,14 +8,14 @@ To run any workflow, we need to get reads (and any assemblies already generated)
 
 To specify input data, we generate a `my-samples.tsv` file, with either file paths or download links
 
-If we had our test data within the `nema_testdata` folder in the main `eelpond` directory, the file would look like this:
+If we had our test data within the `data` folder in the main `eelpond` directory, the file would look like this:
 
     ```
     sample  unit    fq1 fq2 condition
-    0Hour   001 nema_testdata/0Hour_ATCACG_L002_R1_001.extract.fastq.gz nema_testdata/0Hour_ATCACG_L002_R2_001.extract.fastq.gz time0
-    0Hour   002 nema_testdata/0Hour_ATCACG_L002_R1_002.extract.fastq.gz nema_testdata/0Hour_ATCACG_L002_R2_002.extract.fastq.gz time0
-    6Hour   001 nema_testdata/6Hour_CGATGT_L002_R1_001.extract.fastq.gz nema_testdata/6Hour_CGATGT_L002_R2_001.extract.fastq.gz time6
-    6Hour   002 nema_testdata/6Hour_CGATGT_L002_R1_002.extract.fastq.gz nema_testdata/6Hour_CGATGT_L002_R2_002.extract.fastq.gz time6
+    0Hour   001 data/0Hour_ATCACG_L002_R1_001.extract.fastq.gz data/0Hour_ATCACG_L002_R2_001.extract.fastq.gz time0
+    0Hour   002 data/0Hour_ATCACG_L002_R1_002.extract.fastq.gz data/0Hour_ATCACG_L002_R2_002.extract.fastq.gz time0
+    6Hour   001 data/6Hour_CGATGT_L002_R1_001.extract.fastq.gz data/6Hour_CGATGT_L002_R2_001.extract.fastq.gz time6
+    6Hour   002 data/6Hour_CGATGT_L002_R1_002.extract.fastq.gz data/6Hour_CGATGT_L002_R2_002.extract.fastq.gz time6
     ```
 
 If we want to download the test data instead:
@@ -33,7 +33,7 @@ If we want to download the test data instead:
 If you'd like to start from a working version, copy the sample data:
 
 ```
-cp nema_samples.tsv my_samples.tsv
+cp examples/nema.samples.tsv my_samples.tsv
 ```
 
 Note: at the moment, `eelpond` assumes **all input data is gzipped**.
@@ -44,7 +44,7 @@ The default workflow is the [Eel Pond RNAseq workflow](Eel_Pond_workflow.md), bu
 
 To see the available workflows and subworkflows, run:
 ```
-./run_eelpond nema-test -w 
+./run_eelpond examples/nema.yaml -w 
 ```
 
 ## Configuring Programs in the workflow

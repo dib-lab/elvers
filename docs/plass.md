@@ -18,7 +18,7 @@ Given that nucleotide sequences are far more variable than protein sequences (th
 
 Run PLASS via the [Protein Assembly workflow](protein_assembly_workflow.md) or via the [plass_assemble subworkflow](plass_assemble.md). These workflows will run preprocessing and kmer-trimming for you prior to assembly, and may run additional downstream steps. To run PLASS as a standalone program, see "Advanced Usage" section below.
 ```
-./run_eelpond nema-test plass_assemble
+./run_eelpond examples/nema.yaml plass_assemble
 ```
 
 ## PLASS Command

@@ -16,23 +16,24 @@ before_install:
     rm -fr $HOME/miniconda;
     wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
     bash miniconda.sh -b -p $HOME/miniconda;
-    ls -FC $HOME/miniconda;
+    export PATH="$HOME/miniconda/bin:$PATH";
+    conda config --set always_yes yes --set changeps1 no;
+    conda config --add channels defaults;
+    conda config --add channels bioconda;
+    conda config --add channels conda-forge;
   fi
 
 install:
   - export PATH="$HOME/miniconda/bin:$PATH";
-  - hash -r
-  - conda config --set always_yes yes --set changeps1 no
-  - conda update -q conda
-  - conda info -a
-  - conda config --add channels defaults
-  - conda config --add channels bioconda
-  - conda config --add channels conda-forge
+  - conda info -a;
+  - ls -FC $HOME/miniconda;
+  - hash -r;
   - rm -fr $HOME/miniconda/envs/test-env
   - conda env create --file environment.yml -n test-env
   - source activate test-env
 
 script:
+  - ./run_eelpond examples/nema.yaml get_data -t 4 --restart_times=3
   - ./run_eelpond nema-download.yaml assemble quantify -t 4
   - ./run_eelpond nema-download.yaml plass_assemble paladin_map -t 4
   - rm -fr $HOME/miniconda/envs/test-env $HOME/miniconda/pkgs/cache

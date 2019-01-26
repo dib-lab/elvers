@@ -13,7 +13,7 @@ Subworkflows combine tools in the right order to facilitate file targeting withi
 To run the kmer_trim subworkflow, run: 
 
 ```
-./run_eelpond nema-test kmer_trim
+./run_eelpond examples/nema.yaml kmer_trim
 ```
 
 ## Configuring the kmer_trim subworkflow 

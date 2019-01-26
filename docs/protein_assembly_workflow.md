@@ -14,7 +14,7 @@ It consists of:
 ## Running Test Data
 
 ```
-./run_eelpond nema-test.yaml protein_assembly
+./run_eelpond examples/nema.yaml protein_assembly
 ```
 This will run a small set of Nematostella vectensis test data (from [Tulin et al., 2013](https://evodevojournal.biomedcentral.com/articles/10.1186/2041-9139-4-16)).
 
