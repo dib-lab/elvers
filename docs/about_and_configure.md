@@ -1,6 +1,6 @@
 # Understanding and Configuring Eelpond Workflows
 
-`eelpond` is designed to facilitate running standard workflows and analyses for sequence data. It integrates snakemake rules for commonly used tools, and provides several end-to-end protocols for analyzing RNAseq data. Workflows are highly customizable, and all command-line options for each tool are available for modification via modification of the configuration file.
+`eelpond` is designed to facilitate running standard workflows and analyses for sequence data. It integrates snakemake rules for commonly used tools, and provides several end-to-end protocols for analyzing RNAseq data. Workflows are highly customizable, and all command-line options for each tool are available for modification via the configuration file.
 
 ## Specify Input Data
 
@@ -40,7 +40,7 @@ Note: at the moment, `eelpond` assumes **all input data is gzipped**.
 
 ## Choosing and running a workflow
 
-The default workflow is the [Eel Pond RNAseq workflow](Eel_Pond_workflow.md), but we offer several other end-to-end workflows, as well as a number of "subworkflows" that facilitate running (or re-running) certain steps of the workflows. 
+The default workflow is the [Eel Pond RNAseq workflow](eel_pond_workflow.md), but we offer several other end-to-end workflows, as well as a number of "subworkflows" that facilitate running (or re-running) certain steps of the workflows. 
 
 To see the available workflows and subworkflows, run:
 ```
@@ -49,9 +49,9 @@ To see the available workflows and subworkflows, run:
 
 ## Configuring Programs in the workflow
 
-For any workflow, we need to provide a configuration file that specifies the path to your 
+For any workflow, we need to provide a configuration file that specifies the path to your samples file (generated above). 
 
-To get a `preprocess` config you can modify, run:
+To get a configfile for the default "eel pond" workflow, that you can modify, run:
 
 ```
 ./run_eelpond my_workflow.yaml --build_config
@@ -98,13 +98,4 @@ trimmomatic:
   extra: 'HEADCROP:5' # to remove the first 5 bases at the front of the read.
 ```
 
-For more on what parameters are available, see the docs for each specific program or utility rule.
-
-  - [get_data](get_data.md)
-  - [trimmomatic](trimmomatic.md)
-  - [fastqc](fastqc.md)
-  - [khmer](khmer.md)
-  - [trinity](trinity.md)
-  - [dammit](dammit.md)
-  - [salmon](salmon.md)
-  - [sourmash](sourmash.md)
+For more on what parameters are available, see the docs for each specific program or utility rule under the "Available Workflows" --> "Programs Used" navigation tab.
