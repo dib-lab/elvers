@@ -40,8 +40,23 @@ def write_yaml(yamlD, paramsfile):
     with open(paramsfile, 'w') as params:
         yaml.dump(yamlD, stream=params, indent=2,  default_flow_style=False)
 
+def import_configfile(config_file, configD=None):
+    newConfig = {}
+    configDict = read_yaml(config_file)
+    for key, val in configDict.items():
+        if isinstance(val, dict): # note that this means the only dicts allowed in user configs are for programs.
+            newConfig[key] = {'program_params': val}
+        else:
+            newConfig[key] = val
+    if configD:
+        update_nested_dict(configD, newConfig)
+        return configD
+    else:
+        return newConfig
+
 def update_nested_dict(d, other):
 # Can't just update at top level, need to update nested params
+# Note that this only keeps keys that already exist in other
 #https://code.i-harness.com/en/q/3154af
     for k, v in other.items():
         if isinstance(v, collections.Mapping):

@@ -120,7 +120,6 @@ def handle_assemblyInput(assembInput, config):
     config['assemblyinput']['eelpond_params'] = {'extensions': extensions} 
     return config, input_assembly_extension
 
-
 def main(args):
     
     thisdir = os.path.abspath(os.path.dirname(__file__))
@@ -161,16 +160,7 @@ def main(args):
             sys.stderr.write('Error: cannot find configfile {}\n.'.format(args.configfile))
             sys.exit(-1)
         # first, grab all params in user config file
-        configD = read_yaml(configfile)
-        # need to modify this. Since we now use 'program_params' in the configfiles, this won't upd all as desired
-        # use a function instead, but here's a hacky fix first. This might simplify handle_assemblyinput!
-        newConfig = {}
-        for key, val in configD.items():
-            if isinstance(val, dict):
-                newConfig[key] = {'program_params': val}
-            else:
-                newConfig[key] = val
-        configD = newConfig
+        configD = import_configfile(configfile)
         # build info for assemblyInput
         assembInput = configD.get('assemblyinput', None)
         if assembInput:
@@ -183,11 +173,22 @@ def main(args):
             sys.exit(-1)
         # next, grab all eelpond defaults, including rule-specific default parameters (*_params.yaml files) 
         paramsD = build_default_params(thisdir, targs)
+        # add any configuration from extra config files
+        extra_configs = {}
+        if args.extra_config:
+            for c in args.extra_config:
+                extra_configs = import_configfile(find_yaml(thisdir, c, 'extra_config'), extra_configs)
+        # this function only updates keys that already exist. so we need to wait till here (after importing params) to read in extra_configs,
+        # rather than doing this when reading in the main configfile
+        # first update with extra configs, then with main configfile
+        update_nested_dict(paramsD,extra_configs)
         # update defaults with user-specified parameters
         update_nested_dict(paramsD,configD) # configD takes priority over default params 
+
         # add extension to overall assembly_extensions info
         if assemblyinput_ext: # note, need to do it here to prevent override with defaults
             paramsD['assembly_extensions'] = list(set(paramsD.get('assembly_extensions', []) + [assemblyinput_ext]))
+        
         # use params to build directory structure
         paramsD = build_dirs(thisdir, paramsD)
         # Note: Passing a configfile allows nested yaml/dictionary format. 
@@ -217,6 +218,7 @@ def main(args):
                                  targets=['eelpond'], printshellcmds=True, 
                                  cores=args.threads, cleanup_conda= args.cleanup_conda,
                                  dryrun=args.dry_run, lock=not args.nolock,
+                                 unlock=args.unlock,
                                  verbose=args.verbose, debug_dag=args.debug, 
                                  conda_prefix=args.conda_prefix, 
                                  create_envs_only=args.create_envs_only,
@@ -224,7 +226,7 @@ def main(args):
                                  printdag=args.dag, keepgoing=args.keep_going,
                                  forcetargets=args.forcetargets,forceall=args.forceall)
     
-        if status and reportfile and not args.dry_run:
+        if status and reportfile and not args.dry_run and not args.unlock:
             snakemake.snakemake(snakefile, configfile=paramsfile, report=reportfile)
             print(f"\t see the report file at {reportfile}\n\n ")
         if status: # translate "success" into shell exit code of 0
@@ -263,6 +265,7 @@ To build an editable configfile to start work on your own data, run:
     parser.add_argument('configfile')
     parser.add_argument('targets', nargs='*', default=['default'])
     parser.add_argument('-t', '--threads', type=int, default=1)
+    parser.add_argument('--extra_config', action='append', default = None)
     parser.add_argument('-n', '--dry-run', action='store_true')
     parser.add_argument('-v', '--verbose', action='store_true')
     parser.add_argument('-w', '--print_workflows', action='store_true', help='just show available workflows')
