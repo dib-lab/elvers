@@ -138,9 +138,10 @@ def main(args):
         sys.exit(0)
     
     # first, find the Snakefile and configfile
-    print('\n--------')
-    print('checking for required files:')
-    print('--------\n')
+    if not args.dag:
+        print('\n--------')
+        print('checking for required files:')
+        print('--------\n')
     
     snakefile = find_Snakefile(thisdir)
     
@@ -203,14 +204,15 @@ def main(args):
             else:
                 reportfile = os.path.abspath(os.path.join(paramsD['eelpond_directories']['logs'], args.report))
 
-        print('--------')
-        print('details!')
-        print('\tsnakefile: {}'.format(snakefile))
-        print('\tconfig: {}'.format(configfile))
-        print('\tparams: {}'.format(paramsfile))
-        print('\ttargets: {}'.format(repr(targs)))
-        print('\treport: {}'.format(repr(reportfile)))
-        print('--------')
+        if not args.dag:
+            print('--------')
+            print('details!')
+            print('\tsnakefile: {}'.format(snakefile))
+            print('\tconfig: {}'.format(configfile))
+            print('\tparams: {}'.format(paramsfile))
+            print('\ttargets: {}'.format(repr(targs)))
+            print('\treport: {}'.format(repr(reportfile)))
+            print('--------')
 
         # run!!
         # params file becomes snakemake configfile
