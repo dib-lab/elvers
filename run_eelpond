@@ -12,57 +12,13 @@ import yaml
 import glob
 import collections
 import snakemake
+import shutil
+import subprocess
 
 from ep_utils.utils import *
 from ep_utils.pretty_config import pretty_name, write_config
 from ep_utils.print_workflow_options import print_available_workflows_and_tools
-
-from shutil import which
-from subprocess import call
-from io import StringIO
-import sys
-
-class CaptureStdout(list):
-    """An object to help capture stdout from Snakemake"""
-    def __init__(self,passthru=False):
-        # Boolean: should we pass everything through to stdout?
-        # (this object is only functional if passthru is False)
-        self.passthru = passthru
-
-    def __enter__(self):
-        # Open a new context with this CaptureStdout
-        # object. This happens when we say
-        # "with CatpureStdout('label') as output:"
-
-        # If we are just passing input on to output, pass thru
-        if self.passthru:
-            return self
-
-        # Otherwise, we want to swap out sys.stdout with
-        # a StringIO object that will save stdout.
-        # 
-        # Save the existing stdout object so we can
-        # restore it when we're done
-        self._stdout = sys.stdout
-        # Now swap out stdout 
-        sys.stdout = self._stringio = StringIO()
-        return self
-
-    def __exit__(self, *args):
-        # If we are just passing input on to output, pass thru
-        if self.passthru:
-            return self
-
-        # This entire class extends the list class,
-        # so we call self.extend() to add a list to 
-        # the end of self (in this case, all the new
-        # lines from our StringIO object).
-        self.extend(self._stringio.getvalue().splitlines())
-        del self._stringio    # free up some memory
-
-        # Clean up by setting sys.stdout back to what
-        # it was before we opened up this context.
-        sys.stdout = self._stdout
+from ep_utils.capture_stdout import CaptureStdout
 
 def build_default_params(workdir, targets):
     defaultParams = {}
@@ -187,13 +143,16 @@ def main(args):
     # are we building a directed acyclic graph?
     building_dag = False
     if args.dag or args.dagfile or args.dagpng:
+
         building_dag = True
+
         # building dags precludes running any workflows
         args.dry_run = True
+
         # if user specified --dagpng,
         # graphviz dot must be present
         if args.dagpng:
-            if which('dot') is None:
+            if shutil.which('dot') is None:
                 sys.stderr.write(f"\n\tError: Cannot find 'dot' utility, but --dotpng flag was specified. Fix this by installing graphviz dot.\n\n")
                 sys.exit(-1)
 
@@ -300,9 +259,9 @@ def main(args):
 
             # These three --build args are mutually exclusive,
             # and are checked in order of precedence (hi to low):
-            # --dag
-            # --dagfile
-            # --dagpng
+            # --dag         to stdout
+            # --dagfile     to .dot
+            # --dagpng      to .png
 
             if args.dag:
                 # straight to stdout
@@ -311,15 +270,15 @@ def main(args):
             elif args.dagfile:
                 with open(args.dagfile,'w') as f:
                     f.write("\n".join(output))
-                print(f"\t printed workflow dag to dot file {args.dagfile}\n\n ")
+                print(f"\tPrinted workflow dag to dot file {args.dagfile}\n\n ")
 
             elif args.dagpng:
                 # dump dot output to temporary dot file
                 with open('.temp.dot','w') as f:
                     f.write("\n".join(output))
-                call(['dot','-Tpng','.temp.dot','-o',args.dagpng])
-                call(['rm','-f','.temp.dot'])
-                print(f"\t printed workflow dag to png file {args.dagpng}\n\n ")
+                subprocess.call(['dot','-Tpng','.temp.dot','-o',args.dagpng])
+                subprocess.call(['rm','-f','.temp.dot'])
+                print(f"\tPrinted workflow dag to png file {args.dagpng}\n\n ")
 
         if status and reportfile and not args.dry_run and not args.unlock and not building_dag:
             snakemake.snakemake(snakefile, configfile=paramsfile, report=reportfile)
@@ -330,7 +289,7 @@ def main(args):
         return 1
 
 
-# TODO: would be good to pull availble rules from eelpond_pipeline in default config or a separate workflow file!
+# TODO: would be good to pull available rules from eelpond_pipeline in default config or a separate workflow file!
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='run snakemake eelpond', usage='''run_eelpond <configfile.yaml>  [<target> ...]
 
