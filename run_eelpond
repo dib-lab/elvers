@@ -34,7 +34,7 @@ class CaptureStdout(list):
         # object. This happens when we say
         # "with CatpureStdout('label') as output:"
 
-        # If we are just passing input on to output,
+        # If we are just passing input on to output, pass thru
         if self.passthru:
             return self
 
@@ -49,6 +49,10 @@ class CaptureStdout(list):
         return self
 
     def __exit__(self, *args):
+        # If we are just passing input on to output, pass thru
+        if self.passthru:
+            return self
+
         # This entire class extends the list class,
         # so we call self.extend() to add a list to 
         # the end of self (in this case, all the new
