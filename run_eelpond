@@ -190,6 +190,12 @@ def main(args):
         building_dag = True
         # building dags precludes running any workflows
         args.dry_run = True
+        # if user specified --dagpng,
+        # graphviz dot must be present
+        if args.dagpng:
+            if which('dot') is None:
+                sys.stderr.write(f"\n\tError: Cannot find 'dot' utility, but --dotpng flag was specified. Fix this by installing graphviz dot.\n\n")
+                sys.exit(-1)
 
     # first, find the Snakefile and configfile
     if not building_dag:
@@ -291,21 +297,34 @@ def main(args):
                                      forcetargets=args.forcetargets,forceall=args.forceall)
 
         if building_dag:
-            if args.dag:
-                # --dag goes straight to stdout
-                print("\n".join(output))
-            else:
-                if args.dagfile or args.dagpng:
-                    with open('dag.dot','w') as f:
-                        f.write("\n".join(output))
-                if args.dagpng:
-                    if which('dot') is not None:
-                        call(['dot','-Tpng','dag.dot','-o','dag.png'])
-                        print("Finished running dot")
 
-        if status and reportfile and not args.dry_run and not args.unlock and not args.dag:
+            # These three --build args are mutually exclusive,
+            # and are checked in order of precedence (hi to low):
+            # --dag
+            # --dagfile
+            # --dagpng
+
+            if args.dag:
+                # straight to stdout
+                print("\n".join(output))
+
+            elif args.dagfile:
+                with open(args.dagfile,'w') as f:
+                    f.write("\n".join(output))
+                print(f"\t printed workflow dag to dot file {args.dagfile}\n\n ")
+
+            elif args.dagpng:
+                # dump dot output to temporary dot file
+                with open('.temp.dot','w') as f:
+                    f.write("\n".join(output))
+                call(['dot','-Tpng','.temp.dot','-o',args.dagpng])
+                call(['rm','-f','.temp.dot'])
+                print(f"\t printed workflow dag to png file {args.dagpng}\n\n ")
+
+        if status and reportfile and not args.dry_run and not args.unlock and not building_dag:
             snakemake.snakemake(snakefile, configfile=paramsfile, report=reportfile)
             print(f"\t see the report file at {reportfile}\n\n ")
+
         if status: # translate "success" into shell exit code of 0
            return 0
         return 1
