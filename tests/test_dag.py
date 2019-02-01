@@ -17,6 +17,8 @@ class TestDag(TestCase):
         flags = '--dag'
         command = [run_eelpond_cmd, test_config_yaml, which_workflow, flags]
         p_out, p_err = capture_stdouterr(command,here)
+
+        # Look for this message in snakemake output
         self.assertIn('Building DAG of jobs...',p_err)
 
         # Verify some Graphviz notation showed up
@@ -33,6 +35,8 @@ class TestDag(TestCase):
         flags = '--dagfile=%s'%(dotfile_fullpath)
         command = [run_eelpond_cmd, test_config_yaml, which_workflow, flags]
         p_out, p_err = capture_stdouterr(command,here)
+
+        # Look for this message in snakemake output
         self.assertIn('Building DAG of jobs...',p_err)
 
         # Output should print where dotfile went
@@ -49,5 +53,24 @@ class TestDag(TestCase):
     def test_dagpng_flag(self):
         """Test the --dagpng=<pngfile> flag
         """
-        pass
+        pngfile_name = 'dag.png'
+        pngfile_fullpath = os.path.join(here,pngfile_name)
+        which_workflow = 'default'
+        flags = '--dagpng=%s'%(pngfile_fullpath)
+        command = [run_eelpond_cmd, test_config_yaml, which_workflow, flags]
+        p_out, p_err = capture_stdouterr(command,here)
+
+        # Look for this message in snakemake output
+        self.assertIn('Building DAG of jobs...',p_err)
+
+        # Output should print where pngfile went
+        self.assertIn('Printed workflow dag to png file',p_out)
+        self.assertIn(pngfile_fullpath, p_out)
+
+        # The pngfile should now be a file on disk
+        self.assertTrue(os.path.exists(pngfile_fullpath))
+        self.assertTrue(os.path.isfile(pngfile_fullpath))
+
+        # Clean up
+        subprocess.call(['rm','-f',pngfile_fullpath])
 

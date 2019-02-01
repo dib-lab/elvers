@@ -3,9 +3,6 @@ from unittest import TestCase
 from .const import (here, run_eelpond_cmd, test_config_yaml)
 from .utils import capture_stdouterr
 
-# To import from ../ep_utils, do this:
-#from ..ep_utils.capture_stdout import CaptureStdout
-
 
 class TestFlags(TestCase):
     """
@@ -57,7 +54,7 @@ Job counts:
         # Check that job descriptions are printed as they are
         # added to the list of dry run tasks
         verify_jobs = '''
---- Quality trimming PE read data with Trimmomatic. --- Output files will be in /temp/eelpond/nema_out/preprocess 
+--- Quality trimming PE read data with Trimmomatic. ---
 --- khmer trimming of low-abundance kmers and digital normalization ---
 --- Computing a MinHash signature of the kmer-trimmed reads with Sourmash ---
 --- Assembling read data with Trinity --- 
