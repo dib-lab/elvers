@@ -4,7 +4,7 @@ We can use [DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.h
 
 ## Quickstart: Running DESeq2 via eelpond
 
-We recommend you run `deseq2 via the [diffexp](diffexp.md) subworkflow.
+We recommend you run `deseq2` via the [diffexp](diffexp.md) subworkflow.
 
 If you want to run it as a standalone program instead, you need to have generated read quantification data via `salmon`.
 
