@@ -33,6 +33,7 @@ install:
   - source activate test-env
 
 script:
+  - pytest -v
   - ./run_eelpond examples/nema.yaml get_data -t 4 --restart_times=3
   - ./run_eelpond examples/nema.yaml assemble -t 4
   - rm -fr $HOME/miniconda/envs/test-env $HOME/miniconda/pkgs/cache
