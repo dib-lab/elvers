@@ -6,7 +6,9 @@ edit_uri: ""
 
 extra_css: css/custom.css
 
-copyright: 'Copyright &copy; 2018 <a href="http://ivory.idyll.org/lab/">Lab for Data Intensive Biology</a> at UC Davis'
+copyright: 'Copyright &copy; 2018 <a href="http://ivory.idyll.org/lab/">Lab for Data Intensive Biology</a> at UC Davis
+<br/><br/>
+Icon made by Freepik, obtained from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>, used under a <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div> license.'
 
 # change directory names here
 docs_dir: docs
@@ -24,8 +26,7 @@ theme:
     accent: 'blue'
   
   # fun logos! see https://material.io/icons/
-  logo:
-    icon: 'dns'
+  logo: 'img/eel.svg'
 
   font:
     text: 'Roboto'
