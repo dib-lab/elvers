@@ -11,3 +11,4 @@ dependencies:
   - networkx
   - pygraphviz
   - psutil
+  - pytest

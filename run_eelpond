@@ -12,10 +12,13 @@ import yaml
 import glob
 import collections
 import snakemake
+import shutil
+import subprocess
 
 from ep_utils.utils import *
 from ep_utils.pretty_config import pretty_name, write_config
 from ep_utils.print_workflow_options import print_available_workflows_and_tools
+from ep_utils.capture_stdout import CaptureStdout
 
 def build_default_params(workdir, targets):
     defaultParams = {}
@@ -137,10 +140,27 @@ def main(args):
         write_config(default_params, targs)
         sys.exit(0)
     
+    # are we building a directed acyclic graph?
+    building_dag = False
+    if args.dag or args.dagfile or args.dagpng:
+
+        building_dag = True
+
+        # building dags precludes running any workflows
+        args.dry_run = True
+
+        # if user specified --dagpng,
+        # graphviz dot must be present
+        if args.dagpng:
+            if shutil.which('dot') is None:
+                sys.stderr.write(f"\n\tError: Cannot find 'dot' utility, but --dotpng flag was specified. Fix this by installing graphviz dot.\n\n")
+                sys.exit(-1)
+
     # first, find the Snakefile and configfile
-    print('\n--------')
-    print('checking for required files:')
-    print('--------\n')
+    if not building_dag:
+        print('\n--------')
+        print('checking for required files:')
+        print('--------\n')
     
     snakefile = find_Snakefile(thisdir)
     
@@ -203,38 +223,73 @@ def main(args):
             else:
                 reportfile = os.path.abspath(os.path.join(paramsD['eelpond_directories']['logs'], args.report))
 
-        print('--------')
-        print('details!')
-        print('\tsnakefile: {}'.format(snakefile))
-        print('\tconfig: {}'.format(configfile))
-        print('\tparams: {}'.format(paramsfile))
-        print('\ttargets: {}'.format(repr(targs)))
-        print('\treport: {}'.format(repr(reportfile)))
-        print('--------')
+        if not building_dag:
+            print('--------')
+            print('details!')
+            print('\tsnakefile: {}'.format(snakefile))
+            print('\tconfig: {}'.format(configfile))
+            print('\tparams: {}'.format(paramsfile))
+            print('\ttargets: {}'.format(repr(targs)))
+            print('\treport: {}'.format(repr(reportfile)))
+            print('--------')
 
-        # run!!
-        # params file becomes snakemake configfile
-        status = snakemake.snakemake(snakefile, configfile=paramsfile, use_conda=True, 
-                                 targets=['eelpond'], printshellcmds=True, 
-                                 cores=args.threads, cleanup_conda= args.cleanup_conda,
-                                 dryrun=args.dry_run, lock=not args.nolock,
-                                 unlock=args.unlock,
-                                 verbose=args.verbose, debug_dag=args.debug, 
-                                 conda_prefix=args.conda_prefix, 
-                                 create_envs_only=args.create_envs_only,
-                                 restart_times=args.restart_times,
-                                 printdag=args.dag, keepgoing=args.keep_going,
-                                 forcetargets=args.forcetargets,forceall=args.forceall)
-    
-        if status and reportfile and not args.dry_run and not args.unlock:
+
+        # Set up a context manager to capture stdout if we're building
+        # a directed acyclic graph (which prints the graph in dot format
+        # to stdout instead of to a file).
+        # If we are not bulding a dag, pass all output straight to stdout
+        # without capturing any of it.
+        passthru = not building_dag
+        with CaptureStdout(passthru=passthru) as output:
+            # run!!
+            # params file becomes snakemake configfile
+            status = snakemake.snakemake(snakefile, configfile=paramsfile, use_conda=True, 
+                                     targets=['eelpond'], printshellcmds=True, 
+                                     cores=args.threads, cleanup_conda= args.cleanup_conda,
+                                     dryrun=args.dry_run, lock=not args.nolock,
+                                     unlock=args.unlock,
+                                     verbose=args.verbose, debug_dag=args.debug, 
+                                     conda_prefix=args.conda_prefix, 
+                                     create_envs_only=args.create_envs_only,
+                                     restart_times=args.restart_times,
+                                     printdag=building_dag, keepgoing=args.keep_going,
+                                     forcetargets=args.forcetargets,forceall=args.forceall)
+
+        if building_dag:
+
+            # These three --build args are mutually exclusive,
+            # and are checked in order of precedence (hi to low):
+            # --dag         to stdout
+            # --dagfile     to .dot
+            # --dagpng      to .png
+
+            if args.dag:
+                # straight to stdout
+                print("\n".join(output))
+
+            elif args.dagfile:
+                with open(args.dagfile,'w') as f:
+                    f.write("\n".join(output))
+                print(f"\tPrinted workflow dag to dot file {args.dagfile}\n\n ")
+
+            elif args.dagpng:
+                # dump dot output to temporary dot file
+                with open('.temp.dot','w') as f:
+                    f.write("\n".join(output))
+                subprocess.call(['dot','-Tpng','.temp.dot','-o',args.dagpng])
+                subprocess.call(['rm','-f','.temp.dot'])
+                print(f"\tPrinted workflow dag to png file {args.dagpng}\n\n ")
+
+        if status and reportfile and not args.dry_run and not args.unlock and not building_dag:
             snakemake.snakemake(snakefile, configfile=paramsfile, report=reportfile)
             print(f"\t see the report file at {reportfile}\n\n ")
+
         if status: # translate "success" into shell exit code of 0
            return 0
         return 1
 
 
-# TODO: would be good to pull availble rules from eelpond_pipeline in default config or a separate workflow file!
+# TODO: would be good to pull available rules from eelpond_pipeline in default config or a separate workflow file!
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='run snakemake eelpond', usage='''run_eelpond <configfile.yaml>  [<target> ...]
 
@@ -278,7 +333,9 @@ To build an editable configfile to start work on your own data, run:
     parser.add_argument('--conda_prefix', default=None, help='location for conda environment installs')
     parser.add_argument('--create_envs_only', action='store_true', help="just install software in conda envs, don't execute workflows")
     parser.add_argument('-d', '--debug', action='store_true')
-    parser.add_argument('--dag', action='store_true')
+    parser.add_argument('--dag', action='store_true', help='boolean: output a flowchart of the directed acyclic graph of this workflow in graphviz dot format (does not require/run dot)')
+    parser.add_argument('--dagfile', default=None, help='filename to output a flowchart of the directed acyclic graph of this workflow in graphviz dot format')
+    parser.add_argument('--dagpng',  default=None, help='filename to output a flowchart of the directed acyclic graph of this workflow in png image format')
     parser.add_argument('-k', '--keep_going', action='store_true')
     parser.add_argument('--nolock', action='store_true')
     parser.add_argument('--unlock', action='store_true')
