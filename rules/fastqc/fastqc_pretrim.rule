@@ -1,0 +1,29 @@
+import os, re
+from os.path import join
+
+#input dir
+data_dir   = config['fastqc_pretrim']['eelpond_params']['indir']
+#outdir
+pretrim_dir   = config['fastqc_pretrim']['eelpond_params']['outdir']
+# program params
+fastqc_pretrim_params = config['fastqc_pretrim']['program_params']
+
+def get_pretrim(w):
+    return join(data_dir, f'{w.sampleunit}_{w.end}.fq.gz')
+
+rule fastqc_pretrim:
+    input:
+        get_pretrim
+    output:
+        html=join(pretrim_dir,'{sampleunit}_{end}.fastqc.html'),
+        zip=join(pretrim_dir,'{sampleunit}_{end}.fastqc.zip')
+    params: 
+        extra=fastqc_pretrim_params.get('extra', "")
+    wildcard_constraints:
+        end=["_1","_2", "_se"]
+    log: 
+        join(LOGS_DIR, 'fastqc','pretrim', '{sampleunit}_{end}.log') 
+    benchmark:
+        join(LOGS_DIR, 'fastqc', 'pretrim', '{sampleunit}_{end}.benchmark')
+    conda: "fastqc-env.yaml"
+	script: "fastqc-wrapper.py"

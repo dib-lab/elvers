@@ -1,0 +1,34 @@
+import os, re
+from os.path import join
+
+#input dirs
+trim_dir   = config['fastqc_trim']['eelpond_params']['indir']
+#outdir
+qc_dir   = config['fastqc_trim']['eelpond_params']['outdir']
+# program params
+fastqc_trim_params = config['fastqc_trim']['program_params']
+
+def get_trimmed(w):
+    f = join(trim_dir, f'{w.sample}_{w.end}.trim.fq.gz')
+    print(f)
+    return f
+    #return join(trim_dir, f'{w.sample}_{w.end}.trim.fq.gz')
+    
+rule fastqc_trimmed:
+    input:
+       get_trimmed
+    output:
+        html=join(qc_dir, "{sample}_{end}.trim.fastqc.html"),
+        zip=join(qc_dir, "{sample}_{end}.trim.fastqc.zip"),
+        #html=join(qc_dir,"{sample}_{end}.fastqc.html"),
+        #zip=join(qc_dir,"{sample}_{end}.fastqc.zip")
+    params: 
+        extra=fastqc_trim_params.get('extra', "")
+    wildcard_constraints:
+        end=["_1","_2", "_se"],
+    log: 
+        join(LOGS_DIR, 'fastqc', 'trim', '{sample}_{end}.log')
+    benchmark:
+        join(LOGS_DIR, 'fastqc','trim','{sample}_{end}.benchmark')
+    conda: "fastqc-env.yaml"
+	script: "fastqc-wrapper.py"

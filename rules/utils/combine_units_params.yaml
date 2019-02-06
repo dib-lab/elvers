@@ -1,0 +1,14 @@
+combine_units:
+  eelpond_params:
+    indir: "input_data"
+    outdir: "input_data/combined_units"
+    extensions:
+      read:
+        combine_units: True
+        pe:
+          - "_1.fq.gz"
+          - "_2.fq.gz"
+        se:
+          - "_se.fq.gz"
+  program_params:
+    extra: ''

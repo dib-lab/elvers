@@ -1,10 +1,8 @@
 trimmomatic:
   eelpond_params:
-    indir: input_data_combined
     outdir: preprocess
     extensions:
       read:
-        combine_units: True
         pe:
           - "_1.trim.fq.gz"
           - "_2.trim.fq.gz"

@@ -1,0 +1,60 @@
+from os.path import join
+
+#input_dir     = config['eelpond_directories']['outdirs']['input_data']
+input_dir    = config['combine_units']['eelpond_params']['indir']
+output_dir    = config['combine_units']['eelpond_params']['outdir']
+
+# to do: modify ext here via config to enable gzip vs not
+ext = '.fq.gz'
+
+def get_all_units(w):
+    readsD = {}
+    r1,r2,r = [],[],[]
+    unit_list = samples.groupby(level=0).get_group(w.sample)['unit'].tolist()
+    for unit in unit_list:
+        if not is_single_end(w.sample):
+            r1+= [join(input_dir, f"{w.sample}_{unit}_1{ext}")]
+            r2+= [join(input_dir, f"{w.sample}_{unit}_2{ext}")]
+        else:
+            r+= [join(input_dir, f"{w.sample}_{unit}_se{ext}")]
+    if r1:
+        readsD['r1'] = r1
+        readsD['r2'] = r2
+    elif r:
+        readsD['r'] = r
+    return readsD
+
+rule cat_pe:
+    """
+    cat any separated units together for the remaining pipeline
+    """
+    input:
+        unpack(get_all_units)
+    output:
+        r1=join(output_dir, "{sample}_1.fq.gz"),
+        r2=join(output_dir, "{sample}_2.fq.gz"),
+    message:
+        """--- Combining Units: PE reads ---"""
+    log: join(LOGS_DIR, 'combine_units/{sample}_pe.log')
+    benchmark: join(LOGS_DIR, 'combine_units/{sample}_pe.benchmark')
+    shell:""" 
+        cat {input.r1} > {output.r1}; echo finished > {log}
+        cat {input.r2} > {output.r2}; echo finished > {log}
+        """
+    
+rule cat_se:
+    """
+    cat any separated units together for the remaining pipeline
+    """
+    input:
+        unpack(get_all_units)
+    output:
+        r=join(output_dir, "{sample}_se.fq.gz"),
+    message:
+        """--- Combining Units: SE reads ---"""
+    log: join(LOGS_DIR, 'combine_units/{sample}_se.log')
+    benchmark: join(LOGS_DIR, 'combine_units/{sample}_se.benchmark')
+    shell:""" 
+        cat {input.r1} > {output.r1}; echo finished > {log}
+        cat {input.r2} > {output.r2}; echo finished > {log}
+        """

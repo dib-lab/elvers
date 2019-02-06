@@ -1,0 +1,17 @@
+fastqc_trim:
+  eelpond_params:
+    indir: preprocess
+    outdir: preprocess/fastqc
+    extensions: 
+      read:
+        combine_units: True
+        pe:
+          - '_1.trim.fastqc.zip'
+          - '_1.trim.fastqc.html'
+          - '_2.trim.fastqc.zip'
+          - '_2.trim.fastqc.html'
+        se:
+          - '_se.trim.fastqc.zip'
+          - '_se.trim.fastqc.html'
+  program_params:
+    extra: ''

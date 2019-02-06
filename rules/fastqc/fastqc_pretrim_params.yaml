@@ -1,0 +1,17 @@
+fastqc_pretrim:
+  eelpond_params:
+    indir: input_data
+    outdir: input_data/fastqc
+    extensions: 
+      read:
+        combine_units: False
+        pe:
+          - '_1.fastqc.zip'
+          - '_1.fastqc.html'
+          - '_2.fastqc.zip'
+          - '_2.fastqc.html'
+        se:
+          - '_se.fastqc.zip'
+          - '_se.fastqc.html'
+  program_params:
+    extra: ''

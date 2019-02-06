@@ -21,12 +21,16 @@ HTTP = HTTP.RemoteProvider()
 
 # read in sample info 
 samples = pd.read_table(config["samples"],dtype=str).set_index(["sample", "unit"], drop=False)
+#samples = pd.read_table(config["samples"],dtype=str).set_index(["sample"], drop=False)
 #validate(samples, schema="schemas/samples_v2.schema.yaml") # new version
 samples['name'] = samples["sample"].map(str) + '_' + samples["unit"].map(str)
+samples['is_se'] = np.where(samples['fq2'].isnull(), True, False)
+samples_only = samples.reset_index(level=1, drop=True)
 
 # note, this function *needs* to be in this file, or added somewhere it can be accessed by all rules
-def is_single_end(sample, unit, end = '', assembly = ''):
-    return pd.isnull(samples.loc[(sample, unit), "fq2"])
+def is_single_end(sample, end = '', assembly = ''):
+    return all(samples_only.at[sample, 'is_se'])
+
 
 # check for replicates ** need to change with new samples scheme
 # change this replicate check to work with single samples file

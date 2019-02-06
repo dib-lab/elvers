@@ -10,6 +10,7 @@ eelpond_directories:
   logs: logs
   outdirs:
     input_data: input_data
+    input_data_combined: input_data/combined_units
     preprocess: preprocess
     assemble: assembly
     annotate: annotation
@@ -27,7 +28,8 @@ eelpond_workflows:
       - khmer
       - trinity
     targets:
-      - fastqc
+      - fastqc_pretrim
+      - fastqc_trim
       - dammit
       - salmon
       - sourmash
@@ -39,7 +41,8 @@ eelpond_workflows:
       - plass
       - pear
     targets:
-      - fastqc
+      - fastqc_pretrim
+      - fastqc_trim
       - paladin
       - sourmash
   input_data:
@@ -49,7 +52,8 @@ eelpond_workflows:
     include:
       - get_data
     targets:
-      - fastqc
+      - fastqc_pretrim
+      - fastqc_trim
       - trimmomatic
   kmer_trim:
     include:
