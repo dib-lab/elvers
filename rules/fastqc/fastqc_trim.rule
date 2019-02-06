@@ -9,10 +9,7 @@ qc_dir   = config['fastqc_trim']['eelpond_params']['outdir']
 fastqc_trim_params = config['fastqc_trim']['program_params']
 
 def get_trimmed(w):
-    f = join(trim_dir, f'{w.sample}_{w.end}.trim.fq.gz')
-    print(f)
-    return f
-    #return join(trim_dir, f'{w.sample}_{w.end}.trim.fq.gz')
+    return join(trim_dir, f'{w.sample}_{w.end}.trim.fq.gz')
     
 rule fastqc_trimmed:
     input:
@@ -20,8 +17,6 @@ rule fastqc_trimmed:
     output:
         html=join(qc_dir, "{sample}_{end}.trim.fastqc.html"),
         zip=join(qc_dir, "{sample}_{end}.trim.fastqc.zip"),
-        #html=join(qc_dir,"{sample}_{end}.fastqc.html"),
-        #zip=join(qc_dir,"{sample}_{end}.fastqc.zip")
     params: 
         extra=fastqc_trim_params.get('extra', "")
     wildcard_constraints:

@@ -2,7 +2,7 @@ from os.path import join
 
 #input_dir     = config['eelpond_directories']['outdirs']['input_data']
 input_dir    = config['combine_units']['eelpond_params']['indir']
-output_dir    = config['combine_units']['eelpond_params']['outdir']
+outcomb    = config['combine_units']['eelpond_params']['outdir']
 
 # to do: modify ext here via config to enable gzip vs not
 ext = '.fq.gz'
@@ -12,11 +12,11 @@ def get_all_units(w):
     r1,r2,r = [],[],[]
     unit_list = samples.groupby(level=0).get_group(w.sample)['unit'].tolist()
     for unit in unit_list:
-        if not is_single_end(w.sample):
+        if is_single_end(w.sample):
+            r+= [join(input_dir, f"{w.sample}_{unit}_se{ext}")]
+        else:
             r1+= [join(input_dir, f"{w.sample}_{unit}_1{ext}")]
             r2+= [join(input_dir, f"{w.sample}_{unit}_2{ext}")]
-        else:
-            r+= [join(input_dir, f"{w.sample}_{unit}_se{ext}")]
     if r1:
         readsD['r1'] = r1
         readsD['r2'] = r2
@@ -31,8 +31,8 @@ rule cat_pe:
     input:
         unpack(get_all_units)
     output:
-        r1=join(output_dir, "{sample}_1.fq.gz"),
-        r2=join(output_dir, "{sample}_2.fq.gz"),
+        r1=join(outcomb, "{sample, [A-Za-z0-9_.]+}_1.fq.gz"),
+        r2=join(outcomb, "{sample, [A-Za-z0-9_.]+}_2.fq.gz"),
     message:
         """--- Combining Units: PE reads ---"""
     log: join(LOGS_DIR, 'combine_units/{sample}_pe.log')
@@ -49,7 +49,7 @@ rule cat_se:
     input:
         unpack(get_all_units)
     output:
-        r=join(output_dir, "{sample}_se.fq.gz"),
+        r=join(outcomb, "{sample, [A-Za-z0-9_.]+}_se.fq.gz"),
     message:
         """--- Combining Units: SE reads ---"""
     log: join(LOGS_DIR, 'combine_units/{sample}_se.log')

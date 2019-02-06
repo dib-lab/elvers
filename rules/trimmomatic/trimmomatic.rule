@@ -1,7 +1,7 @@
 from os.path import join
 
-input_reads    = config['eelpond_directories']['outdirs']['input_data_combined']
 trim_params = config['trimmomatic']['program_params']
+in_reads    = config['trimmomatic']['eelpond_params']['indir']
 trim_dir    = config['trimmomatic']['eelpond_params']['outdir']
 
 base_dir = config['eelpond_directories']['base_dir']
@@ -16,11 +16,12 @@ if not os.path.isabs(se_adapter):
 
 def get_pretrim(w):
     readsD = {}
-    if not is_single_end(**w):
-        readsD['r1'] = expand(join(input_reads, '{sample}_1.fq.gz'),**w)
-        readsD['r2'] = expand(join(input_reads, '{sample}_2.fq.gz'),**w)
+    if is_single_end(**w):
+        return join(in_reads, f'{w.sample}_1.fq.gz')
+    else:
+        readsD['r1'] = expand(join(in_reads, '{sample}_1.fq.gz'),**w)
+        readsD['r2'] = expand(join(in_reads, '{sample}_2.fq.gz'),**w)
         return readsD
-    return join(input_reads, f'{w.sample}_1.fq.gz')
 
 rule trimmomatic_pe:
     """
@@ -52,7 +53,7 @@ rule trimmomatic_se:
     input:
         get_pretrim
     output:
-        r1=join(trim_dir, "{sample}.se.trim.fq.gz"), 
+        r1=join(trim_dir, "{sample}_se.trim.fq.gz")
     message:
         """--- Quality trimming SE read data with Trimmomatic."""
     threads: trim_params.get('cpu', 16)

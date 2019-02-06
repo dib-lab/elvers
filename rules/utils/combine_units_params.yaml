@@ -1,7 +1,7 @@
 combine_units:
   eelpond_params:
-    indir: "input_data"
-    outdir: "input_data/combined_units"
+    indir: input_data
+    outdir: "combined_data"
     extensions:
       read:
         combine_units: True

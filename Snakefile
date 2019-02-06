@@ -19,17 +19,24 @@ from snakemake.remote import FTP, HTTP
 FTP = FTP.RemoteProvider()
 HTTP = HTTP.RemoteProvider()
 
-# read in sample info 
-samples = pd.read_table(config["samples"],dtype=str).set_index(["sample", "unit"], drop=False)
-#samples = pd.read_table(config["samples"],dtype=str).set_index(["sample"], drop=False)
+# read in sample info, with units for downloading samples and doing fastqc_pretrim
+units = pd.read_table(config["samples"],dtype=str).set_index(["sample", "unit"], drop=False)
 #validate(samples, schema="schemas/samples_v2.schema.yaml") # new version
-samples['name'] = samples["sample"].map(str) + '_' + samples["unit"].map(str)
-samples['is_se'] = np.where(samples['fq2'].isnull(), True, False)
-samples_only = samples.reset_index(level=1, drop=True)
+
+# keep some info around for now:
+sample_list = list(set(units["sample"].tolist()))
+unit_list = units["unit"].tolist()
+units['name'] = units["sample"].map(str) + '_' + units["unit"].map(str)
+units['is_se'] = np.where(units['fq2'].isnull(), True, False)
+# now, drop units from index
+#samples =  units[['name','condition','is_se']].reset_index(level=1, drop=True)
+samples =  units.reset_index(level=1, drop=True)
+print(samples)
 
 # note, this function *needs* to be in this file, or added somewhere it can be accessed by all rules
 def is_single_end(sample, end = '', assembly = ''):
-    return all(samples_only.at[sample, 'is_se'])
+    print(sample)
+    return all(samples.at[sample, 'is_se'])
 
 
 # check for replicates ** need to change with new samples scheme

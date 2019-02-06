@@ -42,10 +42,11 @@ def build_default_params(workdir, targets):
     for targD in workflows_to_run.values():
         required_rules+= targD.get('include', [])
         required_rules+= targD.get('targets', [])
+    required_rules = list(set(required_rules))
     ruleParamsFiles = []
     includeRules = []
     assembly_extensions = []
-    rules_dir = defaultParams['eelpond_directories']['rules']    
+    rules_dir = defaultParams['eelpond_directories']['rules']
     for rule_name in required_rules:
         try:
             rule = glob.glob(os.path.join(workdir, rules_dir, '*', rule_name + '.rule'))[0]
@@ -92,13 +93,15 @@ def build_dirs(ep_dir, params):
     # put joined paths back in params file
     params['eelpond_directories']['outdirs'] = outDirs
     # build dirs for included rules
-
     included_rules = params['include_rules']
     for rule in included_rules:
         prog = os.path.basename(rule).split('.rule')[0]
         # if no outdir, just use program name
         prog_dir = params[prog]['eelpond_params'].get('outdir', prog)
         params[prog]['eelpond_params']['outdir'] = os.path.join(outdir, prog_dir) 
+        indir = params[prog]['eelpond_params'].get('indir', None)
+        if indir:
+            params[prog]['eelpond_params']['indir'] = os.path.join(outdir, indir)
     return params
 
 def handle_assemblyInput(assembInput, config):

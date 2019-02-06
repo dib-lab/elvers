@@ -1,0 +1,22 @@
+khmer_sample:
+  eelpond_params:
+    outdir: khmer
+    extensions:
+      read:
+        combine_units: True
+        pe:
+          - '_paired.fq.gz'
+          - '_single.fq.gz'
+          - '_1.khmer.fq.gz'
+          - '_2.khmer.fq.gz'
+        se:
+          - '_se.khmer.fq.gz'
+  program_params:
+    input_trimmed: 'True'
+    diginorm: False
+    ksize: 20
+    Z: 18
+    C: 3
+    memory: 4e9
+    coverage: 20
+    extra: ""
