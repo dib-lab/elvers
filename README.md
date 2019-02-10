@@ -77,34 +77,38 @@ Generate these by following instructions here: [Understanding and Configuring Wo
 
 
 ## Available Workflows
+
+Currently, all workflows require a properly-formatted read inputs `tsv` file as input. Some workflows, e.g. `annotation` can work on either on a _de novo_ transcriptome or on previously-generated assemblies. To add an assembly as input, specify it via `assemblyinput` in the `yaml` config file, as described in [Understanding and Configuring Workflows](https://dib-lab.github.io/eelpond/about_and_configure). 
+
+
+**workflows**
+
+  - preprocess: Read Quality Trimming and Filtering (fastqc, trimmomatic)
+  - kmer_trim: Kmer Trimming and/or Digital Normalization (khmer)
+  - assemble: Transcriptome Assembly (trinity)
+  - annotate : Annotate the transcriptome (dammit)
+  - sourmash_compute: Build sourmash signatures for the reads and assembly (sourmash)
+  - quantify: Quantify transcripts (salmon)
+  - diffexp: Conduct differential expression (DESeq2)
+  - plass_assemble: assemble at the protein level with PLASS
+  - paladin_map: map to a protein assembly using paladin
+
+**end-to-end workflows:**
+
+  - **default**: preprocess, kmer_trim, assemble, annotate, quantify
+  - **protein assembly**: preprocess, kmer_trim, plass_assemble, paladin_map
+
+i
 You can see the available workflows (and which programs they run) by using the `--print_workflows` flag:
 ```
 ./run_eelpond examples/nema.yaml --print_workflows
 ```
 
-Currently, all workflows require a properly-formatted read inputs `tsv` file as input. Some workflows, e.g. `annotation` can work on either on a _de novo_ transcriptome or on previously-generated assemblies. To add an assembly as input, specify it via `assemblyinput` in the `yaml` config file, as described in [Understanding and Configuring Workflows](https://dib-lab.github.io/eelpond/about_and_configure). 
+Each included tool can also be run independently, if appropriate input files are provided. This is not always intuitive, so please see our documentation for running each tools for details (described as "Advanced Usage"). To see all available tools, run:
 
-** workflows**  
-
-  - preprocess: Read Quality Trimming and Filtering (fastqc, trimmomatic)
-  - kmer_trim: Kmer Trimming and/or Digital Normalization (khmer)
-  - assemble: Transcriptome Assembly (trinity)
-  - annotate : Annotate the transcriptome (dammit, sourmash)
-  - quantify: Quantify transcripts (salmon) 
-  - diffexp: Conduct differential expression analysis with DESeq2
-  - plass_assemble: assemble at the protein level with PLASS
-  - paladin_map: map to a protein assembly using paladin
-
-**end-to-end workflows:**  
-
-  - **default**: preprocess, kmer_trim, assemble, annotate, quantify 
-  - **protein assembly**: preprocess, kmer_trim, plass_assemble, paladin_map 
-
-## Input Utilities
-
-  - assemblyinput: Specify assembly for downstream steps
-
-Each included tool can also be run independently, if appropriate input files are provided. See each tool's documentation for details.
+```
+./run_eelpond examples/nema.yaml --print_rules
+```
 
 ## Additional Info
 

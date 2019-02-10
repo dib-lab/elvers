@@ -41,7 +41,7 @@ To see the available parameters for the `deseq2` rule, run
 ```
 This will print the following:
 ```
-  ####################  salmon  ####################
+  ####################  deseq2  ####################
 deseq2:
   contrasts:
     time0-vs-time6:
