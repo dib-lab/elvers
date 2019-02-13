@@ -54,7 +54,7 @@ conda activate eelpond
 ```
 Now you can start running workflows on test data!
 
-## Default workflow: Eel Pond Protocol for *de novo* RNAseq analysis
+## Running test data 
 
 The Eel Pond protocol (which inspired the `eelpond` name) included line-by-line commands that the user could follow along with using a test dataset provided in the instructions. We have re-implemented the protocol here to enable automated *de novo* transcriptome assembly, annotation, and quick differential expression analysis on a set of short-read Illumina data using a single command. See more about this protocol [here](eel_pond_workflow.md).
 
@@ -99,6 +99,7 @@ Currently, all workflows require a properly-formatted read inputs `tsv` file as 
 
 
 You can see the available workflows (and which programs they run) by using the `--print_workflows` flag:
+
 ```
 ./run_eelpond examples/nema.yaml --print_workflows
 ```
