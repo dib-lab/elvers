@@ -33,7 +33,7 @@ You can find these R scripts in the `eelpond` [github repo](https://github.com/d
 
 ## Modifying Params for DESeq2
 
-Be sure to set up your sample info and build a configfile first (see [Understanding and Configuring Workflows](about_and_configure.md)).
+Be sure to set up your sample info and build a configfile first (see [Understanding and Configuring Workflows](configure.md)).
 
 To see the available parameters for the `deseq2` rule, run
 ```
@@ -62,7 +62,7 @@ The default `contrasts` reflect the `condition` information in the test data `ne
 ```
 The `pca labels` should not be changed unless you need to change the name of the `condition` column in the `samples.tsv`. This functionality hasn't been extensively tested, so file an issue if something goes wrong!
 
-Be sure the modified lines go into the config file you're using to run `eelpond` (see [Understanding and Configuring Workflows](about_and_configure.md)).
+Be sure the modified lines go into the config file you're using to run `eelpond` (see [Understanding and Configuring Workflows](configure.md)).
 
 
 ## References

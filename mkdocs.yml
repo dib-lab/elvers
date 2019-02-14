@@ -38,8 +38,10 @@ extra_css:
 
 # give a title for each page
 nav:
-  - 'Quickstart' : 'index.md'
-  - 'Choosing and Configuring Workflows': about_and_configure.md
+  - 'Eelpond' : 'index.md'
+  - 'About': 'about.md'
+  - 'Quickstart': 'quickstart.md'
+  - 'Choosing and Configuring Workflows': configure.md
   - 'Available Workflows':
     - 'Eel Pond Protocol': eel_pond_workflow.md
     - 'Protein-level Assembly Workflow': protein_assembly_workflow.md

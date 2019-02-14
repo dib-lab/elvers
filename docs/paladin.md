@@ -41,7 +41,7 @@ paladin align -f 250 -t snakemake.threads \
 
 ## Modifying Params for Paladin:
 
-Be sure to set up your sample info and build a configfile first (see [Understanding and Configuring Workflows](about_and_configure.md)).
+Be sure to set up your sample info and build a configfile first (see [Understanding and Configuring Workflows](configure.md)).
 
 To see the available parameters for the `Paladin` rule, run
 ```
@@ -65,7 +65,7 @@ In addition to changing parameters we've specifically enabled, you can modify th
 ```
 Please see the [Paladin documentation](https://github.com/twestbrookunh/paladin) for info on the params you can pass into `paladin`.
 
-Be sure the modified lines go into the config file you're using to run `eelpond` (see [Understanding and Configuring Workflows](about_and_configure.md)).
+Be sure the modified lines go into the config file you're using to run `eelpond` (see [Understanding and Configuring Workflows](configure.md)).
 
 ## Advanced Usage: Running PALADIN as a standalone rule
 

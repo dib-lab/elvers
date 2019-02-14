@@ -73,12 +73,12 @@ To run your own data, you'll need to create two files:
   - a `tsv` file containing your sample info
   - a `yaml` file containing basic configuration info. This file must specify read inputs (path to `tsv`) or assembly inputs (via `assemblyinput`)
 
-Generate these by following instructions here: [Understanding and Configuring Workflows](https://dib-lab.github.io/eelpond/about_and_configure).
+Generate these by following instructions here: [Understanding and Configuring Workflows](https://dib-lab.github.io/eelpond/configure).
 
 
 ## Available Workflows
 
-Currently, all workflows require a properly-formatted read inputs `tsv` file as input. Some workflows, e.g. `annotation` can work on either on a _de novo_ transcriptome or on previously-generated assemblies. To add an assembly as input, specify it via `assemblyinput` in the `yaml` config file, as described in [Understanding and Configuring Workflows](https://dib-lab.github.io/eelpond/about_and_configure). 
+Currently, all workflows require a properly-formatted read inputs `tsv` file as input. Some workflows, e.g. `annotation` can work on either on a _de novo_ transcriptome or on previously-generated assemblies. To add an assembly as input, specify it via `assemblyinput` in the `yaml` config file, as described in [Understanding and Configuring Workflows](https://dib-lab.github.io/eelpond/configure). 
 
 
 **workflows**

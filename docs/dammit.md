@@ -57,7 +57,7 @@ Run Dammit via the "default" [Eel Pond workflow](eel_pond_workflow.md) or via th
 
 ## Modifying Params for Dammit:
 
-Be sure to set up your sample info and build a configfile first (see [Understanding and Configuring Workflows](about_and_configure.md)).
+Be sure to set up your sample info and build a configfile first (see [Understanding and Configuring Workflows](configure.md)).
 
 To see the available parameters for the `dammit` rule, run
 ```

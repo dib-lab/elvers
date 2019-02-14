@@ -25,7 +25,7 @@ This will run a small set of Nematostella vectensis test data (from [Tulin et al
 
 ## Running Your Own Data
 
-Set sample info and build a configfile first (see [Understanding and Configuring Workflows](about_and_configure.md)).
+Set sample info and build a configfile first (see [Understanding and Configuring Workflows](configure.md)).
 
 To build a config, run:
 

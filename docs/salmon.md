@@ -24,7 +24,7 @@ Both indexing the transcriptome and running quantification are integrated as rul
 
 ## Modifying Params for Salmon
 
-Be sure to set up your sample info and build a configfile first (see [Understanding and Configuring Workflows](about_and_configure.md)).
+Be sure to set up your sample info and build a configfile first (see [Understanding and Configuring Workflows](configure.md)).
 
 To see the available parameters for the `salmon` rule, run
 ```
@@ -46,7 +46,7 @@ If you set `input_trimmomatic_trimmed: False` in the salmon parameters, then sal
 
 In addition to changing parameters we've specifically enabled, you can modify the `extra` param to pass any extra parameters.In salmon, both `index` and `quantification` steps can accept an `extra` param. See the [Salmon documentation](http://salmon.readthedocs.org/en/latest/) to learn more about the parameters you can pass into `salmon`.
 
-Be sure the modified lines go into the config file you're using to run `eelpond` (see [Understanding and Configuring Workflows](about_and_configure.md)).
+Be sure the modified lines go into the config file you're using to run `eelpond` (see [Understanding and Configuring Workflows](configure.md)).
 
 ## Output files:
 
