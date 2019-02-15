@@ -1,6 +1,7 @@
 # Annotating de novo transcriptomes with dammit
 
 [dammit](http://dib-lab.github.io/dammit/) is an annotation pipeline written by [Camille Scott](http://www.camillescott.org/). dammit runs a relatively standard annotation protocol for transcriptomes: it begins by building gene models with [Transdecoder](http://transdecoder.github.io/), and then uses the following protein databases as evidence for annotation:
+
   -  [Swiss-Prot](https://www.ebi.ac.uk/uniprot) (manually reviewed and curated)
   -  [Pfam-A](http://pfam.xfam.org/)
   -  [Rfam](http://rfam.xfam.org/)
