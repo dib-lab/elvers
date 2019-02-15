@@ -5,6 +5,7 @@ Subworkflows combine tools in the right order to facilitate file targeting withi
   - [get_data](get_data.md) - an `eelpond` utility
   - [trimmomatic](trimmomatic.md)
   - [salmon](salmon.md)
+  - [deseq2](deseq2.md)
 
 ## Quickstart
 
