@@ -73,7 +73,7 @@ dammit:
   - eukaryota
   db_dir: databases   # specify location for databases (or previously installed databases)
   db_install_only: False   # just install databases, don't run annotation
-  db_extra:
+  db_extra: ''
   annot_extra: ' --quick '
   #####################################################
 ```
