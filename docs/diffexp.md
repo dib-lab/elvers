@@ -1,6 +1,9 @@
 # Diffexp Subworkflow
 
-Subworkflows combine tools in the right order to facilitate file targeting withing `eelpond`. The "diffexp" subworkflow conducts read quality trimming, salmon quantification and differential expression analysis. It requires an assembly to be provided, either by running an assembly or providing one in your configfile.. At the moment, this workflow consists of:
+Subworkflows combine tools in the right order to facilitate file targeting withing `eelpond`. The "diffexp" subworkflow conducts read quality trimming, salmon quantification and differential expression analysis. It requires an assembly to be provided, either by running an assembly or providing one in your configfile. If you have a gene-to-transcript map, this will also need to be specified via the `assemblyinput` parameter. If not, you'll need to modify the deseq2 parameters so
+that the workflow will not expect this file. 
+
+At the moment, this workflow consists of:
  
   - [get_data](get_data.md) - an `eelpond` utility
   - [trimmomatic](trimmomatic.md)
