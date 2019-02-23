@@ -39,7 +39,7 @@ Trimmomatic will output files in the `preprocess` subdirectory of this output di
 
 ## Modifying Params for Trimmomatic:
 
-Be sure to set up your sample info and build a configfile first (see [Understanding and Configuring Workflows](about_and_configure.md)).
+Be sure to set up your sample info and build a configfile first (see [Understanding and Configuring Workflows](configure.md)).
 
 To see the available parameters for the `trimmomatic` rule, run
 ```
@@ -64,7 +64,7 @@ Override default params by modifying these lines. In addition to changing parame
 ```
   extra: 'HEADCROP:5' # to remove the first 5 bases at the front of the read.
 ```
-See the [Trimmomatic documentation](http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/TrimmomaticManual_V0.32.pdf) for parameters and options you can pass to Trimmomatic. Be sure the modified lines go into the config file you're using to run `eelpond` (see [Understanding and Configuring Workflows](about_and_configure.md)).
+See the [Trimmomatic documentation](http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/TrimmomaticManual_V0.32.pdf) for parameters and options you can pass to Trimmomatic. Be sure the modified lines go into the config file you're using to run `eelpond` (see [Understanding and Configuring Workflows](configure.md)).
 
 
 ## Advanced Usage: Running Trimmomatic as a standalone rule

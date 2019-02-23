@@ -24,7 +24,7 @@
               `       '--;            (' 
 
 ```
-eelpond started as a snakemake update of the Eel Pond Protocal for *de novo* RNAseq analysis. It has evolved slightly to enable a number of workflows for (mostly) RNA data, which can all be run via the `eelpond` workflow wrapper. `eelpond` uses [snakemake](https://snakemake.readthedocs.io) for workflow management and [conda](https://conda.io/docs/) for software installation. The code can be found [here](https://github.com/dib-lab/eelpond). 
+eelpond started as a snakemake update of the Eel Pond Protocol for *de novo* RNAseq analysis. It has evolved slightly to enable a number of workflows for (mostly) RNA data, which can all be run via the `eelpond` workflow wrapper. `eelpond` uses [snakemake](https://snakemake.readthedocs.io) for workflow management and [conda](https://conda.io/docs/) for software installation. The code can be found [here](https://github.com/dib-lab/eelpond).
 
 
 ## Getting Started
@@ -71,34 +71,44 @@ This will download and run a small set of _Nematostella vectensis_ test data (fr
 To run your own data, you'll need to create two files:
 
   - a `tsv` file containing your sample info
-  - a `yaml` file containing basic configuration info
+  - a `yaml` file containing basic configuration info. This file must specify read inputs (path to `tsv`) or assembly inputs (via `assemblyinput`)
 
-Generate these by following instructions here: [Understanding and Configuring Workflows](about_and_configure.md).
+Generate these by following instructions here: [Understanding and Configuring Workflows](https://dib-lab.github.io/eelpond/configure).
 
 
 ## Available Workflows
+
+Currently, all workflows require a properly-formatted read inputs `tsv` file as input. Some workflows, e.g. `annotation` can work on either on a _de novo_ transcriptome or on previously-generated assemblies. To add an assembly as input, specify it via `assemblyinput` in the `yaml` config file, as described in [Understanding and Configuring Workflows](https://dib-lab.github.io/eelpond/configure). 
+
+
+**workflows**
+
+  - preprocess: Read Quality Trimming and Filtering (fastqc, trimmomatic)
+  - kmer_trim: Kmer Trimming and/or Digital Normalization (khmer)
+  - assemble: Transcriptome Assembly (trinity)
+  - annotate : Annotate the transcriptome (dammit)
+  - sourmash_compute: Build sourmash signatures for the reads and assembly (sourmash)
+  - quantify: Quantify transcripts (salmon)
+  - diffexp: Conduct differential expression (DESeq2)
+  - plass_assemble: assemble at the protein level with PLASS
+  - paladin_map: map to a protein assembly using paladin
+
+**end-to-end workflows:**
+
+  - **default**: preprocess, kmer_trim, assemble, annotate, quantify
+  - **protein assembly**: preprocess, kmer_trim, plass_assemble, paladin_map
+
+i
 You can see the available workflows (and which programs they run) by using the `--print_workflows` flag:
 ```
 ./run_eelpond examples/nema.yaml --print_workflows
 ```
 
-**subworkflows**
+Each included tool can also be run independently, if appropriate input files are provided. This is not always intuitive, so please see our documentation for running each tools for details (described as "Advanced Usage"). To see all available tools, run:
 
-  - preprocess: Read Quality Trimming and Filtering (fastqc, trimmomatic)
-  - kmer_trim: Kmer Trimming and/or Digital Normalization (khmer)
-  - assemble: Transcriptome Assembly (trinity)
-  - assemblyinput: Specify assembly for downstream steps
-  - annotate : Annotate the transcriptome (dammit, sourmash)
-  - quantify: Quantify transcripts (salmon) 
-  - plass_assemble: assemble at the protein level with PLASS
-  - paladin_map: map to a protein assembly using paladin
-
-**main workflows:**  
-
-  - **default**: preprocess, kmer_trim, assemble, annotate, quantify 
-  - **protein assembly**: preprocess, kmer_trim, plass_assemble, paladin_map 
-
-Each included tool can also be run independently, if appropriate input files are provided. See each tool's documentation for details.
+```
+./run_eelpond examples/nema.yaml --print_rules
+```
 
 ## Additional Info
 

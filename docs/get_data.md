@@ -7,7 +7,7 @@ To run any workflow, we need to get reads (and any assemblies already generated)
 
 ## Modifying Params for get_data:
 
-Be sure to set up your sample info and build a configfile first (see [Understanding and Configuring Workflows](about_and_configure.md)).
+Be sure to set up your sample info and build a configfile first (see [Understanding and Configuring Workflows](configure.md)).
 
 To see the available parameters for the `get_data` utility rule, run
 ```

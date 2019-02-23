@@ -37,7 +37,7 @@ Trinity will output files in the `assembly` subdirectory of this output director
 
 ## Modifying Params for Trinity:
 
-Be sure to set up your sample info and build a configfile first (see [Understanding and Configuring Workflows](about_and_configure.md)).
+Be sure to set up your sample info and build a configfile first (see [Understanding and Configuring Workflows](configure.md)).
 
 To see the available parameters for the `trinity` rule, run
 ```
@@ -62,7 +62,7 @@ In addition to changing parameters we've specifically enabled, you can modify th
 
 Within the "default" [Eel Pond workflow](eel_pond_workflow.md) or the [assemble subworkflow](assemble.md), these options enable you to choose kmer-trimmed, quality-trimmed, or raw sequencing data as input. We recommend using kmer-trimmed reads as input. If both `input_kmer_trimmed` and `input_trimmomatic_trimmed` are `False`, we will just use raw reads from the `samples.tsv` file. 
 
-See the [Trinity documentation](https://github.com/trinityrnaseq/trinityrnaseq/wiki) to learn more about these parameters. Be sure the modified lines go into the config file you're using to run `eelpond` (see [Understanding and Configuring Workflows](about_and_configure.md)).
+See the [Trinity documentation](https://github.com/trinityrnaseq/trinityrnaseq/wiki) to learn more about these parameters. Be sure the modified lines go into the config file you're using to run `eelpond` (see [Understanding and Configuring Workflows](configure.md)).
 
 ## Advanced Usage: Running Trinity as a standalone rule
 

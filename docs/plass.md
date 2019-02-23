@@ -37,7 +37,7 @@ PLASS will output files in the `assembly` subdirectory of this output directory.
 
 ## Modifying Params for PLASS:
 
-Be sure to set up your sample info and build a configfile first (see [Understanding and Configuring Workflows](about_and_configure.md)).
+Be sure to set up your sample info and build a configfile first (see [Understanding and Configuring Workflows](configure.md)).
 
 To see the available parameters for the `plass` rule, run
 ```
@@ -61,7 +61,7 @@ In addition to changing parameters we've specifically enabled, you can modify th
 ```
 See the [PLASS documentation](https://plass.mmseqs.org) to learn more about the parameters you can pass to `PLASS`.
 
-Be sure the modified lines go into the config file you're using to run `eelpond` (see [Understanding and Configuring Workflows](about_and_configure.md)).
+Be sure the modified lines go into the config file you're using to run `eelpond` (see [Understanding and Configuring Workflows](configure.md)).
 
 ## Advanced Usage: Running PLASS as a standalone rule
 
