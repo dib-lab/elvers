@@ -84,7 +84,6 @@ def build_dirs(ep_dir, params):
    
     # Now join out_path, outdir name
     outdir = os.path.join(out_path, outdir)  
-
     
     params['eelpond_directories']['out_dir'] = outdir # outdir NAME
     # if we want logs to be *within* individual outdirs, change logsdir here (else logs in eelpond dir)
