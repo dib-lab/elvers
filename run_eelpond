@@ -195,6 +195,7 @@ def main(args):
             sys.exit(-1)
         # next, grab all eelpond defaults, including rule-specific default parameters (*_params.yaml files) 
         paramsD = build_default_params(thisdir, targs)
+
         # add any configuration from extra config files
         extra_configs = {}
         if args.extra_config:
@@ -202,9 +203,16 @@ def main(args):
                 extra_configs = import_configfile(find_yaml(thisdir, c, 'extra_config'), extra_configs)
         # this function only updates keys that already exist. so we need to wait till here (after importing params) to read in extra_configs,
         # rather than doing this when reading in the main configfile
+        
+        # if we're adding any additional contrasts, get rid of the example ones!
+        if extra_configs.get('deseq2') or configD.get('deseq2'):
+            if paramsD.get('deseq2'):
+                paramsD['deseq2']['program_params']['contrasts'] = {} # get rid of default contrasts
+
         # first update with extra configs, then with main configfile
         update_nested_dict(paramsD,extra_configs)
-        # update defaults with user-specified parameters
+
+        # update defaults with user-specified parameters (main configfile)
         update_nested_dict(paramsD,configD) # configD takes priority over default params 
 
         # add extension to overall assembly_extensions info
