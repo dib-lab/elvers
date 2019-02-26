@@ -67,6 +67,13 @@ def build_dirs(ep_dir, params):
     params['eelpond_directories']['rules'] = os.path.join(ep_dir, rules_dir)
     animals_dir =  params['eelpond_directories']['animals']
     params['eelpond_directories']['animals'] = os.path.join(ep_dir, 'ep_utils', animals_dir)
+    
+    # if desired, user can also provide out_path, and all dirs will be built under there
+    # outdirectory, build all directories relative to that path 
+    out_path = params.get('out_path', ep_dir)
+    # if user inputs an absolute path:
+    if os.path.isabs(out_path): # if not absolute, just assume subdirectory of eelpond.  
+        assert os.path.exists(out_path) and os.path.isdir(out_path), f"Error: provided output path {out_path} is not an existing directory. Please fix.\n\n"
 
     # allow user to define basename, and experiment, build outdir name
     basename = params['basename']
@@ -74,18 +81,14 @@ def build_dirs(ep_dir, params):
     if expt and not expt.startswith('_'):
         expt= '_' + expt
     outdir = basename + "_out" + expt
+   
+    # Now join out_path, outdir name
+    outdir = os.path.join(out_path, outdir)  
+
     
     params['eelpond_directories']['out_dir'] = outdir # outdir NAME
     # if we want logs to be *within* individual outdirs, change logsdir here (else logs in eelpond dir)
     params['eelpond_directories']['logs'] = join(outdir, os.path.basename(params['eelpond_directories']['logs']))
-    # if desired, user can also provide out_path, and all dirs will be build under there
-    # outdirectory, build all directories relative to that path 
-    out_path = params.get('out_path', ep_dir)
-    # if user inputs an absolute path:
-    if os.path.isabs(out_path): # if not absolute, just assume subdirectory of eelpond.  
-        assert os.path.exists(out_path) and os.path.isdir(out_path), f"Error: provided output path {out_path} is not an existing directory. Please fix.\n\n"
-    # Now join out_path, outdir name
-    outdir = os.path.join(out_path, outdir)  
     # build dirs for main eelpond output directories
     outDirs = params['eelpond_directories']['outdirs']
     for targ, outD in outDirs.items():
