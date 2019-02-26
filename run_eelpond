@@ -70,10 +70,11 @@ def build_dirs(ep_dir, params):
 
     # allow user to define basename, and experiment, build outdir name
     basename = params['basename']
-    if params.get('experiment'):
-        outdir = basename + "_out_" + params['experiment']
-    else:
-        outdir = basename + '_out'
+    expt = params.get('experiment', '')
+    if expt and not expt.startswith('_'):
+        expt= '_' + expt
+    outdir = basename + "_out" + expt
+    
     params['eelpond_directories']['out_dir'] = outdir # outdir NAME
     # if we want logs to be *within* individual outdirs, change logsdir here (else logs in eelpond dir)
     params['eelpond_directories']['logs'] = join(outdir, os.path.basename(params['eelpond_directories']['logs']))
