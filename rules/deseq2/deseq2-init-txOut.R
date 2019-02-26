@@ -18,7 +18,7 @@ quant_files <- snakemake@input[["quant"]]
 names(quant_files) <- basename(dirname(quant_files)) # dirname to drop quant.sf, basename to drop rest of path
 
     ## Read Salmon abundances, keep at the transcript level
-txi <- tximport(files = quant_files, type = "salmon", txOut = FALSE, txOut = TRUE)
+txi <- tximport(files = quant_files, type = "salmon", txOut = TRUE)
 
 # read in sample:condition info; ensure correct ordering
 sample_info <- read.table(snakemake@params[["samples"]], header=TRUE)
