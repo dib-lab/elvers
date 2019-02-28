@@ -77,10 +77,11 @@ def build_dirs(ep_dir, params):
 
     # allow user to define basename, and experiment, build outdir name
     basename = params['basename']
-    if params.get('experiment'):
-        outdir = basename + "_out_" + params['experiment']
-    else:
-        outdir = basename + '_out'
+    expt = params.get('experiment', '')
+    if expt and not expt.startswith('_'):
+        expt= '_' + expt
+    outdir = basename + "_out" + expt
+   
     # Now join out_path, outdir name
     outdir = os.path.join(out_path, outdir)  
     
