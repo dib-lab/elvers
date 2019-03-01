@@ -8,15 +8,26 @@ assembly_dir = ep_params['outdir']
 basename = config['basename']
 assembly_extension = aInput_params['assembly_extension']
 
+
 rule cp_input_assembly:
     input: aInput_params['assembly']
     output: join(assembly_dir, basename + assembly_extension + '.fasta')
     log: join(LOGS_DIR, 'assemblyinput/cp_assembly.log')
-    shell: ("cp {input} {output}")
+    params: assembly_dir = ep_params['outdir']
+    shell: 
+        """
+        mkdir -p {params.assembly_dir}
+        cp {input} {output}
+        """
 
 if aInput_params.get('gene_trans_map', None):
     rule cp_input_gene_trans_map:
         input: aInput_params['gene_trans_map'] 
         output: join(assembly_dir, basename + assembly_extension + '.fasta.gene_trans_map')
         log: join(LOGS_DIR, 'assemblyinput/cp_gt_map.log')
-        shell: ("cp {input} {output}")
+        params: assembly_dir = ep_params['outdir']
+        shell: 
+            """
+            mkdir -p {params.assembly_dir}
+            cp {input} {output}
+            """
