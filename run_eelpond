@@ -283,7 +283,7 @@ def main(args):
                 subprocess.call(['rm','-f','.temp.dot'])
                 print(f"\tPrinted workflow dag to png file {args.dagpng}\n\n ")
 
-        if status and reportfile and not args.dry_run and not args.unlock and not building_dag:
+        if status and reportfile and not args.dry_run and not args.unlock and not building_dag and not args.create_envs_only:
             snakemake.snakemake(snakefile, configfile=paramsfile, report=reportfile)
             print(f"\t see the report file at {reportfile}\n\n ")
 
