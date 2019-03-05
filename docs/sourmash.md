@@ -27,7 +27,7 @@ Sourmash will output files in the `sourmash` subdirectory of this output directo
 
 ## Modifying Params for Sourmash:
 
-Be sure to set up your sample info and build a configfile first (see [Understanding and Configuring Workflows](about_and_configure.md)).
+Be sure to set up your sample info and build a configfile first (see [Understanding and Configuring Workflows](configure.md)).
 
 To see the available parameters for the `sourmash` rule, run
 ```
@@ -46,7 +46,7 @@ In addition to changing parameters we've specifically enabled, you can modify th
 ```
   extra: ' --track-abundance '
 ```
-Be sure the modified lines go into the config file you're using to run `eelpond` (see [Understanding and Configuring Workflows](about_and_configure.md)). 
+Be sure the modified lines go into the config file you're using to run `eelpond` (see [Understanding and Configuring Workflows](configure.md)). 
 
 See the [sourmash documentation](https://sourmash.readthedocs.io/en/latest/index.html) to learn more about the parameters you can use with sourmash compute. 
 

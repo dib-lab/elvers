@@ -22,94 +22,34 @@
               `       '--;            (' 
 
 ```
-eelpond started as a snakemake update of the Eel Pond Protocal for *de novo* RNAseq analysis. It has evolved slightly to enable a number of workflows for (mostly) RNA data, which can all be run via the `eelpond` workflow wrapper. `eelpond` uses [snakemake](https://snakemake.readthedocs.io) for workflow management and [conda](https://conda.io/docs/) for software installation. The code can be found [here](https://github.com/dib-lab/eelpond). 
 
 
-## Getting Started
+**`eelpond`** is an automated workflow system, designed to facilitate running a number of tools on a set of data without the need to babysit each individual program. **`eelpond`** is free and open source, and relies solely on programs that are also free, open source, and reasonably installable (which we consider part of being open).
 
-Linux is the recommended OS. Nearly everything also works on MacOSX, but some programs (fastqc, Trinity) are troublesome.
+## Why use eelpond?
 
-If you don't have conda yet, install [miniconda](https://conda.io/miniconda.html) (for Ubuntu 16.04 [Jetstream image](https://use.jetstream-cloud.org/application/images/107)):
-```
-wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
-bash Miniconda3-latest-Linux-x86_64.sh -b
-echo export PATH="$HOME/miniconda3/bin:$PATH" >> ~/.bash_profile
-source ~/.bash_profile
-```
+Some parts of bioinformatic analysis are standardized and just need to be run. For others, we may want to compare results between different input parameters or different programs at individual steps. Both of these cases are facilitated by using a workflow system which 1) handles all installations, 2) executes steps in a standard and repeatable manner, 3) keeps track of all steps that have been run, and 4) provides a way to pick up from where you left off, should any issues arise during
+execution. **`eelpond`** is designed to be easy to begin executing default workflows, but flexible and extensible, allowing full configuration of program parameters and programs within each workflow. 
 
-Now, get the eelpond code
-```
-git clone https://github.com/dib-lab/eelpond.git
-cd eelpond
-```
+## What do I need?
 
-Create a conda environment with all the dependencies for eelpond
-```
-conda env create --file environment.yml -n eelpond
-```
-
-Activate that environment. You'll need to do this anytime you want to run eelpond
-```
-conda activate eelpond
-```
-Now you can start running workflows on test data!
-
-## Default workflow: Eel Pond Protocol for *de novo* RNAseq analysis
-
-The Eel Pond protocol (which inspired the `eelpond` name) included line-by-line commands that the user could follow along with using a test dataset provided in the instructions. We have re-implemented the protocol here to enable automated *de novo* transcriptome assembly, annotation, and quick differential expression analysis on a set of short-read Illumina data using a single command. See more about this protocol [here](eel_pond_workflow.md).
-
-To test the default workflow:
-```
-./run_eelpond examples/nema.yaml default
-```
-This will download and run a small set of _Nematostella vectensis_ test data (from [Tulin et al., 2013](https://evodevojournal.biomedcentral.com/articles/10.1186/2041-9139-4-16))
-
-## Running Your Own Data
-
-To run your own data, you'll need to create two files:
-
-  - a `tsv` file containing your sample info
-  - a `yaml` file containing basic configuration info
-
-Generate these by following instructions here: [Understanding and Configuring Workflows](about_and_configure.md).
+To run **`eelpond`**, you need to input some data, either **reads, a reference transcriptome, or both**. To run, you'll need access to a linux system via a command-line interface. Most programs also work on Mac, but a few are troublesome. If you'll be running *de novo* assembly, we recomment a high-memory machine.
 
 
-## Available Workflows
-You can see the available workflows (and which programs they run) by using the `--print_workflows` flag:
-```
-./run_eelpond examples/nema.yaml --print_workflows
-```
+## What programs are run?
 
-**subworkflows**
-
-  - preprocess: Read Quality Trimming and Filtering (fastqc, trimmomatic)
-  - kmer_trim: Kmer Trimming and/or Digital Normalization (khmer)
-  - assemble: Transcriptome Assembly (trinity)
-  - assemblyinput: Specify assembly for downstream steps
-  - annotate : Annotate the transcriptome (dammit, sourmash)
-  - quantify: Quantify transcripts (salmon) 
-  - plass_assemble: assemble at the protein level with PLASS
-  - paladin_map: map to a protein assembly using paladin
-
-**main workflows:**  
-
-  - **default**: preprocess, kmer_trim, assemble, annotate, quantify 
-  - **protein assembly**: preprocess, kmer_trim, plass_assemble, paladin_map 
-
-Each included tool can also be run independently, if appropriate input files are provided. See each tool's documentation for details.
-
-## Additional Info
-
-See the help, here:
-```
-./run_eelpond -h
-```
-
-**References:**  
-
-  * [original eel-pond protocol docs, last updated 2015](https://khmer-protocols.readthedocs.io/en/ctb/mrnaseq/)
-  * [eel-pond protocol docs, last updated 2016](http://eel-pond.readthedocs.io/en/latest/)
-  * [DIBSI, nonmodel RNAseq workshop, July 2017](http://dibsi-rnaseq.readthedocs.io/en/latest/)
-  * [SIO-BUG, nonmodel RNAseq workshop, October 2017](http://rnaseq-workshop-2017.readthedocs.io/en/latest/index.html)
+**`eelpond`** is a **workflow system** or **workflow playbook**, meaning that it provides a number of different workflows that can be run. Each workflow consists of one or more programs to run an analysis on your data. The workflow(s) you choose will depend on your data and analysis needs. A list of available workflows and tools can be found on the [workflows](workflows.md) page.
 
 
+## Name disambiguation
+
+"Eel Pond" refers to the Eel Pond Protocol for *de novo* RNAseq analysis, previously developed by CT Brown and members of the dib-lab. This step-by-step protocol can be found [here](https://eel-pond.readthedocs.io/en/latest/). **eelpond**, this software, started by automating the "Eel Pond Protocol", and evolved into a more general automated workflow system. The eelpond name will be changed soon to prevent future confusion :).
+
+
+## Authors
+
+**`eelpond`** was developed by N Tessa Pierce, with invaluable support and feedback from CT Brown, Charles Reid, Lisa Johnson, Taylor Reiter, Luiz Irber, and the entire dib-lab. 
+
+## Citation
+
+_coming soon_, please contact Tessa at ntpierce@gmail.com if you need to cite and this hasn't been filled in yet!

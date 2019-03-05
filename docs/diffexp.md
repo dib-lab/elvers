@@ -1,10 +1,14 @@
 # Diffexp Subworkflow
 
-Subworkflows combine tools in the right order to facilitate file targeting withing `eelpond`. The "diffexp" subworkflow conducts read quality trimming, salmon quantification and differential expression analysis. It requires an assembly to be provided, either by running an assembly or providing one in your configfile.. At the moment, this workflow consists of:
+Subworkflows combine tools in the right order to facilitate file targeting withing `eelpond`. The "diffexp" subworkflow conducts read quality trimming, salmon quantification and differential expression analysis. It requires an assembly to be provided, either by running an assembly or providing one in your configfile. If you have a gene-to-transcript map, this will also need to be specified via the `assemblyinput` parameter. If not, you'll need to modify the deseq2 parameters so
+that the workflow will not expect this file. 
+
+At the moment, this workflow consists of:
  
   - [get_data](get_data.md) - an `eelpond` utility
   - [trimmomatic](trimmomatic.md)
   - [salmon](salmon.md)
+  - [deseq2](deseq2.md)
 
 ## Quickstart
 
@@ -38,7 +42,7 @@ If you've generated an assembly, even if you've already run `./run_eelpond examp
 
 ## Configuring the diffexp subworkflow 
 
-To set up your sample info and build a configfile, see [Understanding and Configuring Workflows](about_and_configure.md).
+To set up your sample info and build a configfile, see [Understanding and Configuring Workflows](configure.md).
 
 If you want to add the `diffexp` program parameters to a previously built configfile, run:
 ```
@@ -78,7 +82,7 @@ deseq2:
   #######################################################
 ```
 
-Override default params for any program by placing these lines in your `yaml` config file, and modifying values as desired. For more details, see [Understanding and Configuring Workflows](about_and_configure.md).For more on what parameters are available, see the docs for each specific program or utility rule:
+Override default params for any program by placing these lines in your `yaml` config file, and modifying values as desired. For more details, see [Understanding and Configuring Workflows](configure.md).For more on what parameters are available, see the docs for each specific program or utility rule:
 
   - [get_data](get_data.md)
   - [trimmomatic](trimmomatic.md)

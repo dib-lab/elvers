@@ -20,7 +20,7 @@ FTP = FTP.RemoteProvider()
 HTTP = HTTP.RemoteProvider()
 
 # read in sample info 
-samples = pd.read_table(config["samples"],dtype=str).set_index(["sample", "unit"], drop=False)
+samples = pd.read_csv(config["samples"],dtype=str, sep='\t').set_index(["sample", "unit"], drop=False)
 #validate(samples, schema="schemas/samples_v2.schema.yaml") # new version
 samples['name'] = samples["sample"].map(str) + '_' + samples["unit"].map(str)
 

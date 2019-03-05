@@ -34,7 +34,7 @@ PEAR will output files in the `preprocess/pear` subdirectory of this output dire
 
 ## Modifying Params for PEAR:
 
-Be sure to set up your sample info and build a configfile first (see [Understanding and Configuring Workflows](about_and_configure.md)).
+Be sure to set up your sample info and build a configfile first (see [Understanding and Configuring Workflows](configure.md)).
 
 To see the available parameters for the `PEAR` rule, run
 ```
@@ -61,7 +61,7 @@ In addition to changing parameters we've specifically enabled, you can modify th
 ```
 Please see the [PEAR documentation](https://cme.h-its.org/exelixis/web/software/pear/doc.html) for info on the params you can pass into PEAR.
 
-Be sure the modified lines go into the config file you're using to run `eelpond` (see [Understanding and Configuring Workflows](about_and_configure.md)).
+Be sure the modified lines go into the config file you're using to run `eelpond` (see [Understanding and Configuring Workflows](configure.md)).
 
 
 ## Advanced Usage: Running PEAR as a standalone rule

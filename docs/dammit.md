@@ -1,6 +1,7 @@
 # Annotating de novo transcriptomes with dammit
 
 [dammit](http://dib-lab.github.io/dammit/) is an annotation pipeline written by [Camille Scott](http://www.camillescott.org/). dammit runs a relatively standard annotation protocol for transcriptomes: it begins by building gene models with [Transdecoder](http://transdecoder.github.io/), and then uses the following protein databases as evidence for annotation:
+
   -  [Swiss-Prot](https://www.ebi.ac.uk/uniprot) (manually reviewed and curated)
   -  [Pfam-A](http://pfam.xfam.org/)
   -  [Rfam](http://rfam.xfam.org/)
@@ -57,7 +58,7 @@ Run Dammit via the "default" [Eel Pond workflow](eel_pond_workflow.md) or via th
 
 ## Modifying Params for Dammit:
 
-Be sure to set up your sample info and build a configfile first (see [Understanding and Configuring Workflows](about_and_configure.md)).
+Be sure to set up your sample info and build a configfile first (see [Understanding and Configuring Workflows](configure.md)).
 
 To see the available parameters for the `dammit` rule, run
 ```
@@ -72,7 +73,7 @@ dammit:
   - eukaryota
   db_dir: databases   # specify location for databases (or previously installed databases)
   db_install_only: False   # just install databases, don't run annotation
-  db_extra:
+  db_extra: ''
   annot_extra: ' --quick '
   #####################################################
 ```
