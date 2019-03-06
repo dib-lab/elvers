@@ -48,5 +48,5 @@ rule plass:
     log: join(LOGS_DIR, 'plass','plass.log')
     benchmark: join(LOGS_DIR, 'plass','plass.benchmark')
     threads: 32
-    conda: "plass-env.yaml"
+    conda: "environment.yaml"
 	script: "plass-wrapper.py"

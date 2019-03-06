@@ -60,7 +60,7 @@ rule bowtie2_index:
         join(LOGS_DIR, 'bowtie2/{assembly}_index.log')
      benchmark:
          join(LOGS_DIR, 'bowtie2/{assembly}_index.benchmark')
-    conda: "bowtie2-env.yaml"
+    conda: "environment.yaml"
     script: "bowtie2-index-wrapper.py"
 
 rule bowtie2_index:
@@ -79,7 +79,7 @@ rule bowtie2_index:
     log:
         join(LOGS_DIR, 'bowtie2', BASE +'_index.log')
     conda: 
-        'bowtie2-env.yaml'
+        'environment.yaml'
     script:
         'wrapper.py'
 #    shell: 

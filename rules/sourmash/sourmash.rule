@@ -30,7 +30,7 @@ rule sourmash_compute_assembly:
     log: join(LOGS_DIR, 'sourmash', '{assembly}.log')
     benchmark: join(LOGS_DIR, 'sourmash', '{assembly}.benchmark')
     conda: 
-        'sourmash-env.yaml'
+        'environment.yaml'
     script: 
         'sourmash-wrapper.py'
 
@@ -50,7 +50,7 @@ rule sourmash_compute_pe_interleaved:
     log: join(LOGS_DIR, 'sourmash', '{sample}_{unit}.log')
     benchmark: join(LOGS_DIR, 'sourmash', '{sample}_{unit}_pe.benchmark')
     conda: 
-        'sourmash-env.yaml'
+        'environment.yaml'
     script: 
         'sourmash-wrapper.py'
 
@@ -70,7 +70,7 @@ rule sourmash_compute_se:
     log: join(LOGS_DIR, 'sourmash', '{sample}_{unit}.log')
     benchmark: join(LOGS_DIR, 'sourmash', '{sample}_{unit}_se.benchmark')
     conda: 
-        'sourmash-env.yaml'
+        'environment.yaml'
     script: 
         'sourmash-wrapper.py'
 

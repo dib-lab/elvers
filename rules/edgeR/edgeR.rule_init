@@ -32,7 +32,7 @@ rule edgeR_init:
     params:
         samples=config["samples"]
     conda:
-        "edgeR-env.yaml"
+        "environment.yaml"
     log:
         join(LOGS_DIR,  'edgeR', "init.log")
     threads: get_deseq2_threads()
@@ -51,7 +51,7 @@ rule edgeR_mds:
     params:
         mds_labels=edgeR_params["mds"]["labels"]
     conda:
-        "edgeR-env.yaml"
+        "environment.yaml"
     log:
         join(LOGS_DIR, 'edgeR', "mds.log")
     script:
@@ -74,7 +74,7 @@ def get_contrast(wildcards):
 #    params:
 #        contrast=get_contrast
 #    conda:
-#        "edgeR-env.yaml"
+#        "environment.yaml"
 #    log:
 #        join(LOGS_DIR, 'edgeR', "{contrast}_de.log")
 #    threads: get_deseq2_threads

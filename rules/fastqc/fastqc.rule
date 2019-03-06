@@ -30,7 +30,7 @@ rule fastqc_trimmed:
         join(LOGS_DIR, 'fastqc/{sample}_{unit}_{end}.log')
     benchmark:
         join(LOGS_DIR, 'fastqc/{sample}_{unit}_{end}.benchmark')
-    conda: "fastqc-env.yaml"
+    conda: "environment.yaml"
 	script: "wrapper.py"
 
 rule fastqc_pretrim:
@@ -44,5 +44,5 @@ rule fastqc_pretrim:
         join(LOGS_DIR, 'fastqc/{sample}_{unit}_{end}.log') 
     benchmark:
         join(LOGS_DIR, 'fastqc/{sample}_{unit}_{end}.benchmark')
-    conda: "fastqc-env.yaml"
+    conda: "environment.yaml"
 	script: "wrapper.py"

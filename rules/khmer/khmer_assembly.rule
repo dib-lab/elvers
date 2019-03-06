@@ -1,24 +1,51 @@
 from os.path import join
 
-trim_dir    = config['eelpond_directories']['outdirs']['preprocess']
 khmer_dir = config['khmer']['eelpond_params']['outdir']
 khmer_params = config['khmer']['program_params']
 diginorm = khmer_params.get('diginorm', True)
+    
+if khmer_params.get('input_trimmed', True):
+    ext = '.trim.fq.gz'
+    input_dir = config['eelpond_directories']['outdirs']['preprocess']
+# for now, combine samples after a round of per-sample non-diginorm khmer-trimming
+elif khmer_params.get('input_kmer_trimmed', True):
+    ext = '.khmer.fq.gz'
+    input_dir = config['eelpond_directories']['outdirs']['preprocess']
+else:
+    ext = '.fq.gz'
+    input_dir = config['eelpond_directories']['outdirs']['input_data']
 
-def get_trimmed(w):
+
+def combine_khmer_input(w):
+    r1,r2,single =[],[],[]
     readsD = {}
-    if not is_single_end(**w):
-        readsD['r1'] = expand(join(trim_dir, '{sample}_{unit}_1.trim.fq.gz'),**w)
-        readsD['r2'] = expand(join(trim_dir, '{sample}_{unit}_2.trim.fq.gz'),**w)
-        # conflict with se pattern matching. Also just take extra time for little benefit
-        #readsD['r1_unpaired'] = expand(join(trim_dir, "{sample}_{unit}_1.se.trim.fq.gz"),**w)
-        #readsD['r2_unpaired'] = expand(join(trim_dir, "{sample}_{unit}_2.se.trim.fq.gz") **w)
-        return readsD
-    return expand(join(trim_dir, '{sample}_{unit}.se.trim.fq.gz'), **w)
+    for s, u in samples.iterrows():
+        sample, unit = u['sample'],u['unit']
+        if is_single_end(sample, unit):
+            single+=[join(input_dir, f"{sample}_se{ext}")]
+        else:
+            r1+= [join(input_dir, f"{sample}_{unit}_1{ext}")]
+            r2+= [join(input_dir, f"{sample}_{unit}_2{ext}")]
+    readsD['r1'] = r1
+    readsD['r2'] = r2
+    readsD['r'] = r
+    return readsD
+
+rule cat_and_interleave_pairs:
+    """
+    interleave pairs as necessary; cat all pe, se files
+    """
+    input: unpack(get_all_input)
+    output:
+        paired=join(khmer_dir,'{sample}_{unit}.all_paired.khmer.fq.gz'),
+        single=join(khmer_dir,'{sample}_{unit}.all_single.khmer.fq.gz')
+    shell:
+        " (interleave-reads.py {input.r1} {input.r2} ) 
+
 
 
 if diginorm:
-    rule khmer_pe_diginorm:
+    rule khmer_all_diginorm:
         """
         kmer trim and diginorm with khmer
         """
@@ -38,38 +65,15 @@ if diginorm:
         threads: 10
         log: join(LOGS_DIR, 'khmer/{sample}_{unit}.pe.diginorm.log')
         benchmark: join(LOGS_DIR, 'khmer/{sample}_{unit}.pe.diginorm.benchmark')
-        conda:  'environment.yaml'
+        conda:  'khmer-env.yaml'
         shell: " (interleave-reads.py {input.r1} {input.r2} ) | "
                " (trim-low-abund.py -V -k {params.k} -Z {params.Z} -C {params.C} - -o - -M {params.memory} "
                " --diginorm --diginorm-coverage={params.cov}) | (extract-paired-reads.py --gzip "
                " -p {output.paired} -s {output.single}) > {log}"
         #shell: " (interleave-reads.py {input.r1} {input.r2} && zcat {input.r1_unpaired} {input.r2_unpaired}) | "
 
-    rule khmer_se_diginorm:
-        """
-        kmer trim and diginorm with khmer
-        """
-        input: get_trimmed
-        output: join(khmer_dir, '{sample}_{unit}.se.khmer.fq.gz'),
-        message:
-            """--- khmer trimming of low-abundance kmers and digital normalization ---"""
-        params:
-            k = khmer_params['ksize'],
-            Z = khmer_params['Z'],
-            C = khmer_params['C'],
-            memory = khmer_params['memory'],
-            cov = khmer_params['coverage'],
-            extra = khmer_params['extra']
-        threads: 2
-        log: join(LOGS_DIR, 'khmer/{sample}_{unit}.se.diginorm.log')
-        benchmark: join(LOGS_DIR, 'khmer/{sample}_{unit}.se.diginorm.benchmark')
-        conda: 'environment.yaml'
-        shell:
-               "(trim-low-abund.py {input} -V -k {params.k} -Z {params.Z} -C {params.C} -o {output} "
-               " -M {params.memory} --diginorm --diginorm-coverage={params.cov} ) "
-    
 else:
-    rule khmer_pe_no_diginorm:
+    rule khmer_all_no_diginorm:
         """
         kmer trim with khmer, no diginorm
         """
@@ -87,33 +91,10 @@ else:
         threads: 10
         log: join(LOGS_DIR, 'khmer/{sample}_{unit}.pe.log')
         benchmark: join(LOGS_DIR, 'khmer/{sample}_{unit}.pe.benchmark')
-        conda:  'environment.yaml'
+        conda:  'khmer-env.yaml'
         shell: " (interleave-reads.py {input.r1} {input.r2} )| "
                " (trim-low-abund.py -V -k {params.k} -Z {params.Z} -C {params.C} - -o - -M {params.memory})"
                " | (extract-paired-reads.py --gzip -p {output.paired} -s {output.single}) > {log}"
-
-    rule khmer_se_no_diginorm:
-        """
-        khmer trim se, no diginorm
-        """
-        input: get_trimmed
-        output: join(khmer_dir, '{sample}_{unit}.se.khmer.fq.gz'),
-        message:
-            """--- khmer trimming of low-abundance kmers ---"""
-        params:
-            k = khmer_params['ksize'],
-            Z = khmer_params['Z'],
-            C = khmer_params['C'],
-            memory = khmer_params['memory'],
-            extra = khmer_params['extra']
-        threads: 2
-        log: join(LOGS_DIR, 'khmer/{sample}_{unit}.se.log')
-        benchmark: join(LOGS_DIR, 'khmer/{sample}_{unit}.se.benchmark')
-        conda: 'environment.yaml'
-        shell:
-               "(trim-low-abund.py {input} -V -k {params.k} -Z {params.Z} -C {params.C} -o {output} "
-               " -M {params.memory}) "
-
 
 
 rule khmer_split_paired:
@@ -124,7 +105,7 @@ rule khmer_split_paired:
     threads: 2 
     log: join(LOGS_DIR, 'khmer/{sample}_{unit}.split_pe.log')
     benchmark: join(LOGS_DIR, 'khmer/{sample}_{unit}.split_pe.benchmark')
-    conda: "environment.yaml"
+    conda: "khmer-env.yaml"
     shell: """
         split-paired-reads.py {input} --gzip -1 {output.r1} -2 {output.r2} >> {log}
         """

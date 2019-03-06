@@ -64,7 +64,7 @@ rule rcorrector_pe:
         extra = '' 
     log:join(LOGS_DIR, 'rcorrector', '{sample}_{unit}_pe.log')
     benchmark:join(LOGS_DIR, 'rcorrector','{sample}_{unit}_pe.benchmark')
-    conda: "rcorrector-env.yaml"
+    conda: "environment.yaml"
 	script: "rcorrector-wrapper.py"
 
 rule rcorrector_se:

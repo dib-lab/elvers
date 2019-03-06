@@ -41,7 +41,7 @@ rule trimmomatic_pe:
         extra = trim_params.get('extra', '')
     log: join(LOGS_DIR, 'trimmomatic/{sample}_{unit}_pe.log')
     benchmark: join(LOGS_DIR, 'trimmomatic/{sample}_{unit}_pe.benchmark')
-    conda: 'trimmomatic-env.yaml'
+    conda: 'environment.yaml'
     script:
         'trimmomatic-pe.py'
 
@@ -61,7 +61,7 @@ rule trimmomatic_se:
         extra = trim_params.get('extra', '')
     log:join(LOGS_DIR, 'trimmomatic/{sample}_{unit}_se.log')
     benchmark:join(LOGS_DIR, 'trimmomatic/{sample}_{unit}_se.benchmark')
-    conda: 'trimmomatic-env.yaml'
+    conda: 'environment.yaml'
     script:
         'trimmomatic-se.py'
 
