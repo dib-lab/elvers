@@ -6,17 +6,37 @@ import shutil
 import pytest
 import yaml
 
-# starting from https://bitbucket.org/snakemake/snakemake-wrappers/src/5a5bd45590896a7c7ca00bd6d558cdf40bc78c20/test.py?at=master&fileviewer=file-view-default
+from utils import TempDirectory
+
+
+def run_snakemake(origdir, rulesdir, tempdir, testdata, params, cmd, short=True):
+    testdata='salmon/test/assembly'
+    conda_prefix = os.path.join(origdir, '.snakemake')
+    shutil.copytree(testdata, os.path.join(tempdir, testdata))
+    snake_rule = os.path.realpath(os.path.join(rulesdir, rule))
+    # specify fullpath to snakemake rule file
+    cmd = cmd.extend(['-s', snake_rule])
+    os.chdir(tempdir)
+
+    if short:
+        cmd = cmd.append('-n')
+    subprocess.check_call(cmd) # run the command!
+    os.chdir(origdir)
+    
+
+# this needs to change 
 
 def run(ruledir, cmd, check_log=None):
-    origdir = os.getcwd() # rules should all be subdirs in here
-    
+    thisdir = os.getcwd() # now we're in the tests dir.
+    # main rules dir, all rules should be in here.
+    rulesdir = os.path.join(os.dirname(thisdir), 'rules')
     # find everything required for tests
     rule = glob.glob(os.path.join(ruledir, '*.rule'))  # should only be one rule, but add a check for multiple?
     env = os.path.join(ruledir, 'environment.yaml')
     params = os.path.join(ruledir, 'params.yaml')
     testdir = os.path.join(ruledir, "test")
-    # first, let's just try doing this within the testdir. After working, switch to a tempdir
+
+  # first, let's just try doing this within the testdir. After working, switch to a tempdir
     os.chdir(testdir)
     if os.path.exists(os.path.join(testdir,".snakemake")):
         shutil.rmtree(os.path.join(testdir,".snakemake"))
@@ -46,12 +66,6 @@ def run(ruledir, cmd, check_log=None):
             # go back to original directory
         os.chdir(origdir)
     
-#    with tempfile.TemporaryDirectory() as d: 
-        # copy test data and snakefile into tempdir
-        #shutil.copy(env, d)
-        #shutil.copy(params, d)
-        
-#        shutil.copytree(test, d)
 
 # short (-n) vs long tests done
 
@@ -67,25 +81,6 @@ def run(ruledir, cmd, check_log=None):
 #                                            testdata1,
 #                                            testdata2, testdata3],
 #                                           in_directory=location)
-
-class TempDirectory(object):
-    def __init__(self):
-        self.tempdir = tempfile.mkdtemp(prefix='sourmashtest_')
-
-    def __enter__(self):
-        return self.tempdir
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        try:
-            shutil.rmtree(self.tempdir, ignore_errors=True)
-        except OSError:
-            pass
-
-        if exc_type:
-            return False
-
-
-# to do: copy test data, change into it, run snakemake from there (specify path to snakefile)
 
 
         #os.chdir(d) # I think we want to go into the ruledir, not testdir
