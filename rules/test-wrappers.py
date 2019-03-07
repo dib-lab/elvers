@@ -106,8 +106,20 @@ class TempDirectory(object):
 #        ["snakemake", "trimmed/a.fastq.gz", "--use-conda", "-F", "-s", "trimmomatic_se.snake"])
 
 def test_salmon_index():
-    run("salmon",
-        ["snakemake", "salmon/transcriptome_index",  "--use-conda", "-F", "-s", "testing.snake"])
+    with TempDirectory() as location:
+        # copy test data
+        # add path to snakemake rule
+        origdir = os.getcwd()
+        conda_dir = os.path.join(origdir, '.snakemake')
+
+        testdata='salmon/test/assembly'
+        shutil.copytree(testdata, os.path.join(location, 'salmon/test/assembly'))
+        snakefile = os.path.realpath(os.path.join(origdir, 'salmon', 'test', 'testing.snake'))
+        os.chdir(location)
+        run("salmon",
+        ["snakemake", "salmon/transcriptome_index",  "--use-conda", "--conda-prefix", conda_dir, "-F", "-s", snakefile])
+        os.chdir(origdir)
+
 
 def test_salmon_quant_se():
     run("salmon",
