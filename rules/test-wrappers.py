@@ -46,10 +46,47 @@ def run(ruledir, cmd, check_log=None):
             # go back to original directory
         os.chdir(origdir)
     
-    #with tempfile.TemporaryDirectory() as d: 
+#    with tempfile.TemporaryDirectory() as d: 
         # copy test data and snakefile into tempdir
         #shutil.copy(env, d)
         #shutil.copy(params, d)
+        
+#        shutil.copytree(test, d)
+
+# short (-n) vs long tests done
+
+# better tempdir setup
+#with utils.TempDirectory() as location:
+#        testdata1 = utils.get_test_data('short.fa')
+#        testdata2 = utils.get_test_data('short2.fa')
+#        testdata3 = utils.get_test_data('short3.fa')
+#        sigfile = os.path.join(location, 'short.fa.sig')
+#
+#        status, out, err = utils.runscript('sourmash',
+#                                           ['compute', '-k', '31', '-o', sigfile,
+#                                            testdata1,
+#                                            testdata2, testdata3],
+#                                           in_directory=location)
+
+class TempDirectory(object):
+    def __init__(self):
+        self.tempdir = tempfile.mkdtemp(prefix='sourmashtest_')
+
+    def __enter__(self):
+        return self.tempdir
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        try:
+            shutil.rmtree(self.tempdir, ignore_errors=True)
+        except OSError:
+            pass
+
+        if exc_type:
+            return False
+
+
+# to do: copy test data, change into it, run snakemake from there (specify path to snakefile)
+
 
         #os.chdir(d) # I think we want to go into the ruledir, not testdir
        # run rule, testdata, 
@@ -60,13 +97,13 @@ def run(ruledir, cmd, check_log=None):
             
         # d was location of the tempdir --> we don't actually need it, unless we want to run tests elsewhere
 
-def test_trimmomatic_pe():
-    run("trimmomatic",
-        ["snakemake", "trimmed/a.1.fastq.gz", "--use-conda", "-F"])
+#def test_trimmomatic_pe():
+#    run("trimmomatic",
+#        ["snakemake", "trimmed/a_1.fastq.gz", "--use-conda", "-F", "-s", "trimmomatic_pe.snake"])
 
-def test_trimmomatic_se():
-    run("trimmomatic",
-        ["snakemake", "trimmed/a.fastq.gz", "--use-conda", "-F"])
+#def test_trimmomatic_se():
+#    run("trimmomatic",
+#        ["snakemake", "trimmed/a.fastq.gz", "--use-conda", "-F", "-s", "trimmomatic_se.snake"])
 
 def test_salmon_index():
     run("salmon",
