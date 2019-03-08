@@ -25,7 +25,7 @@ rule multiqc:
     input:
         get_multiqc_input
     output:
-        join(qc_dir, BASE + "_multiqc.html")
+        join(qc_dir, "multiqc.html")
     params: 
         multiqc_params.get('extra', '')
     log:

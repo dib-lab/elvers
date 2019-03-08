@@ -2,9 +2,7 @@ multiqc:
   eelpond_params:
     outdir: preprocess/fastqc
     extensions: 
-      assembly_extensions:
-        - ""
-      base:
-        - _multiqc.html
+      other:
+        - multiqc.html
   program_params:
     extra: ''
