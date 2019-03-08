@@ -1,0 +1,36 @@
+import os, re
+from os.path import join
+
+############
+#input dirs
+qc_dir   = config['multiqc']['eelpond_params']['outdir']
+# program params
+multiqc_params = config['multiqc']['program_params']
+###############
+
+def get_multiqc_input(w):
+    fastqc_outputs = [] 
+    ext = '.fastqc.html'
+    for s, u in samples.iterrows():
+        sample, unit = u['sample'],u['unit']
+        if is_single_end(sample, unit):
+            fastqc_outputs+=[join(qc_dir, f"{sample}_{unit}{ext}")]
+        else:
+            fastqc_outputs += [join(qc_dir, f"{sample}_{unit}_1{ext}")]
+            fastqc_outputs += [join(qc_dir, f"{sample}_{unit}_2{ext}")]
+    return fastqc_outputs
+
+
+rule multiqc:
+    input:
+        get_multiqc_input
+    output:
+        join(qc_dir, BASE + "_multiqc.html")
+    params: 
+        multiqc_params.get('extra', '')
+    log:
+        join(LOGS_DIR, 'multiqc/multiqc.log')
+    benchmark:
+        join(LOGS_DIR, 'multiqc/multiqc.benchmark')
+    conda: "environment.yml"
+    script: "wrapper.py"
