@@ -7,27 +7,41 @@ import pytest
 import yaml
 
 from utils import TempDirectory
+from ..ep_utils import read_yaml, write_yaml,  update_nested_dict
+
+def run_snakemake(homedir, tempdir, testdata, input_params, cmd, short=True, tests_dir = 'tests', rules_dir = 'rules'):
+    # homedir is main eelpond dir, where conda envs should live
+    conda_prefix = os.path.join(homedir, '.snakemake') 
+    #testdata='salmon/test/assembly'
+    shutil.copytree(os.path.join(homedir, rules_dir, testdata), os.path.join(tempdir, testdata))
+    paramsfile = os.path.join(homedir, rules_dir, 'params.yml')
+    default_params = read_yaml(paramsfile)
+
+    ### now we need to read in and manipulate params
 
 
-def run_snakemake(origdir, rulesdir, tempdir, testdata, params, cmd, short=True):
-    testdata='salmon/test/assembly'
-    conda_prefix = os.path.join(origdir, '.snakemake')
-    shutil.copytree(testdata, os.path.join(tempdir, testdata))
-    snake_rule = os.path.realpath(os.path.join(rulesdir, rule))
+
+
+
+    snake_rule = os.path.realpath(os.path.join(rules_dir, rule))
     # specify fullpath to snakemake rule file
     cmd = cmd.extend(['-s', snake_rule])
-    os.chdir(tempdir)
-
+    # short tests just do dryrun
     if short:
         cmd = cmd.append('-n')
+    os.chdir(tempdir)
     subprocess.check_call(cmd) # run the command!
+    # change back to main test dir
     os.chdir(origdir)
     
 
 # this needs to change 
 
 def run(ruledir, cmd, check_log=None):
-    thisdir = os.getcwd() # now we're in the tests dir.
+    thisdir = os.getcwd() # we shoudl be in the tests dir.
+
+
+
     # main rules dir, all rules should be in here.
     rulesdir = os.path.join(os.dirname(thisdir), 'rules')
     # find everything required for tests
