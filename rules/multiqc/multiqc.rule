@@ -10,7 +10,7 @@ multiqc_params = config['multiqc']['program_params']
 
 def get_multiqc_input(w):
     fastqc_outputs = [] 
-    ext = '.fastqc.html'
+    ext = '_fastqc.zip'
     for s, u in samples.iterrows():
         sample, unit = u['sample'],u['unit']
         if is_single_end(sample, unit):
