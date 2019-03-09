@@ -76,11 +76,14 @@ Now you can start running workflows on test data!
 
 The Eel Pond protocol (which inspired the `eelpond` name) included line-by-line commands that the user could follow along with using a test dataset provided in the instructions. We have re-implemented the protocol here to enable automated *de novo* transcriptome assembly, annotation, and quick differential expression analysis on a set of short-read Illumina data using a single command. See more about this protocol [here](eel_pond_workflow.md).
 
-To test the default workflow:
+To run the default workflow (assembly and annotation), do:
 ```
 ./run_eelpond examples/nema.yaml default
 ```
-This will download, assemble, and annotate a small set of _Nematostella vectensis_ test data (from [Tulin et al., 2013](https://evodevojournal.biomedcentral.com/articles/10.1186/2041-9139-4-16))
+This will download, assemble, and annotate a small set of _Nematostella vectensis_ test data (from [Tulin et al., 2013](https://evodevojournal.biomedcentral.com/articles/10.1186/2041-9139-4-16)).
+
+Note: this will take about 30 minutes the first time you run it,
+because snakemake needs to install the various software packages.
 
 ## Running Your Own Data
 
