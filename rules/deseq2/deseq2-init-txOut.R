@@ -21,7 +21,7 @@ names(quant_files) <- basename(dirname(quant_files)) # dirname to drop quant.sf,
 txi <- tximport(files = quant_files, type = "salmon", txOut = TRUE)
 
 # read in sample:condition info; ensure correct ordering
-sample_info <- read.table(snakemake@params[["samples"]], header=TRUE)
+sample_info <- read.table(snakemake@params[["samples"]], header=TRUE, sep='\t')
 
 # remove excess from sample names 
 colnames(txi$counts) <- str_extract(colnames(txi$counts), "[^_]+")
