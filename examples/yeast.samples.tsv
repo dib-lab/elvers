@@ -1,0 +1,7 @@
+sample	unit	fq1	fq2	condition
+wt	1	https://osf.io/xju4a/download		wt
+wt	2	https://osf.io/nmqe6/download		wt
+wt	3	https://osf.io/qfsze/download		wt
+mut	1	https://osf.io/5daup/download		mut
+mut	2	https://osf.io/8rvh5/download		mut
+mut	3	https://osf.io/2wvn3/download		mut
