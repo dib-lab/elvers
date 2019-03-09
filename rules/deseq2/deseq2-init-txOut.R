@@ -35,6 +35,8 @@ row.names(sample_info) <- sample_info$sample
 sample_info$sample <- NULL
 sample_info$condition <- factor(sample_info$condition)
 
+print(sample_info)
+
 # generate DESeq data set (dds)
 dds <- DESeqDataSetFromTximport(txi, sample_info, ~condition)
 
