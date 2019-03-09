@@ -34,5 +34,5 @@ deseq2:
 
 assemblyinput:
   assembly: 'examples/orf_coding.fasta.gz'
-    assembly_extension: '_input'
+  assembly_extension: '_input'
 
