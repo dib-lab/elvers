@@ -24,7 +24,23 @@
               `       '--;            (' 
 
 ```
-eelpond started as a snakemake update of the Eel Pond Protocol for *de novo* RNAseq analysis. It has evolved slightly to enable a number of workflows for (mostly) RNA data, which can all be run via the `eelpond` workflow wrapper. `eelpond` uses [snakemake](https://snakemake.readthedocs.io) for workflow management and [conda](https://conda.io/docs/) for software installation. The code can be found [here](https://github.com/dib-lab/eelpond).
+
+eelpond is a transcriptome assembly, annotation and differential
+expression workflow system for Illumina RNAseq. The default workflow
+includes Trinity, dammit, and deseq2.
+
+eelpond started as a snakemake update of the Eel Pond Protocol for *de
+novo* RNAseq analysis. This assembly and annotation protocol was used
+for the
+[re-assembly, quality evaluation, and annotation of 678 microbial eukaryotic reference transcriptomes](https://academic.oup.com/gigascience/advance-article/doi/10.1093/gigascience/giy158/5241890),
+among others.
+
+eelpond has evolved to include workflows for
+(mostly) RNA data, which can all be run via the `eelpond` workflow
+wrapper. `eelpond` uses [snakemake](https://snakemake.readthedocs.io)
+for workflow management and [conda](https://conda.io/docs/) for
+software installation. The code can be found
+[here](https://github.com/dib-lab/eelpond).
 
 
 ## Getting Started
@@ -64,7 +80,7 @@ To test the default workflow:
 ```
 ./run_eelpond examples/nema.yaml default
 ```
-This will download and run a small set of _Nematostella vectensis_ test data (from [Tulin et al., 2013](https://evodevojournal.biomedcentral.com/articles/10.1186/2041-9139-4-16))
+This will download, assemble, and annotate a small set of _Nematostella vectensis_ test data (from [Tulin et al., 2013](https://evodevojournal.biomedcentral.com/articles/10.1186/2041-9139-4-16))
 
 ## Running Your Own Data
 
