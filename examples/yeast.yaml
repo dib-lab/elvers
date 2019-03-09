@@ -32,6 +32,7 @@ deseq2:
     labels:
     - condition
 
+# define the location of the (already existing) reference transcriptome
 assemblyinput:
   assembly: 'examples/orf_coding.fasta.gz'
   assembly_extension: '_input'
