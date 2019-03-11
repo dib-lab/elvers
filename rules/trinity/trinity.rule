@@ -21,7 +21,7 @@ def get_assembly_input(w):
     for s, u in samples.iterrows():
         sample, unit = u['sample'],u['unit']
         if is_single_end(sample, unit):
-            single+=[join(input_dir, f"{sample}_{unit}{ext}")]
+            single+=[join(input_dir, f"{sample}_{unit}_se{ext}")]
         else:
             r1+= [join(input_dir, f"{sample}_{unit}_1{ext}")]
             r2+= [join(input_dir, f"{sample}_{unit}_2{ext}")]

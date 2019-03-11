@@ -21,7 +21,7 @@ def get_sample_no_combine(w):
         readsD['r1'] = join(input_dir, f'{w.sample}_{w.unit}_1{ext}')
         readsD['r2'] = join(input_dir, f'{w.sample}_{w.unit}_2{ext}')
         return readsD
-    readsD['r'] = join(input_dir, f'{w.sample}_{w.unit}{ext}')
+    readsD['r'] = join(input_dir, f'{w.sample}_{w.unit}_se{ext}')
     return readsD
 
 def get_sample_combine_units(w):
@@ -33,7 +33,7 @@ def get_sample_combine_units(w):
             r1+= [join(input_dir, f"{w.sample}_{unit}_1{ext}")]
             r2+= [join(input_dir, f"{w.sample}_{unit}_2{ext}")]
         else:
-            r+= [join(input_dir, f"{w.sample}_{unit}{ext}")]
+            r+= [join(input_dir, f"{w.sample}_{unit}_se{ext}")]
     if r1:
         readsD['r1'] = r1
         readsD['r2'] = r2
