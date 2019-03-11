@@ -13,8 +13,8 @@ fastqc:
           - '_2.trim_fastqc.zip'
           - '_2.trim_fastqc.html'
         se:
-          - '_se_fastqc.zip'
-          - '_se_fastqc.html'
+          - '_1_fastqc.zip'
+          - '_1_fastqc.html'
           - '_se.trim_fastqc.zip'
           - '_se.trim_fastqc.html'
   program_params:
