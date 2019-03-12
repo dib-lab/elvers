@@ -135,9 +135,6 @@ def main(args):
         print_available_workflows_and_tools(read_yaml(pipeline_defaultsFile), args.print_workflows, args.print_rules)
         sys.exit(0)
     targs = args.targets
-    # handle "full" target:
-    if 'full' in targs:
-        targs = ['assemble', 'annotate', 'quantify']
     if args.print_params:
         default_params = build_default_params(thisdir, targs)
         write_config(default_params, targs)
