@@ -189,6 +189,8 @@ def main(args):
         # add extension to overall assembly_extensions info
         if assemblyinput_ext: # note, need to do it here to prevent override with defaults
             paramsD['assembly_extensions'] = list(set(paramsD.get('assembly_extensions', []) + [assemblyinput_ext]))
+            
+            # NOTE: I think this should be moved from here into an `input_checks` function that checks all appropriate inputs/outputs are specified for the rules in use, and provides appropriate links to docs to help guide the user.
             if paramsD.get('no_gene_trans_map', False):
                 if paramsD.get('deseq2'):
                     paramsD['deseq2']['program_params']['gene_trans_map'] = False
