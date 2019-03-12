@@ -6,7 +6,7 @@ basename: eelpond
 # these outdirectories will be available to all workflows and rules
 eelpond_directories:
   rules: rules
-  animals: animals
+  animals: ep_utils/animals
   logs: logs
   outdirs:
     input_data: input_data

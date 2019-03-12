@@ -72,6 +72,31 @@ def update_nested_dict(d, other):
 def is_single_end(sample, unit, end = '', assembly = ''):
     return pd.isnull(samples.loc[(sample, unit), "fq2"])
 
+def handle_assemblyinput(assembInput, config):
+    extensions= {}
+    program_params = config['assemblyinput'].get('program_params')
+    assemblyfile = program_params.get('assembly', None)
+    if assemblyfile:
+        assert os.path.exists(assemblyfile), 'Error: cannot find input assembly at {}\n'.format(assemblyfile)
+        sys.stderr.write('\tFound input assembly at {}\n'.format(assemblyfile))
+        assemblyfile = os.path.realpath(assemblyfile)
+    else:
+        sys.stderr.write("\n\tError: trying to run `assemblyinput` workflow, but there's no assembly file specified in your configfile. Please fix.\n\n")
+    gtmap = program_params.get('gene_trans_map', '')
+    if gtmap:
+        assert os.path.exists(gtmap), 'Error: cannot find assembly gene_trans_map at {}\n'.format(gtmap)
+        sys.stderr.write('\tFound input assembly gene-transcript map at {}\n'.format(gtmap))
+        extensions = {'base': ['.fasta', '.fasta.gene_trans_map']}
+        gtmap = os.path.realpath(gtmap)
+    else:
+        program_params['gene_trans_map'] = ''
+        config['use_gene_trans_map']= False
+    # grab user-input assembly extension
+    input_assembly_extension = program_params.get('assembly_extension', '_input')
+    extensions['assembly_extensions'] = [input_assembly_extension]
+    config['assemblyinput'] = {'program_params': program_params, 'eelpond_params': {'extensions':extensions}}
+    return config, input_assembly_extension
+
 def generate_targs(outdir, basename, samples, assembly_exts=[''], base_exts = None, read_exts = None, contrasts = []):
     base_targets, read_targets = [],[]
     # handle read targets
