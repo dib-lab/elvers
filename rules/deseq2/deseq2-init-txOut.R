@@ -21,7 +21,7 @@ names(quant_files) <- basename(dirname(quant_files)) # dirname to drop quant.sf,
 txi <- tximport(files = quant_files, type = "salmon", txOut = TRUE)
 
 # read in sample:condition info; ensure correct ordering
-sample_info <- read.table(snakemake@params[["samples"]], header=TRUE)
+sample_info <- read.table(snakemake@params[["samples"]], header=TRUE, sep='\t')
 
 # remove excess from sample names 
 colnames(txi$counts) <- str_extract(colnames(txi$counts), "[^_]+")
@@ -34,6 +34,8 @@ sample_info <- sample_info[match(colnames(txi$counts),sample_info$sample), ]
 row.names(sample_info) <- sample_info$sample
 sample_info$sample <- NULL
 sample_info$condition <- factor(sample_info$condition)
+
+print(sample_info)
 
 # generate DESeq data set (dds)
 dds <- DESeqDataSetFromTximport(txi, sample_info, ~condition)
