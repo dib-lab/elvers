@@ -117,6 +117,7 @@ def generate_program_targs(configD, samples, basename, assembly_exts, contrasts)
     targets = generate_targs(outdir, basename, samples, assembly_exts, exts.get('base', None),exts.get('read'), contrasts)
     return targets
 
+# this is fully obsolete now?
 def generate_mult_targs(configD, workflow, samples):
     # pass full config, program names. Call generate_program_targs to build each
     workflows = configD['eelpond_workflows']
@@ -157,6 +158,8 @@ def get_params(rule_name, rule_dir='rules'):
     # pass in a rule name & the directory that contains its paramsfile. 
     # Return paramsD
     rule_paramsfile = os.path.join(rule_dir,rule_name+ '_params.yaml')
+    # to do: change to just 'params'
+    #rule_paramsfile = os.path.join(rule_dir, 'params.yaml')
     rule_params = {}
     with open(rule_paramsfile, 'r') as stream:
         try:

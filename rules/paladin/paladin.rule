@@ -1,6 +1,7 @@
 import os
 from os.path import join
 
+logs_dir  = config['eelpond_directories']['logs']
 assembly_dir  = config['eelpond_directories']['outdirs']['assemble']
 input_dir     = config['eelpond_directories']['outdirs']['preprocess']
 
@@ -30,8 +31,8 @@ rule paladin_index:
     params: 
         reference_type= index_params.get('reference_type', '3'),
         gff = index_params.get('gff_file', '')
-    log: join(LOGS_DIR, 'paladin', "{assembly}_index.log"),
-    benchmark: join(LOGS_DIR, 'paladin', "{assembly}_index.benchmark"),
+    log: join(logs_dir, 'paladin', "{assembly}_index.log"),
+    benchmark: join(logs_dir, 'paladin', "{assembly}_index.benchmark"),
     conda: "environment.yaml"
     script: 'paladin-index.py'
    
@@ -45,8 +46,8 @@ rule paladin_align:
     params:
         f = alignment_params.get('f','125'),
         extra = alignment_params.get('extra', '')
-    log: join(LOGS_DIR, 'paladin', "{sample}_{unit}_x_{assembly}.paladin.log"),
-    benchmark: join(LOGS_DIR, 'paladin', "{sample}_{unit}_x_{assembly}.paladin.benchmark"),
+    log: join(logs_dir, 'paladin', "{sample}_{unit}_x_{assembly}.paladin.log"),
+    benchmark: join(logs_dir, 'paladin', "{sample}_{unit}_x_{assembly}.paladin.benchmark"),
     conda: "environment.yaml"
     script: 'paladin-align.py'
     
@@ -54,8 +55,8 @@ rule samtools_sort_paladin:
     input: join(paladin_dir,"{sample}_{unit}_x_{assembly}.paladin.bam")
     output: join(paladin_dir,"{sample}_{unit}_x_{assembly}.paladin.sort.bam") 
     conda: "environment.yaml"
-    log: join(LOGS_DIR, 'paladin',"{sample}_{unit}_x_{assembly}.paladin.sort.bam.log")
-    benchmark: join(LOGS_DIR, 'paladin',"{sample}_{unit}_x_{assembly}.paladin.sort.bam.benchmark")
+    log: join(logs_dir, 'paladin',"{sample}_{unit}_x_{assembly}.paladin.sort.bam.log")
+    benchmark: join(logs_dir, 'paladin',"{sample}_{unit}_x_{assembly}.paladin.sort.bam.benchmark")
     threads: 5
     shell:"""
     samtools sort -@ {threads} {input} -o {output}
@@ -64,8 +65,8 @@ rule samtools_sort_paladin:
 rule samtools_flagstat_paladin:
     input: join(paladin_dir,"{sample}_{unit}_x_{assembly}.paladin.sort.bam") 
     output: join(paladin_dir,"{sample}_{unit}_x_{assembly}.paladin.sort.bam.flagstat")
-    log: join(LOGS_DIR, 'paladin',"{sample}_{unit}_x_{assembly}.paladin.sort.bam.flagstat.log")
-    benchmark: join(LOGS_DIR, 'paladin',"{sample}_{unit}_x_{assembly}.paladin.sort.bam.flagstat.benchmark")
+    log: join(logs_dir, 'paladin',"{sample}_{unit}_x_{assembly}.paladin.sort.bam.flagstat.log")
+    benchmark: join(logs_dir, 'paladin',"{sample}_{unit}_x_{assembly}.paladin.sort.bam.flagstat.benchmark")
     conda: "environment.yaml"
     shell:"""
     samtools flagstat {input} > {output}
@@ -75,8 +76,8 @@ rule samtools_index_paladin:
     input: join(paladin_dir,"{sample}_{unit}_x_{assembly}.paladin.sort.bam") 
     output: join(paladin_dir,"{sample}_{unit}_x_{assembly}.paladin.sort.bam.bai")
     conda: "environment.yaml"
-    log: join(LOGS_DIR, 'paladin',"{sample}_{unit}_x_{assembly}.paladin.sort.bam.index.log")
-    benchmark: join(LOGS_DIR, 'paladin',"{sample}_{unit}_x_{assembly}.paladin.sort.bam.index.benchmark")
+    log: join(logs_dir, 'paladin',"{sample}_{unit}_x_{assembly}.paladin.sort.bam.index.log")
+    benchmark: join(logs_dir, 'paladin',"{sample}_{unit}_x_{assembly}.paladin.sort.bam.index.benchmark")
     shell:"""
     samtools index {input}
     """

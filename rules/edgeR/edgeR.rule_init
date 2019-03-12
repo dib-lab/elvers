@@ -1,6 +1,7 @@
 from os.path import join
 from common.utils import get_params
 
+logs_dir  = config['eelpond_directories']['logs']
 # default params from paramsfile
 edgeR_params = get_params('edgeR')
 
@@ -34,7 +35,7 @@ rule edgeR_init:
     conda:
         "environment.yaml"
     log:
-        join(LOGS_DIR,  'edgeR', "init.log")
+        join(logs_dir,  'edgeR', "init.log")
     threads: get_deseq2_threads()
     script:
         "edgeR-init.R"
@@ -53,7 +54,7 @@ rule edgeR_mds:
     conda:
         "environment.yaml"
     log:
-        join(LOGS_DIR, 'edgeR', "mds.log")
+        join(logs_dir, 'edgeR', "mds.log")
     script:
         "edgeR_plot_mds.R"
 
@@ -76,7 +77,7 @@ def get_contrast(wildcards):
 #    conda:
 #        "environment.yaml"
 #    log:
-#        join(LOGS_DIR, 'edgeR', "{contrast}_de.log")
+#        join(logs_dir, 'edgeR', "{contrast}_de.log")
 #    threads: get_deseq2_threads
 #    script:
 #        "edgeR.R"

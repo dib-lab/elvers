@@ -1,5 +1,7 @@
 from os.path import join
 
+
+logs_dir  = config['eelpond_directories']['logs']
 aInput_params = config['assemblyinput']['program_params']
 
 ep_params = config['assemblyinput']['eelpond_params']
@@ -11,12 +13,12 @@ assembly_extension = aInput_params['assembly_extension']
 rule cp_input_assembly:
     input: aInput_params['assembly']
     output: join(assembly_dir, basename + assembly_extension + '.fasta')
-    log: join(LOGS_DIR, 'assemblyinput/cp_assembly.log')
+    log: join(logs_dir, 'assemblyinput/cp_assembly.log')
     shell: ("cp {input} {output}")
 
 if aInput_params.get('gene_trans_map', None):
     rule cp_input_gene_trans_map:
         input: aInput_params['gene_trans_map'] 
         output: join(assembly_dir, basename + assembly_extension + '.fasta.gene_trans_map')
-        log: join(LOGS_DIR, 'assemblyinput/cp_gt_map.log')
+        log: join(logs_dir, 'assemblyinput/cp_gt_map.log')
         shell: ("cp {input} {output}")

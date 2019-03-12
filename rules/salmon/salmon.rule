@@ -2,6 +2,7 @@ from os.path import join
 
 salmon_params = config['salmon']['program_params']
 ep_params = config['salmon']['eelpond_params']
+logs_dir  = config['eelpond_directories']['logs']
 
 # get inputs
 assembly_dir  = config['eelpond_directories']['outdirs']['assemble']
@@ -56,8 +57,8 @@ rule salmon_index:
     threads: 10
     params:
         extra = salmon_params['index_params'].get('extra', '')
-    log:join(LOGS_DIR, 'salmon','{assembly}_index.log')
-    benchmark:join(LOGS_DIR, 'salmon','{assembly}_index.benchmark')
+    log:join(logs_dir, 'salmon','{assembly}_index.log')
+    benchmark:join(logs_dir, 'salmon','{assembly}_index.benchmark')
     conda: "environment.yaml"
 	script: "index-wrapper.py"
 
@@ -78,8 +79,8 @@ if combine_units:
             libtype = salmon_params['quant_params'].get('libtype', 'A'),
             extra = salmon_params['quant_params'].get('extra', '')
         threads: 20
-        log: join(LOGS_DIR, 'salmon/{sample}_x_{assembly}.log')
-        benchmark: join(LOGS_DIR, 'salmon/{sample}_x_{assembly}.benchmark')
+        log: join(logs_dir, 'salmon/{sample}_x_{assembly}.log')
+        benchmark: join(logs_dir, 'salmon/{sample}_x_{assembly}.benchmark')
         conda: "environment.yaml"
         script: "quant-wrapper.py"
 else:
@@ -99,7 +100,7 @@ else:
             libtype = salmon_params['quant_params'].get('libtype', 'A'),
             extra = salmon_params['quant_params'].get('extra', '')
         threads: 20
-        log:join(LOGS_DIR, 'salmon/{sample}_{unit}_x_{assembly}.log')
-        benchmark:join(LOGS_DIR, 'salmon/{sample}_{unit}_x_{assembly}.benchmark')
+        log:join(logs_dir, 'salmon/{sample}_{unit}_x_{assembly}.log')
+        benchmark:join(logs_dir, 'salmon/{sample}_{unit}_x_{assembly}.benchmark')
         conda: "environment.yaml"
         script: "quant-wrapper.py"
