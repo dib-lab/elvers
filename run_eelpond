@@ -189,6 +189,10 @@ def main(args):
         # add extension to overall assembly_extensions info
         if assemblyinput_ext: # note, need to do it here to prevent override with defaults
             paramsD['assembly_extensions'] = list(set(paramsD.get('assembly_extensions', []) + [assemblyinput_ext]))
+            if paramsD.get('no_gene_trans_map', False):
+                if paramsD.get('deseq2'):
+                    paramsD['deseq2']['program_params']['gene_trans_map'] = False
+                    sys.stderr.write("\tYou're using `assemblyinput` without specifying a gene-trans-map. Setting differential expression to transcript-level only. See https://dib-lab.github.io/eelpond/deseq2/for details.\n")
         
         # use params to build directory structure
         paramsD = build_dirs(thisdir, paramsD)

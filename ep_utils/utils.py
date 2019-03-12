@@ -90,7 +90,7 @@ def handle_assemblyinput(assembInput, config):
         gtmap = os.path.realpath(gtmap)
     else:
         program_params['gene_trans_map'] = ''
-        config['use_gene_trans_map']= False
+        config['no_gene_trans_map']= True
     # grab user-input assembly extension
     input_assembly_extension = program_params.get('assembly_extension', '_input')
     extensions['assembly_extensions'] = [input_assembly_extension]
