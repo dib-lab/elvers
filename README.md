@@ -98,7 +98,6 @@ Currently, all workflows require a properly-formatted read inputs `tsv` file as 
   - **default**: preprocess, kmer_trim, assemble, annotate, quantify
   - **protein assembly**: preprocess, kmer_trim, plass_assemble, paladin_map
 
-i
 You can see the available workflows (and which programs they run) by using the `--print_workflows` flag:
 ```
 ./run_eelpond examples/nema.yaml --print_workflows

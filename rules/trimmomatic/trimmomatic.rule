@@ -52,7 +52,7 @@ rule trimmomatic_se:
     input:
         get_pretrim
     output:
-        r1=join(trim_dir, "{sample}_{unit}.se.trim.fq.gz"), 
+        r1=join(trim_dir, "{sample}_{unit}_se.trim.fq.gz"), 
     message:
         """--- Quality trimming SE read data with Trimmomatic."""
     threads: trim_params.get('cpu', 16)
