@@ -28,6 +28,7 @@ eelpond_workflows:
       - trinity
     targets:
       - fastqc
+      - multiqc
       - dammit
       - salmon
       - sourmash
@@ -40,6 +41,7 @@ eelpond_workflows:
       - pear
     targets:
       - fastqc
+      - multiqc
       - paladin
       - sourmash
   input_data:
@@ -51,6 +53,7 @@ eelpond_workflows:
     targets:
       - fastqc
       - trimmomatic
+      - multiqc
   kmer_trim:
     include:
       - get_data

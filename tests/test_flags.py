@@ -39,6 +39,7 @@ Job counts:
 	10	http_get_fq2
 	10	khmer_pe_diginorm
 	10	khmer_split_paired
+	1	multiqc
 	1	rename_trinity_fasta
 	1	salmon_index
 	2	salmon_quant_combine_units
@@ -46,7 +47,7 @@ Job counts:
 	10	sourmash_compute_pe_interleaved
 	10	trimmomatic_pe
 	1	trinity
-	108'''
+	109'''
         # Skip the first element b/c empty line
         for line in verify_present.split("\n")[1:]:
             self.assertIn(line,p_out)
