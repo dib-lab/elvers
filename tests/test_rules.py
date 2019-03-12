@@ -16,13 +16,13 @@ def grab_pipeline_defaults(homedir):
     pipeline_defaults = read_yaml(pipeline_defaultsFile)
     return pipeline_defaults
 
-def run_ruletest(rulename, testdata, rule_output, input_configD = {}, short = True): # can we pass in rulename, paramsD here, testdata, short yes/no? 
+def run_ruletest(rulename, rule_output, testdata, input_configD = {}, short = True): # can we pass in rulename, paramsD here, testdata, short yes/no? 
     """Test a snakemake rule"""
     # homedir is main eelpond dir, where conda envs should live
     homedir = os.path.dirname(here)
     conda_prefix = os.path.join(homedir, '.snakemake')
     rulesdir = os.path.join(homedir, 'rules')
-    cmd = ["snakemake", rule_output, "--conda_prefix", conda_prefix, "--use-conda"]
+    cmd = ["snakemake", rule_output, "--conda-prefix", conda_prefix, "--use-conda"]
     # short tests just do dryrun
     if short:
         cmd.append('-n')
@@ -30,12 +30,13 @@ def run_ruletest(rulename, testdata, rule_output, input_configD = {}, short = Tr
     
     # SETUP FOR THE SPECIFIC RULE --> into separate function?
     rulefile = glob.glob(os.path.join(rulesdir, '*', rulename + '.rule'))[0]
-    cmd = cmd.extend(['-s', rulefile]) # specify fullpath to snakemake rule file 
+    cmd.extend(['-s', rulefile]) # specify fullpath to snakemake rule file 
     ruledir = os.path.dirname(rulefile)
+    testdir = os.path.join(ruledir, 'test')
+    
     # grab default directory structure, etc
     paramsD = grab_pipeline_defaults(homedir) 
     program_defaultsfile = os.path.join(ruledir, 'params.yml')
-    import pdb;pdb.set_trace()
     paramsD[rulename] = read_yaml(program_defaultsfile).get(rulename) # opens us up to multiple programs per params.yml, as likely for utils
     
     # now update default params using input_paramsD
@@ -44,14 +45,11 @@ def run_ruletest(rulename, testdata, rule_output, input_configD = {}, short = Tr
 
     with TempDirectory() as location:
         # copy testdata to tmpdir
-        shutil.copytree(os.path.join(rules_dir, testdata), os.path.join(location, testdata))
+        shutil.copytree(os.path.join(testdir, testdata), os.path.join(location, testdata))
         # print a new params file and add this to the snakemake command
         test_paramsfile = os.path.join(location,'config.yml')
-        
-        write_yaml(test_paramsfile, paramsD)
-        cmd = cmd.extend(['--configfile', test_paramsfile]) # specify fullpath to snakemake rule file 
-        
-        print(cmd)
+        write_yaml(paramsD, test_paramsfile)
+        cmd.extend(['--configfile', test_paramsfile]) # specify fullpath to snakemake rule file 
         
         # Actually run the test
         # change into temp dir and run!
@@ -81,23 +79,8 @@ def run_ruletest(rulename, testdata, rule_output, input_configD = {}, short = Tr
 input_params = {}
 
 def test_salmon_index():
-     run_ruletest('salmon', "salmon/transcriptome_index", 'salmon/test/assembly', {})
-
-#def test_salmon_index():
-#    with TempDirectory() as location:
-        # copy test data
-        # add path to snakemake rule
-#        origdir = os.getcwd()
-#        conda_dir = os.path.join(origdir, '.snakemake')
-
-#        testdata='salmon/test/assembly'
-#        shutil.copytree(testdata, os.path.join(location, 'salmon/test/assembly'))
-#        snakefile = os.path.realpath(os.path.join(origdir, 'salmon', 'test', 'testing.snake'))
-#        os.chdir(location)
-#        run("salmon",
-#        ["snakemake", "salmon/transcriptome_index",  "--use-conda", "--conda-prefix", conda_dir, "-F", "-s", snakefile])
-#        os.chdir(origdir)
-
+     run_ruletest('salmon', "quant/transcriptome.salmonindex", 'assembly', {})
+     run_ruletest('salmon', "quant/transcriptome.salmonindex", 'assembly', {'salmon':{'program_params': {'quant_params':{'libtype': "IU"}}}})
 
 #def test_salmon_quant_se():
 #    run("salmon",

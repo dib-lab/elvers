@@ -1,3 +1,6 @@
+import tempfile
+import shutil
+
 from .const import here
 from subprocess import Popen, PIPE
 
@@ -9,7 +12,7 @@ def capture_stdouterr(command, cwd = here):
 
 class TempDirectory(object):
     def __init__(self):
-        self.tempdir = tempfile.mkdtemp(prefix='sourmashtest_')
+        self.tempdir = tempfile.mkdtemp(prefix='elverstest_')
 
     def __enter__(self):
         return self.tempdir
