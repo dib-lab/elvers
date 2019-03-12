@@ -54,7 +54,7 @@ def build_default_params(workdir, targets):
             assembly_extensions+=assembly_exts
             includeRules += [rule]
         except: # if allows user workflow input, can't do this here (check extra targs later?)
-            sys.stderr.write(f"\n\tError: Can't add rules for extra target {e}. Please fix.\n\n")
+            sys.stderr.write(f"\n\tError: Can't add rules for extra target {rule_name}. Please fix.\n\n")
             sys.exit(-1)
     defaultParams['include_rules'] = list(set(includeRules))
     defaultParams['assembly_extensions'] = list(set(assembly_extensions))
