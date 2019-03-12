@@ -72,8 +72,8 @@ def update_nested_dict(d, other):
 def is_single_end(sample, unit, end = '', assembly = ''):
     return pd.isnull(samples.loc[(sample, unit), "fq2"])
 
-def generate_targs(outdir, basename, samples, assembly_exts=[''], base_exts = None, read_exts = None, contrasts = []):
-    base_targets, read_targets = [],[]
+def generate_targs(outdir, basename, samples, assembly_exts=[''], base_exts = None, read_exts = None, other_exts = None, contrasts = []):
+    base_targets, read_targets, other_targs = [],[],[]
     # handle read targets
     if read_exts:
         pe_ext = read_exts.get('pe', None)
@@ -106,7 +106,10 @@ def generate_targs(outdir, basename, samples, assembly_exts=[''], base_exts = No
             base_targs +=[t.replace("__contrast__", c) for t in base_targets]
     else:
         base_targs = base_targets
-    return base_targs + read_targs
+    if other_exts:
+        # no extension, just single filename that we don't want to generate for multiple assembly extensions 
+        other_targs = [join(outdir, e) for e in other_exts]
+    return base_targs + read_targs + other_targs
 
 def generate_program_targs(configD, samples, basename, assembly_exts, contrasts):
     # given configD from each program, build targets
@@ -114,7 +117,7 @@ def generate_program_targs(configD, samples, basename, assembly_exts, contrasts)
     exts = configD['extensions']
     if exts.get('assembly_extensions'): # this program is an assembler or only works with specific assemblies
         assembly_exts = exts.get('assembly_extensions') # override generals with rule-specific assembly extensions
-    targets = generate_targs(outdir, basename, samples, assembly_exts, exts.get('base', None),exts.get('read'), contrasts)
+    targets = generate_targs(outdir, basename, samples, assembly_exts, exts.get('base', None),exts.get('read'), exts.get('other'), contrasts)
     return targets
 
 # this is fully obsolete now?
