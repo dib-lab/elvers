@@ -7,6 +7,8 @@ assembly_params = config['trinity']['program_params']
 assembly_dir = ep_params['outdir']
 assembly_extension = ep_params['extensions']['assembly_extensions'][0] # should only be a single entry here, default: '_trinity'
 
+BASE = config['basename']
+
 def get_assembly_input(w):
     r1,r2,single =[],[],[]
     readsD = {}

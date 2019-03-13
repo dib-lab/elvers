@@ -12,7 +12,7 @@ from .utils import TempDirectory, write_yaml
 from .const import (here, test_config_yaml)
 
 def run_ruletest(rulename, testdir, extra_configD = {}, short = True): # can we pass in rulename, paramsD here, testdata, short yes/no? 
-    """Test a snakemake rule. Basically a lightweight version of run_eelpond, for testing single rules"""
+    """ test a rule or workflow"""
     # set up dirs
     homedir = os.path.dirname(here)
     run_eelpond_cmd = os.path.join(homedir, 'run_eelpond')
@@ -33,6 +33,7 @@ def run_ruletest(rulename, testdir, extra_configD = {}, short = True): # can we 
         os.chdir(os.path.join(ruledir, testdir))
         # need to be here in order to properly find any relative assemblyinput, etc paths. Maybe fix this in run_eelpond to get path relative to file
         cmd = [run_eelpond_cmd, test_yml, rulename, 'get_data', '--conda_prefix', conda_prefix, '--out_path', location]
+        ## NOTE: get data should be added automatically if we need the reads, via high-level input checks. Take out of here once that is implemented issue #110
         # short tests just do dryrun
         if short:
             cmd.append('-n')
