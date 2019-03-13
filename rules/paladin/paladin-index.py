@@ -14,7 +14,7 @@ from snakemake.shell import shell
 log = snakemake.log_fmt_shell(stdout=True, stderr=True)
 extra = snakemake.params.get("extra", "")
 
-input_assembly = snakemake.input.assembly
+input_assembly = snakemake.input
 annotation = snakemake.input.get('gff', '')
 paladin_index = str(snakemake.output)
 reference_type = snakemake.params.get('reference_type', '3')

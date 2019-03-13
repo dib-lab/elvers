@@ -1,11 +1,18 @@
 from os.path import join
 
-
 assembly_dir= config['eelpond_directories']['outdirs']['assemble']
+preprocess_dir= config['eelpond_directories']['outdirs']['preprocess']
 sourmash_params = config['sourmash']['program_params']
 sourmash_dir = config['sourmash']['eelpond_params']['outdir']
 
-rule sourmash_compute:
+
+def get_reads(wildcards):
+    if not is_single_end(**wildcards):
+        return expand(join(preprocess_dir, '{sample}_{unit}.paired.khmer.fq.gz'), **wildcards)
+    return expand(join(preprocess_dir, '{sample}_{unit}.se.khmer.fq.gz'), **wildcards)
+
+
+rule sourmash_compute_assembly:
     """
     Computing a MinHash signature of the transcriptome assembly with Sourmash
     """
@@ -17,11 +24,55 @@ rule sourmash_compute:
         """--- Computing a MinHash signature of the transcriptome with Sourmash ---"""
     threads: 2
     params:
+        k_size = sourmash_params.get('k_size', 31),
+        scaled  = sourmash_params.get('scaled', 1000),
         extra = sourmash_params.get('extra', '')
-    log: 
-        join(LOGS_DIR, 'sourmash', '{assembly}.log')
+    log: join(LOGS_DIR, 'sourmash', '{assembly}.log')
+    benchmark: join(LOGS_DIR, 'sourmash', '{assembly}.benchmark')
     conda: 
         'sourmash-env.yaml'
     script: 
         'sourmash-wrapper.py'
+
+rule sourmash_compute_pe_interleaved:
+    """
+    Computing a MinHash signature of the kmer-trimmed with Sourmash
+    """
+    input: get_reads 
+    output: join(sourmash_dir, "{sample}_{unit}.paired.khmer.fq.sig")
+    message:
+        """--- Computing a MinHash signature of the kmer-trimmed reads with Sourmash ---"""
+    threads: 6
+    params:
+        k_size = sourmash_params.get('k_size', 31),
+        scaled  = sourmash_params.get('scaled', 1000),
+        extra = sourmash_params.get('extra', '')
+    log: join(LOGS_DIR, 'sourmash', '{sample}_{unit}.log')
+    benchmark: join(LOGS_DIR, 'sourmash', '{sample}_{unit}_pe.benchmark')
+    conda: 
+        'sourmash-env.yaml'
+    script: 
+        'sourmash-wrapper.py'
+
+rule sourmash_compute_se:
+    """
+    Computing a MinHash signature of the kmer-trimmed reads with Sourmash
+    """
+    input: get_reads 
+    output: join(sourmash_dir, "{sample}_{unit}.se.khmer.fq.sig")
+    message:
+        """--- Computing a MinHash signature of the kmer-trimmed reads with Sourmash ---"""
+    threads: 6
+    params:
+        k_size = sourmash_params.get('k_size', 31),
+        scaled  = sourmash_params.get('scaled', 1000),
+        extra = sourmash_params.get('extra', '')
+    log: join(LOGS_DIR, 'sourmash', '{sample}_{unit}.log')
+    benchmark: join(LOGS_DIR, 'sourmash', '{sample}_{unit}_se.benchmark')
+    conda: 
+        'sourmash-env.yaml'
+    script: 
+        'sourmash-wrapper.py'
+
+
 

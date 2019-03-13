@@ -7,9 +7,7 @@ from ep_utils.utils import get_params
 #if 'rcorrector' in config.keys():
 #    rcorr_params.update(config['rcorrector']) 
 
-data_dir    = config['eelpond_directories']['outdirs']['link_data']
-trim_params = config['trimmomatic']['program_params']
-trim_dir    = config['trimmomatic']['eelpond_params']['outdir']
+data_dir    = config['eelpond_directories']['outdirs']['input_data']
 
 rcorr_params = config['rcorrector']['program_params']
 ep_params = config['rcorrector']['eelpond_params']
@@ -29,7 +27,6 @@ def get_sample_no_combine(w):
     if not is_single_end(**w): # note, this requires unit to be in outputs!
         readsD['r1'] = join(input_dir, f'{w.sample}_{w.unit}_1{ext}')
         readsD['r2'] = join(input_dir, f'{w.sample}_{w.unit}_2{ext}')
-        print(readsD)
         return readsD
     readsD['r'] = join(input_dir, f'{w.sample}_{w.unit}{ext}')
     return readsD
@@ -65,8 +62,8 @@ rule rcorrector_pe:
         """--- PE Rcorrector ---"""
     params:
         extra = '' 
-    log:
-       join(LOGS_DIR, 'rcorrector/{sample}_{unit}_pe.log')
+    log:join(LOGS_DIR, 'rcorrector', '{sample}_{unit}_pe.log')
+    benchmark:join(LOGS_DIR, 'rcorrector','{sample}_{unit}_pe.benchmark')
     conda: "rcorrector-env.yaml"
 	script: "rcorrector-wrapper.py"
 
@@ -83,8 +80,8 @@ rule rcorrector_se:
     params:
         extra = rcorr_params.get('extra', '')
     threads: 20
-    log:   
-       join(LOGS_DIR, 'rcorrector/{sample}_{unit}_se.log')
+    log:   join(LOGS_DIR, 'rcorrector', '{sample}_{unit}_se.log')
+    benchmark:   join(LOGS_DIR, 'rcorrector','{sample}_{unit}_se.benchmark')
     conda: "rcorrector-env.yaml"
 	script: "rcorrector-wrapper.py"
 

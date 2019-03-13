@@ -1,11 +1,15 @@
 dammit:  
   eelpond_params:
+    outdir: annotation
     extensions: 
       base: 
-        - '.dammit.gff3'
-        - '.dammit.fasta'
+        - .dammit.gff3
+        - .dammit.fasta
   program_params:
-    db_dir: "databases"
-    db_extra: " --quick "
-    annot_extra:  " --quick "
-    busco_group:  "metazoa"
+    db_dir: databases
+    db_extra: '' 
+    db_install_only: False
+    annot_extra: " --quick "
+    busco_group:  
+      - metazoa
+      - eukaryota

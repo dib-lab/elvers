@@ -6,7 +6,9 @@ edit_uri: ""
 
 extra_css: css/custom.css
 
-copyright: 'Copyright &copy; 2018 <a href="http://ivory.idyll.org/lab/">Lab for Data Intensive Biology</a> at UC Davis'
+copyright: 'Copyright &copy; 2018 <a href="http://ivory.idyll.org/lab/">Lab for Data Intensive Biology</a> at UC Davis
+<br/><br/>
+Icon made by Freepik, obtained from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>, used under a <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div> license.'
 
 # change directory names here
 docs_dir: docs
@@ -20,12 +22,11 @@ theme:
 
   # pretty colors! see https://squidfunk.github.io/mkdocs-material/getting-started/#primary-colors
   palette:
-    primary: 'purple'
-    accent: 'purple'
+    primary: 'darkblue'
+    accent: 'blue'
   
   # fun logos! see https://material.io/icons/
-  logo:
-    icon: 'dns'
+  logo: 'img/eel.svg'
 
   font:
     text: 'Roboto'
@@ -37,16 +38,42 @@ extra_css:
 
 # give a title for each page
 nav:
-  - 'About' : 'index.md'
-  - 'Read Quality Trimming and Filtering' : 'QC.md'
-  - 'Annotation' : 'Annotation.md'
-  - 'Digital Normalization' : 'Diginorm.md'
-  - 'Assembly' : 'Assembly.md'
-  - 'Quality Assessment': 'Quality.md'
-  - 'Transcript Quantification' : 'Quant.md'
-  - 'Differential Expression' : 'DE.md'
+  - 'Eelpond' : 'index.md'
+  - 'About': 'about.md'
+  - 'Quickstart': 'quickstart.md'
+  - 'Choosing and Configuring Workflows': configure.md
+  - 'Available Workflows':
+    - 'Eel Pond Protocol': eel_pond_workflow.md
+    - 'Protein-level Assembly Workflow': protein_assembly_workflow.md
+    - 'Subworkflows':
+      - 'preprocess': preprocess.md
+      - 'kmer_trim': kmer_trim.md
+      - 'assemble': assemble.md
+      - 'annotate': annotate.md
+      - 'quantify': quantify.md
+      - 'diffexp': diffexp.md
+      - 'sourmash_compute': sourmash_compute.md
+      - 'plass_assemble': plass_assemble.md
+      - 'paladin_map': paladin_map.md
+      #- 'correct_reads': correct_reads:.md
+    - 'Programs Used':
+      - 'get_data': get_data.md
+      - 'fastqc': fastqc.md
+      - 'trimmomatic': trimmomatic.md
+      - 'khmer': khmer.md
+      - 'trinity': trinity.md
+      - 'assemblyinput': assemblyinput.md
+      - 'dammit': dammit.md
+      - 'sourmash': sourmash.md
+      - 'salmon': salmon.md
+      - 'deseq2': deseq2.md
+      - 'plass': plass.md
+      - 'pear': pear.md
+      - 'paladin': paladin.md
+      - 'rcorrector': rcorrector.md
   - 'For Developers':
-    - 'dev_tips.md'
+    - 'Under the Hood': under_the_hood.md
+
 
 # Extensions
 markdown_extensions:

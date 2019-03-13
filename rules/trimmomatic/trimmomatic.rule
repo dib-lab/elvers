@@ -1,8 +1,18 @@
 from os.path import join
 
-data_dir    = config['eelpond_directories']['outdirs']['link_data']
+data_dir    = config['eelpond_directories']['outdirs']['input_data']
 trim_params = config['trimmomatic']['program_params']
 trim_dir    = config['trimmomatic']['eelpond_params']['outdir']
+
+base_dir = config['eelpond_directories']['base_dir']
+
+pe_adapter = trim_params['adapter_file']['pe_path']
+se_adapter = trim_params['adapter_file']['se_path']
+
+if not os.path.isabs(pe_adapter):
+    pe_adapter = join(base_dir, pe_adapter)
+if not os.path.isabs(se_adapter):
+    se_adapter = join(base_dir, se_adapter)
 
 def get_pretrim(w):
     readsD = {}
@@ -24,14 +34,16 @@ rule trimmomatic_pe:
         r1_unpaired=join(trim_dir, "{sample}_{unit}_1.se.trim.fq.gz"),
         r2_unpaired=join(trim_dir, "{sample}_{unit}_2.se.trim.fq.gz"),
     message:
-        """--- Quality trimming PE read data with Trimmomatic."""
+        """--- Quality trimming PE read data with Trimmomatic. --- Output files will be in {trim_dir} """
     threads: trim_params.get('cpu', 16)
     params:
-        trimmer = (trim_params['trim_cmd'].format(trim_params['adapter_file']['pe_name'])).split(' '),
-        extra = ''
+        trimmer = (trim_params['trim_cmd'].format(pe_adapter)).split(' '),
+        extra = trim_params.get('extra', '')
     log: join(LOGS_DIR, 'trimmomatic/{sample}_{unit}_pe.log')
-    wrapper:
-        '0.27.1/bio/trimmomatic/pe'
+    benchmark: join(LOGS_DIR, 'trimmomatic/{sample}_{unit}_pe.benchmark')
+    conda: 'trimmomatic-env.yaml'
+    script:
+        'trimmomatic-pe.py'
 
 rule trimmomatic_se:
     """
@@ -40,15 +52,16 @@ rule trimmomatic_se:
     input:
         get_pretrim
     output:
-        r1=join(trim_dir, "{sample}_{unit}.se.trim.fq.gz"), 
+        r1=join(trim_dir, "{sample}_{unit}_se.trim.fq.gz"), 
     message:
         """--- Quality trimming SE read data with Trimmomatic."""
     threads: trim_params.get('cpu', 16)
     params:
-        trimmer = (trim_params['trim_cmd'].format(trim_params['adapter_file']['se_name'])).split(' '),
-        extra = ''
-    log:
-        join(LOGS_DIR, 'trimmomatic/{sample}_{unit}_se.log')
-    wrapper:
-        '0.27.1/bio/trimmomatic/se'
+        trimmer = (trim_params['trim_cmd'].format(se_adapter)).split(' '),
+        extra = trim_params.get('extra', '')
+    log:join(LOGS_DIR, 'trimmomatic/{sample}_{unit}_se.log')
+    benchmark:join(LOGS_DIR, 'trimmomatic/{sample}_{unit}_se.benchmark')
+    conda: 'trimmomatic-env.yaml'
+    script:
+        'trimmomatic-se.py'
 

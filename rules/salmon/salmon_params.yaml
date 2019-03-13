@@ -1,5 +1,6 @@
 salmon:
   eelpond_params:
+    outdir: quant
     input_pattern: .trim.fq.gz
     input_dir: preprocess
     extensions: 
@@ -14,6 +15,7 @@ salmon:
       base:
           - .salmonindex
   program_params:
+    input_trimmomatic_trimmed: True
     index_params:
       extra: '' # extra info for the program
     quant_params:

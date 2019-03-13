@@ -25,4 +25,4 @@ output_cmd = "  | samtools view -Sb - > " if str(outfile).endswith('.bam') else 
 
 min_orf_len = snakemake.params.get('f', '250') 
 
-shell("paladin align -f {min_orf_len} -t {snakemake.threads} {index_base} {r} {output_cmd} {outfile}")
+shell("paladin align -f {min_orf_len} -t {snakemake.threads} {extra} {index_base} {r} {output_cmd} {outfile}")

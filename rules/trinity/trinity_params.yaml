@@ -1,5 +1,6 @@
 trinity:
   eelpond_params:
+    outdir: assembly
     extensions:
       assembly_extensions: # use this extension only for all output of this assembler 
         - _trinity
@@ -15,4 +16,5 @@ trinity:
     add_single_to_paired: False
     max_memory : 30G
     seqtype: fq
+    extra: ''
 

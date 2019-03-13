@@ -1,20 +1,21 @@
 fastqc:
   eelpond_params:
+    outdir: preprocess/fastqc
     extensions: 
       read:
         pe:
-          - '_1.fastqc.zip'
-          - '_1.fastqc.html'
-          - '_1.trim.fastqc.zip'
-          - '_1.trim.fastqc.html'
-          - '_2.fastqc.zip'
-          - '_2.fastqc.html'
-          - '_2.trim.fastqc.zip'
-          - '_2.trim.fastqc.html'
+          - '_1_fastqc.zip'
+          - '_1_fastqc.html'
+          - '_1.trim_fastqc.zip'
+          - '_1.trim_fastqc.html'
+          - '_2_fastqc.zip'
+          - '_2_fastqc.html'
+          - '_2.trim_fastqc.zip'
+          - '_2.trim_fastqc.html'
         se:
-          - '_se.fastqc.zip'
-          - '_se.fastqc.html'
-          - '_se.trim.fastqc.zip'
-          - '_se.trim.fastqc.html'
+          - '_1_fastqc.zip'
+          - '_1_fastqc.html'
+          - '_se.trim_fastqc.zip'
+          - '_se.trim_fastqc.html'
   program_params:
     extra: ''

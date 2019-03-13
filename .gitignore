@@ -7,3 +7,8 @@ site/
 .ep_*yaml
 databases/
 .DS_Store
+.tmp*
+*.dot
+*.png
+*.dag
+*~

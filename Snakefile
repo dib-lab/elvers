@@ -15,9 +15,13 @@ import glob
 
 min_version("5.1.2") #minimum snakemake version
 
+from snakemake.remote import FTP, HTTP
+FTP = FTP.RemoteProvider()
+HTTP = HTTP.RemoteProvider()
+
 # read in sample info 
-samples = pd.read_table(config["samples"],dtype=str).set_index(["sample", "unit"], drop=False)
-validate(samples, schema="schemas/samples_v2.schema.yaml") # new version
+samples = pd.read_csv(config["samples"],dtype=str, sep='\t').set_index(["sample", "unit"], drop=False)
+#validate(samples, schema="schemas/samples_v2.schema.yaml") # new version
 samples['name'] = samples["sample"].map(str) + '_' + samples["unit"].map(str)
 
 # note, this function *needs* to be in this file, or added somewhere it can be accessed by all rules
@@ -43,7 +47,8 @@ octopus = animalsD['octopus']
 fish = animalsD['fish']
 
 #### snakemake ####
-# include rule files
+
+# include all rule files
 includeRules = config['include_rules']
 for r in includeRules:
     include: r
@@ -54,40 +59,28 @@ onstart:
     print('Welcome to the Eel Pond, de novo transcriptome assembly pipeline.')
     print('-----------------------------------------------------------------')
 
+
+documentation_base = "https://dib-lab.github.io/eelpond/"
+
 onsuccess:
-    print("\n--- Eel Pond Workflow executed successfully! ---\n")
+    print("\n--- Workflow executed successfully! ---\n")
+    
+    ## this could be done better, but should work for now :)
+    print("  Outputs for all workflow steps:\n") 
+    for key, val in config.items():
+        if isinstance(val, dict):
+            if val.get('eelpond_params', None):
+                outdir = val['eelpond_params']['outdir']
+                sys.stdout.write(f"\t{key}: {outdir}\n")
+                docs = documentation_base + key
+                sys.stdout.write(f"\t\t     for explanation of this step, see: {docs} \n\n")
+    print("\n")
+    ##
     shell('cat {fish}')
 
-## targeting rules
-rule preprocess:
-    input: generate_mult_targs(config, 'preprocess', samples)  
+rule eelpond:
+    input: generate_all_targs(config, samples)
 
-rule kmer_trim:
-    input: generate_mult_targs(config, 'kmer_trim', samples)  
 
-rule assemble:
-    input: generate_mult_targs(config, 'assemble', samples)
-
-rule assemblyinput:
-    input: generate_mult_targs(config, 'assemblyinput', samples)
-
-rule annotate:
-    input: generate_mult_targs(config, 'annotate', samples)
-
-rule quantify:
-    input: generate_mult_targs(config, 'quantify', samples)
-
-rule plass_assemble:
-    input: generate_mult_targs(config, 'plass_assemble', samples)
-
-rule paladin_map:
-    input: generate_mult_targs(config, 'paladin_map', samples)
-
-#rule diff_expression:
-#    input: generate_mult_targs(config, 'diffexp', samples)
-
-##### report #####
-#report: "report/workflow.rst"
-
-shell('cat {animal_targs[1]}')
+#shell('cat {animal_targs[1]}')
 

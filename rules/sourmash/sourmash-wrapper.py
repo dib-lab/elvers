@@ -13,5 +13,8 @@ k = snakemake.params.get("k","31")
 
 log = snakemake.log_fmt_shell(stdout=True, stderr=True)
 
-shell("sourmash compute --scaled {scaled} -k {k} {snakemake.input} -o {snakemake.output}"
-      " {extra} {log}" )
+k_sizes = [k] if isinstance(k, str) else k
+
+for k_size in k_sizes:
+    shell("sourmash compute --scaled {scaled} -k {k} {snakemake.input} -o {snakemake.output}"
+          " {extra} {log}" )

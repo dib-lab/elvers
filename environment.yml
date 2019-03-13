@@ -1,0 +1,14 @@
+channels:
+  - bioconda
+  - defaults
+  - conda-forge
+dependencies:
+  - python >=3.6
+  - snakemake >=5.1.2
+  - yaml
+  - pandas
+  - graphviz
+  - networkx
+  - pygraphviz
+  - psutil
+  - pytest

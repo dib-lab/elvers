@@ -1,5 +1,6 @@
 pear:
   eelpond_params:
+    outdir: preprocess/pear
     input_pattern: .trim.fq.gz
     input_dir: preprocess
     extensions: 
@@ -15,5 +16,5 @@ pear:
     # input kmer-trimmed reads
     input_kmer_trimmed: False
     pval: .01
-    max_memory: 20G
+    max_memory: 4G
     extra: ''

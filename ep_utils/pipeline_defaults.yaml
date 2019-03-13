@@ -2,104 +2,116 @@
 
 #general settings
 basename: eelpond
-assembly_extensions:
-  - _trinity
 
+# these outdirectories will be available to all workflows and rules
 eelpond_directories:
   rules: rules
   animals: animals
   logs: logs
+  outdirs:
+    input_data: input_data
+    preprocess: preprocess
+    assemble: assembly
+    annotate: annotation
+    quantify: quant
+    diffexp: diffexp
 
 # programs to be run at each step of the pipeline
 # change these if you're sure you have new program 
 # params and targets right.
-eelpond_pipeline:
-  download_data:
-    outdir: input_data
-    rules:
-      - ftp 
-    targets:
-      - ftp
-  link_data:
-    outdir: input_data
-    rules:
-      - link_data 
-    targets:
-      - link_data
-  preprocess:
-    outdir: preprocess
-    rules:
-      - link_data
-      - fastqc
-      - trimmomatic
-    targets:
-      - fastqc
-      - trimmomatic
-  kmer_trim:
-    outdir: preprocess
-    rules:
-      - link_data
+eelpond_workflows:
+  default:
+    include:
+      - get_data
       - trimmomatic
       - khmer
+      - trinity
+    targets:
+      - fastqc
+      - multiqc
+      - dammit
+      - salmon
+      - sourmash
+  protein_assembly:
+    include:
+      - get_data
+      - trimmomatic
+      - khmer
+      - plass
+      - pear
+    targets:
+      - fastqc
+      - multiqc
+      - paladin
+      - sourmash
+  input_data:
+    targets:
+      - get_data
+  preprocess:
+    include:
+      - get_data
+    targets:
+      - fastqc
+      - trimmomatic
+      - multiqc
+  kmer_trim:
+    include:
+      - get_data
+      - trimmomatic
     targets:
       - khmer
   assemble:
-    outdir: assembly
-    rules:
+    include:
+      - get_data
       - trimmomatic
       - khmer
-      - trinity
     targets:
       - trinity
   assemblyinput:
-    outdir: assembly
-    rules:
-      - assemblyinput
     targets:
       - assemblyinput
   annotate:
-    outdir: annotation
-    rules:
-      - dammit
-      - sourmash
     targets:
       - dammit
-      - sourmash
   quantify:
-    outdir: quant
-    rules:
-      - link_data
+    include:
+      - get_data
+      - trimmomatic
+    targets:
+      - salmon
+  diffexp:
+    include:
+      - get_data
       - trimmomatic
       - salmon
     targets:
-      - salmon
-  plass_assemble:
-    outdir: assembly
-    rules:
+      - deseq2
+  sourmash_compute:
+    include:
+      - get_data
       - trimmomatic
       - khmer
-      - plass
+    targets:
+      - sourmash
+  plass_assemble:
+    include:
+      - get_data
+      - trimmomatic
+      - khmer
     targets:
       - plass
   paladin_map:
-    outdir: paladin
-    rules:
+    include:
+      - get_data
+      - trimmomatic
+      - khmer
       - plass
       - pear
-      - paladin
     targets:
       - paladin
-  
-  #correct_reads:
-  #  outdir: preprocess
-  #  rules:
-  #    - trimmomatic
-  #    - rcorrector
-  #  targets:
-  #    - rcorrector
-  #diffexp:
-  #  outdir: diffexp
-  #  rules:
-  #    - deseq2
-  #  targets:
-  #    - deseq2
+  correct_reads:
+    include:
+      - get_data
+      - trimmomatic
+    targets:
+      - rcorrector
