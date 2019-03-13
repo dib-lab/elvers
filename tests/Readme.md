@@ -1,11 +1,11 @@
-# eelpond tests
+# elvers tests
 
-This directory contains tests for eelpond.
+This directory contains tests for elvers.
 
 The test strategy is as follows:
 
 * Use the `unittest` library to write unit tests
-* Use the `subprocess` library to run eelpond workflows from the command line
+* Use the `subprocess` library to run elvers workflows from the command line
 * Capture the output of each `subprocess` command and make assertions about its contents
 
 To run all tests, use the `pytest` command to automatically search for and run all
@@ -23,7 +23,7 @@ $ pytest -v
 =============================================== test session starts ================================================
 platform darwin -- Python 3.6.3, pytest-4.2.0, py-1.7.0, pluggy-0.8.1 -- /Users/charles/.pyenv/versions/miniconda3-4.3.30/bin/python
 cachedir: .pytest_cache
-rootdir: /temp/eelpond/tests, inifile:
+rootdir: /temp/elvers/tests, inifile:
 collected 10 items
 
 test_config.py::TestConfig::test_build_config PASSED                                                         [ 10%]

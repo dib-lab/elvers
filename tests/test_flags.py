@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 from unittest import TestCase
-from .const import (here, run_eelpond_cmd, test_config_yaml)
+from .const import (here, run_elvers_cmd, test_config_yaml)
 from .utils import capture_stdouterr
 
 
 class TestFlags(TestCase):
     """
-    This class runs tests of eelpond with basic flags:
+    This class runs tests of elvers with basic flags:
     -h --help
     -n --dry-run
     """
@@ -17,22 +17,22 @@ class TestFlags(TestCase):
 
     def test_help_flag(self):
         """Test the -h --help flag"""
-        command = [run_eelpond_cmd,'-h']
+        command = [run_elvers_cmd,'-h']
         p_out, p_err = capture_stdouterr(command,here)
-        self.assertIn('eelpond',p_out)
+        self.assertIn('elvers',p_out)
         self.assertIn('snakemake',p_out)
 
     def test_dry_run_flag(self):
         """Test the -n --dry-run flag"""
         which_workflow = 'default'
         flags = '-n'
-        command = [run_eelpond_cmd, test_config_yaml, which_workflow, flags]
+        command = [run_elvers_cmd, test_config_yaml, which_workflow, flags]
         p_out, p_err = capture_stdouterr(command,here)
         verify_present = '''
 Job counts:
 	count	jobs
 	1	dammit_annotate
-	1	eelpond
+	1	elvers
 	20	fastqc_pretrim
 	20	fastqc_trimmed
 	10	http_get_fq1
