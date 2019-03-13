@@ -63,7 +63,7 @@ rule salmon_index:
         extra = salmon_params['index_params'].get('extra', '')
     log:join(logs_dir, 'salmon','{assembly}_index.log')
     benchmark:join(logs_dir, 'salmon','{assembly}_index.benchmark')
-    conda: "environment.yaml"
+    conda: "environment.yml"
 	script: "index-wrapper.py"
 
 if combine_units:
@@ -85,7 +85,7 @@ if combine_units:
         threads: 20
         log: join(logs_dir, 'salmon/{sample}_x_{assembly}.log')
         benchmark: join(logs_dir, 'salmon/{sample}_x_{assembly}.benchmark')
-        conda: "environment.yaml"
+        conda: "environment.yml"
         script: "quant-wrapper.py"
 else:
     rule salmon_quant_no_combine:
@@ -106,5 +106,5 @@ else:
         threads: 20
         log:join(logs_dir, 'salmon/{sample}_{unit}_x_{assembly}.log')
         benchmark:join(logs_dir, 'salmon/{sample}_{unit}_x_{assembly}.benchmark')
-        conda: "environment.yaml"
+        conda: "environment.yml"
         script: "quant-wrapper.py"

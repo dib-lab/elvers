@@ -51,7 +51,7 @@ rule trinity:
     threads: 4
     log: join(logs_dir, 'trinity', 'trinity.log')
     benchmark: join(logs_dir, 'trinity', 'trinity.benchmark')
-    conda: "environment.yaml"
+    conda: "environment.yml"
 	script: "trinity-wrapper.py"
 
 rule rename_trinity_fasta:

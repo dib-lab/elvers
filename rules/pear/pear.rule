@@ -38,5 +38,5 @@ rule pear_read_merging:
     threads: 6
     log: join(logs_dir, 'pear/{sample}_{unit}.log')
     benchmark: join(logs_dir, 'pear/{sample}_{unit}.benchmark')
-    conda: 'environment.yaml'
+    conda: 'environment.yml'
     script: 'pear-wrapper.py'

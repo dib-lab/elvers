@@ -1,7 +1,7 @@
 from os.path import join
 from ep_utils.utils import get_params
 
-# default params from local yaml params file
+# default params from local yml params file
 #rcorrector_params = get_params('rcorrector')
 # override defaults with snakemake config (main configfile or snakemake --config)
 #if 'rcorrector' in config.keys():
@@ -65,7 +65,7 @@ rule rcorrector_pe:
         extra = '' 
     log:join(logs_dir, 'rcorrector', '{sample}_{unit}_pe.log')
     benchmark:join(logs_dir, 'rcorrector','{sample}_{unit}_pe.benchmark')
-    conda: "environment.yaml"
+    conda: "environment.yml"
 	script: "rcorrector-wrapper.py"
 
 rule rcorrector_se:
@@ -83,6 +83,6 @@ rule rcorrector_se:
     threads: 20
     log:   join(logs_dir, 'rcorrector', '{sample}_{unit}_se.log')
     benchmark:   join(logs_dir, 'rcorrector','{sample}_{unit}_se.benchmark')
-    conda: "rcorrector-env.yaml"
+    conda: "environment.yml"
 	script: "rcorrector-wrapper.py"
 

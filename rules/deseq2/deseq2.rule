@@ -41,7 +41,7 @@ if deseq_params.get('gene_trans_map'):
         params:
             samples=config["samples"]
         conda:
-            "environment.yaml"
+            "environment.yml"
         log:
             join(logs_dir,  'deseq2', "{assembly}.deseq2.init.log")
         benchmark:
@@ -58,7 +58,7 @@ else:
         params:
             samples=config["samples"]
         conda:
-            "environment.yaml"
+            "environment.yml"
         log:
             join(logs_dir,  'deseq2', "{assembly}.deseq2.init.log")
         benchmark:
@@ -76,7 +76,7 @@ rule deseq2_pca:
     params:
         pca_labels=deseq_params["pca"]["labels"]
     conda:
-        "environment.yaml"
+        "environment.yml"
     log:
         join(logs_dir, 'deseq2', "{assembly}.deseq2.pca.log")
     benchmark:
@@ -101,7 +101,7 @@ rule deseq2:
     params:
         contrast=get_contrast
     conda:
-        "environment.yaml"
+        "environment.yml"
     log:
         join(logs_dir, 'deseq2', "{assembly}.c{contrast}.deseq2.log")
     benchmark:
