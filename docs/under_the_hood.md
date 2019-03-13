@@ -1,6 +1,6 @@
 # Under the Hood
 
-`eelpond` runs snakemake rules in workflows that are highly customizeable. The user chooses a tool or workflow, and `./run_eelpond` aggregates all of the default parameters for that tool or workflow, build end-stage target files, and passes this information into the snakefile. Snakemake then builds a DAG of the workflow and runs the workflow in an automated manner.
+`elvers` runs snakemake rules in workflows that are highly customizeable. The user chooses a tool or workflow, and `./run_elvers` aggregates all of the default parameters for that tool or workflow, build end-stage target files, and passes this information into the snakefile. Snakemake then builds a DAG of the workflow and runs the workflow in an automated manner.
 
 ## Program Rules
 
@@ -13,17 +13,17 @@ Each rule needs several files:
   - (optional) `rulename-wrapper.py` or `rulename-script.R`: a script that is used to more easily and reproducibly run the program.
   - `rulename_params.yaml`: a parameter file to direct program output and set default program parameters
 
-The last file (`_params`) provides program defaults that can be overridden by user input from the main config file (via a nested dictionary update). The parameters do need to be exact, however. The `--print_params` and `--build_config` options in `./run_eelpond` are designed to facilitate this. 
+The last file (`_params`) provides program defaults that can be overridden by user input from the main config file (via a nested dictionary update). The parameters do need to be exact, however. The `--print_params` and `--build_config` options in `./run_elvers` are designed to facilitate this. 
 
 ## Rule Params
 
-The rule params files (above) have two components: `eelpond_params` and `program_params`. `program_params` are exposed to the user when displaying parameters or building configfiles. These are relatively safe to modify, and most get passed into the program rule itself. On the other hand, `eelpond_params` are used internally to build the names of output files when they need to be passed to the Snakefile as "targets". These are never exposed to the user and should be set just once when a rule is built. 
+The rule params files (above) have two components: `elvers_params` and `program_params`. `program_params` are exposed to the user when displaying parameters or building configfiles. These are relatively safe to modify, and most get passed into the program rule itself. On the other hand, `elvers_params` are used internally to build the names of output files when they need to be passed to the Snakefile as "targets". These are never exposed to the user and should be set just once when a rule is built. 
 
 For example, let's look at the `trinity.yaml` file:
 
 ```
 trinity:
-  eelpond_params:
+  elvers_params:
     outdir: assembly
     extensions:
       assembly_extensions: # use this extension only for all output of this assembler
@@ -44,7 +44,7 @@ trinity:
 ```
 The `program_params` allow the user to choose quality-trimmed or kmer-trimmed reads as input to trinity, and pass paramters for memory and sequence type. Whereever possible, program params also include an `extra` parameter that enable the user to pass any number of parameters directly to the command line of that program.
 
-The `eelpond_params` specify that trinity produces two files, with the assembly_extension '_trinity'. These will be `BASENAME_trinity.fasta` and `BASENAME_trinity.fasta.gene_trans_map`. The `assembly_extension` allows us to have downstream steps that work on different assemblies, but trinity is an assembler, and should only ever produce an assembly with the extension `_trinity`. Assembly extensions are used downstream as well. For example, `paladin` only works on protein assemblies, and
+The `elvers_params` specify that trinity produces two files, with the assembly_extension '_trinity'. These will be `BASENAME_trinity.fasta` and `BASENAME_trinity.fasta.gene_trans_map`. The `assembly_extension` allows us to have downstream steps that work on different assemblies, but trinity is an assembler, and should only ever produce an assembly with the extension `_trinity`. Assembly extensions are used downstream as well. For example, `paladin` only works on protein assemblies, and
 thus will only map to assemblies with the extension `_plass`.
 
 Assembly extensions are the most important of this type of parameter, but the differential expression steps also have a weird paramter they pass in: `contrast`. Target files are generated in `ep_utils/generate_all_targets.py` - have a look if you'd like to see how we build targets to pass into the Snakefile, and look for handling`assembly_extensions` and `contrasts`.

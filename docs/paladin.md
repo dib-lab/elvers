@@ -14,12 +14,12 @@ PALADIN currently only supports single-end reads (or reads merged with FLASH, PE
 
 PALADIN may output a standard SAM file, or a text file containing a UniProt-generated functional profile. This text file may be used for all downstream characterizations.
 
-## Quickstart: Running Paladin with eelpond
+## Quickstart: Running Paladin with elvers
 
 We recommend you run `paladin` as part of the [Protein Assembly](protein_assembly_workflow.md) or [paladin_map](paladin_map.md) workflows.
 
 ```
-./run_eelpond examples/nema.yaml protein_assembly
+./run_elvers examples/nema.yaml protein_assembly
 ```
 This will run trimmomatic trimming prior to PEAR merging (for paired end reads) and paladin mapping. 
 
@@ -45,7 +45,7 @@ Be sure to set up your sample info and build a configfile first (see [Understand
 
 To see the available parameters for the `Paladin` rule, run
 ```
-./run_eelpond config paladin --print_params
+./run_elvers config paladin --print_params
 ```
 This will print the following:
 ```
@@ -65,23 +65,23 @@ In addition to changing parameters we've specifically enabled, you can modify th
 ```
 Please see the [Paladin documentation](https://github.com/twestbrookunh/paladin) for info on the params you can pass into `paladin`.
 
-Be sure the modified lines go into the config file you're using to run `eelpond` (see [Understanding and Configuring Workflows](configure.md)).
+Be sure the modified lines go into the config file you're using to run `elvers` (see [Understanding and Configuring Workflows](configure.md)).
 
 ## Advanced Usage: Running PALADIN as a standalone rule
 
-You can run paladin as a standalone rule, instead of withing a larger `eelpond` workflow. However, to do this, you need to make sure the input files are available.
+You can run paladin as a standalone rule, instead of withing a larger `elvers` workflow. However, to do this, you need to make sure the input files are available.
 
-For paladin, you need both 1) an assembly, and 2) trimmed (and merged) input files. The assembly can be generated via another workflow, or passed to `eelpond` via the configfile.
+For paladin, you need both 1) an assembly, and 2) trimmed (and merged) input files. The assembly can be generated via another workflow, or passed to `elvers` via the configfile.
 
 Specifying an assembly:
 
-  1) If you've already run read trimming and want to use a Trinity assembly generated via `eelpond`, run the following:
+  1) If you've already run read trimming and want to use a Trinity assembly generated via `elvers`, run the following:
     
-    ./run_eelpond my_config plass_assemble paladin # eelpond will run or locate the plass assembly
+    ./run_elvers my_config plass_assemble paladin # elvers will run or locate the plass assembly
 
   2) Alternatively, you can input an assembly via the [assemblyinput](assemblyinput.md) utility rule, with an assembly in your `yaml` configfile.
     
-    ./run_eelpond assemblyinput paladin
+    ./run_elvers assemblyinput paladin
     
   In config file:
 
@@ -98,16 +98,16 @@ Specifying input reads:
 
 If you haven't yet run read trimming and merging, you'll also need to run those steps:
 ```
-./run_eelpond my_config get_data trimmomatic pear paladin
+./run_elvers my_config get_data trimmomatic pear paladin
 ```
 with one of the options to specify an assembly (above).
 
 
-## PALADIN eelpond rule
+## PALADIN elvers rule
 
-We wrote new snakemake wrappers for [paladin index](https://github.com/dib-lab/eelpond/blob/master/rules/paladin/paladin-index.py) and [paladin align](https://github.com/dib-lab/eelpond/blob/master/rules/paladin/paladin-align.py) to run PALADIN via snakemake. These wrappers have not been added to the official repo yet, but feel free to use as needed.
+We wrote new snakemake wrappers for [paladin index](https://github.com/dib-lab/elvers/blob/master/rules/paladin/paladin-index.py) and [paladin align](https://github.com/dib-lab/elvers/blob/master/rules/paladin/paladin-align.py) to run PALADIN via snakemake. These wrappers have not been added to the official repo yet, but feel free to use as needed.
 
-For snakemake afficionados, see our paladin rule on [github](https://github.com/dib-lab/eelpond/blob/master/rules/paladin/paladin.rule).
+For snakemake afficionados, see our paladin rule on [github](https://github.com/dib-lab/elvers/blob/master/rules/paladin/paladin.rule).
 
 ## Citation
 

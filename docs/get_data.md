@@ -1,6 +1,6 @@
 # Get Data Utility Rule
 
-To run any workflow, we need to get reads (and any assemblies already generated) into the right format for `eelpond`. We can either (1) link the data from another location on your machine, or (2) download the data via http or ftp. This is done through a utility rule called `get_data`.
+To run any workflow, we need to get reads (and any assemblies already generated) into the right format for `elvers`. We can either (1) link the data from another location on your machine, or (2) download the data via http or ftp. This is done through a utility rule called `get_data`.
 
 **At the moment, get_data only works with gzipped files. Checks and improved functionality coming soon** 
 
@@ -11,7 +11,7 @@ Be sure to set up your sample info and build a configfile first (see [Understand
 
 To see the available parameters for the `get_data` utility rule, run
 ```
-./run_eelpond config get_data --print_params
+./run_elvers config get_data --print_params
 ```
 
 In here, you'll see a section for "get_data" parameters that looks like this:

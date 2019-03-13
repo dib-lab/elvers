@@ -20,7 +20,7 @@ And the second command, `salmon quant` will quantify the trimmed reads (not digi
 salmon quant -i nema -l A -1 <(gunzip -c $R1) -2 <(gunzip -c $R2) -o ${sample_name}_quant
 ```
 
-Both indexing the transcriptome and running quantification are integrated as rules in the eelpond workflow, so the whole process happens in an automated fashion.
+Both indexing the transcriptome and running quantification are integrated as rules in the elvers workflow, so the whole process happens in an automated fashion.
 
 ## Modifying Params for Salmon
 
@@ -28,7 +28,7 @@ Be sure to set up your sample info and build a configfile first (see [Understand
 
 To see the available parameters for the `salmon` rule, run
 ```
-./run_eelpond config salmon --print_params
+./run_elvers config salmon --print_params
 ```
 This will print the following:
 ```
@@ -46,7 +46,7 @@ If you set `input_trimmomatic_trimmed: False` in the salmon parameters, then sal
 
 In addition to changing parameters we've specifically enabled, you can modify the `extra` param to pass any extra parameters.In salmon, both `index` and `quantification` steps can accept an `extra` param. See the [Salmon documentation](http://salmon.readthedocs.org/en/latest/) to learn more about the parameters you can pass into `salmon`.
 
-Be sure the modified lines go into the config file you're using to run `eelpond` (see [Understanding and Configuring Workflows](configure.md)).
+Be sure the modified lines go into the config file you're using to run `elvers` (see [Understanding and Configuring Workflows](configure.md)).
 
 ## Output files:
 
@@ -92,20 +92,20 @@ For further reading, on salmon see
 
 ## Advanced Usage: Running Salmon as a standalone rule
 
-You can run salmon as a standalone rule, instead of withing a larger `eelpond` workflow. However, to do this, you need to make sure the input files are available.
+You can run salmon as a standalone rule, instead of withing a larger `elvers` workflow. However, to do this, you need to make sure the input files are available.
 
-For salmon, you need both 1) an assembly, and 2) trimmed input files. The assembly can be generated via another workflow, or passed to `eelpond` via the configfile.
+For salmon, you need both 1) an assembly, and 2) trimmed input files. The assembly can be generated via another workflow, or passed to `elvers` via the configfile.
 
 Specifying an assembly:
-    1) If you've alread run read trimming and want to use a Trinity assembly generated via `eelpond`, you can run: 
+    1) If you've alread run read trimming and want to use a Trinity assembly generated via `elvers`, you can run: 
     ```
-    ./run_eelpond my_config assemble salmon
+    ./run_elvers my_config assemble salmon
     ```
-    If you've already run the assembly, `eelpond` will just use this info to locate that assembly.
+    If you've already run the assembly, `elvers` will just use this info to locate that assembly.
 
     2) Alternatively, you can input an assembly via the [assemblyinput](assemblyinput.md) utility rule:
     ```
-    ./run_eelpond assemblyinput salmon
+    ./run_elvers assemblyinput salmon
      ```
     with an assembly in your `yaml` configfile, e.g.:
     ```
@@ -120,15 +120,15 @@ Specifying input reads:
 
     If you haven't yet run read trimming, you'll also need to run those steps:
     ```
-    ./run_eelpond myconfig get_data trimmomatic salmon
+    ./run_elvers myconfig get_data trimmomatic salmon
     ```
     Or if you have set `input_trimmomatic_trimmed: False`:
     ```
-    ./run_eelpond myconfig get_data salmon
+    ./run_elvers myconfig get_data salmon
     ```
 
 ## Snakemake Rule
 
 We wrote snakemake wrappers to run [salmon index](https://snakemake-wrappers.readthedocs.io/en/stable/wrappers/salmon/index.html) and [salmon quant](https://snakemake-wrappers.readthedocs.io/en/stable/wrappers/salmon/quant.html).
 
-For snakemake afficionados, see the Salmon rule on [github](https://github.com/dib-lab/eelpond/blob/master/rules/salmon/salmon.rule).
+For snakemake afficionados, see the Salmon rule on [github](https://github.com/dib-lab/elvers/blob/master/rules/salmon/salmon.rule).

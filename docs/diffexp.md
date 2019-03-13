@@ -1,29 +1,29 @@
 # Diffexp Subworkflow
 
-Subworkflows combine tools in the right order to facilitate file targeting withing `eelpond`. The "diffexp" subworkflow conducts read quality trimming, salmon quantification and differential expression analysis. It requires an assembly to be provided, either by running an assembly or providing one in your configfile. If you have a gene-to-transcript map, this will also need to be specified via the `assemblyinput` parameter. If not, you'll need to modify the deseq2 parameters so
+Subworkflows combine tools in the right order to facilitate file targeting withing `elvers`. The "diffexp" subworkflow conducts read quality trimming, salmon quantification and differential expression analysis. It requires an assembly to be provided, either by running an assembly or providing one in your configfile. If you have a gene-to-transcript map, this will also need to be specified via the `assemblyinput` parameter. If not, you'll need to modify the deseq2 parameters so
 that the workflow will not expect this file. 
 
 At the moment, this workflow consists of:
  
-  - [get_data](get_data.md) - an `eelpond` utility
+  - [get_data](get_data.md) - an `elvers` utility
   - [trimmomatic](trimmomatic.md)
   - [salmon](salmon.md)
   - [deseq2](deseq2.md)
 
 ## Quickstart
 
-If you've generated an assembly, even if you've already run `./run_eelpond examples/nema.yaml assemble`:
+If you've generated an assembly, even if you've already run `./run_elvers examples/nema.yaml assemble`:
 
-   1) "Run" trinity assembly at the same time. If you've already run the assembly, `eelpond` will just locate your assembly file for `diffexp`.
+   1) "Run" trinity assembly at the same time. If you've already run the assembly, `elvers` will just locate your assembly file for `diffexp`.
    
    ```
-   ./run_eelpond examples/nema.yaml assemble diffexp
+   ./run_elvers examples/nema.yaml assemble diffexp
    ```
 
    2) OR, Pass an assembly in via `assemblyinput` with an assembly in your `yaml` configfile, e.g.:
    
    ```
-   ./run_eelpond assemblyinput diffexp
+   ./run_elvers assemblyinput diffexp
    ```
   
    In the configfile:
@@ -46,7 +46,7 @@ To set up your sample info and build a configfile, see [Understanding and Config
 
 If you want to add the `diffexp` program parameters to a previously built configfile, run:
 ```
-./run_eelpond config.yaml diffexp --print_params
+./run_elvers config.yaml diffexp --print_params
 ```
 
 A small set of parameters should print to your console:

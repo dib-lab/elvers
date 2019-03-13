@@ -14,7 +14,7 @@ TRINITY_DN2202_c0_g1_i1
 
 ## Trinity Command
 
-On the command line, the command eelpond runs is approximately:
+On the command line, the command elvers runs is approximately:
 ```
 Trinity --left left.fq \
   --right right.fq --seqType fq --max_memory 10G \
@@ -41,7 +41,7 @@ Be sure to set up your sample info and build a configfile first (see [Understand
 
 To see the available parameters for the `trinity` rule, run
 ```
-./run_eelpond config trinity --print_params
+./run_elvers config trinity --print_params
 ```
 This will print the following:
 ```
@@ -62,25 +62,25 @@ In addition to changing parameters we've specifically enabled, you can modify th
 
 Within the "default" [Eel Pond workflow](eel_pond_workflow.md) or the [assemble subworkflow](assemble.md), these options enable you to choose kmer-trimmed, quality-trimmed, or raw sequencing data as input. We recommend using kmer-trimmed reads as input. If both `input_kmer_trimmed` and `input_trimmomatic_trimmed` are `False`, we will just use raw reads from the `samples.tsv` file. 
 
-See the [Trinity documentation](https://github.com/trinityrnaseq/trinityrnaseq/wiki) to learn more about these parameters. Be sure the modified lines go into the config file you're using to run `eelpond` (see [Understanding and Configuring Workflows](configure.md)).
+See the [Trinity documentation](https://github.com/trinityrnaseq/trinityrnaseq/wiki) to learn more about these parameters. Be sure the modified lines go into the config file you're using to run `elvers` (see [Understanding and Configuring Workflows](configure.md)).
 
 ## Advanced Usage: Running Trinity as a standalone rule
 
-You can run trinity as a standalone rule, instead of withing a larger `eelpond` workflow. However, to do this, you need to make sure the input files are available.
+You can run trinity as a standalone rule, instead of withing a larger `elvers` workflow. However, to do this, you need to make sure the input files are available.
 
 For trinity, the default input files are kmer-trimmed input data (e.g. output of khmer).
 
 If you've already done this, you can run:
 ```
-./run_eelpond my_config trinity
+./run_elvers my_config trinity
 ```
 If not, you can run the prior steps at the same time to make sure khmer can find these input files:
 ```
-./run_eelpond my_config get_data trimmomatic khmer trinity
+./run_elvers my_config get_data trimmomatic khmer trinity
 ```
 
 ## Snakemake rule
 
 We wrote a [Trinity snakemake wrapper](https://snakemake-wrappers.readthedocs.io/en/stable/wrappers/trinity.html) to run Trinity.
 
-For snakemake afficionados, see the Trinity rule on [github](https://github.com/dib-lab/eelpond/blob/master/rules/trinity/trinity.rule).
+For snakemake afficionados, see the Trinity rule on [github](https://github.com/dib-lab/elvers/blob/master/rules/trinity/trinity.rule).

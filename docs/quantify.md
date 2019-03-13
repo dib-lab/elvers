@@ -1,26 +1,26 @@
 # Quantify Subworkflow
 
-Subworkflows combine tools in the right order to facilitate file targeting withing `eelpond`. The "quantify" subworkflow conducts read quality trimming and salmon quantification. It requires an assembly to be provided, either by running an assembly or providing one in your configfile. At the moment, this workflow consists of:
+Subworkflows combine tools in the right order to facilitate file targeting withing `elvers`. The "quantify" subworkflow conducts read quality trimming and salmon quantification. It requires an assembly to be provided, either by running an assembly or providing one in your configfile. At the moment, this workflow consists of:
  
-  - [get_data](get_data.md) - an `eelpond` utility
+  - [get_data](get_data.md) - an `elvers` utility
   - [trimmomatic](trimmomatic.md)
   - [salmon](salmon.md)
 
 
 ## Quickstart
 
-If you've generated an assembly, even if you've already run `./run_eelpond examples/nema.yaml assemble`:
+If you've generated an assembly, even if you've already run `./run_elvers examples/nema.yaml assemble`:
 
-   1) "Run" trinity assembly at the same time. If you've already run the assembly, `eelpond` will just locateyour assembly file for `quantify`.
+   1) "Run" trinity assembly at the same time. If you've already run the assembly, `elvers` will just locateyour assembly file for `quantify`.
 
    ```
-   ./run_eelpond examples/nema.yaml assemble quantify
+   ./run_elvers examples/nema.yaml assemble quantify
    ```
 
    2) OR, Pass an assembly in via `assemblyinput` with an assembly in your `yaml` configfile, e.g.: 
    
    ```
-   ./run_eelpond assemblyinput quantify
+   ./run_elvers assemblyinput quantify
    ```
    
    In the configfile:
@@ -40,7 +40,7 @@ To set up your sample info and build a configfile, see [Understanding and Config
 
 If you want to add the `quantify` program parameters to a previously built configfile, run:
 ```
-./run_eelpond config.yaml quantify --print_params
+./run_elvers config.yaml quantify --print_params
 ```
 
 A small set of parameters should print to your console:

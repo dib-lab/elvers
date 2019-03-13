@@ -32,7 +32,7 @@ Be sure to set up your sample info and build a configfile first (see [Understand
 
 To see the available parameters for the `fastqc` rule, run
 ```
-./run_eelpond config fastqc --print_params
+./run_elvers config fastqc --print_params
 ```
 
 In here, you'll see a section for "fastqc" parameters that looks like this:
@@ -47,22 +47,22 @@ There's almost nothing in here because we use default params. However, you can m
 ```
   extra: '--someflag someparam --someotherflag thatotherparam'
 ```
-See the [FastQC documentation](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/) for any options you could add. Be sure the modified lines go into the config file you're using to run `eelpond` (see [Understanding and Configuring Workflows](configure.md)). 
+See the [FastQC documentation](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/) for any options you could add. Be sure the modified lines go into the config file you're using to run `elvers` (see [Understanding and Configuring Workflows](configure.md)). 
 
 
 ## Advanced Usage: Running FastQC as a standalone rule
 
-You can run fastqc as a standalone rule, instead of withing a larger `eelpond` workflow. However, to do this, you need to make sure the input files are available.
+You can run fastqc as a standalone rule, instead of withing a larger `elvers` workflow. However, to do this, you need to make sure the input files are available.
 
 For FastQC, the input files are your input data - either downloaded or linked into the `input_data` directory via `get_data`, and the files that have been quality trimmed.
 
 If you've already done this, you can run:
 ```
-./run_eelpond my_config fastqc
+./run_elvers my_config fastqc
 ```
 If not, you can run both at once to make sure fastqc can run properly.
 ```
-./run_eelpond my_config get_data trimmomatic fastqc
+./run_elvers my_config get_data trimmomatic fastqc
 ```
 
 
@@ -70,4 +70,4 @@ If not, you can run both at once to make sure fastqc can run properly.
 
 We use a local copy of the [fastqc snakemake wrapper](https://snakemake-wrappers.readthedocs.io/en/stable/wrappers/fastqc.html) to run FastQC.
 
-For snakemake afficionados, see the rule on [github](https://github.com/dib-lab/eelpond/blob/master/rules/fastqc/fastqc.rule).
+For snakemake afficionados, see the rule on [github](https://github.com/dib-lab/elvers/blob/master/rules/fastqc/fastqc.rule).

@@ -34,7 +34,7 @@ Be sure to set up your sample info and build a configfile first (see [Understand
 
 To see the available parameters for the `khmer` rule, run
 ```
-./run_eelpond config khmer --print_params
+./run_elvers config khmer --print_params
 ```
 
 In here, you'll see a section for "khmer" parameters that looks like this:
@@ -51,24 +51,24 @@ khmer:
   #####################################################
 ```
 
-See the [Khmer documentation]([khmer](https://khmer.readthedocs.io/)) to learn more about these parameters. Be sure the modified lines go into the config file you're using to run `eelpond` (see [Understanding and Configuring Workflows](configure.md)).
+See the [Khmer documentation]([khmer](https://khmer.readthedocs.io/)) to learn more about these parameters. Be sure the modified lines go into the config file you're using to run `elvers` (see [Understanding and Configuring Workflows](configure.md)).
 
 ## Advanced Usage: Running Khmer as a standalone rule
 
-You can run khmer as a standalone rule, instead of withing a larger `eelpond` workflow. However, to do this, you need to make sure the input files are available.
+You can run khmer as a standalone rule, instead of withing a larger `elvers` workflow. However, to do this, you need to make sure the input files are available.
 
 For khmer, the input files are trimmed input data (e.g. output of trimmomatic). 
 
 If you've already done this, you can run:
 ```
-./run_eelpond my_config khmer
+./run_elvers my_config khmer
 ```
 If not, you can run the prior steps at the same time to make sure khmer can find these input files: 
 ```
-./run_eelpond my_config get_data trimmomatic khmer
+./run_elvers my_config get_data trimmomatic khmer
 ```
 
 
 ## Snakemake Rule
 
-For snakemake afficionados, see the khmer rule on [github](https://github.com/dib-lab/eelpond/blob/master/rules/khmer/khmer.rule).
+For snakemake afficionados, see the khmer rule on [github](https://github.com/dib-lab/elvers/blob/master/rules/khmer/khmer.rule).

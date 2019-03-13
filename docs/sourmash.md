@@ -12,7 +12,7 @@ Run Sourmash as part of the "default" [Eel Pond workflow](eel_pond_workflow.md) 
 
 ## Sourmash Command
 
-On the command line, the command eelpond runs for each file is approximately:
+On the command line, the command elvers runs for each file is approximately:
 ```
 sourmash compute --scaled 1000 \
   -k 31 input_file -o output.sig
@@ -31,7 +31,7 @@ Be sure to set up your sample info and build a configfile first (see [Understand
 
 To see the available parameters for the `sourmash` rule, run
 ```
-./run_eelpond config sourmash --print_params
+./run_elvers config sourmash --print_params
 ```
 This will print the following:
 ```
@@ -46,13 +46,13 @@ In addition to changing parameters we've specifically enabled, you can modify th
 ```
   extra: ' --track-abundance '
 ```
-Be sure the modified lines go into the config file you're using to run `eelpond` (see [Understanding and Configuring Workflows](configure.md)). 
+Be sure the modified lines go into the config file you're using to run `elvers` (see [Understanding and Configuring Workflows](configure.md)). 
 
 See the [sourmash documentation](https://sourmash.readthedocs.io/en/latest/index.html) to learn more about the parameters you can use with sourmash compute. 
 
 
-## Sourmash eelpond rule
+## Sourmash elvers rule
 
-We use a slightly modified version of the [sourmash snakemake wrapper](https://github.com/dib-lab/eelpond/blob/master/rules/sourmash/sourmash-wrapper.py) to run Sourmash compute via snakemake. 
+We use a slightly modified version of the [sourmash snakemake wrapper](https://github.com/dib-lab/elvers/blob/master/rules/sourmash/sourmash-wrapper.py) to run Sourmash compute via snakemake. 
 
-For snakemake afficionados, see our sourmash rules on [github](https://github.com/dib-lab/eelpond/blob/master/rules/sourmash/sourmash.rule).
+For snakemake afficionados, see our sourmash rules on [github](https://github.com/dib-lab/elvers/blob/master/rules/sourmash/sourmash.rule).

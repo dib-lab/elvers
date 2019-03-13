@@ -2,7 +2,7 @@
 
 We can use [DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html) to compare gene expression differences in samples between experimental conditions.
 
-## Quickstart: Running DESeq2 via eelpond
+## Quickstart: Running DESeq2 via elvers
 
 We recommend you run `deseq2` via the [diffexp](diffexp.md) subworkflow.
 
@@ -11,13 +11,13 @@ If you want to run it as a standalone program instead, you need to have generate
    1) If you have salmon results, run:
    
    ```
-   ./run_eelpond examples/nema.yaml deseq2
+   ./run_elvers examples/nema.yaml deseq2
    ```
 
    2) If not, you need to run `salmon` and any other missing steps. It's probably best to run the [diffexp](diffexp.md) subworkflow, but you can also try: 
 
    ```
-   ./run_eelpond examples/nema.yaml salmon deseq2
+   ./run_elvers examples/nema.yaml salmon deseq2
    ```
 
 ## DESeq2 Commands
@@ -29,7 +29,7 @@ We assume the assembly has a gene-to-transcript map, such as the one produced vi
 After reading in count data, we take in two additional pieces of information: first, the sample names in the `samples.tsv` document, and second the desired `contrast`, provided as part of the DESeq2 parameters, below. We store all data in an `.rds` r data format to support easy reloading of this data for additional user analyses. In addition, we plot a PCA of the normalized counts and perform a standard DESeq2 analysis and print a `tsv` of results for each contrast specified in
 the deseq2 params.
 
-You can find these R scripts in the `eelpond` [github repo](https://github.com/dib-lab/eelpond/tree/master/rules/deseq2). The snakemake rules and scripts were modified from [rna-seq-star-deseq2 workflow](https://github.com/snakemake-workflows/rna-seq-star-deseq2) and our own data analysis and workshops, e.g.[DIBSI-RNAseq](https://dibsi-rnaseq.readthedocs.io/en/latest/DE.html). 
+You can find these R scripts in the `elvers` [github repo](https://github.com/dib-lab/elvers/tree/master/rules/deseq2). The snakemake rules and scripts were modified from [rna-seq-star-deseq2 workflow](https://github.com/snakemake-workflows/rna-seq-star-deseq2) and our own data analysis and workshops, e.g.[DIBSI-RNAseq](https://dibsi-rnaseq.readthedocs.io/en/latest/DE.html). 
 
 ## Modifying Params for DESeq2
 
@@ -37,7 +37,7 @@ Be sure to set up your sample info and build a configfile first (see [Understand
 
 To see the available parameters for the `deseq2` rule, run
 ```
-./run_eelpond config deseq2 --print_params
+./run_elvers config deseq2 --print_params
 ```
 This will print the following:
 ```
@@ -62,7 +62,7 @@ The default `contrasts` reflect the `condition` information in the test data `ne
 ```
 The `pca labels` should not be changed unless you need to change the name of the `condition` column in the `samples.tsv`. This functionality hasn't been extensively tested, so file an issue if something goes wrong!
 
-Be sure the modified lines go into the config file you're using to run `eelpond` (see [Understanding and Configuring Workflows](configure.md)).
+Be sure the modified lines go into the config file you're using to run `elvers` (see [Understanding and Configuring Workflows](configure.md)).
 
 
 ## References
@@ -80,7 +80,7 @@ Additional links:
 
 ## Snakemake Rules
 
-For snakemake afficionados, see the deseq2 rules on [github](https://github.com/dib-lab/eelpond/blob/master/rules/deseq2/deseq2.rule).
+For snakemake afficionados, see the deseq2 rules on [github](https://github.com/dib-lab/elvers/blob/master/rules/deseq2/deseq2.rule).
 
 
 

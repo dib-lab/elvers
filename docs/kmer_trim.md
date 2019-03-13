@@ -1,8 +1,8 @@
 # Kmer_trim Subworkflow
 
-Subworkflows combine tools in the right order to facilitate file targeting withing `eelpond`. The "kmer_trim" subworkflow conducts read quality trimming and kmer trimming. At the moment, this workflow consists of:
+Subworkflows combine tools in the right order to facilitate file targeting withing `elvers`. The "kmer_trim" subworkflow conducts read quality trimming and kmer trimming. At the moment, this workflow consists of:
  
-  - [get_data](get_data.md) - an `eelpond` utility
+  - [get_data](get_data.md) - an `elvers` utility
   - [trimmomatic](trimmomatic.md)
   - [fastqc](fastqc.md), run on both pre-trim and post-trim data
   - [khmer](khmer.md)
@@ -13,7 +13,7 @@ Subworkflows combine tools in the right order to facilitate file targeting withi
 To run the kmer_trim subworkflow, run: 
 
 ```
-./run_eelpond examples/nema.yaml kmer_trim
+./run_elvers examples/nema.yaml kmer_trim
 ```
 
 ## Configuring the kmer_trim subworkflow 
@@ -22,7 +22,7 @@ To set up your sample info and build a configfile, see [Understanding and Config
 
 If you want to add the `kmer_trim` program parameters to a previously built configfile, run:
 ```
-./run_eelpond config.yaml kmer_trim --print_params
+./run_elvers config.yaml kmer_trim --print_params
 ```
 
 A small set of parameters should print to your console:
