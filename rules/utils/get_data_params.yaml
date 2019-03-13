@@ -1,5 +1,5 @@
 get_data:
-  eelpond_params:
+  elvers_params:
     outdir: input_data
     extensions:
       read:

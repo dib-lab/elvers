@@ -1,5 +1,5 @@
 assemblyinput:
-  eelpond_params:
+  elvers_params:
     outdir: assembly
     extensions:
       base:

@@ -1,6 +1,6 @@
-# Snakemake configuration file for running eelpond pipelines.
+# Snakemake configuration file for running elvers pipelines.
 #
-# see script 'run_eelpond' in this directory for a convenient entry point.
+# see script 'run_elvers' in this directory for a convenient entry point.
 #
 # Quickstart: `conf/run dory-test full`
 #
@@ -37,10 +37,10 @@ def is_single_end(sample, unit, end = '', assembly = ''):
 
 # Set up directories 
 BASE = config['basename']
-LOGS_DIR = config['eelpond_directories']['logs']
+LOGS_DIR = config['elvers_directories']['logs']
 
 #get ascii  animals
-animals_dir = config['eelpond_directories']['animals']
+animals_dir = config['elvers_directories']['animals']
 animal_targs = glob.glob(join(animals_dir, '*')) # get all ascii animals
 animalsD = {os.path.basename(x): x for x in animal_targs}
 octopus = animalsD['octopus']
@@ -60,7 +60,7 @@ onstart:
     print('-----------------------------------------------------------------')
 
 
-documentation_base = "https://dib-lab.github.io/eelpond/"
+documentation_base = "https://dib-lab.github.io/elvers/"
 
 onsuccess:
     print("\n--- Workflow executed successfully! ---\n")
@@ -69,8 +69,8 @@ onsuccess:
     print("  Outputs for all workflow steps:\n") 
     for key, val in config.items():
         if isinstance(val, dict):
-            if val.get('eelpond_params', None):
-                outdir = val['eelpond_params']['outdir']
+            if val.get('elvers_params', None):
+                outdir = val['elvers_params']['outdir']
                 sys.stdout.write(f"\t{key}: {outdir}\n")
                 docs = documentation_base + key
                 sys.stdout.write(f"\t\t     for explanation of this step, see: {docs} \n\n")
@@ -78,7 +78,7 @@ onsuccess:
     ##
     shell('cat {fish}')
 
-rule eelpond:
+rule elvers:
     input: generate_all_targs(config, samples)
 
 

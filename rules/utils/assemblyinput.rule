@@ -2,7 +2,7 @@ from os.path import join
 
 aInput_params = config['assemblyinput']['program_params']
 
-ep_params = config['assemblyinput']['eelpond_params']
+ep_params = config['assemblyinput']['elvers_params']
 assembly_dir = ep_params['outdir']
 
 basename = config['basename']

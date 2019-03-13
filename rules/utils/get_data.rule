@@ -1,6 +1,6 @@
 import os
 
-data_dir = config['eelpond_directories']['outdirs']['input_data']
+data_dir = config['elvers_directories']['outdirs']['input_data']
 get_data_params = config['get_data']['program_params']
 
 if get_data_params.get('download_data'):
