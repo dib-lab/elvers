@@ -1,5 +1,6 @@
 import tempfile
 import shutil
+import yaml
 
 from .const import here
 from subprocess import Popen, PIPE
@@ -9,6 +10,10 @@ def capture_stdouterr(command, cwd = here):
     p_out = p[0].decode('utf-8').strip()
     p_err = p[1].decode('utf-8').strip()
     return (p_out, p_err)
+
+def write_yaml(yamlD, paramsfile):
+    with open(paramsfile, 'w') as params:
+        yaml.dump(yamlD, stream=params, indent=2,  default_flow_style=False)
 
 class TempDirectory(object):
     def __init__(self):

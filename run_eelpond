@@ -70,7 +70,10 @@ def build_dirs(ep_dir, params):
     
     # if desired, user can also provide out_path, and all dirs will be built under there
     # outdirectory, build all directories relative to that path 
-    out_path = params.get('out_path', ep_dir)
+    if args.out_path:
+        out_path = args.out_path
+    else:
+        out_path = params.get('out_path', ep_dir)
     # if user inputs an absolute path:
     if os.path.isabs(out_path): # if not absolute, just assume subdirectory of eelpond.  
         assert os.path.exists(out_path) and os.path.isdir(out_path), f"Error: provided output path {out_path} is not an existing directory. Please fix.\n\n"
@@ -185,7 +188,7 @@ def main(args):
         assembInput = configD.get('assemblyinput', None)
         if assembInput:
             targs+=['assemblyinput']
-            configD, assemblyinput_ext = handle_assemblyInput(assembInput, configD)
+            configD, assemblyinput_ext = handle_assemblyinput(assembInput, configD)
         else:
             assemblyinput_ext = None
         if 'assemblyinput' in targs and not assembInput:
@@ -194,12 +197,21 @@ def main(args):
         # next, grab all eelpond defaults, including rule-specific default parameters (*_params.yaml files) 
         paramsD = build_default_params(thisdir, targs)
 
-        # add any configuration from extra config files
+       ###############
+        # Handle additional configuration modification
+        # 1. extra config files  
         extra_configs = {}
         if args.extra_config:
             for c in args.extra_config:
                 extra_configs = import_configfile(find_yaml(thisdir, c, 'extra_config'), extra_configs)
-        # this function only updates keys that already exist. so we need to wait till here (after importing params) to read in extra_configs,
+
+        # 2. config_dict passed in on command line 
+        # ADVANCED ONLY - no checks in place, formatting matters. (to do: add checks)
+        if args.config_dict:
+            # adding this the same way as an extra config yaml file
+            update_nested_dict(extra_configs, args.config_dict)
+
+        # update_nested_dict only updates keys that already exist. so we need to wait till here (after importing params) to read in extra_configs,
         # rather than doing this when reading in the main configfile
         
         # if we're adding any additional contrasts, get rid of the example ones!
@@ -207,7 +219,7 @@ def main(args):
         if extra_configs.get('deseq2'):
            if extra_configs['deseq2']['program_params'].get('contrasts'):
                paramsD['deseq2']['program_params']['contrasts'] = {} # get rid of default contrasts
-        
+
         # check main configfile
         if configD.get('deseq2'):
             if configD['deseq2']['program_params'].get('contrasts'):
@@ -223,6 +235,8 @@ def main(args):
         if assemblyinput_ext: # note, need to do it here to prevent override with defaults
             paramsD['assembly_extensions'] = list(set(paramsD.get('assembly_extensions', []) + [assemblyinput_ext]))
         
+        # All params have been integrated. Now build fullpaths and print the complete paramsfile
+
         # use params to build directory structure
         paramsD = build_dirs(thisdir, paramsD)
         # Note: Passing a configfile allows nested yaml/dictionary format. 
@@ -335,6 +349,8 @@ To build an editable configfile to start work on your own data, run:
     parser.add_argument('targets', nargs='*', default=['default'])
     parser.add_argument('-t', '--threads', type=int, default=1)
     parser.add_argument('--extra_config', action='append', default = None)
+    parser.add_argument('--config_dict', type=yaml.load, default = None)
+    parser.add_argument('--out_path', type=str, default = None)
     parser.add_argument('-n', '--dry-run', action='store_true')
     parser.add_argument('-v', '--verbose', action='store_true')
     parser.add_argument('-w', '--print_workflows', action='store_true', help='just show available workflows')

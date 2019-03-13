@@ -1,0 +1,14 @@
+# A yml to test the salmon rule
+
+# this sets the output directory name:
+basename: 'salmon_test'
+
+# this describes the samples:
+samples: "test.samples.tsv"
+
+# location of test input assembly 
+assemblyinput:
+  assembly: "assembly/transcriptome.fasta"
+
+salmon:
+  input_trimmomatic_trimmed: False
