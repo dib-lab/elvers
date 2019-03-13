@@ -1,5 +1,5 @@
 deseq2:
-  eelpond_params:
+  elvers_params:
     outdir: diffexp
     combine_units: True # needs to match with salmon's combine_units
     extensions:

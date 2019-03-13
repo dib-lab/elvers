@@ -1,5 +1,5 @@
 multiqc:
-  eelpond_params:
+  elvers_params:
     outdir: preprocess/fastqc
     extensions: 
       other:

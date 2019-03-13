@@ -1,5 +1,5 @@
 plass:
-  eelpond_params:
+  elvers_params:
     outdir: assembly
     extensions:
       assembly_extensions: # use this extension only for all output of this assembler 

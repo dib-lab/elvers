@@ -1,5 +1,5 @@
 sourmash:
-  eelpond_params:
+  elvers_params:
     outdir: sourmash 
     extensions: 
       base:

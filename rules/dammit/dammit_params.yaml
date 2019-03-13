@@ -1,5 +1,5 @@
 dammit:  
-  eelpond_params:
+  elvers_params:
     outdir: annotation
     extensions: 
       base: 

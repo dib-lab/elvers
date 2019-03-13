@@ -1,10 +1,10 @@
 import os
 from os.path import join
 
-assembly_dir  = config['eelpond_directories']['outdirs']['assemble']
-input_dir     = config['eelpond_directories']['outdirs']['preprocess']
+assembly_dir  = config['elvers_directories']['outdirs']['assemble']
+input_dir     = config['elvers_directories']['outdirs']['preprocess']
 
-ep_params = config['paladin']['eelpond_params']
+ep_params = config['paladin']['elvers_params']
 paladin_params = config['paladin']['program_params']
 index_params = paladin_params['index_params']
 alignment_params = paladin_params['alignment_params']

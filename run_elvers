@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 """
-Execution script for snakemake eelpond.
+Execution script for snakemake elvers.
 """
 # ref: https://github.com/ctb/2018-snakemake-cli/blob/master/run
 import argparse
@@ -28,11 +28,11 @@ def build_default_params(workdir, targets):
     # grab general defaults
     defaultParams['basename'] = pipeline_defaults['basename']
     # add main directories, outdirs available to all workflows
-    defaultParams['eelpond_directories'] = pipeline_defaults['eelpond_directories']
+    defaultParams['elvers_directories'] = pipeline_defaults['elvers_directories']
     # grab all available workflows, and subset by user input
-    ep_workflows = pipeline_defaults['eelpond_workflows']
+    ep_workflows = pipeline_defaults['elvers_workflows']
     workflows_to_run = {k: ep_workflows[k] for k in ep_workflows.keys() & targets}
-    defaultParams['eelpond_workflows'] = workflows_to_run
+    defaultParams['elvers_workflows'] = workflows_to_run
     # find targs the user entered that are not in our default info.
     extra_targs = [t for t in targets if t not in ep_workflows]
     for e in extra_targs: # assume extra targets are single rules, and add to the workflow
@@ -45,12 +45,12 @@ def build_default_params(workdir, targets):
     ruleParamsFiles = []
     includeRules = []
     assembly_extensions = []
-    rules_dir = defaultParams['eelpond_directories']['rules']    
+    rules_dir = defaultParams['elvers_directories']['rules']    
     for rule_name in required_rules:
         try:
             rule = glob.glob(os.path.join(workdir, rules_dir, '*', rule_name + '.rule'))[0]
             defaultParams[rule_name] = get_params(rule_name, os.path.dirname(rule))
-            assembly_exts = defaultParams[rule_name]['eelpond_params']['extensions'].get('assembly_extensions', [])
+            assembly_exts = defaultParams[rule_name]['elvers_params']['extensions'].get('assembly_extensions', [])
             assembly_extensions+=assembly_exts
             includeRules += [rule]
         except: # if allows user workflow input, can't do this here (check extra targs later?)
@@ -61,18 +61,18 @@ def build_default_params(workdir, targets):
     return defaultParams
 
 def build_dirs(ep_dir, params):
-    # build main eelpond dir info
-    rules_dir = params['eelpond_directories']['rules']
-    params['eelpond_directories']['base_dir'] = ep_dir
-    params['eelpond_directories']['rules'] = os.path.join(ep_dir, rules_dir)
-    animals_dir =  params['eelpond_directories']['animals']
-    params['eelpond_directories']['animals'] = os.path.join(ep_dir, 'ep_utils', animals_dir)
+    # build main elvers dir info
+    rules_dir = params['elvers_directories']['rules']
+    params['elvers_directories']['base_dir'] = ep_dir
+    params['elvers_directories']['rules'] = os.path.join(ep_dir, rules_dir)
+    animals_dir =  params['elvers_directories']['animals']
+    params['elvers_directories']['animals'] = os.path.join(ep_dir, 'ep_utils', animals_dir)
     
     # if desired, user can also provide out_path, and all dirs will be built under there
     # outdirectory, build all directories relative to that path 
     out_path = params.get('out_path', ep_dir)
     # if user inputs an absolute path:
-    if os.path.isabs(out_path): # if not absolute, just assume subdirectory of eelpond.  
+    if os.path.isabs(out_path): # if not absolute, just assume subdirectory of elvers.  
         assert os.path.exists(out_path) and os.path.isdir(out_path), f"Error: provided output path {out_path} is not an existing directory. Please fix.\n\n"
 
     # allow user to define basename, and experiment, build outdir name
@@ -85,23 +85,23 @@ def build_dirs(ep_dir, params):
     # Now join out_path, outdir name
     outdir = os.path.join(out_path, outdir)  
     
-    params['eelpond_directories']['out_dir'] = outdir # outdir NAME
-    # if we want logs to be *within* individual outdirs, change logsdir here (else logs in eelpond dir)
-    params['eelpond_directories']['logs'] = join(outdir, os.path.basename(params['eelpond_directories']['logs']))
-    # build dirs for main eelpond output directories
-    outDirs = params['eelpond_directories']['outdirs']
+    params['elvers_directories']['out_dir'] = outdir # outdir NAME
+    # if we want logs to be *within* individual outdirs, change logsdir here (else logs in elvers dir)
+    params['elvers_directories']['logs'] = join(outdir, os.path.basename(params['elvers_directories']['logs']))
+    # build dirs for main elvers output directories
+    outDirs = params['elvers_directories']['outdirs']
     for targ, outD in outDirs.items():
         outDirs[targ] = os.path.join(outdir, outD)
     # put joined paths back in params file
-    params['eelpond_directories']['outdirs'] = outDirs
+    params['elvers_directories']['outdirs'] = outDirs
     # build dirs for included rules
 
     included_rules = params['include_rules']
     for rule in included_rules:
         prog = os.path.basename(rule).split('.rule')[0]
         # if no outdir, just use program name
-        prog_dir = params[prog]['eelpond_params'].get('outdir', prog)
-        params[prog]['eelpond_params']['outdir'] = os.path.join(outdir, prog_dir) 
+        prog_dir = params[prog]['elvers_params'].get('outdir', prog)
+        params[prog]['elvers_params']['outdir'] = os.path.join(outdir, prog_dir) 
     return params
 
 def handle_assemblyInput(assembInput, config):
@@ -123,7 +123,7 @@ def handle_assemblyInput(assembInput, config):
     config['assemblyinput'] = {}
     config['assemblyinput']['program_params'] = program_params 
     extensions['assembly_extensions'] = [input_assembly_extension]
-    config['assemblyinput']['eelpond_params'] = {'extensions': extensions} 
+    config['assemblyinput']['elvers_params'] = {'extensions': extensions} 
     return config, input_assembly_extension
 
 def main(args):
@@ -194,7 +194,7 @@ def main(args):
         if 'assemblyinput' in targs and not assembInput:
             sys.stderr.write("\n\tError: trying to run `assemblyinput` workflow, but there's no assembly file specified in your configfile. Please fix.\n\n")
             sys.exit(-1)
-        # next, grab all eelpond defaults, including rule-specific default parameters (*_params.yaml files) 
+        # next, grab all elvers defaults, including rule-specific default parameters (*_params.yaml files) 
         paramsD = build_default_params(thisdir, targs)
 
         # add any configuration from extra config files
@@ -238,7 +238,7 @@ def main(args):
             if os.path.isabs(args.report):
                 reportfile = args.report
             else:
-                reportfile = os.path.abspath(os.path.join(paramsD['eelpond_directories']['logs'], args.report))
+                reportfile = os.path.abspath(os.path.join(paramsD['elvers_directories']['logs'], args.report))
 
         if not building_dag:
             print('--------')
@@ -261,7 +261,7 @@ def main(args):
             # run!!
             # params file becomes snakemake configfile
             status = snakemake.snakemake(snakefile, configfile=paramsfile, use_conda=True, 
-                                     targets=['eelpond'], printshellcmds=True, 
+                                     targets=['elvers'], printshellcmds=True, 
                                      cores=args.threads, cleanup_conda= args.cleanup_conda,
                                      dryrun=args.dry_run, lock=not args.nolock,
                                      unlock=args.unlock,
@@ -306,11 +306,11 @@ def main(args):
         return 1
 
 
-# TODO: would be good to pull available rules from eelpond_pipeline in default config or a separate workflow file!
+# TODO: would be good to pull available rules from elvers_pipeline in default config or a separate workflow file!
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='run snakemake eelpond', usage='''run_eelpond <configfile.yaml>  [<target> ...]
+    parser = argparse.ArgumentParser(description='run snakemake elvers', usage='''run_elvers <configfile.yaml>  [<target> ...]
 
-Run eelpond snakemake workflows, using the given configfile.
+Run elvers snakemake workflows, using the given configfile.
 
 Available Workflows:
 
@@ -323,13 +323,13 @@ Available Workflows:
 
 For a quickstart, run this:
 
-   ./run_eelpond examples/nema.yaml
+   ./run_elvers examples/nema.yaml
 
-from the main eelpond directory.
+from the main elvers directory.
 
 To build an editable configfile to start work on your own data, run:
 
-./run_eelpond my_config --build_config
+./run_elvers my_config --build_config
 
 
 ''')

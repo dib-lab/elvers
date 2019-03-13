@@ -1,5 +1,5 @@
 rcorrector:
-  eelpond_params:
+  elvers_params:
     input_pattern: .trim.fq.gz
     input_dir: preprocess
     extensions:

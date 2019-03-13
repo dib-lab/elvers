@@ -1,5 +1,5 @@
 khmer:
-  eelpond_params:
+  elvers_params:
     outdir: preprocess
     extensions:
       read:

@@ -1,7 +1,7 @@
 from os.path import join
 
-trim_dir    = config['eelpond_directories']['outdirs']['preprocess']
-khmer_dir = config['khmer']['eelpond_params']['outdir']
+trim_dir    = config['elvers_directories']['outdirs']['preprocess']
+khmer_dir = config['khmer']['elvers_params']['outdir']
 khmer_params = config['khmer']['program_params']
 diginorm = khmer_params.get('diginorm', True)
 

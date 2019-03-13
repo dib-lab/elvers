@@ -1,7 +1,7 @@
 from os.path import join
 
-assembly_dir= config['eelpond_directories']['outdirs']['assemble']
-dammit_dir = config['dammit']['eelpond_params']['outdir']
+assembly_dir= config['elvers_directories']['outdirs']['assemble']
+dammit_dir = config['dammit']['elvers_params']['outdir']
 
 dammit_params = config['dammit']['program_params']
 

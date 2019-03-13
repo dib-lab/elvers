@@ -24,13 +24,13 @@ def write_config(paramsD, targets, out = None):
     if out:
         print('\n\tprinting editable configfile to {}'.format(out))
         outConfig = open(out, 'w')
-        # write general eelpond pipeline params
+        # write general elvers pipeline params
         generalP = {}
-        generalP['basename'] = paramsD.get('basename', 'eelpond')
+        generalP['basename'] = paramsD.get('basename', 'elvers')
         generalP['experiment'] = paramsD.get('experiment', '_experiment1')
         generalP['samples'] = paramsD.get('samples', 'samples.tsv')
         
-        outConfig.write((pretty_name("Eelpond Pipeline Configfile")))
+        outConfig.write((pretty_name("Elvers Pipeline Configfile")))
         yaml.dump(generalP, stream=outConfig, indent=2,  default_flow_style=False)
     else:
         sys.stdout.write('\n\n')
@@ -39,8 +39,8 @@ def write_config(paramsD, targets, out = None):
     seen_rules = []
     for targ in targets:
        # grab all rules, their params for target pipeliness
-        include_rules = paramsD['eelpond_workflows'][targ].get('include', [])
-        targets = paramsD['eelpond_workflows'][targ].get('targets', [])
+        include_rules = paramsD['elvers_workflows'][targ].get('include', [])
+        targets = paramsD['elvers_workflows'][targ].get('targets', [])
         all_rules = include_rules+targets
         targ_params = {}
         for r in all_rules:
@@ -56,7 +56,7 @@ def write_config(paramsD, targets, out = None):
             sys.stdout.write(pretty_name(targ))
             yaml.dump(targ_params, stream=sys.stdout, indent=2,  default_flow_style=False)
     if out:
-        print('\n\tdone! Now edit parameters in the {}, and rerun run_eelpond without the "--build_config" option.\n\n'.format(out))
+        print('\n\tdone! Now edit parameters in the {}, and rerun run_elvers without the "--build_config" option.\n\n'.format(out))
         outConfig.close()
     else:
         sys.stdout.write('  #######################################################\n\n')

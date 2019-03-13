@@ -1,6 +1,6 @@
 from os import path
 
-ep_params = config['trinity']['eelpond_params']
+ep_params = config['trinity']['elvers_params']
 assembly_params = config['trinity']['program_params']
 
 assembly_dir = ep_params['outdir']
@@ -11,13 +11,13 @@ def get_assembly_input(w):
     readsD = {}
     if assembly_params.get('input_kmer_trimmed', True):
         ext = '.khmer.fq.gz' 
-        input_dir = config['eelpond_directories']['outdirs']['preprocess']
+        input_dir = config['elvers_directories']['outdirs']['preprocess']
     elif assembly_params.get('input_trimmomatic_trimmed', True):
         ext = '.trim.fq.gz'
-        input_dir = config['eelpond_directories']['outdirs']['preprocess']
+        input_dir = config['elvers_directories']['outdirs']['preprocess']
     else:
         ext = '.fq.gz'
-        input_dir = config['eelpond_directories']['outdirs']['input_data']
+        input_dir = config['elvers_directories']['outdirs']['input_data']
     for s, u in samples.iterrows():
         sample, unit = u['sample'],u['unit']
         if is_single_end(sample, unit):

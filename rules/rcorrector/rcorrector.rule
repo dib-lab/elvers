@@ -7,14 +7,14 @@ from ep_utils.utils import get_params
 #if 'rcorrector' in config.keys():
 #    rcorr_params.update(config['rcorrector']) 
 
-data_dir    = config['eelpond_directories']['outdirs']['input_data']
+data_dir    = config['elvers_directories']['outdirs']['input_data']
 
 rcorr_params = config['rcorrector']['program_params']
-ep_params = config['rcorrector']['eelpond_params']
+ep_params = config['rcorrector']['elvers_params']
 
 # get inputs
 input_dirname = ep_params['input_dir']
-input_dir     = config['eelpond_directories']['outdirs'][input_dirname]
+input_dir     = config['elvers_directories']['outdirs'][input_dirname]
 ext           = ep_params['input_pattern']
 #combine_units = ep_params['extensions']['read']['combine_units']
 

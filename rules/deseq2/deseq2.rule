@@ -1,11 +1,11 @@
 from os.path import join
 
-assembly_dir= config['eelpond_directories']['outdirs']['assemble']
-quant_dir= config['eelpond_directories']['outdirs']['quantify']
+assembly_dir= config['elvers_directories']['outdirs']['assemble']
+quant_dir= config['elvers_directories']['outdirs']['quantify']
 
 deseq_params = config['deseq2']['program_params']
-ep_params = config['deseq2']['eelpond_params']
-deseq_dir = config['deseq2']['eelpond_params']['outdir']
+ep_params = config['deseq2']['elvers_params']
+deseq_dir = config['deseq2']['elvers_params']['outdir']
 
 def get_deseq2_threads(wildcards=None):
     # https://github.com/snakemake-workflows/rna-seq-star-deseq2

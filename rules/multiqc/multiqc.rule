@@ -3,7 +3,7 @@ from os.path import join
 
 ############
 #input dirs
-qc_dir   = config['multiqc']['eelpond_params']['outdir']
+qc_dir   = config['multiqc']['elvers_params']['outdir']
 # program params
 multiqc_params = config['multiqc']['program_params']
 ###############

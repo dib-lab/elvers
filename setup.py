@@ -14,7 +14,7 @@ CLASSIFIERS = [
 ]
 
 setup(
-    name = 'eelpond',
+    name = 'elvers',
     version = "0.1",
     description="snakemake automated workflow system",
     url="https://github.com/dib-lab/eelpond",
@@ -24,11 +24,11 @@ setup(
     packages = find_packages(),
     classifiers = CLASSIFIERS,
     entry_points = {'console_scripts': [
-        'eelpond  = run_eelpond.__main__:main'
+        'elvers  = run_elvers.__main__:main'
         ]
     },
     include_package_data=True,
-    package_data = { "eelpond": ["Snakefile", "*.yaml"] },
+    package_data = { "elvers": ["Snakefile", "*.yaml"] },
     install_requires = [
         'yaml',
         'snakemake',

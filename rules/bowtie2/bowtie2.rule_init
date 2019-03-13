@@ -4,14 +4,14 @@ from os.path import join
 #sample = [r1,r2] or sample = [r] gets passed in
 
 bt2_params = config['bowtie2']
-bt2_dir = bt2_params['eelpond_dirname']
+bt2_dir = bt2_params['elvers_dirname']
 # input assembly
-assembly_dir  = config['eelpond_directories']['outdirs']['assemble']
+assembly_dir  = config['elvers_directories']['outdirs']['assemble']
 # input reads
 input_dirname = bowtie2_params['input_dir']
-input_dir     = config['eelpond_directories']['outdirs'][input_dirname]
+input_dir     = config['elvers_directories']['outdirs'][input_dirname]
 
-quant_dir     = salmon_params['eelpond_dirname']
+quant_dir     = salmon_params['elvers_dirname']
 ext           =  salmon_params['input_pattern']
 combine_units = salmon_params['extensions']['read']['combine_units']
 

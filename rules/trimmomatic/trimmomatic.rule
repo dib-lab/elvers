@@ -1,10 +1,10 @@
 from os.path import join
 
-data_dir    = config['eelpond_directories']['outdirs']['input_data']
+data_dir    = config['elvers_directories']['outdirs']['input_data']
 trim_params = config['trimmomatic']['program_params']
-trim_dir    = config['trimmomatic']['eelpond_params']['outdir']
+trim_dir    = config['trimmomatic']['elvers_params']['outdir']
 
-base_dir = config['eelpond_directories']['base_dir']
+base_dir = config['elvers_directories']['base_dir']
 
 pe_adapter = trim_params['adapter_file']['pe_path']
 se_adapter = trim_params['adapter_file']['se_path']

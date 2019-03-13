@@ -1,5 +1,5 @@
 salmon:
-  eelpond_params:
+  elvers_params:
     outdir: quant
     input_pattern: .trim.fq.gz
     input_dir: preprocess

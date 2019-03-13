@@ -1,7 +1,7 @@
-site_name: eelpond
-site_url: http://dib-lab.github.io/eelpond/
-repo_name: eelpond
-repo_url: https://github.com/dib-lab/eelpond
+site_name: elvers
+site_url: http://dib-lab.github.io/elvers/
+repo_name: elvers
+repo_url: https://github.com/dib-lab/elvers
 edit_uri: ""
 
 extra_css: css/custom.css
@@ -38,7 +38,7 @@ extra_css:
 
 # give a title for each page
 nav:
-  - 'Eelpond' : 'index.md'
+  - 'elvers' : 'index.md'
   - 'About': 'about.md'
   - 'Quickstart': 'quickstart.md'
   - 'Choosing and Configuring Workflows': configure.md

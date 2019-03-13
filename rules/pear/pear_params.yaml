@@ -1,5 +1,5 @@
 pear:
-  eelpond_params:
+  elvers_params:
     outdir: preprocess/pear
     input_pattern: .trim.fq.gz
     input_dir: preprocess

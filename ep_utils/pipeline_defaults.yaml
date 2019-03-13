@@ -1,10 +1,10 @@
 # default settings: do not change these lightly! 
 
 #general settings
-basename: eelpond
+basename: elvers
 
 # these outdirectories will be available to all workflows and rules
-eelpond_directories:
+elvers_directories:
   rules: rules
   animals: animals
   logs: logs
@@ -19,7 +19,7 @@ eelpond_directories:
 # programs to be run at each step of the pipeline
 # change these if you're sure you have new program 
 # params and targets right.
-eelpond_workflows:
+elvers_workflows:
   default:
     include:
       - get_data

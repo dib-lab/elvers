@@ -1,9 +1,9 @@
 from os.path import join
 
-assembly_dir= config['eelpond_directories']['outdirs']['assemble']
-preprocess_dir= config['eelpond_directories']['outdirs']['preprocess']
+assembly_dir= config['elvers_directories']['outdirs']['assemble']
+preprocess_dir= config['elvers_directories']['outdirs']['preprocess']
 sourmash_params = config['sourmash']['program_params']
-sourmash_dir = config['sourmash']['eelpond_params']['outdir']
+sourmash_dir = config['sourmash']['elvers_params']['outdir']
 
 
 def get_reads(wildcards):

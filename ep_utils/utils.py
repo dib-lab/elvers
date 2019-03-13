@@ -122,23 +122,23 @@ def generate_program_targs(configD, samples, basename, assembly_exts, contrasts)
 
 def generate_mult_targs(configD, workflow, samples):
     # pass full config, program names. Call generate_program_targs to build each
-    workflows = configD['eelpond_workflows']
+    workflows = configD['elvers_workflows']
     targs = []
     base = configD['basename']
     assembly_exts = configD.get('assembly_extensions', [""])
     # add assertion to make sure workflow exists in config!
     if workflows.get(workflow, None):
-        target_rules = configD['eelpond_workflows'][workflow]['targets']
+        target_rules = configD['elvers_workflows'][workflow]['targets']
         for r in target_rules:
             contrasts = configD[r]['program_params'].get('contrasts', [])
-            targs += generate_program_targs(configD[r]['eelpond_params'], samples, base, assembly_exts, contrasts)
+            targs += generate_program_targs(configD[r]['elvers_params'], samples, base, assembly_exts, contrasts)
     targs = list(set(targs))
     return targs
 
 # replacement for generate_mult_targs, to enable full workflows!
 def generate_all_targs(configD, samples):
     # pass full config, program names. Call generate_program_targs to build each
-    workflows = configD['eelpond_workflows']
+    workflows = configD['elvers_workflows']
     targs = []
     base = configD['basename']
     assembly_exts = configD.get('assembly_extensions', [""])
@@ -152,7 +152,7 @@ def generate_all_targs(configD, samples):
             target_rules += [flow]
     for r in set(target_rules):
         contrasts = configD[r]['program_params'].get('contrasts', [])
-        targs += generate_program_targs(configD[r]['eelpond_params'], samples, base, assembly_exts, contrasts)
+        targs += generate_program_targs(configD[r]['elvers_params'], samples, base, assembly_exts, contrasts)
     targs = list(set(targs))
     return targs
             
