@@ -1,0 +1,6 @@
+include LICENSE README.md requirements.txt
+recursive-include rules *
+recursive-include ep_utils *
+global-exclude *.orig
+global-exclude *.pyc
+global-exclude *.so

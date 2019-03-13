@@ -1,0 +1,9 @@
+pyyaml
+snakemake
+pytest
+numpy
+pandas
+graphviz
+networkx
+pygraphviz
+psutil

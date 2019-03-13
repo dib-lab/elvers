@@ -126,8 +126,61 @@ def handle_assemblyInput(assembInput, config):
     config['assemblyinput']['elvers_params'] = {'extensions': extensions} 
     return config, input_assembly_extension
 
-def main(args):
+def main():
+    parser = argparse.ArgumentParser(description='run snakemake elvers', usage='''run_elvers <configfile.yaml>  [<target> ...]
+
+Run elvers snakemake workflows, using the given configfile.
+
+Available Workflows:
+
+   default           - run full eel_pond workflow
+   preprocess         - preprocess reads 
+   assemble           - transcriptome assembly 
+   annotate           - annotate transcriptome assembly
+   quantify           - read quantification 
+   diffexp            - conduct differential expression
+
+For a quickstart, run this:
+
+   ./run_elvers examples/nema.yaml
+
+from the main elvers directory.
+
+To build an editable configfile to start work on your own data, run:
+
+./run_elvers my_config --build_config
+
+
+''')
+
+    parser.add_argument('configfile')
+    parser.add_argument('targets', nargs='*', default=['default'])
+    parser.add_argument('-t', '--threads', type=int, default=1)
+    parser.add_argument('--extra_config', action='append', default = None)
+    parser.add_argument('-n', '--dry-run', action='store_true')
+    parser.add_argument('-v', '--verbose', action='store_true')
+    parser.add_argument('-w', '--print_workflows', action='store_true', help='just show available workflows')
+    parser.add_argument('-r', '--print_rules', action='store_true', help='just show available rules')
+    parser.add_argument('-p', '--print_params', action='store_true', help='print parameters for chosen workflows or rules')
+    parser.add_argument('--build_config', action='store_true', help='just build the default parameter file')
     
+    # advanced args below (maybe separate so these don't always print out)
+    parser.add_argument('--report', default="report.html", help='filename for a final report of this run. This will be in the logs dir, unless you provide an absolute path.')
+    parser.add_argument('--conda_prefix', default=None, help='location for conda environment installs')
+    parser.add_argument('--create_envs_only', action='store_true', help="just install software in conda envs, don't execute workflows")
+    parser.add_argument('-d', '--debug', action='store_true')
+    parser.add_argument('--dag', action='store_true', help='boolean: output a flowchart of the directed acyclic graph of this workflow in graphviz dot format (does not require/run dot)')
+    parser.add_argument('--dagfile', default=None, help='filename to output a flowchart of the directed acyclic graph of this workflow in graphviz dot format')
+    parser.add_argument('--dagpng',  default=None, help='filename to output a flowchart of the directed acyclic graph of this workflow in png image format')
+    parser.add_argument('-k', '--keep_going', action='store_true')
+    parser.add_argument('--nolock', action='store_true')
+    parser.add_argument('--unlock', action='store_true')
+    parser.add_argument('--cleanup_conda', action='store_true')
+    parser.add_argument('--forcetargets', action='store_true', help='force given targets to be re-created (default False)')
+    parser.add_argument('--forceall', action='store_true', help='force all output files to be re-created (default False)')
+    parser.add_argument('--restart_times',type=int, default=0, help='let snakemake try rerunning any failed tools (input number of times to try rerunning). default = 0')
+    args = parser.parse_args()
+
     thisdir = os.path.abspath(os.path.dirname(__file__))
     # print available workflows and rules, if desired
     if args.print_workflows or args.print_rules:
@@ -308,58 +361,6 @@ def main(args):
 
 # TODO: would be good to pull available rules from elvers_pipeline in default config or a separate workflow file!
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='run snakemake elvers', usage='''run_elvers <configfile.yaml>  [<target> ...]
-
-Run elvers snakemake workflows, using the given configfile.
-
-Available Workflows:
-
-   default           - run full eel_pond workflow
-   preprocess         - preprocess reads 
-   assemble           - transcriptome assembly 
-   annotate           - annotate transcriptome assembly
-   quantify           - read quantification 
-   diffexp            - conduct differential expression
-
-For a quickstart, run this:
-
-   ./run_elvers examples/nema.yaml
-
-from the main elvers directory.
-
-To build an editable configfile to start work on your own data, run:
-
-./run_elvers my_config --build_config
-
-
-''')
-
-    parser.add_argument('configfile')
-    parser.add_argument('targets', nargs='*', default=['default'])
-    parser.add_argument('-t', '--threads', type=int, default=1)
-    parser.add_argument('--extra_config', action='append', default = None)
-    parser.add_argument('-n', '--dry-run', action='store_true')
-    parser.add_argument('-v', '--verbose', action='store_true')
-    parser.add_argument('-w', '--print_workflows', action='store_true', help='just show available workflows')
-    parser.add_argument('-r', '--print_rules', action='store_true', help='just show available rules')
-    parser.add_argument('-p', '--print_params', action='store_true', help='print parameters for chosen workflows or rules')
-    parser.add_argument('--build_config', action='store_true', help='just build the default parameter file')
+    sys.exit(main())
     
-    # advanced args below (maybe separate so these don't always print out)
-    parser.add_argument('--report', default="report.html", help='filename for a final report of this run. This will be in the logs dir, unless you provide an absolute path.')
-    parser.add_argument('--conda_prefix', default=None, help='location for conda environment installs')
-    parser.add_argument('--create_envs_only', action='store_true', help="just install software in conda envs, don't execute workflows")
-    parser.add_argument('-d', '--debug', action='store_true')
-    parser.add_argument('--dag', action='store_true', help='boolean: output a flowchart of the directed acyclic graph of this workflow in graphviz dot format (does not require/run dot)')
-    parser.add_argument('--dagfile', default=None, help='filename to output a flowchart of the directed acyclic graph of this workflow in graphviz dot format')
-    parser.add_argument('--dagpng',  default=None, help='filename to output a flowchart of the directed acyclic graph of this workflow in png image format')
-    parser.add_argument('-k', '--keep_going', action='store_true')
-    parser.add_argument('--nolock', action='store_true')
-    parser.add_argument('--unlock', action='store_true')
-    parser.add_argument('--cleanup_conda', action='store_true')
-    parser.add_argument('--forcetargets', action='store_true', help='force given targets to be re-created (default False)')
-    parser.add_argument('--forceall', action='store_true', help='force all output files to be re-created (default False)')
-    parser.add_argument('--restart_times',type=int, default=0, help='let snakemake try rerunning any failed tools (input number of times to try rerunning). default = 0')
-    args = parser.parse_args()
 
-    sys.exit(main(args))
