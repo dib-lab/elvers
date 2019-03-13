@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from unittest import TestCase
-from .const import (here, run_elvers_cmd, test_config_yaml)
+from .const import (here, elvers_cmd, test_config_yaml)
 from .utils import capture_stdouterr
 
 
@@ -13,7 +13,7 @@ class TestPrint(TestCase):
     """
     def test_print_workflows(self):
         """Test the --print_workflows flag"""
-        command = [run_elvers_cmd, '--print-workflows']
+        command = [elvers_cmd, '--print-workflows']
         p_out, p_err = capture_stdouterr(command,here)
 
         gold_output = '''
@@ -107,13 +107,13 @@ class TestPrint(TestCase):
 
     def test_print_rules(self):
         """Test the --print_rules flag"""
-        command = [run_elvers_cmd, '--print-rules']
+        command = [elvers_cmd, '--print-rules']
         p_out, p_err = capture_stdouterr(command,here)
         pass
 
     def test_print_params(self):
         """Test the --print_params flag"""
-        command = [run_elvers_cmd, '--print-params']
+        command = [elvers_cmd, '--print-params']
         p_out, p_err = capture_stdouterr(command,here)
         pass
 

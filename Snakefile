@@ -1,8 +1,8 @@
 # Snakemake configuration file for running elvers pipelines.
 #
-# see script 'run_elvers' in this directory for a convenient entry point.
+# see script 'elvers' in this directory for a convenient entry point.
 #
-# Quickstart: `conf/run dory-test full`
+# Quickstart: './elvers examples/nema.yml' 
 #
 
 import os

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from unittest import TestCase
-from .const import (here, run_elvers_cmd, test_config_yaml)
+from .const import (here, elvers_cmd, test_config_yaml)
 from .utils import capture_stdouterr
 
 
@@ -12,13 +12,13 @@ class TestConfig(TestCase):
     """
     def test_build_config(self):
         """Test the --build_config flag"""
-        command = [run_elvers_cmd, '--build_config']
+        command = [elvers_cmd, '--build_config']
         p_out, p_err = capture_stdouterr(command,here)
         pass
 
     def test_extra_config(self):
         """Test the --build_config flag"""
-        command = [run_elvers_cmd, '-n', '--extra_config']
+        command = [elvers_cmd, '-n', '--extra_config']
         p_out, p_err = capture_stdouterr(command,here)
         pass
 

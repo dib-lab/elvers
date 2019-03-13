@@ -1,5 +1,5 @@
 from unittest import TestCase
-from .const import (here, run_elvers_cmd, test_config_yaml)
+from .const import (here, elvers_cmd, test_config_yaml)
 from .utils import capture_stdouterr
 import subprocess
 import os
@@ -15,7 +15,7 @@ class TestDag(TestCase):
     def test_dag_flag(self):
         which_workflow = 'default'
         flags = '--dag'
-        command = [run_elvers_cmd, test_config_yaml, which_workflow, flags]
+        command = [elvers_cmd, test_config_yaml, which_workflow, flags]
         p_out, p_err = capture_stdouterr(command,here)
 
         # Look for this message in snakemake output
@@ -33,7 +33,7 @@ class TestDag(TestCase):
         dotfile_fullpath = os.path.join(here,dotfile_name)
         which_workflow = 'default'
         flags = '--dagfile=%s'%(dotfile_fullpath)
-        command = [run_elvers_cmd, test_config_yaml, which_workflow, flags]
+        command = [elvers_cmd, test_config_yaml, which_workflow, flags]
         p_out, p_err = capture_stdouterr(command,here)
 
         # Look for this message in snakemake output
@@ -57,7 +57,7 @@ class TestDag(TestCase):
         pngfile_fullpath = os.path.join(here,pngfile_name)
         which_workflow = 'default'
         flags = '--dagpng=%s'%(pngfile_fullpath)
-        command = [run_elvers_cmd, test_config_yaml, which_workflow, flags]
+        command = [elvers_cmd, test_config_yaml, which_workflow, flags]
         p_out, p_err = capture_stdouterr(command,here)
 
         # Look for this message in snakemake output

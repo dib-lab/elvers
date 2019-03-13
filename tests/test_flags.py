@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from unittest import TestCase
-from .const import (here, run_elvers_cmd, test_config_yaml)
+from .const import (here, elvers_cmd, test_config_yaml)
 from .utils import capture_stdouterr
 
 
@@ -17,7 +17,7 @@ class TestFlags(TestCase):
 
     def test_help_flag(self):
         """Test the -h --help flag"""
-        command = [run_elvers_cmd,'-h']
+        command = [elvers_cmd,'-h']
         p_out, p_err = capture_stdouterr(command,here)
         self.assertIn('elvers',p_out)
         self.assertIn('snakemake',p_out)
@@ -26,7 +26,7 @@ class TestFlags(TestCase):
         """Test the -n --dry-run flag"""
         which_workflow = 'default'
         flags = '-n'
-        command = [run_elvers_cmd, test_config_yaml, which_workflow, flags]
+        command = [elvers_cmd, test_config_yaml, which_workflow, flags]
         p_out, p_err = capture_stdouterr(command,here)
         verify_present = '''
 Job counts:

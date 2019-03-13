@@ -24,7 +24,7 @@ setup(
     packages = find_packages(),
     classifiers = CLASSIFIERS,
     entry_points = {'console_scripts': [
-        'elvers  = run_elvers.__main__:main'
+        'elvers  = elvers.__main__:main'
         ]
     },
     include_package_data=True,
