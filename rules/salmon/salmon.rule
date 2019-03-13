@@ -1,14 +1,5 @@
 from os.path import join
 import pandas as pd
-#from ep_utils import read_samples
-def read_samples(samples_tsv):
-    samples = pd.read_csv(samples_tsv, dtype=str, sep='\t').set_index(["sample", "unit"], drop=False)
-    samples['name'] = samples["sample"].map(str) + '_' + samples["unit"].map(str)
-    return samples
-
-def is_single_end(sample, unit, end = '', assembly = ''):
-    samples = read_samples(config['samples'])
-    return pd.isnull(samples.loc[(sample, unit), "fq2"])
 
 salmon_params = config['salmon']['program_params']
 ep_params = config['salmon']['eelpond_params']
@@ -25,19 +16,12 @@ else:
     input_dir = config['eelpond_directories']['outdirs']['input_data']
     ext = '.fq.gz'
 
-
 # get outdir
 quant_dir     = ep_params['outdir']
-
-# this should already exist in namespace when we run via main Snakefile. Need for testing though
-
 
 # use if you don't want to collapse technical replicates ("units" column; deseq2 not supported)
 def get_sample_no_combine(w):
     readsD = {}
-    
-    samples = read_samples(config['samples'])
-   
     if not is_single_end(**w): # note, this requires unit to be in outputs!
         readsD['r1'] = join(input_dir, f'{w.sample}_{w.unit}_1{ext}')
         readsD['r2'] = join(input_dir, f'{w.sample}_{w.unit}_2{ext}')
@@ -48,9 +32,6 @@ def get_sample_no_combine(w):
 def get_sample_combine_units(w):
     readsD = {}
     r1,r2,r = [],[],[]
-   
-    samples = read_samples(config['samples'])
-   
     unit_list = samples.groupby(level=0).get_group(w.sample)['unit'].tolist()
     for unit in unit_list:
         if not is_single_end(w.sample, unit):
