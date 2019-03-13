@@ -1,0 +1,7 @@
+sample	unit	fq1	fq2	condition
+ERR458500	1	https://osf.io/xju4a/download		wt
+ERR458501	2	https://osf.io/nmqe6/download		wt
+ERR458502	3	https://osf.io/qfsze/download		wt
+ERR458493	1	https://osf.io/5daup/download		mut
+ERR458494	2	https://osf.io/8rvh5/download		mut
+ERR458495	3	https://osf.io/2wvn3/download		mut
