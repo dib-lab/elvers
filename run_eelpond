@@ -107,28 +107,6 @@ def build_dirs(ep_dir, params):
         params[prog]['eelpond_params']['outdir'] = os.path.join(outdir, prog_dir) 
     return params
 
-def handle_assemblyInput(assembInput, config):
-    # find files
-    program_params = config['assemblyinput'].get('program_params')
-    assemblyfile = program_params.get('assembly', None)
-    assert os.path.exists(assemblyfile), 'Error: cannot find input assembly at {}\n'.format(assemblyfile)
-    sys.stderr.write('\tFound input assembly at {}\n'.format(assemblyfile))
-    gtmap = program_params.get('gene_trans_map', '')
-    extensions= {}
-    if gtmap:
-        assert os.path.exists(gtmap), 'Error: cannot find assembly gene_trans_map at {}\n'.format(gtmap)
-        sys.stderr.write('\tFound input assembly gene-transcript map at {}\n'.format(gtmap))
-        extensions = {'base': ['.fasta', '.fasta.gene_trans_map']} # kinda hacky. do this better
-    else:
-        program_params['gene_trans_map'] = ''
-    # grab user-input assembly extension
-    input_assembly_extension = program_params.get('assembly_extension', '')
-    config['assemblyinput'] = {}
-    config['assemblyinput']['program_params'] = program_params 
-    extensions['assembly_extensions'] = [input_assembly_extension]
-    config['assemblyinput']['eelpond_params'] = {'extensions': extensions} 
-    return config, input_assembly_extension
-
 def main(args):
     
     thisdir = os.path.abspath(os.path.dirname(__file__))

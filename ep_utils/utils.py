@@ -72,6 +72,31 @@ def update_nested_dict(d, other):
 def is_single_end(sample, unit, end = '', assembly = ''):
     return pd.isnull(samples.loc[(sample, unit), "fq2"])
 
+def handle_assemblyinput(assembInput, config):
+    extensions= {}
+    program_params = config['assemblyinput'].get('program_params')
+    assemblyfile = program_params.get('assembly', None)
+    if assemblyfile:
+        assert os.path.exists(assemblyfile), 'Error: cannot find input assembly at {}\n'.format(assemblyfile)
+        sys.stderr.write('\tFound input assembly at {}\n'.format(assemblyfile))
+        assemblyfile = os.path.realpath(assemblyfile)
+    else:
+        sys.stderr.write("\n\tError: trying to run `assemblyinput` workflow, but there's no assembly file specified in your configfile. Please fix.\n\n")
+    gtmap = program_params.get('gene_trans_map', '')
+    if gtmap:
+        assert os.path.exists(gtmap), 'Error: cannot find assembly gene_trans_map at {}\n'.format(gtmap)
+        sys.stderr.write('\tFound input assembly gene-transcript map at {}\n'.format(gtmap))
+        extensions = {'base': ['.fasta', '.fasta.gene_trans_map']}
+        gtmap = os.path.realpath(gtmap)
+    else:
+        program_params['gene_trans_map'] = ''
+        config['no_gene_trans_map']= True
+    # grab user-input assembly extension
+    input_assembly_extension = program_params.get('assembly_extension', '_input')
+    extensions['assembly_extensions'] = [input_assembly_extension]
+    config['assemblyinput'] = {'program_params': program_params, 'eelpond_params': {'extensions':extensions}}
+    return config, input_assembly_extension
+
 def generate_targs(outdir, basename, samples, assembly_exts=[''], base_exts = None, read_exts = None, other_exts = None, contrasts = []):
     base_targets, read_targets, other_targs = [],[],[]
     # handle read targets
@@ -120,23 +145,6 @@ def generate_program_targs(configD, samples, basename, assembly_exts, contrasts)
     targets = generate_targs(outdir, basename, samples, assembly_exts, exts.get('base', None),exts.get('read'), exts.get('other'), contrasts)
     return targets
 
-# this is fully obsolete now?
-def generate_mult_targs(configD, workflow, samples):
-    # pass full config, program names. Call generate_program_targs to build each
-    workflows = configD['eelpond_workflows']
-    targs = []
-    base = configD['basename']
-    assembly_exts = configD.get('assembly_extensions', [""])
-    # add assertion to make sure workflow exists in config!
-    if workflows.get(workflow, None):
-        target_rules = configD['eelpond_workflows'][workflow]['targets']
-        for r in target_rules:
-            contrasts = configD[r]['program_params'].get('contrasts', [])
-            targs += generate_program_targs(configD[r]['eelpond_params'], samples, base, assembly_exts, contrasts)
-    targs = list(set(targs))
-    return targs
-
-# replacement for generate_mult_targs, to enable full workflows!
 def generate_all_targs(configD, samples):
     # pass full config, program names. Call generate_program_targs to build each
     workflows = configD['eelpond_workflows']
