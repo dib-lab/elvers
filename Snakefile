@@ -20,7 +20,7 @@ FTP = FTP.RemoteProvider()
 HTTP = HTTP.RemoteProvider()
 
 # read in sample info, with units for downloading samples and doing fastqc_pretrim
-units = pd.read_table(config["samples"],dtype=str).set_index(["sample", "unit"], drop=False)
+units = pd.read_csv(config["samples"],dtype=str, sep = '\t').set_index(["sample", "unit"], drop=False)
 #validate(samples, schema="schemas/samples_v2.schema.yaml") # new version
 
 # keep some info around for now:

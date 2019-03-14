@@ -36,7 +36,7 @@ If you've generated an assembly, even if you've already run `./run_eelpond examp
 
 ## Configuring the quantify subworkflow 
 
-To set up your sample info and build a configfile, see [Understanding and Configuring Workflows](about_and_configure.md).
+To set up your sample info and build a configfile, see [Understanding and Configuring Workflows](configure.md).
 
 If you want to add the `quantify` program parameters to a previously built configfile, run:
 ```
@@ -66,7 +66,7 @@ salmon:
   #######################################################
 ```
 
-Override default params for any program by placing these lines in your `yaml` config file, and modifying values as desired. For more details, see [Understanding and Configuring Workflows](about_and_configure.md).For more on what parameters are available, see the docs for each specific program or utility rule:
+Override default params for any program by placing these lines in your `yaml` config file, and modifying values as desired. For more details, see [Understanding and Configuring Workflows](configure.md).For more on what parameters are available, see the docs for each specific program or utility rule:
 
   - [get_data](get_data.md)
   - [trimmomatic](trimmomatic.md)

@@ -28,7 +28,7 @@ FastQC will output quality control files in the `preprocess/fastqc` subdirectory
 
 ## Modifying Params for FastQC:
 
-Be sure to set up your sample info and build a configfile first (see [Understanding and Configuring Workflows](about_and_configure.md)).
+Be sure to set up your sample info and build a configfile first (see [Understanding and Configuring Workflows](configure.md)).
 
 To see the available parameters for the `fastqc` rule, run
 ```
@@ -47,7 +47,7 @@ There's almost nothing in here because we use default params. However, you can m
 ```
   extra: '--someflag someparam --someotherflag thatotherparam'
 ```
-See the [FastQC documentation](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/) for any options you could add. Be sure the modified lines go into the config file you're using to run `eelpond` (see [Understanding and Configuring Workflows](about_and_configure.md)). 
+See the [FastQC documentation](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/) for any options you could add. Be sure the modified lines go into the config file you're using to run `eelpond` (see [Understanding and Configuring Workflows](configure.md)). 
 
 
 ## Advanced Usage: Running FastQC as a standalone rule

@@ -30,7 +30,7 @@ Khmer will output files in the `preprocess` subdirectory of this output director
 
 ## Modifying Params for Khmer:
 
-Be sure to set up your sample info and build a configfile first (see [Understanding and Configuring Workflows](about_and_configure.md)).
+Be sure to set up your sample info and build a configfile first (see [Understanding and Configuring Workflows](configure.md)).
 
 To see the available parameters for the `khmer` rule, run
 ```
@@ -51,7 +51,7 @@ khmer:
   #####################################################
 ```
 
-See the [Khmer documentation]([khmer](https://khmer.readthedocs.io/)) to learn more about these parameters. Be sure the modified lines go into the config file you're using to run `eelpond` (see [Understanding and Configuring Workflows](about_and_configure.md)).
+See the [Khmer documentation]([khmer](https://khmer.readthedocs.io/)) to learn more about these parameters. Be sure the modified lines go into the config file you're using to run `eelpond` (see [Understanding and Configuring Workflows](configure.md)).
 
 ## Advanced Usage: Running Khmer as a standalone rule
 
