@@ -5,5 +5,5 @@ numpy
 pandas
 graphviz
 networkx
-pygraphviz
 psutil
+ftputil

@@ -15,10 +15,10 @@ import snakemake
 import shutil
 import subprocess
 
-from .utils import utils
-from .utils import pretty_config # import pretty_name, write_config
-from .utils import print_workflow_options #import print_available_workflows_and_tools
-from .utils import capture_stdout #import CaptureStdout
+from .utils.utils import *
+from .utils.pretty_config  import pretty_name, write_config
+from .utils.print_workflow_options import print_available_workflows_and_tools
+from .utils.capture_stdout import CaptureStdout
 
 from . import _program
 
