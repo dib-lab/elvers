@@ -72,9 +72,9 @@ def build_dirs(ep_dir, params):
 
     # if desired, user can also provide out_path, and all dirs will be built under there
     # outdirectory, build all directories relative to that path
-    out_path = params.get('out_path', ep_dir)
+    out_path = params.get('out_path', os.getcwd())
     # if user inputs an absolute path:
-    if os.path.isabs(out_path): # if not absolute, just assume subdirectory of elvers.
+    if os.path.isabs(out_path): # if not absolute, just assume subdirectory of current working directory
         assert os.path.exists(out_path) and os.path.isdir(out_path), f"Error: provided output path {out_path} is not an existing directory. Please fix.\n\n"
 
     # allow user to define basename, and experiment, build outdir name
