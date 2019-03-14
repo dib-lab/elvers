@@ -32,7 +32,7 @@ install:
   - conda env create --file environment.yml -n test-env
   - source activate test-env
   #- pip install -r requirements.txt
-  - python setup.py build_ext --inplace
+  - python setup.py build install
 
 script:
   - pytest -v
