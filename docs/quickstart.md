@@ -15,28 +15,31 @@ source ~/.bash_profile
 
 As a side note, if you're working on a cloud computing system, you may be able to find an image where conda has been pre-installed (such as this Ubuntu 16.04 [Jetstream image](https://use.jetstream-cloud.org/application/images/107)). 
 
-## Get `elvers`
+## Create a working environment and install Elvers!
 
-Now, get the **`elvers`** code
+`elvers` needs a few programs installed in order to run properly. To handle this, we run `elvers` within a conda environment that contains all dependencies. 
+
+Get the **`elvers`** code
 ```
-git clone https://github.com/dib-lab/elvers.git
+git clone https://github.com/dib-lab/eelpond.git
 cd elvers
 ```
 
-## Create a working environment
-
-Eelpond needs a few programs installed in order to run properly. To handle this, we run `elvers` within a conda environment that contains all dependencies. 
-
 When you first get **`elvers`**, you'll need to create this environment on your machine:
 ```
-conda env create --file environment.yml -n elvers
+conda env create --file environment.yml -n elvers-env
 ```
 
 Now, activate that environment: 
 ```
-conda activate elvers
+conda activate elvers-env
 ```
 To deactivate after you've finished running `elvers`, type `conda deactivate`. You'll need to reactivate this environment anytime you want to run elvers.
+
+Now. install the `elvers` package
+```
+pip install .
+```
 
 Now you can start running workflows on test data!
 

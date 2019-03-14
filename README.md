@@ -39,20 +39,30 @@ echo export PATH="$HOME/miniconda3/bin:$PATH" >> ~/.bash_profile
 source ~/.bash_profile
 ```
 
-Now, get the elvers code
+## Create a working environment and install `elvers`!
+
+`elvers` needs a few programs installed in order to run properly. To handle this, we run `elvers` within a conda environment that contains all dependencies.
+
+Get the **`elvers`** code
 ```
-git clone https://github.com/dib-lab/elvers.git
+git clone https://github.com/dib-lab/eelpond.git
 cd elvers
 ```
 
-Create a conda environment with all the dependencies for elvers
+When you first get **`elvers`**, you'll need to create this environment on your machine:
 ```
-conda env create --file environment.yml -n elvers
+conda env create --file environment.yml -n elvers-env
 ```
 
-Activate that environment. You'll need to do this anytime you want to run elvers
+Now, activate that environment:
 ```
-conda activate elvers
+conda activate elvers-env
+```
+To deactivate after you've finished running `elvers`, type `conda deactivate`. You'll need to reactivate this environment anytime you want to run elvers.
+
+Now. install the `elvers` package. 
+```
+pip install .
 ```
 Now you can start running workflows on test data!
 
@@ -62,7 +72,7 @@ The Eel Pond protocol (which inspired the `elvers` name) included line-by-line c
 
 To test the default workflow:
 ```
-./run_elvers examples/nema.yaml default
+elvers examples/nema.yaml default
 ```
 This will download and run a small set of _Nematostella vectensis_ test data (from [Tulin et al., 2013](https://evodevojournal.biomedcentral.com/articles/10.1186/2041-9139-4-16))
 
@@ -100,13 +110,13 @@ Currently, all workflows require a properly-formatted read inputs `tsv` file as 
 
 You can see the available workflows (and which programs they run) by using the `--print_workflows` flag:
 ```
-./run_elvers examples/nema.yaml --print_workflows
+elvers examples/nema.yaml --print_workflows
 ```
 
 Each included tool can also be run independently, if appropriate input files are provided. This is not always intuitive, so please see our documentation for running each tools for details (described as "Advanced Usage"). To see all available tools, run:
 
 ```
-./run_elvers examples/nema.yaml --print_rules
+elvers examples/nema.yaml --print_rules
 ```
 
 ## Citation information
@@ -118,7 +128,7 @@ This is *pre-publication* code; a manuscript is in preparation. Please contact t
 
 See the help, here:
 ```
-./run_elvers -h
+elvers -h
 ```
 
 **References:**  
