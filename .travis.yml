@@ -31,8 +31,8 @@ install:
   - rm -fr $HOME/miniconda/envs/test-env
   - conda env create --file environment.yml -n test-env
   - source activate test-env
-  - pip install -r requirements.txt
-  - python setup.py build install
+  #- pip install -r requirements.txt
+  - python setup.py build_ext --inplace
 
 script:
   - pytest -v
