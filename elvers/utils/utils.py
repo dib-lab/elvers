@@ -30,7 +30,7 @@ def find_yaml(workdir, filename, name):
 def read_yaml(filename):
     with open(filename, 'r') as stream:
         try:
-            yamlD = yaml.load(stream, Loader=yaml.FullLoader)
+            yamlD = yaml.load(stream) #, Loader=yaml.FullLoader)
         except yaml.YAMLError as exc:
             print(exc)
     return yamlD
@@ -162,7 +162,7 @@ def get_params(rule_name, rule_dir='rules'):
     rule_params = {}
     with open(rule_paramsfile, 'r') as stream:
         try:
-            paramsD = yaml.load(stream, Loader=yaml.FullLoader)
+            paramsD = yaml.load(stream) # , Loader=yaml.FullLoader)
         except yaml.YAMLError as exc:
             print(exc)
         rule_params= paramsD[rule_name]
