@@ -9,6 +9,10 @@ deseq_params = config['deseq2']['program_params']
 ep_params = config['deseq2']['eelpond_params']
 deseq_dir = config['deseq2']['eelpond_params']['outdir']
 
+# this is handled in `run_eelpond`, but redundancy doesn't hurt
+if config.get('no_gene_trans_map', False):
+    deseq_params['gene_trans_map'] = False
+
 def get_deseq2_threads(wildcards=None):
     # https://github.com/snakemake-workflows/rna-seq-star-deseq2
     # https://twitter.com/mikelove/status/918770188568363008
