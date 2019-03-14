@@ -41,6 +41,6 @@ setup(
       """.format(program = _program),
     install_requires = required,
     include_package_data=True,
-    package_data = { "elvers": ["Snakefile", "*.yaml"] },
+    package_data = { "elvers": ["Snakefile", "*.yaml", "*.yml"] },
     zip_safe=False
 )

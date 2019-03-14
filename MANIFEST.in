@@ -1,6 +1,6 @@
-include LICENSE README.md requirements.txt
-recursive-include rules *
-recursive-include ep_utils *
+include LICENSE README.md requirements.txt environment.yml
+recursive-include elvers *
+recursive-include examples *
 global-exclude *.orig
 global-exclude *.pyc
 global-exclude *.so
