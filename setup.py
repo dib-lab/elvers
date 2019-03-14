@@ -1,4 +1,14 @@
 from setuptools import setup, find_packages
+import glob
+import os
+
+with open('requirements.txt') as f:
+    required = [x for x in f.read().splitlines() if not x.startswith("#")]
+
+# Note: the _program variable is set in __init__.py.
+# it determines the name of the package/final command line tool.
+from elvers import __version__, _program
+
 
 CLASSIFIERS = [
     "Environment :: Console",
@@ -14,29 +24,23 @@ CLASSIFIERS = [
 ]
 
 setup(
-    name = 'elvers',
-    version = "0.1",
+    name = _program,
+    version = __version__,
+    test_suite='pytest.collector',
+    tests_require=['pytest'],
     description="snakemake automated workflow system",
-    url="https://github.com/dib-lab/eelpond",
+    url="https://github.com/dib-lab/elvers",
     author="N.T. Pierce and C. Titus Brown",
     author_email="ntpierce@ucdavis.edu",
     license="BSD 3-clause",
     packages = find_packages(),
     classifiers = CLASSIFIERS,
-    entry_points = {'console_scripts': [
-        'elvers  = elvers.__main__:main'
-        ]
-    },
+    entry_points="""
+    [console_scripts]
+    {program} = {program}.__main__:main
+      """.format(program = _program),
+    install_requires = required,
     include_package_data=True,
     package_data = { "elvers": ["Snakefile", "*.yaml"] },
-    install_requires = [
-        'yaml',
-        'snakemake',
-        'numpy',
-        'pandas',
-        'pytest',
-        'graphviz',
-        'networkx',
-        'pygraphviz',
-        'psutil',]
+    zip_safe=False
 )

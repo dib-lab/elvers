@@ -5,7 +5,6 @@ import collections
 import pandas as pd
 from os.path import join
 
-
 # general utilities
 def find_Snakefile(workdir):
     snakefile = os.path.join(workdir, 'Snakefile')
@@ -89,7 +88,7 @@ def generate_targs(outdir, basename, samples, assembly_exts=[''], base_exts = No
             read_targets+=[join(outdir, name + e) for e in se_ext for name in se_names]
         if pe_ext and len(pe_names) > 0:
             read_targets+=[join(outdir, name + e) for e in pe_ext for name in pe_names]
-    # handle base targets 
+    # handle base targets
     read_targs = []
     if assembly_exts:
         for ext in assembly_exts:
@@ -107,7 +106,7 @@ def generate_targs(outdir, basename, samples, assembly_exts=[''], base_exts = No
     else:
         base_targs = base_targets
     if other_exts:
-        # no extension, just single filename that we don't want to generate for multiple assembly extensions 
+        # no extension, just single filename that we don't want to generate for multiple assembly extensions
         other_targs = [join(outdir, e) for e in other_exts]
     return base_targs + read_targs + other_targs
 
@@ -155,9 +154,9 @@ def generate_all_targs(configD, samples):
         targs += generate_program_targs(configD[r]['elvers_params'], samples, base, assembly_exts, contrasts)
     targs = list(set(targs))
     return targs
-            
+
 def get_params(rule_name, rule_dir='rules'):
-    # pass in a rule name & the directory that contains its paramsfile. 
+    # pass in a rule name & the directory that contains its paramsfile.
     # Return paramsD
     rule_paramsfile = os.path.join(rule_dir,rule_name+ '_params.yaml')
     rule_params = {}

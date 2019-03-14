@@ -10,8 +10,9 @@ from os.path import join
 import numpy as np
 import pandas as pd
 from snakemake.utils import validate, min_version
-from ep_utils.utils import * 
 import glob
+
+from .utils import utils
 
 min_version("5.1.2") #minimum snakemake version
 

@@ -12,3 +12,4 @@ databases/
 *.png
 *.dag
 *~
+elvers.egg-info/
