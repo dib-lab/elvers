@@ -62,21 +62,20 @@ def build_default_params(workdir, targets):
     defaultParams['assembly_extensions'] = list(set(assembly_extensions))
     return defaultParams
 
+
 def build_dirs(ep_dir, params):
+    ''' function to build full paths for all directories '''
     # build main elvers dir info
-    rules_dir = params['elvers_directories']['rules']
     params['elvers_directories']['base_dir'] = ep_dir
-    params['elvers_directories']['rules'] = os.path.join(ep_dir, rules_dir)
-    animals_dir =  params['elvers_directories']['animals']
-    params['elvers_directories']['animals'] = os.path.join(ep_dir, 'utils', animals_dir)
-
+    params['elvers_directories']['rules'] = os.path.join(ep_dir, params['elvers_directories']['rules'])
+    params['elvers_directories']['animals'] = os.path.join(ep_dir, params['elvers_directories']['animals'])
     # if desired, user can also provide out_path, and all dirs will be built under there
-    # outdirectory, build all directories relative to that path
     out_path = params.get('out_path', os.getcwd())
-    # if user inputs an absolute path:
-    if os.path.isabs(out_path): # if not absolute, just assume subdirectory of current working directory
+    out_path = os.path.expanduser(out_path) # expand any `~` on unix
+    if os.path.isabs(out_path):  # if user inputs an absolute path, check that it exists!
         assert os.path.exists(out_path) and os.path.isdir(out_path), f"Error: provided output path {out_path} is not an existing directory. Please fix.\n\n"
-
+    else: # if not absolute, assume subdirectory of base elvers dir
+        out_path = os.path.join(ep_dir, out_path)
     # allow user to define basename, and experiment, build outdir name
     basename = params['basename']
     expt = params.get('experiment', '')
@@ -85,11 +84,15 @@ def build_dirs(ep_dir, params):
     outdir = basename + "_out" + expt
 
     # Now join out_path, outdir name
+    out_path = os.path.realpath(out_path)
     outdir = os.path.join(out_path, outdir)
-
+    # when using out_path, need to manually build the outdir (snakemake will not automatically create it)
+    if not os.path.exists(outdir):
+        os.makedirs(outdir)
+    # add full path info to the config
     params['elvers_directories']['out_dir'] = outdir # outdir NAME
-    # if we want logs to be *within* individual outdirs, change logsdir here (else logs in elvers dir)
-    params['elvers_directories']['logs'] = join(outdir, os.path.basename(params['elvers_directories']['logs']))
+    params['elvers_directories']['logs'] = join(outdir, params['elvers_directories']['logs'])
+
     # build dirs for main elvers output directories
     outDirs = params['elvers_directories']['outdirs']
     for targ, outD in outDirs.items():
@@ -97,7 +100,6 @@ def build_dirs(ep_dir, params):
     # put joined paths back in params file
     params['elvers_directories']['outdirs'] = outDirs
     # build dirs for included rules
-
     included_rules = params['include_rules']
     for rule in included_rules:
         prog = os.path.basename(rule).split('.rule')[0]
@@ -105,28 +107,6 @@ def build_dirs(ep_dir, params):
         prog_dir = params[prog]['elvers_params'].get('outdir', prog)
         params[prog]['elvers_params']['outdir'] = os.path.join(outdir, prog_dir)
     return params
-
-def handle_assemblyInput(assembInput, config):
-    # find files
-    program_params = config['assemblyinput'].get('program_params')
-    assemblyfile = program_params.get('assembly', None)
-    assert os.path.exists(assemblyfile), 'Error: cannot find input assembly at {}\n'.format(assemblyfile)
-    sys.stderr.write('\tFound input assembly at {}\n'.format(assemblyfile))
-    gtmap = program_params.get('gene_trans_map', '')
-    extensions= {}
-    if gtmap:
-        assert os.path.exists(gtmap), 'Error: cannot find assembly gene_trans_map at {}\n'.format(gtmap)
-        sys.stderr.write('\tFound input assembly gene-transcript map at {}\n'.format(gtmap))
-        extensions = {'base': ['.fasta', '.fasta.gene_trans_map']} # kinda hacky. do this better
-    else:
-        program_params['gene_trans_map'] = ''
-    # grab user-input assembly extension
-    input_assembly_extension = program_params.get('assembly_extension', '')
-    config['assemblyinput'] = {}
-    config['assemblyinput']['program_params'] = program_params
-    extensions['assembly_extensions'] = [input_assembly_extension]
-    config['assemblyinput']['elvers_params'] = {'extensions': extensions}
-    return config, input_assembly_extension
 
 def main():
     parser = argparse.ArgumentParser(prog = _program, description='run snakemake elvers', usage='''elvers <configfile.yaml>  [<target> ...]
@@ -243,7 +223,7 @@ To build an editable configfile to start work on your own data, run:
         assembInput = configD.get('assemblyinput', None)
         if assembInput:
             targs+=['assemblyinput']
-            configD, assemblyinput_ext = handle_assemblyInput(assembInput, configD)
+            configD, assemblyinput_ext = handle_assemblyinput(assembInput, configD)
         else:
             assemblyinput_ext = None
         if 'assemblyinput' in targs and not assembInput:
@@ -281,6 +261,12 @@ To build an editable configfile to start work on your own data, run:
         if assemblyinput_ext: # note, need to do it here to prevent override with defaults
             paramsD['assembly_extensions'] = list(set(paramsD.get('assembly_extensions', []) + [assemblyinput_ext]))
 
+            # NOTE: I think this should be moved from here into an `input_checks` function that checks all appropriate inputs/outputs are specified for the rules in use, and provides appropriate links to docs to help guide the user.
+            if paramsD.get('no_gene_trans_map', False):
+                if paramsD.get('deseq2'):
+                    paramsD['deseq2']['program_params']['gene_trans_map'] = False
+                    sys.stderr.write("\tYou're using `assemblyinput` without specifying a gene-trans-map. Setting differential expression to transcript-level only. See https://dib-lab.github.io/elvers/deseq2/for details.\n")
+
         # use params to build directory structure
         paramsD = build_dirs(thisdir, paramsD)
         # Note: Passing a configfile allows nested yaml/dictionary format.
@@ -302,6 +288,7 @@ To build an editable configfile to start work on your own data, run:
             print('\tconfig: {}'.format(configfile))
             print('\tparams: {}'.format(paramsfile))
             print('\ttargets: {}'.format(repr(targs)))
+            print('\toutput: {}'.format(repr(paramsD['elvers_directories']['out_dir'])))
             print('\treport: {}'.format(repr(reportfile)))
             print('--------')
 

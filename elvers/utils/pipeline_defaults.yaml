@@ -6,7 +6,7 @@ basename: elvers
 # these outdirectories will be available to all workflows and rules
 elvers_directories:
   rules: rules
-  animals: animals
+  animals: utils/animals
   logs: logs
   outdirs:
     input_data: input_data
