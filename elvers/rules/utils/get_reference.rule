@@ -1,0 +1,76 @@
+import os
+
+logs_dir = config['elvers_directories']['logs']
+
+getRef_params = config['get_reference']['program_params']
+ep_params = config['get_reference']['elvers_params']
+
+ref_dir = ep_params['outdir']
+basename = config['basename']
+reference_extension = getRef_params['assembly_extension']
+
+# set up the vars we use in each of these options
+ref_in     =  getRef_params['assembly']
+ref_out    =  os.path.join(ref_dir, basename + reference_extension + '.fasta')
+
+if getRef_params.get('gene_trans_map', None):
+    gtmap_in   =  getRef_params['gene_trans_map']
+    gtmap_out  =  os.path.join(ref_dir, basename + reference_extension + '.fasta.gene_trans_map') 
+
+
+if getRef_params.get('download_ref'):
+    if getRef_params.get('use_ftp'):
+        rule ftp_get_fasta:
+            input: FTP.remote(f"{ref_in}", static=True, keep_local=True, immediate_close=True)
+            output: ref_out 
+            log: os.path.join(logs_dir, 'get_reference/ftpget_reference.log')
+            shell: "mv {input} {output} 2> {log}"
+        
+        if getRef_params.get('gene_trans_map', None): 
+            rule ftp_get_gene_trans_map:
+                input: FTP.remote(f"{gtmap_in}", static=True, keep_local=True, immediate_close=True)
+                output: gtmap_out
+                log: os.path.join(logs_dir, 'get_reference/ftpget_gtmap.log')
+                shell: "mv {input} {output} 2> {log}"
+    
+    else:
+        rule http_get_fasta:
+            input: HTTP.remote(f"{ref_in}", static=True, keep_local=True, allow_redirects=True)
+            output: ref_out 
+            log: os.path.join(logs_dir, 'get_reference/httpget_reference.log')
+            shell: "mv {input} {output} 2> {log}"
+
+        if getRef_params.get('gene_trans_map', None): 
+            rule http_get_gene_trans_map:
+                input: HTTP.remote(f"{gtmap_in}", static=True, keep_local=True, allow_redirects=True)
+                output: gtmap_out
+                log: os.path.join(logs_dir, 'get_reference/httpget_gtmap.log')
+                shell: "mv {input} {output} 2> {log}"
+
+else:
+    rule link_input_reference:
+        input: ref_in 
+        output: ref_out 
+        log: os.path.join(logs_dir, 'get_reference/link_reference.log')
+        params: ref_dir = ref_dir
+        run:
+            """
+            mkdir -p {params.ref_dir}
+            full_input = os.path.abspath(str(input))
+            full_output = os.path.abspath(str(output))
+            shell("ln -s {full_input} {full_output} 2> {log}")
+            """
+
+    if getRef_params.get('gene_trans_map', None):
+        rule link_input_gene_trans_map:
+            input: gtmap_in 
+            output: gtmap_out 
+            log: os.path.join(logs_dir, 'get_reference/link_gtmap.log')
+            params: ref_dir = ref_dir
+            run:
+                """
+                mkdir -p {params.ref_dir}
+                full_input = os.path.abspath(str(input))
+                full_output = os.path.abspath(str(output))
+                shell("ln -s {full_input} {full_output} 2> {log}")
+                """
