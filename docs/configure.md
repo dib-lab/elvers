@@ -73,7 +73,7 @@ To run any read-based workflow, we need to get reads (and any assemblies already
 If you'd like to use `elvers` with an existing transcriptome assembly, you can specify this assembly in the configuration file. The assembly is copied into the working `elvers` directory via a utility rule called `assemblyinput`. You can see the lines you need to use by running the following:
 
 ```
-./run_elvers config.yaml assemblyinput --print_params
+elvers config.yaml assemblyinput --print_params
 ```
 
 You should see these parameters print to your screen:
@@ -120,13 +120,13 @@ Currently, all workflows require a properly-formatted read inputs `tsv` file as 
 
 You can see the available workflows (and which programs they run) by using the `--print_workflows` flag:
 ```
-./run_elvers examples/nema.yaml --print_workflows
+elvers examples/nema.yaml --print_workflows
 ```
 
 Each included tool can also be run independently, if appropriate input files are provided. This is not always intuitive, so please see our documentation for running each tools for details (described as "Advanced Usage"). To see all available tools, run:
 
 ```
-./run_elvers examples/nema.yaml --print_rules
+elvers examples/nema.yaml --print_rules
 ```
 
 ### Configuring Parameters for a workflow
@@ -164,12 +164,12 @@ There are a few other options we can add to customize the name of the output dir
 Now, if you'd like to run any particular program with non-default parameters, or you're running differential expression analysis, you'll need to add some info to the config. For any (each) program, follow this format to see program params:
 
 ```
-./run_elvers config.yaml <PROGRAM> --print_params
+elvers config.yaml <PROGRAM> --print_params
 ```
 
 For example, for deseq2:
 ```
-./run_elvers config.yaml deseq2 --print_params
+elvers config.yaml deseq2 --print_params
 ```
 
 Then copy and paste the parameters that show up in your terminal into your config file. Please see each program's documentation for additional info on what (and how) to modify each program. For example, if running an assembly, we definitely recommend modifying the `max_memory` parameter of Trinity.
@@ -180,7 +180,7 @@ Then copy and paste the parameters that show up in your terminal into your confi
 To get a configfile for the default "eel pond" workflow, that you can modify, run:
 
 ```
-./run_elvers my_workflow.yaml --build_config
+elvers my_workflow.yaml --build_config
 ```
 
 The output should be a `yaml` configfile. At the top, you should see:

@@ -31,7 +31,7 @@ Be sure to set up your sample info and build a configfile first (see [Understand
 
 To see the available parameters for the `sourmash` rule, run
 ```
-./run_elvers config sourmash --print_params
+elvers config sourmash --print_params
 ```
 This will print the following:
 ```

@@ -32,7 +32,7 @@ Be sure to set up your sample info and build a configfile first (see [Understand
 
 To see the available parameters for the `fastqc` rule, run
 ```
-./run_elvers config fastqc --print_params
+elvers config fastqc --print_params
 ```
 
 In here, you'll see a section for "fastqc" parameters that looks like this:
@@ -58,11 +58,11 @@ For FastQC, the input files are your input data - either downloaded or linked in
 
 If you've already done this, you can run:
 ```
-./run_elvers my_config fastqc
+elvers my_config fastqc
 ```
 If not, you can run both at once to make sure fastqc can run properly.
 ```
-./run_elvers my_config get_data trimmomatic fastqc
+elvers my_config get_data trimmomatic fastqc
 ```
 
 

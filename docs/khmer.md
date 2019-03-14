@@ -34,7 +34,7 @@ Be sure to set up your sample info and build a configfile first (see [Understand
 
 To see the available parameters for the `khmer` rule, run
 ```
-./run_elvers config khmer --print_params
+elvers config khmer --print_params
 ```
 
 In here, you'll see a section for "khmer" parameters that looks like this:
@@ -61,11 +61,11 @@ For khmer, the input files are trimmed input data (e.g. output of trimmomatic).
 
 If you've already done this, you can run:
 ```
-./run_elvers my_config khmer
+elvers my_config khmer
 ```
 If not, you can run the prior steps at the same time to make sure khmer can find these input files: 
 ```
-./run_elvers my_config get_data trimmomatic khmer
+elvers my_config get_data trimmomatic khmer
 ```
 
 

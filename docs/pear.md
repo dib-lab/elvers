@@ -13,7 +13,7 @@ PEAR evaluates all possible paired-end read overlaps and without requiring the t
 We recommend you run `pear` as part of the [paladin_map](paladin_map.md) subworkflow
 
 ```
-./run_elvers examples/nema.yaml paladin_map
+elvers examples/nema.yaml paladin_map
 ```
 This will run trimmomatic trimming prior to PEAR merging of paired end reads and then paladin mapping. If you'd like to just run `PEAR`, see "Advanced Usage" below.
 
@@ -38,7 +38,7 @@ Be sure to set up your sample info and build a configfile first (see [Understand
 
 To see the available parameters for the `PEAR` rule, run
 ```
-./run_elvers config pear --print_params
+elvers config pear --print_params
 ```
 This will print the following:
 ```
@@ -72,11 +72,11 @@ For pear, the default input files are quality-trimmed input data (e.g. output of
 
 If you've already done this, you can run:
 ```
-./run_elvers my_config pear
+elvers my_config pear
 ```
 If not, you can run the prior steps at the same time to make sure pear can find these input files:
 ```
-./run_elvers my_config get_data trimmomatic pear
+elvers my_config get_data trimmomatic pear
 ```
 Note, `PEAR` only works on paired end reads, as there's nothing to do for single end reads!
 

@@ -46,7 +46,7 @@ The Eel Pond protocol (which inspired the `elvers` name) included line-by-line c
 
 To test the default workflow:
 ```
-./run_elvers examples/nema.yaml default
+elvers examples/nema.yaml default
 ```
 This will download and run a small set of _Nematostella vectensis_ test data (from [Tulin et al., 2013](https://evodevojournal.biomedcentral.com/articles/10.1186/2041-9139-4-16))
 
@@ -87,20 +87,20 @@ Currently, all workflows require a properly-formatted read inputs `tsv` file as 
 You can see the available workflows (and which programs they run) by using the `--print_workflows` flag:
 
 ```
-./run_elvers examples/nema.yaml --print_workflows
+elvers examples/nema.yaml --print_workflows
 ```
 
 Each included tool can also be run independently, if appropriate input files are provided. This is not always intuitive, so please see our documentation for running each tools for details (described as "Advanced Usage"). To see all available tools, run:
 
 ```
-./run_elvers examples/nema.yaml --print_rules
+elvers examples/nema.yaml --print_rules
 ```
 
 ## Additional Info
 
 See the help, here:
 ```
-./run_elvers -h
+elvers -h
 ```
 
 **References:**  

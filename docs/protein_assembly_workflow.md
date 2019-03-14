@@ -14,7 +14,7 @@ It consists of:
 ## Running Test Data
 
 ```
-./run_elvers examples/nema.yaml protein_assembly
+elvers examples/nema.yaml protein_assembly
 ```
 This will run a small set of Nematostella vectensis test data (from [Tulin et al., 2013](https://evodevojournal.biomedcentral.com/articles/10.1186/2041-9139-4-16)).
 
@@ -25,7 +25,7 @@ Set up your sample info and build a configfile first (see [Understanding and Con
 To build a config, run:
 
 ```
-./run_elvers prot.yaml protein_assembly --build_config
+elvers prot.yaml protein_assembly --build_config
 ```
 
 The resulting `prot.yaml` configfile for this workflow will look something like this. The order of the parameters may be different and does not affect the order in which steps are run. Please see the documentation file for each individual program (linked above) for what parameters to modify.

@@ -18,7 +18,7 @@ Given that nucleotide sequences are far more variable than protein sequences (th
 
 Run PLASS via the [Protein Assembly workflow](protein_assembly_workflow.md) or via the [plass_assemble subworkflow](plass_assemble.md). These workflows will run preprocessing and kmer-trimming for you prior to assembly, and may run additional downstream steps. To run PLASS as a standalone program, see "Advanced Usage" section below.
 ```
-./run_elvers examples/nema.yaml plass_assemble
+elvers examples/nema.yaml plass_assemble
 ```
 
 ## PLASS Command
@@ -41,7 +41,7 @@ Be sure to set up your sample info and build a configfile first (see [Understand
 
 To see the available parameters for the `plass` rule, run
 ```
-./run_elvers config plass --print_params
+elvers config plass --print_params
 ```
 This will print the following:
 ```
@@ -71,11 +71,11 @@ For plass, the default input files are kmer-trimmed input data (e.g. output of k
 
 If you've already done this, you can run:
 ```
-./run_elvers my_config plass
+elvers my_config plass
 ```
 If not, you can run the prior steps at the same time to make sure khmer can find these input files:
 ```
-./run_elvers my_config get_data trimmomatic khmer plass
+elvers my_config get_data trimmomatic khmer plass
 ```
 
 ## Snakemake Rules

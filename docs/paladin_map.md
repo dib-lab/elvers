@@ -10,17 +10,17 @@ Subworkflows combine tools in the right order to facilitate file targeting withi
 
 ## Quickstart
 
-If you've generated an assembly, even if you've already run `./run_elvers examples/nema.yaml assemble`:
+If you've generated an assembly, even if you've already run `elvers examples/nema.yaml assemble`:
 
    1) "Run" trinity assembly at the same time. If you've already run the assembly, `elvers` will just locateyour assembly file for `paladin_map`.
    
    ```
-   ./run_elvers examples/nema.yaml assemble paladin_map
+   elvers examples/nema.yaml assemble paladin_map
    ```
 
    2) OR, Pass an assembly in via `assemblyinput`, with an assembly in your `yaml` configfile, e.g.:
    ```
-   ./run_elvers assemblyinput paladin_map
+   elvers assemblyinput paladin_map
    ```
 
    In the configfile:
@@ -40,7 +40,7 @@ To set up your sample info and build a configfile, see [Understanding and Config
 
 If you want to add the `paladin_map` program parameters to a previously built configfile, run:
 ```
-./run_elvers config.yaml paladin_map --print_params
+elvers config.yaml paladin_map --print_params
 ```
 
 A small set of parameters should print to your console:

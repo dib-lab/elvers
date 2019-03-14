@@ -12,18 +12,18 @@ At the moment, this workflow consists of:
 
 ## Quickstart
 
-If you've generated an assembly, even if you've already run `./run_elvers examples/nema.yaml assemble`:
+If you've generated an assembly, even if you've already run `elvers examples/nema.yaml assemble`:
 
    1) "Run" trinity assembly at the same time. If you've already run the assembly, `elvers` will just locate your assembly file for `diffexp`.
    
    ```
-   ./run_elvers examples/nema.yaml assemble diffexp
+   elvers examples/nema.yaml assemble diffexp
    ```
 
    2) OR, Pass an assembly in via `assemblyinput` with an assembly in your `yaml` configfile, e.g.:
    
    ```
-   ./run_elvers assemblyinput diffexp
+   elvers assemblyinput diffexp
    ```
   
    In the configfile:
@@ -46,7 +46,7 @@ To set up your sample info and build a configfile, see [Understanding and Config
 
 If you want to add the `diffexp` program parameters to a previously built configfile, run:
 ```
-./run_elvers config.yaml diffexp --print_params
+elvers config.yaml diffexp --print_params
 ```
 
 A small set of parameters should print to your console:

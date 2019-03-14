@@ -13,7 +13,7 @@ Subworkflows combine tools in the right order to facilitate file targeting withi
 To run the kmer_trim subworkflow, run: 
 
 ```
-./run_elvers examples/nema.yaml kmer_trim
+elvers examples/nema.yaml kmer_trim
 ```
 
 ## Configuring the kmer_trim subworkflow 
@@ -22,7 +22,7 @@ To set up your sample info and build a configfile, see [Understanding and Config
 
 If you want to add the `kmer_trim` program parameters to a previously built configfile, run:
 ```
-./run_elvers config.yaml kmer_trim --print_params
+elvers config.yaml kmer_trim --print_params
 ```
 
 A small set of parameters should print to your console:

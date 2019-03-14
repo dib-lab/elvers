@@ -10,7 +10,7 @@ To do this, specify the file path for your input assembly (and optionally, a tab
 
 The following will build a config for just the assemblyinput rule. 
 ```
-./run_elvers new_config.yaml assemblyinput --build_config
+elvers new_config.yaml assemblyinput --build_config
 ```
 
 In here, you'll see a section for "assemblyinput" parameters that looks like this:

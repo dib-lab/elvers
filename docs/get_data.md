@@ -11,7 +11,7 @@ Be sure to set up your sample info and build a configfile first (see [Understand
 
 To see the available parameters for the `get_data` utility rule, run
 ```
-./run_elvers config get_data --print_params
+elvers config get_data --print_params
 ```
 
 In here, you'll see a section for "get_data" parameters that looks like this:

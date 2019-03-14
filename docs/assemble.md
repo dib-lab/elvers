@@ -14,7 +14,7 @@ Subworkflows combine tools in the right order to facilitate file targeting withi
 To run the assemble subworkflow, run: 
 
 ```
-./run_elvers examples/nema.yaml assemble
+elvers examples/nema.yaml assemble
 ```
 
 ## Configuring the assemble subworkflow 
@@ -23,7 +23,7 @@ To set up your sample info and build a configfile, see [Understanding and Config
 
 If you want to add the `assemble` program parameters to a previously built configfile, run:
 ```
-./run_elvers config.yaml assemble --print_params
+elvers config.yaml assemble --print_params
 ```
 
 A small set of parameters should print to your console:

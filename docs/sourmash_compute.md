@@ -10,18 +10,18 @@ Subworkflows combine tools in the right order to facilitate file targeting withi
 
 ## Quickstart
 
-If you've generated an assembly, even if you've already run `./run_elvers examples/nema.yaml assemble`:
+If you've generated an assembly, even if you've already run `elvers examples/nema.yaml assemble`:
 
    1) "Run" trinity assembly at the same time. If you've already run the assembly, `elvers` will just locate your assembly file for `sourmash_compute`. 
    
    ```
-   ./run_elvers examples/nema.yaml assemble sourmash_compute
+   elvers examples/nema.yaml assemble sourmash_compute
    ```
 
    2) OR, Pass an assembly in via `assemblyinput`, with an assembly specified in your config file.
    
    ```
-   ./run_elvers assemblyinput sourmash_compute
+   elvers assemblyinput sourmash_compute
    ```
    
    In the configfile:
@@ -42,7 +42,7 @@ To set up your sample info and build a configfile, see [Understanding and Config
 
 If you want to add the `sourmash_compute` program parameters to a previously built configfile, run:
 ```
-./run_elvers config.yaml sourmash_compute --print_params
+elvers config.yaml sourmash_compute --print_params
 ```
 
 A small set of parameters should print to your console:

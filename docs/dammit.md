@@ -62,7 +62,7 @@ Be sure to set up your sample info and build a configfile first (see [Understand
 
 To see the available parameters for the `dammit` rule, run
 ```
-./run_elvers config dammit --print_params
+elvers config dammit --print_params
 ```
 This will print the following:
 ```
@@ -116,7 +116,7 @@ If the above `dammit` command is run again, there will be a message:
 
 If you'd like to rerun the dammit pipeline, you'll need to use the `--forceall` flag, like so:
 ```
-./run_elvers examples/nema.yaml annotation --forceall
+elvers examples/nema.yaml annotation --forceall
 ```
 
 ## Additional Notes (non-elvers): Parsing Dammit GFF3 files

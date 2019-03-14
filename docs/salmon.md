@@ -28,7 +28,7 @@ Be sure to set up your sample info and build a configfile first (see [Understand
 
 To see the available parameters for the `salmon` rule, run
 ```
-./run_elvers config salmon --print_params
+elvers config salmon --print_params
 ```
 This will print the following:
 ```
@@ -99,13 +99,13 @@ For salmon, you need both 1) an assembly, and 2) trimmed input files. The assemb
 Specifying an assembly:
     1) If you've alread run read trimming and want to use a Trinity assembly generated via `elvers`, you can run: 
     ```
-    ./run_elvers my_config assemble salmon
+    elvers my_config assemble salmon
     ```
     If you've already run the assembly, `elvers` will just use this info to locate that assembly.
 
     2) Alternatively, you can input an assembly via the [assemblyinput](assemblyinput.md) utility rule:
     ```
-    ./run_elvers assemblyinput salmon
+    elvers assemblyinput salmon
      ```
     with an assembly in your `yaml` configfile, e.g.:
     ```
@@ -120,11 +120,11 @@ Specifying input reads:
 
     If you haven't yet run read trimming, you'll also need to run those steps:
     ```
-    ./run_elvers myconfig get_data trimmomatic salmon
+    elvers myconfig get_data trimmomatic salmon
     ```
     Or if you have set `input_trimmomatic_trimmed: False`:
     ```
-    ./run_elvers myconfig get_data salmon
+    elvers myconfig get_data salmon
     ```
 
 ## Snakemake Rule

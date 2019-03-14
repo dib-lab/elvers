@@ -43,7 +43,7 @@ Be sure to set up your sample info and build a configfile first (see [Understand
 
 To see the available parameters for the `trimmomatic` rule, run
 ```
-./run_elvers config trimmomatic --print_params
+elvers config trimmomatic --print_params
 ```
 
 In here, you'll see a section for "trimmomatic" parameters that looks like this:
@@ -75,11 +75,11 @@ For Trimmomatic, the input files are your input data - either downloaded or link
 
 If you've already done this, you can run:
 ```
-./run_elvers my_config trimmomatic
+elvers my_config trimmomatic
 ```
 If not, you can run both at once to make sure trimmomatic can find its input files:
 ```
-./run_elvers my_config get_data trimmomatic
+elvers my_config get_data trimmomatic
 ```
 
 

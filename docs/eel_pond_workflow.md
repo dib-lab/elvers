@@ -16,10 +16,10 @@ The "Eel Pond" Protocol for RNAseq consists of:
 
 This is the default workflow. To run:
 ```
-./run_elvers examples/nema.yaml
+elvers examples/nema.yaml
 ```
 
-(You can be explicit and run the full default workflow with `./run_elvers examples/nema.yaml default`)
+(You can be explicit and run the full default workflow with `elvers examples/nema.yaml default`)
 
 This will run a small set of Nematostella vectensis test data (from [Tulin et al., 2013](https://evodevojournal.biomedcentral.com/articles/10.1186/2041-9139-4-16)).
 
@@ -30,7 +30,7 @@ Set sample info and build a configfile first (see [Understanding and Configuring
 To build a config, run:
 
 ```
-./run_elvers ep.yaml --build_config
+elvers ep.yaml --build_config
 ```
 
 The resulting `ep.yaml` configfile for this workflow will look something like this. The order of the parameters may be different and does not affect the order in which steps are run. Please see the documentation file for each individual program (linked above) for what parameters to modify.

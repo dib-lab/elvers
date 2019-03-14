@@ -41,7 +41,7 @@ Be sure to set up your sample info and build a configfile first (see [Understand
 
 To see the available parameters for the `trinity` rule, run
 ```
-./run_elvers config trinity --print_params
+elvers config trinity --print_params
 ```
 This will print the following:
 ```
@@ -72,11 +72,11 @@ For trinity, the default input files are kmer-trimmed input data (e.g. output of
 
 If you've already done this, you can run:
 ```
-./run_elvers my_config trinity
+elvers my_config trinity
 ```
 If not, you can run the prior steps at the same time to make sure khmer can find these input files:
 ```
-./run_elvers my_config get_data trimmomatic khmer trinity
+elvers my_config get_data trimmomatic khmer trinity
 ```
 
 ## Snakemake rule

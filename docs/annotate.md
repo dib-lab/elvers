@@ -8,18 +8,18 @@ At the moment, this workflow consists of:
 
 ## Quickstart
 
-If you've generated an assembly, even if you've already run `./run_elvers examples/nema.yaml assemble`:
+If you've generated an assembly, even if you've already run `elvers examples/nema.yaml assemble`:
 
    1) "Run" trinity assembly at the same time.If you've already run the assembly, `elvers` will just locateyour assembly file for `annotate`. 
    
    ```
-   ./run_elvers examples/nema.yaml assemble annotate
+   elvers examples/nema.yaml assemble annotate
    ```
   
    2) OR, Pass an assembly in via `assemblyinput` **with an assembly in your `yaml` configfile, e.g.:** 
    
    ```
-   ./run_elvers assemblyinput annotate
+   elvers assemblyinput annotate
    ```
    
    In the configfile:
@@ -45,7 +45,7 @@ To set up your sample info and build a configfile, see [Understanding and Config
 
 If you want to add the `annotate` program parameters to a previously built configfile, run:
 ```
-./run_elvers config.yaml annotate --print_params
+elvers config.yaml annotate --print_params
 ```
 
 A small set of parameters should print to your console:

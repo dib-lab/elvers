@@ -11,13 +11,13 @@ If you want to run it as a standalone program instead, you need to have generate
    1) If you have salmon results, run:
    
    ```
-   ./run_elvers examples/nema.yaml deseq2
+   elvers examples/nema.yaml deseq2
    ```
 
    2) If not, you need to run `salmon` and any other missing steps. It's probably best to run the [diffexp](diffexp.md) subworkflow, but you can also try: 
 
    ```
-   ./run_elvers examples/nema.yaml salmon deseq2
+   elvers examples/nema.yaml salmon deseq2
    ```
 
 ## DESeq2 Commands
@@ -37,7 +37,7 @@ Be sure to set up your sample info and build a configfile first (see [Understand
 
 To see the available parameters for the `deseq2` rule, run
 ```
-./run_elvers config deseq2 --print_params
+elvers config deseq2 --print_params
 ```
 This will print the following:
 ```

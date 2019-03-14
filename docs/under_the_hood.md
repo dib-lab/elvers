@@ -1,6 +1,6 @@
 # Under the Hood
 
-`elvers` runs snakemake rules in workflows that are highly customizeable. The user chooses a tool or workflow, and `./run_elvers` aggregates all of the default parameters for that tool or workflow, build end-stage target files, and passes this information into the snakefile. Snakemake then builds a DAG of the workflow and runs the workflow in an automated manner.
+`elvers` runs snakemake rules in workflows that are highly customizeable. The user chooses a tool or workflow, and `elvers` aggregates all of the default parameters for that tool or workflow, build end-stage target files, and passes this information into the snakefile. Snakemake then builds a DAG of the workflow and runs the workflow in an automated manner.
 
 ## Program Rules
 
@@ -13,7 +13,7 @@ Each rule needs several files:
   - (optional) `rulename-wrapper.py` or `rulename-script.R`: a script that is used to more easily and reproducibly run the program.
   - `rulename_params.yaml`: a parameter file to direct program output and set default program parameters
 
-The last file (`_params`) provides program defaults that can be overridden by user input from the main config file (via a nested dictionary update). The parameters do need to be exact, however. The `--print_params` and `--build_config` options in `./run_elvers` are designed to facilitate this. 
+The last file (`_params`) provides program defaults that can be overridden by user input from the main config file (via a nested dictionary update). The parameters do need to be exact, however. The `--print_params` and `--build_config` options in `elvers` are designed to facilitate this. 
 
 ## Rule Params
 

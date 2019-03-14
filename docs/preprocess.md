@@ -12,7 +12,7 @@ Subworkflows combine tools in the right order to facilitate file targeting withi
 To run the preprocess subworkflow, run: 
 
 ```
-./run_elvers examples/nema.yaml preprocess
+elvers examples/nema.yaml preprocess
 ```
 
 ## Configuring the preprocess workflow 
@@ -21,7 +21,7 @@ To set up your sample info and build a configfile, see [Understanding and Config
 
 If you want to add the `preprocess` program parameters to a previously built configfile, run:
 ```
-./run_elvers config.yaml preprocess --print_params
+elvers config.yaml preprocess --print_params
 ```
 
 A small set of parameters should print to your console:
