@@ -75,21 +75,22 @@ def handle_reference_input(refInput, config):
     extensions= {}
     program_params = config['get_reference'].get('program_params')
     referencefile = program_params.get('reference', None)
-    if referencefile:
-        assert os.path.exists(referencefile), 'Error: cannot find input reference at {}\n'.format(referencefile)
-        sys.stderr.write('\tFound input reference at {}\n'.format(referencefile))
-        referencefile = os.path.realpath(referencefile)
-    else:
-        sys.stderr.write("\n\tError: trying to run `get_reference` workflow, but there's no reference file specified in your configfile. Please fix.\n\n")
-    gtmap = program_params.get('gene_trans_map', '')
-    if gtmap:
-        assert os.path.exists(gtmap), 'Error: cannot find reference gene_trans_map at {}\n'.format(gtmap)
-        sys.stderr.write('\tFound input reference gene-transcript map at {}\n'.format(gtmap))
-        extensions = {'base': ['.fasta', '.fasta.gene_trans_map']}
-        gtmap = os.path.realpath(gtmap)
-    else:
-        program_params['gene_trans_map'] = ''
-        config['no_gene_trans_map']= True
+    if not program_params.get('download_ref', False):
+        if referencefile:
+            assert os.path.exists(referencefile), 'Error: cannot find input reference at {}\n'.format(referencefile)
+            sys.stderr.write('\tFound input reference at {}\n'.format(referencefile))
+            referencefile = os.path.realpath(referencefile)
+        else:
+            sys.stderr.write("\n\tError: trying to run `get_reference` workflow, but there's no reference file specified in your configfile. Please fix.\n\n")
+        gtmap = program_params.get('gene_trans_map', '')
+        if gtmap:
+            assert os.path.exists(gtmap), 'Error: cannot find reference gene_trans_map at {}\n'.format(gtmap)
+            sys.stderr.write('\tFound input reference gene-transcript map at {}\n'.format(gtmap))
+            extensions = {'base': ['.fasta', '.fasta.gene_trans_map']}
+            gtmap = os.path.realpath(gtmap)
+        else:
+            program_params['gene_trans_map'] = ''
+            config['no_gene_trans_map']= True
     # grab user-input reference extension
     input_reference_extension = program_params.get('reference_extension', '_input')
     extensions['reference_extensions'] = [input_reference_extension]
