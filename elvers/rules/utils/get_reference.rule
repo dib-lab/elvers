@@ -17,8 +17,9 @@ if getRef_params.get('gene_trans_map', None):
     gtmap_in   =  getRef_params['gene_trans_map']
     gtmap_out  =  os.path.join(ref_dir, basename + reference_extension + '.fasta.gene_trans_map') 
 
+download_ref = getRef_params.get('download_ref', False)
 
-if getRef_params.get('download_ref'):
+if download_ref:
     if getRef_params.get('use_ftp'):
         rule ftp_get_fasta:
             input: FTP.remote(f"{ref_in}", static=True, keep_local=True, immediate_close=True)

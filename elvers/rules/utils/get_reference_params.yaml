@@ -9,5 +9,5 @@ get_reference:
     reference: "examples/nema.assembly.fasta"
     gene_trans_map: "examples/nema.assembly.fasta.gene_trans_map"
     reference_extension: '_input'
-    download_ref: "False"
+    download_ref: False
     use_ftp: False
