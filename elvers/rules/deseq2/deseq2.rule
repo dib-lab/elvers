@@ -41,7 +41,7 @@ if deseq_params.get('gene_trans_map'):
         output:
             rds =join(deseq_dir, "{assembly}.deseq2.rds") #r data object
         params:
-            samples=config["samples"]
+            samples=config["get_data"]["program_params"]["samples"]
         conda:
             "deseq2-env.yaml"
         log:
@@ -58,7 +58,7 @@ else:
         output:
             rds =join(deseq_dir, "{assembly}.deseq2.rds") #r data object
         params:
-            samples=config["samples"]
+            samples=config["get_data"]["program_params"]["samples"]
         conda:
             "deseq2-env.yaml"
         log:

@@ -1,10 +1,10 @@
 
   ####################  Eelpond Pipeline Configfile  ####################  
 basename: yeast
-samples: examples/yeast.samples.tsv
 
   ####################  quantify  ####################  
 get_data:
+  samples: examples/yeast.samples.tsv
   download_data: true
   use_ftp: false
 salmon:
