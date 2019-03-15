@@ -1,21 +1,22 @@
 paladin:
   elvers_params:
+    outdir: paladin
     extensions:
-      assembly_extensions: # use this extension only for all output of this assembler 
+      reference_extensions: # use this extension only for all output of this assembler
         - _plass
       base:
         - '.fasta.bwt'
       read:
         pe:
-          - _x___assembly__.paladin.bam
-          - _x___assembly__.paladin.sort.bam
-          - _x___assembly__.paladin.sort.bam.flagstat
-          - _x___assembly__.paladin.sort.bam.bai
+          - _x___reference__.paladin.bam
+          - _x___reference__.paladin.sort.bam
+          - _x___reference__.paladin.sort.bam.flagstat
+          - _x___reference__.paladin.sort.bam.bai
         se:
-          - _x___assembly__.paladin.bam
-          - _x___assembly__.paladin.sort.bam
-          - _x___assembly__.paladin.sort.bam.flagstat
-          - _x___assembly__.paladin.sort.bam.bai
+          - _x___reference__.paladin.bam
+          - _x___reference__.paladin.sort.bam
+          - _x___reference__.paladin.sort.bam.flagstat
+          - _x___reference__.paladin.sort.bam.bai
   program_params:
     index_params:
       reference_type: '3'

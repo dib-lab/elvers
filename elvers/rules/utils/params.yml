@@ -10,7 +10,7 @@ get_data:
           - ".se.fq.gz" 
   program_params:
     download_data: False
-      use_ftp: False
+    use_ftp: False
 get_reference:
   elvers_params:
     outdir: assembly
@@ -19,9 +19,9 @@ get_reference:
         - '.fasta'
       #  - '.fasta.gene_trans_map'
   program_params:
-    assembly: examples/nema.assembly.fasta
+    reference: examples/nema.assembly.fasta
     gene_trans_map:  examples/nema.assembly.fasta.gene_trans_map
-    assembly_extension: '_input'
+    reference_extension: '_input'
     download_ref: False
-      use_ftp: False
+    use_ftp: False
 

@@ -11,7 +11,7 @@ alignment_params = paladin_params['alignment_params']
 
 # get outdir
 paladin_dir = ep_params['outdir']
-assembly_extension = ep_params['extensions']['assembly_extensions'][0] 
+assembly_extension = ep_params['extensions']['reference_extensions'][0]
 
 def get_paladin_input(w):
     readsD = {}
