@@ -24,8 +24,13 @@ HTTP = HTTP.RemoteProvider()
 # if we need data, read in sample info. Do high-level checking in main script to make sure samples exists, prior to getting here.
 if config.get('get_data', None):
     samples_tsv = config["get_data"]["program_params"]["samples"]
-    samples = pd.read_csv(samples_tsv,dtype=str, sep='\t').set_index(["sample", "unit"], drop=False)
-    validate(samples, schema="schemas/samples_v2.schema.yaml") # new version
+    try:
+        samples = pd.read_csv(samples_tsv, dtype=str, sep='\t').set_index(["sample", "unit"], drop=False)
+        validate(samples, schema="schemas/samples_v2.schema.yaml") # new version
+    except Exception as e:
+        sys.stderr.write(f"\n\tError: {samples_tsv} file is not properly formatted. Please fix.\n\n")
+        print(e)
+
     samples['name'] = samples["sample"].map(str) + '_' + samples["unit"].map(str)
 
     # note, this function *needs* to be in this file, or added somewhere it can be accessed by all rules
