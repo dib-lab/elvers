@@ -1,10 +1,13 @@
 from os.path import join
 
+logs_dir  = config['elvers_directories']['logs']
 ep_params = config['plass']['elvers_params']
 assembly_params = config['plass']['program_params']
 
 assembly_dir = ep_params['outdir']
 assembly_extension = ep_params['extensions']['assembly_extensions'][0] # should only be a single entry here, default: '_plass'
+
+BASE = config['basename']
 
 def get_assembly_input(w):
     r1,r2,single =[],[],[]
@@ -45,8 +48,8 @@ rule plass:
     params:
         # optional parameters
         extra=assembly_params.get('extra', '')
-    log: join(LOGS_DIR, 'plass','plass.log')
-    benchmark: join(LOGS_DIR, 'plass','plass.benchmark')
+    log: join(logs_dir, 'plass','plass.log')
+    benchmark: join(logs_dir, 'plass','plass.benchmark')
     threads: 32
-    conda: "plass-env.yaml"
+    conda: "environment.yml"
 	script: "plass-wrapper.py"

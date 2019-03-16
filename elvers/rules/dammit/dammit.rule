@@ -1,5 +1,6 @@
 from os.path import join
 
+logs_dir  = config['elvers_directories']['logs']
 assembly_dir= config['elvers_directories']['outdirs']['assemble']
 dammit_dir = config['dammit']['elvers_params']['outdir']
 
@@ -18,9 +19,9 @@ rule dammit_annotate:
         busco_dbs= dammit_params.get('busco_group', ["metazoa"]),
         db_install_only = dammit_params.get('db_install_only', False)
     log:
-        join(LOGS_DIR, 'dammit', '{assembly}_dammit.log')
+        join(logs_dir, 'dammit', '{assembly}_dammit.log')
     benchmark:
-        join(LOGS_DIR, 'dammit', '{assembly}_dammit.benchmark')
+        join(logs_dir, 'dammit', '{assembly}_dammit.benchmark')
     threads: 32 
-    conda: "dammit-env.yaml"
+    conda: "environment.yml"
     script: "dammit-wrapper.py"

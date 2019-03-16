@@ -139,6 +139,8 @@ To build an editable configfile to start work on your own data, run:
     parser.add_argument('targets', nargs='*', default=['default'])
     parser.add_argument('-t', '--threads', type=int, default=1)
     parser.add_argument('--extra_config', action='append', default = None)
+    parser.add_argument('--config_dict', type=yaml.safe_load, default = None)
+    parser.add_argument('--out_path', type=str, default = None)
     parser.add_argument('-n', '--dry-run', action='store_true')
     parser.add_argument('-v', '--verbose', action='store_true')
     parser.add_argument('-w', '--print_workflows', action='store_true', help='just show available workflows')
@@ -170,9 +172,6 @@ To build an editable configfile to start work on your own data, run:
         print_available_workflows_and_tools(read_yaml(pipeline_defaultsFile), args.print_workflows, args.print_rules)
         sys.exit(0)
     targs = args.targets
-    # handle "full" target:
-    if 'full' in targs:
-        targs = ['assemble', 'annotate', 'quantify']
     if args.print_params:
         default_params = build_default_params(thisdir, targs)
         write_config(default_params, targs)
@@ -232,12 +231,21 @@ To build an editable configfile to start work on your own data, run:
         # next, grab all elvers defaults, including rule-specific default parameters (*_params.yaml files)
         paramsD = build_default_params(thisdir, targs)
 
-        # add any configuration from extra config files
+       ###############
+        # Handle additional configuration modification
+        # 1. extra config files
         extra_configs = {}
         if args.extra_config:
             for c in args.extra_config:
                 extra_configs = import_configfile(find_yaml(thisdir, c, 'extra_config'), extra_configs)
-        # this function only updates keys that already exist. so we need to wait till here (after importing params) to read in extra_configs,
+
+        # 2. config_dict passed in on command line
+        # ADVANCED ONLY - no checks in place, formatting matters. (to do: add checks)
+        if args.config_dict:
+            # adding this the same way as an extra config yaml file
+            update_nested_dict(extra_configs, args.config_dict)
+
+        # update_nested_dict only updates keys that already exist. so we need to wait till here (after importing params) to read in extra_configs,
         # rather than doing this when reading in the main configfile
 
         # if we're adding any additional contrasts, get rid of the example ones!
@@ -266,6 +274,7 @@ To build an editable configfile to start work on your own data, run:
                 if paramsD.get('deseq2'):
                     paramsD['deseq2']['program_params']['gene_trans_map'] = False
                     sys.stderr.write("\tYou're using `assemblyinput` without specifying a gene-trans-map. Setting differential expression to transcript-level only. See https://dib-lab.github.io/elvers/deseq2/for details.\n")
+        # All params have been integrated. Now build fullpaths and print the complete paramsfile
 
         # use params to build directory structure
         paramsD = build_dirs(thisdir, paramsD)
@@ -351,5 +360,3 @@ To build an editable configfile to start work on your own data, run:
 # TODO: would be good to pull available rules from elvers_pipeline in default config or a separate workflow file!
 if __name__ == '__main__':
     sys.exit(main())
-
-

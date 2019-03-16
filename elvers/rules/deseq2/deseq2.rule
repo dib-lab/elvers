@@ -1,5 +1,6 @@
 from os.path import join
 
+logs_dir  = config['elvers_directories']['logs']
 assembly_dir= config['elvers_directories']['outdirs']['assemble']
 quant_dir= config['elvers_directories']['outdirs']['quantify']
 
@@ -7,7 +8,7 @@ deseq_params = config['deseq2']['program_params']
 ep_params = config['deseq2']['elvers_params']
 deseq_dir = config['deseq2']['elvers_params']['outdir']
 
-# this is handled in `run_eelpond`, but redundancy doesn't hurt
+# this is handled in elvers main, but redundancy doesn't hurt
 if config.get('no_gene_trans_map', False):
     deseq_params['gene_trans_map'] = False
 
@@ -43,11 +44,11 @@ if deseq_params.get('gene_trans_map'):
         params:
             samples=config["get_data"]["program_params"]["samples"]
         conda:
-            "deseq2-env.yaml"
+            "environment.yml"
         log:
-            join(LOGS_DIR,  'deseq2', "{assembly}.deseq2.init.log")
+            join(logs_dir,  'deseq2', "{assembly}.deseq2.init.log")
         benchmark:
-            join(LOGS_DIR,  'deseq2', "{assembly}.deseq2.init.benchmark")
+            join(logs_dir,  'deseq2', "{assembly}.deseq2.init.benchmark")
         threads: get_deseq2_threads()
         script:
             "deseq2-init-tx2gene.R"
@@ -60,11 +61,11 @@ else:
         params:
             samples=config["get_data"]["program_params"]["samples"]
         conda:
-            "deseq2-env.yaml"
+            "environment.yml"
         log:
-            join(LOGS_DIR,  'deseq2', "{assembly}.deseq2.init.log")
+            join(logs_dir,  'deseq2', "{assembly}.deseq2.init.log")
         benchmark:
-            join(LOGS_DIR,  'deseq2', "{assembly}.deseq2.init.benchmark")
+            join(logs_dir,  'deseq2', "{assembly}.deseq2.init.benchmark")
         threads: get_deseq2_threads()
         script:
             "deseq2-init-txOut.R"
@@ -78,11 +79,11 @@ rule deseq2_pca:
     params:
         pca_labels=deseq_params["pca"]["labels"]
     conda:
-        "deseq2-env.yaml"
+        "environment.yml"
     log:
-        join(LOGS_DIR, 'deseq2', "{assembly}.deseq2.pca.log")
+        join(logs_dir, 'deseq2', "{assembly}.deseq2.pca.log")
     benchmark:
-        join(LOGS_DIR, 'deseq2', "{assembly}.deseq2.pca.benchmark")
+        join(logs_dir, 'deseq2', "{assembly}.deseq2.pca.benchmark")
     script:
         "deseq2_plot_pca.R"
 
@@ -103,11 +104,11 @@ rule deseq2:
     params:
         contrast=get_contrast
     conda:
-        "deseq2-env.yaml"
+        "environment.yml"
     log:
-        join(LOGS_DIR, 'deseq2', "{assembly}.c{contrast}.deseq2.log")
+        join(logs_dir, 'deseq2', "{assembly}.c{contrast}.deseq2.log")
     benchmark:
-        join(LOGS_DIR, 'deseq2', "{assembly}.c{contrast}.deseq2.benchmark")
+        join(logs_dir, 'deseq2', "{assembly}.c{contrast}.deseq2.benchmark")
     threads: get_deseq2_threads
     script:
         "deseq2.R"
