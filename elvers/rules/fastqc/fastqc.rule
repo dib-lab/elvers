@@ -1,6 +1,7 @@
 import os, re
 from os.path import join
 
+logs_dir  = config['elvers_directories']['logs']
 #input dirs
 data_dir = config['elvers_directories']['outdirs']['input_data']
 trim_dir = config['elvers_directories']['outdirs']['preprocess']
@@ -27,9 +28,9 @@ rule fastqc_trimmed:
         zip=join(qc_dir,'{sample}_{unit}_{end}_fastqc.zip')
     params: fastqc_params.get('extra', "")
     log: 
-        join(LOGS_DIR, 'fastqc/{sample}_{unit}_{end}.log')
+        join(logs_dir, 'fastqc/{sample}_{unit}_{end}.log')
     benchmark:
-        join(LOGS_DIR, 'fastqc/{sample}_{unit}_{end}.benchmark')
+        join(logs_dir, 'fastqc/{sample}_{unit}_{end}.benchmark')
     conda: "environment.yml"
 	script: "wrapper.py"
 
@@ -41,8 +42,8 @@ rule fastqc_pretrim:
         zip=join(qc_dir,'{sample}_{unit}_{end}_fastqc.zip')
     params: fastqc_params.get('extra', "")
     log: 
-        join(LOGS_DIR, 'fastqc/{sample}_{unit}_{end}.log') 
+        join(logs_dir, 'fastqc/{sample}_{unit}_{end}.log') 
     benchmark:
-        join(LOGS_DIR, 'fastqc/{sample}_{unit}_{end}.benchmark')
+        join(logs_dir, 'fastqc/{sample}_{unit}_{end}.benchmark')
     conda: "environment.yml"
 	script: "wrapper.py"

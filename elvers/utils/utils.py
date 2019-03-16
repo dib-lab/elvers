@@ -175,12 +175,12 @@ def generate_all_targs(configD, samples):
 def get_params(rule_name, rule_dir='rules'):
     # pass in a rule name & the directory that contains its paramsfile.
     # Return paramsD
-    rule_paramsfile = os.path.join(rule_dir,rule_name+ '_params.yaml')
+    rule_paramsfile = os.path.join(rule_dir, 'params.yml')
     rule_params = {}
     with open(rule_paramsfile, 'r') as stream:
         try:
             paramsD = yaml.safe_load(stream) #, Loader=yaml.FullLoader)
         except yaml.YAMLError as exc:
             print(exc)
-        rule_params= paramsD[rule_name]
+        rule_params= paramsD[rule_name] # in case you have multiple programs in single params.yml
     return rule_params

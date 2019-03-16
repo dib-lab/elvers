@@ -3,6 +3,9 @@ from os.path import join
 # need to modify for "sample" not "r1/r2/r"
 #sample = [r1,r2] or sample = [r] gets passed in
 
+logs_dir  = config['elvers_directories']['logs']
+BASE = config['basename']
+
 bt2_params = config['bowtie2']
 bt2_dir = bt2_params['elvers_dirname']
 # input assembly
@@ -14,6 +17,7 @@ input_dir     = config['elvers_directories']['outdirs'][input_dirname]
 quant_dir     = salmon_params['elvers_dirname']
 ext           =  salmon_params['input_pattern']
 combine_units = salmon_params['extensions']['read']['combine_units']
+
 
 # use if you don't want to collapse technical replicates ("units" column; deseq2 not supported)
 def get_sample_no_combine(w):
@@ -57,10 +61,10 @@ rule bowtie2_index:
     params:
         extra = bt2_params['index_params'].get('extra', '')
     log:
-        join(LOGS_DIR, 'bowtie2/{assembly}_index.log')
+        join(logs_dir, 'bowtie2/{assembly}_index.log')
      benchmark:
-         join(LOGS_DIR, 'bowtie2/{assembly}_index.benchmark')
-    conda: "bowtie2-env.yaml"
+         join(logs_dir, 'bowtie2/{assembly}_index.benchmark')
+    conda: "environment.yml"
     script: "bowtie2-index-wrapper.py"
 
 rule bowtie2_index:
@@ -77,9 +81,9 @@ rule bowtie2_index:
     params:
         extra = ''
     log:
-        join(LOGS_DIR, 'bowtie2', BASE +'_index.log')
+        join(logs_dir, 'bowtie2', BASE +'_index.log')
     conda: 
-        'bowtie2-env.yaml'
+        'environment.yml'
     script:
         'wrapper.py'
 #    shell: 
@@ -101,6 +105,6 @@ rule bowtie2_map:
         extra=" --local "  # optional parameters
     threads: 8
     benchmark:
-        join(LOGS_DIR, 'bowtie2/{sample}.benchmark')
+        join(logs_dir, 'bowtie2/{sample}.benchmark')
     wrapper:
         "0.27.1/bio/bowtie2/align"

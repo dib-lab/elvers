@@ -24,4 +24,3 @@ get_reference:
     reference_extension: '_input'
     download_ref: False
     use_ftp: False
-

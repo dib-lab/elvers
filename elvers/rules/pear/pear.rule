@@ -1,5 +1,6 @@
 from os.path import join
 
+logs_dir  = config['elvers_directories']['logs']
 ep_params = config['pear']['elvers_params']
 pear_params = config['pear']['program_params']
 
@@ -35,7 +36,7 @@ rule pear_read_merging:
         max_memory = pear_params.get('max_memory', "4G"),
         extra = pear_params.get('extra', '')
     threads: 6
-    log: join(LOGS_DIR, 'pear/{sample}_{unit}.log')
-    benchmark: join(LOGS_DIR, 'pear/{sample}_{unit}.benchmark')
-    conda: 'pear-env.yaml'
+    log: join(logs_dir, 'pear/{sample}_{unit}.log')
+    benchmark: join(logs_dir, 'pear/{sample}_{unit}.benchmark')
+    conda: 'environment.yml'
     script: 'pear-wrapper.py'

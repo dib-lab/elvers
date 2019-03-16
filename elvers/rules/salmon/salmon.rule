@@ -1,18 +1,23 @@
 from os.path import join
+import pandas as pd
 
 salmon_params = config['salmon']['program_params']
 ep_params = config['salmon']['elvers_params']
+logs_dir  = config['elvers_directories']['logs']
 
 # get inputs
 assembly_dir  = config['elvers_directories']['outdirs']['assemble']
-input_dirname = ep_params['input_dir']
-input_dir     = config['elvers_directories']['outdirs'][input_dirname]
-ext           = ep_params['input_pattern']
 combine_units = ep_params['extensions']['read']['combine_units']
+
+if salmon_params.get('input_trimmomatic_trimmed', True):
+    input_dir = config['elvers_directories']['outdirs']['preprocess']
+    ext = '.trim.fq.gz'
+else:
+    input_dir = config['elvers_directories']['outdirs']['input_data']
+    ext = '.fq.gz'
 
 # get outdir
 quant_dir     = ep_params['outdir']
-
 
 # use if you don't want to collapse technical replicates ("units" column; deseq2 not supported)
 def get_sample_no_combine(w):
@@ -56,9 +61,9 @@ rule salmon_index:
     threads: 10
     params:
         extra = salmon_params['index_params'].get('extra', '')
-    log:join(LOGS_DIR, 'salmon','{assembly}_index.log')
-    benchmark:join(LOGS_DIR, 'salmon','{assembly}_index.benchmark')
-    conda: "salmon-env.yaml"
+    log:join(logs_dir, 'salmon','{assembly}_index.log')
+    benchmark:join(logs_dir, 'salmon','{assembly}_index.benchmark')
+    conda: "environment.yml"
 	script: "index-wrapper.py"
 
 if combine_units:
@@ -78,9 +83,9 @@ if combine_units:
             libtype = salmon_params['quant_params'].get('libtype', 'A'),
             extra = salmon_params['quant_params'].get('extra', '')
         threads: 20
-        log: join(LOGS_DIR, 'salmon/{sample}_x_{assembly}.log')
-        benchmark: join(LOGS_DIR, 'salmon/{sample}_x_{assembly}.benchmark')
-        conda: "salmon-env.yaml"
+        log: join(logs_dir, 'salmon/{sample}_x_{assembly}.log')
+        benchmark: join(logs_dir, 'salmon/{sample}_x_{assembly}.benchmark')
+        conda: "environment.yml"
         script: "quant-wrapper.py"
 else:
     rule salmon_quant_no_combine:
@@ -99,7 +104,7 @@ else:
             libtype = salmon_params['quant_params'].get('libtype', 'A'),
             extra = salmon_params['quant_params'].get('extra', '')
         threads: 20
-        log:join(LOGS_DIR, 'salmon/{sample}_{unit}_x_{assembly}.log')
-        benchmark:join(LOGS_DIR, 'salmon/{sample}_{unit}_x_{assembly}.benchmark')
-        conda: "salmon-env.yaml"
+        log:join(logs_dir, 'salmon/{sample}_{unit}_x_{assembly}.log')
+        benchmark:join(logs_dir, 'salmon/{sample}_{unit}_x_{assembly}.benchmark')
+        conda: "environment.yml"
         script: "quant-wrapper.py"
