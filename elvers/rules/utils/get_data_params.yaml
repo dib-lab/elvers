@@ -9,5 +9,6 @@ get_data:
         se:
           - ".se.fq.gz" 
   program_params:
+    samples: examples/nema.samples.tsv 
     download_data: False
     use_ftp: False
