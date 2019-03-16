@@ -5,8 +5,8 @@
 basename: 'nema'
 
 # this describes the samples:
-samples: "../examples/nema.samples.tsv"
 
 # this says to download samples specified as Web URLs:
 get_data:
+  samples: "../examples/nema.samples.tsv"
   download_data: True
