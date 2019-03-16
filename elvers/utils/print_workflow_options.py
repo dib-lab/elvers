@@ -8,18 +8,8 @@ import glob
 import yaml
 import argparse
 
-def read_yaml(filename):
-    with open(filename, 'r') as stream:
-        try:
-            yamlD = yaml.load(stream)
-        except yaml.YAMLError as exc:
-            print(exc)
-    return yamlD
-
-def pretty_name(targ):
-    split = "  ####################  " 
-    name = '\n\n' + split + targ + split + '\n'
-    return name
+from .utils import read_yaml
+from .pretty_config import pretty_name
 
 def print_available_workflows_and_tools(paramsD, print_workflows=True, print_rules=False, only_rules=False):
     if only_rules:
@@ -34,7 +24,7 @@ def print_available_workflows_and_tools(paramsD, print_workflows=True, print_rul
                 sys.stdout.write('\n\t'.join(t) + '\n\t')
 
     if print_rules:
-        # print available rules 
+        # print available rules
         sys.stdout.write(pretty_name("Advanced usage: all available rules") + '\n\t')
         rules_dir = paramsD['elvers_directories'].get('rules', 'rules')
         rules = glob.glob(os.path.join( rules_dir, '*', '*.rule'))
