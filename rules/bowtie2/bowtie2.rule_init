@@ -3,6 +3,8 @@ from os.path import join
 # need to modify for "sample" not "r1/r2/r"
 #sample = [r1,r2] or sample = [r] gets passed in
 
+logs_dir  = config['eelpond_directories']['logs']
+
 bt2_params = config['bowtie2']
 bt2_dir = bt2_params['eelpond_dirname']
 # input assembly
@@ -57,10 +59,10 @@ rule bowtie2_index:
     params:
         extra = bt2_params['index_params'].get('extra', '')
     log:
-        join(LOGS_DIR, 'bowtie2/{assembly}_index.log')
+        join(logs_dir, 'bowtie2/{assembly}_index.log')
      benchmark:
-         join(LOGS_DIR, 'bowtie2/{assembly}_index.benchmark')
-    conda: "bowtie2-env.yaml"
+         join(logs_dir, 'bowtie2/{assembly}_index.benchmark')
+    conda: "environment.yml"
     script: "bowtie2-index-wrapper.py"
 
 rule bowtie2_index:
@@ -77,9 +79,9 @@ rule bowtie2_index:
     params:
         extra = ''
     log:
-        join(LOGS_DIR, 'bowtie2', BASE +'_index.log')
+        join(logs_dir, 'bowtie2', BASE +'_index.log')
     conda: 
-        'bowtie2-env.yaml'
+        'environment.yml'
     script:
         'wrapper.py'
 #    shell: 
@@ -101,6 +103,6 @@ rule bowtie2_map:
         extra=" --local "  # optional parameters
     threads: 8
     benchmark:
-        join(LOGS_DIR, 'bowtie2/{sample}.benchmark')
+        join(logs_dir, 'bowtie2/{sample}.benchmark')
     wrapper:
         "0.27.1/bio/bowtie2/align"

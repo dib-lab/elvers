@@ -36,11 +36,7 @@ def is_single_end(sample, unit, end = '', assembly = ''):
 #    replicates = False
 
 # Set up directories 
-BASE = config['basename']
-LOGS_DIR = config['eelpond_directories']['logs']
-
-#get ascii  animals
-animals_dir = config['eelpond_directories']['animals']
+animals_dir = config['eelpond_directories']['animals'] 
 animal_targs = glob.glob(join(animals_dir, '*')) # get all ascii animals
 animalsD = {os.path.basename(x): x for x in animal_targs}
 octopus = animalsD['octopus']

@@ -1,5 +1,7 @@
 from os.path import join
 
+logs_dir  = config['eelpond_directories']['logs']
+
 assembly_dir= config['eelpond_directories']['outdirs']['assemble']
 quant_dir= config['eelpond_directories']['outdirs']['quantify']
 
@@ -43,11 +45,11 @@ if deseq_params.get('gene_trans_map'):
         params:
             samples=config["samples"]
         conda:
-            "deseq2-env.yaml"
+            "environment.yml"
         log:
-            join(LOGS_DIR,  'deseq2', "{assembly}.deseq2.init.log")
+            join(logs_dir,  'deseq2', "{assembly}.deseq2.init.log")
         benchmark:
-            join(LOGS_DIR,  'deseq2', "{assembly}.deseq2.init.benchmark")
+            join(logs_dir,  'deseq2', "{assembly}.deseq2.init.benchmark")
         threads: get_deseq2_threads()
         script:
             "deseq2-init-tx2gene.R"
@@ -60,11 +62,11 @@ else:
         params:
             samples=config["samples"]
         conda:
-            "deseq2-env.yaml"
+            "environment.yml"
         log:
-            join(LOGS_DIR,  'deseq2', "{assembly}.deseq2.init.log")
+            join(logs_dir,  'deseq2', "{assembly}.deseq2.init.log")
         benchmark:
-            join(LOGS_DIR,  'deseq2', "{assembly}.deseq2.init.benchmark")
+            join(logs_dir,  'deseq2', "{assembly}.deseq2.init.benchmark")
         threads: get_deseq2_threads()
         script:
             "deseq2-init-txOut.R"
@@ -78,11 +80,11 @@ rule deseq2_pca:
     params:
         pca_labels=deseq_params["pca"]["labels"]
     conda:
-        "deseq2-env.yaml"
+        "environment.yml"
     log:
-        join(LOGS_DIR, 'deseq2', "{assembly}.deseq2.pca.log")
+        join(logs_dir, 'deseq2', "{assembly}.deseq2.pca.log")
     benchmark:
-        join(LOGS_DIR, 'deseq2', "{assembly}.deseq2.pca.benchmark")
+        join(logs_dir, 'deseq2', "{assembly}.deseq2.pca.benchmark")
     script:
         "deseq2_plot_pca.R"
 
@@ -103,11 +105,11 @@ rule deseq2:
     params:
         contrast=get_contrast
     conda:
-        "deseq2-env.yaml"
+        "environment.yml"
     log:
-        join(LOGS_DIR, 'deseq2', "{assembly}.c{contrast}.deseq2.log")
+        join(logs_dir, 'deseq2', "{assembly}.c{contrast}.deseq2.log")
     benchmark:
-        join(LOGS_DIR, 'deseq2', "{assembly}.c{contrast}.deseq2.benchmark")
+        join(logs_dir, 'deseq2', "{assembly}.c{contrast}.deseq2.benchmark")
     threads: get_deseq2_threads
     script:
         "deseq2.R"

@@ -1,5 +1,7 @@
 from os.path import join
 
+logs_dir  = config['eelpond_directories']['logs']
+
 trim_dir    = config['eelpond_directories']['outdirs']['preprocess']
 khmer_dir = config['khmer']['eelpond_params']['outdir']
 khmer_params = config['khmer']['program_params']
@@ -36,9 +38,9 @@ if diginorm:
             cov = khmer_params.get('coverage', 20),
             extra = khmer_params.get('extra', '')
         threads: 10
-        log: join(LOGS_DIR, 'khmer/{sample}_{unit}.pe.diginorm.log')
-        benchmark: join(LOGS_DIR, 'khmer/{sample}_{unit}.pe.diginorm.benchmark')
-        conda:  'khmer-env.yaml'
+        log: join(logs_dir, 'khmer/{sample}_{unit}.pe.diginorm.log')
+        benchmark: join(logs_dir, 'khmer/{sample}_{unit}.pe.diginorm.benchmark')
+        conda:  'environment.yml'
         shell: " (interleave-reads.py {input.r1} {input.r2} ) | "
                " (trim-low-abund.py -V -k {params.k} -Z {params.Z} -C {params.C} - -o - -M {params.memory} "
                " --diginorm --diginorm-coverage={params.cov}) | (extract-paired-reads.py --gzip "
@@ -61,9 +63,9 @@ if diginorm:
             cov = khmer_params['coverage'],
             extra = khmer_params['extra']
         threads: 2
-        log: join(LOGS_DIR, 'khmer/{sample}_{unit}.se.diginorm.log')
-        benchmark: join(LOGS_DIR, 'khmer/{sample}_{unit}.se.diginorm.benchmark')
-        conda: 'khmer-env.yaml'
+        log: join(logs_dir, 'khmer/{sample}_{unit}.se.diginorm.log')
+        benchmark: join(logs_dir, 'khmer/{sample}_{unit}.se.diginorm.benchmark')
+        conda: 'environment.yml'
         shell:
                "(trim-low-abund.py {input} -V -k {params.k} -Z {params.Z} -C {params.C} -o {output} "
                " -M {params.memory} --diginorm --diginorm-coverage={params.cov} ) "
@@ -85,9 +87,9 @@ else:
             memory = khmer_params.get('memory', 4e9),
             extra = khmer_params.get('extra', '')
         threads: 10
-        log: join(LOGS_DIR, 'khmer/{sample}_{unit}.pe.log')
-        benchmark: join(LOGS_DIR, 'khmer/{sample}_{unit}.pe.benchmark')
-        conda:  'khmer-env.yaml'
+        log: join(logs_dir, 'khmer/{sample}_{unit}.pe.log')
+        benchmark: join(logs_dir, 'khmer/{sample}_{unit}.pe.benchmark')
+        conda:  'environment.yml'
         shell: " (interleave-reads.py {input.r1} {input.r2} )| "
                " (trim-low-abund.py -V -k {params.k} -Z {params.Z} -C {params.C} - -o - -M {params.memory})"
                " | (extract-paired-reads.py --gzip -p {output.paired} -s {output.single}) > {log}"
@@ -107,9 +109,9 @@ else:
             memory = khmer_params['memory'],
             extra = khmer_params['extra']
         threads: 2
-        log: join(LOGS_DIR, 'khmer/{sample}_{unit}.se.log')
-        benchmark: join(LOGS_DIR, 'khmer/{sample}_{unit}.se.benchmark')
-        conda: 'khmer-env.yaml'
+        log: join(logs_dir, 'khmer/{sample}_{unit}.se.log')
+        benchmark: join(logs_dir, 'khmer/{sample}_{unit}.se.benchmark')
+        conda: 'environment.yml'
         shell:
                "(trim-low-abund.py {input} -V -k {params.k} -Z {params.Z} -C {params.C} -o {output} "
                " -M {params.memory}) "
@@ -122,9 +124,9 @@ rule khmer_split_paired:
         r1=join(khmer_dir, '{sample}_{unit}_1.khmer.fq.gz'),
         r2=join(khmer_dir, '{sample}_{unit}_2.khmer.fq.gz'),
     threads: 2 
-    log: join(LOGS_DIR, 'khmer/{sample}_{unit}.split_pe.log')
-    benchmark: join(LOGS_DIR, 'khmer/{sample}_{unit}.split_pe.benchmark')
-    conda: "khmer-env.yaml"
+    log: join(logs_dir, 'khmer/{sample}_{unit}.split_pe.log')
+    benchmark: join(logs_dir, 'khmer/{sample}_{unit}.split_pe.benchmark')
+    conda: "environment.yml"
     shell: """
         split-paired-reads.py {input} --gzip -1 {output.r1} -2 {output.r2} >> {log}
         """

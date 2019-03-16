@@ -1,12 +1,13 @@
 from os.path import join
 from ep_utils.utils import get_params
 
-# default params from local yaml params file
+# default params from local yml params file
 #rcorrector_params = get_params('rcorrector')
 # override defaults with snakemake config (main configfile or snakemake --config)
 #if 'rcorrector' in config.keys():
 #    rcorr_params.update(config['rcorrector']) 
 
+logs_dir  = config['eelpond_directories']['logs']
 data_dir    = config['eelpond_directories']['outdirs']['input_data']
 
 rcorr_params = config['rcorrector']['program_params']
@@ -62,9 +63,9 @@ rule rcorrector_pe:
         """--- PE Rcorrector ---"""
     params:
         extra = '' 
-    log:join(LOGS_DIR, 'rcorrector', '{sample}_{unit}_pe.log')
-    benchmark:join(LOGS_DIR, 'rcorrector','{sample}_{unit}_pe.benchmark')
-    conda: "rcorrector-env.yaml"
+    log:join(logs_dir, 'rcorrector', '{sample}_{unit}_pe.log')
+    benchmark:join(logs_dir, 'rcorrector','{sample}_{unit}_pe.benchmark')
+    conda: "environment.yml"
 	script: "rcorrector-wrapper.py"
 
 rule rcorrector_se:
@@ -80,8 +81,8 @@ rule rcorrector_se:
     params:
         extra = rcorr_params.get('extra', '')
     threads: 20
-    log:   join(LOGS_DIR, 'rcorrector', '{sample}_{unit}_se.log')
-    benchmark:   join(LOGS_DIR, 'rcorrector','{sample}_{unit}_se.benchmark')
-    conda: "rcorrector-env.yaml"
+    log:   join(logs_dir, 'rcorrector', '{sample}_{unit}_se.log')
+    benchmark:   join(logs_dir, 'rcorrector','{sample}_{unit}_se.benchmark')
+    conda: "environment.yml"
 	script: "rcorrector-wrapper.py"
 
