@@ -18,7 +18,7 @@ def run_ruletest(rulename, testdir, extra_configD = {}, short = True): # can we 
     conda_prefix = os.path.join(homedir, '.snakemake')
 
     # test info from rule
-    rulefile = glob.glob(os.path.join(homedir, 'rules', '*', rulename + '.rule'))[0]
+    rulefile = glob.glob(os.path.join(homedir, 'elvers/rules', '*', rulename + '.rule'))[0]
     ruledir = os.path.dirname(rulefile)
     test_yml = glob.glob(os.path.join(ruledir, testdir,'*.yml'))[0]
 

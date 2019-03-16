@@ -140,6 +140,7 @@ To build an editable configfile to start work on your own data, run:
     parser.add_argument('-t', '--threads', type=int, default=1)
     parser.add_argument('--extra_config', action='append', default = None)
     parser.add_argument('--config_dict', type=yaml.safe_load, default = None)
+    parser.add_argument('--out_path', type=str, default = None)
     parser.add_argument('-n', '--dry-run', action='store_true')
     parser.add_argument('-v', '--verbose', action='store_true')
     parser.add_argument('-w', '--print_workflows', action='store_true', help='just show available workflows')
