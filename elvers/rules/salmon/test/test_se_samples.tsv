@@ -1,0 +1,4 @@
+sample	unit	fq1	fq2	condition
+a	01	reads/a_1.fq.gz	reads/a_2.fq.gz	cond_A
+a_se	01	reads/a_se.fq.gz		cond_A
+b	01	reads/b_1.fq.gz	reads/b_2.fq.gz	cond_B

@@ -1,10 +1,13 @@
 from os import path
 
 ep_params = config['trinity']['elvers_params']
+logs_dir  = config['elvers_directories']['logs']
 assembly_params = config['trinity']['program_params']
 
 assembly_dir = ep_params['outdir']
 assembly_extension = ep_params['extensions']['assembly_extensions'][0] # should only be a single entry here, default: '_trinity'
+
+BASE = config['basename']
 
 def get_assembly_input(w):
     r1,r2,single =[],[],[]
@@ -48,19 +51,19 @@ rule trinity:
         seqtype=assembly_params.get('seqtype', 'fq'),
         extra=assembly_params.get('extra', '')
     threads: 4
-    log: join(LOGS_DIR, 'trinity', 'trinity.log')
-    benchmark: join(LOGS_DIR, 'trinity', 'trinity.benchmark')
-    conda: "trinity-env.yaml"
+    log: join(logs_dir, 'trinity', 'trinity.log')
+    benchmark: join(logs_dir, 'trinity', 'trinity.benchmark')
+    conda: "environment.yml"
 	script: "trinity-wrapper.py"
 
 rule rename_trinity_fasta:
     input: rules.trinity.output.fasta
     output: join(assembly_dir, BASE + assembly_extension + '.fasta')
-    log: join(LOGS_DIR, 'trinity/cp_assembly.log')
+    log: join(logs_dir, 'trinity/cp_assembly.log')
     shell: ("cp {input} {output}") 
 
 rule rename_trinity_gene_trans_map:
     input: rules.trinity.output.gene_trans_map
     output: join(assembly_dir, BASE + assembly_extension + '.fasta.gene_trans_map')
-    log: join(LOGS_DIR, 'trinity/cp_gt_map.log')
+    log: join(logs_dir, 'trinity/cp_gt_map.log')
     shell: ("cp {input} {output}") 

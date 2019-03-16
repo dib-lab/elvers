@@ -144,22 +144,6 @@ def generate_program_targs(configD, samples, basename, assembly_exts, contrasts)
     targets = generate_targs(outdir, basename, samples, assembly_exts, exts.get('base', None),exts.get('read'), exts.get('other'), contrasts)
     return targets
 
-def generate_mult_targs(configD, workflow, samples):
-    # pass full config, program names. Call generate_program_targs to build each
-    workflows = configD['elvers_workflows']
-    targs = []
-    base = configD['basename']
-    assembly_exts = configD.get('assembly_extensions', [""])
-    # add assertion to make sure workflow exists in config!
-    if workflows.get(workflow, None):
-        target_rules = configD['elvers_workflows'][workflow]['targets']
-        for r in target_rules:
-            contrasts = configD[r]['program_params'].get('contrasts', [])
-            targs += generate_program_targs(configD[r]['elvers_params'], samples, base, assembly_exts, contrasts)
-    targs = list(set(targs))
-    return targs
-
-# replacement for generate_mult_targs, to enable full workflows!
 def generate_all_targs(configD, samples):
     # pass full config, program names. Call generate_program_targs to build each
     workflows = configD['elvers_workflows']
@@ -183,12 +167,12 @@ def generate_all_targs(configD, samples):
 def get_params(rule_name, rule_dir='rules'):
     # pass in a rule name & the directory that contains its paramsfile.
     # Return paramsD
-    rule_paramsfile = os.path.join(rule_dir,rule_name+ '_params.yaml')
+    rule_paramsfile = os.path.join(rule_dir, 'params.yml')
     rule_params = {}
     with open(rule_paramsfile, 'r') as stream:
         try:
             paramsD = yaml.safe_load(stream) #, Loader=yaml.FullLoader)
         except yaml.YAMLError as exc:
             print(exc)
-        rule_params= paramsD[rule_name]
+        rule_params= paramsD[rule_name] # in case you have multiple programs in single params.yml
     return rule_params

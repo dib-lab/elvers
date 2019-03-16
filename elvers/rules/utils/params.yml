@@ -1,0 +1,25 @@
+get_data:
+  elvers_params:
+    outdir: input_data
+    extensions:
+      read:
+        pe:
+          - "_1.fq.gz"
+          - "_2.fq.gz"
+        se:
+          - ".se.fq.gz" 
+  program_params:
+    download_data: False
+    use_ftp: False
+assemblyinput:
+  elvers_params:
+    outdir: assembly
+    extensions:
+      base:
+        - '.fasta'
+      #  - '.fasta.gene_trans_map'
+  # for user input
+  program_params:
+    assembly: examples/nema.assembly.fasta
+    gene_trans_map:  examples/nema.assembly.fasta.gene_trans_map
+    assembly_extension: '_input'

@@ -1,7 +1,9 @@
 from os.path import join
 
+logs_dir  = config['elvers_directories']['logs']
 assembly_dir= config['elvers_directories']['outdirs']['assemble']
 preprocess_dir= config['elvers_directories']['outdirs']['preprocess']
+
 sourmash_params = config['sourmash']['program_params']
 sourmash_dir = config['sourmash']['elvers_params']['outdir']
 
@@ -27,10 +29,10 @@ rule sourmash_compute_assembly:
         k_size = sourmash_params.get('k_size', 31),
         scaled  = sourmash_params.get('scaled', 1000),
         extra = sourmash_params.get('extra', '')
-    log: join(LOGS_DIR, 'sourmash', '{assembly}.log')
-    benchmark: join(LOGS_DIR, 'sourmash', '{assembly}.benchmark')
+    log: join(logs_dir, 'sourmash', '{assembly}.log')
+    benchmark: join(logs_dir, 'sourmash', '{assembly}.benchmark')
     conda: 
-        'sourmash-env.yaml'
+        'environment.yml'
     script: 
         'sourmash-wrapper.py'
 
@@ -47,10 +49,10 @@ rule sourmash_compute_pe_interleaved:
         k_size = sourmash_params.get('k_size', 31),
         scaled  = sourmash_params.get('scaled', 1000),
         extra = sourmash_params.get('extra', '')
-    log: join(LOGS_DIR, 'sourmash', '{sample}_{unit}.log')
-    benchmark: join(LOGS_DIR, 'sourmash', '{sample}_{unit}_pe.benchmark')
+    log: join(logs_dir, 'sourmash', '{sample}_{unit}.log')
+    benchmark: join(logs_dir, 'sourmash', '{sample}_{unit}_pe.benchmark')
     conda: 
-        'sourmash-env.yaml'
+        'environment.yml'
     script: 
         'sourmash-wrapper.py'
 
@@ -67,10 +69,10 @@ rule sourmash_compute_se:
         k_size = sourmash_params.get('k_size', 31),
         scaled  = sourmash_params.get('scaled', 1000),
         extra = sourmash_params.get('extra', '')
-    log: join(LOGS_DIR, 'sourmash', '{sample}_{unit}.log')
-    benchmark: join(LOGS_DIR, 'sourmash', '{sample}_{unit}_se.benchmark')
+    log: join(logs_dir, 'sourmash', '{sample}_{unit}.log')
+    benchmark: join(logs_dir, 'sourmash', '{sample}_{unit}_se.benchmark')
     conda: 
-        'sourmash-env.yaml'
+        'environment.yml'
     script: 
         'sourmash-wrapper.py'
 
