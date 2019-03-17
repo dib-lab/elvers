@@ -7,18 +7,11 @@ import argparse
 import sys
 import yaml
 
-def read_yaml(filename):
-    with open(filename, 'r') as stream:
-        try:
-            yamlD = yaml.load(stream)
-        except yaml.YAMLError as exc:
-            print(exc)
-    return yamlD
+from .utils import read_yaml
 
 def pretty_name(targ):
-    split = "  ####################  " 
-    name = '\n' + split + targ + split + '\n'
-    return name
+    print_name = '\n#\n# '+ targ + '\n#\n\n'
+    return print_name
 
 def write_config(paramsD, targets, out = None):
     if out:
@@ -28,13 +21,11 @@ def write_config(paramsD, targets, out = None):
         generalP = {}
         generalP['basename'] = paramsD.get('basename', 'elvers')
         generalP['experiment'] = paramsD.get('experiment', '_experiment1')
-        generalP['samples'] = paramsD.get('samples', 'samples.tsv')
-        
-        outConfig.write((pretty_name("Elvers Pipeline Configfile")))
+        outConfig.write((pretty_name("elvers pipeline configuration")))
         yaml.dump(generalP, stream=outConfig, indent=2,  default_flow_style=False)
     else:
         sys.stdout.write('\n\n')
-        
+
     # write program-specific parameters
     seen_rules = []
     for targ in targets:
@@ -50,16 +41,17 @@ def write_config(paramsD, targets, out = None):
                    targ_params[r] = paramsD[r]['program_params']
         # write to file
         if out:
-            outConfig.write(pretty_name(targ))
+            outConfig.write(pretty_name(targ + ' workflow'))
             yaml.dump(targ_params, stream=outConfig, indent=2,  default_flow_style=False)
         else:
-            sys.stdout.write(pretty_name(targ))
+            sys.stdout.write(pretty_name(targ + ' workflow'))
             yaml.dump(targ_params, stream=sys.stdout, indent=2,  default_flow_style=False)
     if out:
         print('\n\tdone! Now edit parameters in the {}, and rerun run_elvers without the "--build_config" option.\n\n'.format(out))
         outConfig.close()
     else:
-        sys.stdout.write('  #######################################################\n\n')
+        sys.stdout.write('\n\n')
+        #sys.stdout.write('  #######################################################\n\n')
 
 
 if __name__ == '__main__':

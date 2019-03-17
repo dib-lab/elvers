@@ -20,14 +20,25 @@ from snakemake.remote import FTP, HTTP
 FTP = FTP.RemoteProvider()
 HTTP = HTTP.RemoteProvider()
 
-# read in sample info 
-samples = pd.read_csv(config["samples"],dtype=str, sep='\t').set_index(["sample", "unit"], drop=False)
-#validate(samples, schema="schemas/samples_v2.schema.yaml") # new version
-samples['name'] = samples["sample"].map(str) + '_' + samples["unit"].map(str)
 
-# note, this function *needs* to be in this file, or added somewhere it can be accessed by all rules
-def is_single_end(sample, unit, end = '', assembly = ''):
-    return pd.isnull(samples.loc[(sample, unit), "fq2"])
+# if we need data, read in sample info. Do high-level checking in main script to make sure samples exists, prior to getting here.
+if config.get('get_data', None):
+    samples_tsv = config["get_data"]["program_params"]["samples"]
+    try:
+        samples = pd.read_csv(samples_tsv, dtype=str, sep='\t').set_index(["sample", "unit"], drop=False)
+        validate(samples, schema="schemas/samples_v2.schema.yaml") # new version
+    except Exception as e:
+        sys.stderr.write(f"\n\tError: {samples_tsv} file is not properly formatted. Please fix.\n\n")
+        print(e)
+
+    samples['name'] = samples["sample"].map(str) + '_' + samples["unit"].map(str)
+
+    # note, this function *needs* to be in this file, or added somewhere it can be accessed by all rules
+    def is_single_end(sample, unit, end = '', assembly = ''):
+        return pd.isnull(samples.loc[(sample, unit), "fq2"])
+else:
+    samples = None
+
 
 # check for replicates ** need to change with new samples scheme
 # change this replicate check to work with single samples file
@@ -44,6 +55,7 @@ animal_targs = glob.glob(join(animals_dir, '*')) # get all ascii animals
 animalsD = {os.path.basename(x): x for x in animal_targs}
 octopus = animalsD['octopus']
 fish = animalsD['fish']
+failwhale = animalsD['failwhale']
 
 #### snakemake ####
 
@@ -79,6 +91,12 @@ onsuccess:
 
 rule elvers:
     input: generate_all_targs(config, samples)
+
+onerror:
+    # to do: be more helpful here :)
+    print("  Oh no! Something wen't wrong here\n")
+    shell('cat {failwhale}')
+
 
 
 #shell('cat {animal_targs[1]}')

@@ -37,14 +37,15 @@ If we want to download the test data instead:
 
 Now, you need to provide the name and location of this file to `elvers`. We do this in the `config.yaml` file, like so:
 ```
-samples: /path/to/my-samples.tsv
+get_data:
+  samples: /path/to/my-samples.tsv
 ```
 
 The default functionality is to link data from another location on your computer into `elvers`'s output directory. However, if you want to download data instead, you'll need to provide links in the `my-samples.tsv` file, and add a few lines to your `config.yaml`:
 
 ```
-samples: /path/to/my-samples.tsv
 get_data:
+  samples: /path/to/my-samples.tsv
   download_data: True 
   use_ftp: False # set to true if you want to use FTP instead of HTTP
 ```
@@ -144,7 +145,8 @@ We can generate this file either by:
 The configuration file primarily provides the location of the input data and/or input assembly. The simplest config file contains just this information.
 
 ```
-samples: samples.tsv
+get_data:
+  samples: samples.tsv
 ```
 or 
 ```
@@ -189,7 +191,6 @@ The output should be a `yaml` configfile. At the top, you should see:
   ####################  Eelpond Pipeline Configfile  ####################
 basename: elvers
 experiment: _experiment1
-samples: samples.tsv
 ```
 
 First, change the `samples.tsv` name to your `my_samples.tsv` file. Then, modify the basename and any experiment info you'd like to add. The default output directory will be: `basename_experiment_out` within the main `elvers` directory. If you'd like, you can add one more parameter to the top section: `out_path: OUTPUT_PATH`, if you'd like the output to go somewhere other than the `elvers` directory. Note the basename and experiment are still used to determine the output directory name.
@@ -201,6 +202,7 @@ Below this section, you should see some parameters for each program run in this 
 
 ```
 get_data:
+  samples: samples.tsv
   download_data: false
   use_ftp: false
 trimmomatic:
