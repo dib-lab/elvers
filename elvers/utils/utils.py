@@ -71,32 +71,34 @@ def update_nested_dict(d, other):
 def is_single_end(sample, unit, end = '', assembly = ''):
     return pd.isnull(samples.loc[(sample, unit), "fq2"])
 
-def handle_assemblyinput(assembInput, config):
+def handle_reference_input(refInput, config):
     extensions= {}
-    program_params = config['assemblyinput'].get('program_params')
-    assemblyfile = program_params.get('assembly', None)
-    if assemblyfile:
-        assert os.path.exists(assemblyfile), 'Error: cannot find input assembly at {}\n'.format(assemblyfile)
-        sys.stderr.write('\tFound input assembly at {}\n'.format(assemblyfile))
-        assemblyfile = os.path.realpath(assemblyfile)
-    else:
-        sys.stderr.write("\n\tError: trying to run `assemblyinput` workflow, but there's no assembly file specified in your configfile. Please fix.\n\n")
-    gtmap = program_params.get('gene_trans_map', '')
-    if gtmap:
-        assert os.path.exists(gtmap), 'Error: cannot find assembly gene_trans_map at {}\n'.format(gtmap)
-        sys.stderr.write('\tFound input assembly gene-transcript map at {}\n'.format(gtmap))
-        extensions = {'base': ['.fasta', '.fasta.gene_trans_map']}
-        gtmap = os.path.realpath(gtmap)
-    else:
-        program_params['gene_trans_map'] = ''
-        config['no_gene_trans_map']= True
-    # grab user-input assembly extension
-    input_assembly_extension = program_params.get('assembly_extension', '_input')
-    extensions['assembly_extensions'] = [input_assembly_extension]
-    config['assemblyinput'] = {'program_params': program_params, 'eelpond_params': {'extensions':extensions}}
-    return config, input_assembly_extension
+    program_params = config['get_reference'].get('program_params')
+    referencefile = program_params.get('reference', None)
+    if not program_params.get('download_ref', False):
+        if referencefile:
+            assert os.path.exists(referencefile), 'Error: cannot find input reference at {}\n'.format(referencefile)
+            sys.stderr.write('\tFound input reference at {}\n'.format(referencefile))
+            referencefile = os.path.realpath(referencefile)
+        else:
+            sys.stderr.write("\n\tError: trying to run `get_reference` workflow, but there's no reference file specified in your configfile. Please fix.\n\n")
+        # handle the gene_trans_map
+        gtmap = program_params.get('gene_trans_map', '')
+        if gtmap:
+            assert os.path.exists(gtmap), 'Error: cannot find reference gene_trans_map at {}\n'.format(gtmap)
+            sys.stderr.write('\tFound input reference gene-transcript map at {}\n'.format(gtmap))
+            extensions = {'base': ['.fasta', '.fasta.gene_trans_map']}
+            gtmap = os.path.realpath(gtmap)
+        else:
+            program_params['gene_trans_map'] = ''
+            config['no_gene_trans_map']= True
+    # grab user-input reference extension
+    input_reference_extension = program_params.get('reference_extension', '_input')
+    extensions['reference_extensions'] = [input_reference_extension]
+    config['get_reference'] = {'program_params': program_params, 'eelpond_params': {'extensions':extensions}}
+    return config, input_reference_extension
 
-def generate_targs(outdir, basename, samples, assembly_exts=[''], base_exts = None, read_exts = None, other_exts = None, contrasts = []):
+def generate_targs(outdir, basename, samples, ref_exts=[''], base_exts = None, read_exts = None, other_exts = None, contrasts = []):
     base_targets, read_targets, other_targs = [],[],[]
     # handle read targets
     if read_exts:
@@ -113,35 +115,41 @@ def generate_targs(outdir, basename, samples, assembly_exts=[''], base_exts = No
             read_targets+=[join(outdir, name + e) for e in se_ext for name in se_names]
         if pe_ext and len(pe_names) > 0:
             read_targets+=[join(outdir, name + e) for e in pe_ext for name in pe_names]
-    # handle base targets
+
+    # handle base targets, e.g. refname_ext.fasta or refname_ext.stats
     read_targs = []
-    if assembly_exts:
-        for ext in assembly_exts:
-            assemblyname = basename + ext
-            if base_exts:
-                base_targets += [join(outdir, assemblyname + e) for e in base_exts]
-            # handle read targets that contain assembly info
-            read_targs+= [t.replace("__assembly__", assemblyname) for t in read_targets]
-    else:
-        read_targs = read_targets
     base_targs = []
-    if contrasts:
+    # build base targets (using reference extensions)
+    for ref_e in ref_exts:
+        refname = basename + ref_e
+        if base_exts:
+            for base_extension in base_exts:
+                base_targets += [join(outdir, refname + e) for e in base_exts]
+        if read_targets:
+            # handle read targets that contain reference info
+            read_targs+= [t.replace("__reference__", refname) for t in read_targets] #should return read_targets if nothing to replace
+        #else:  # thus don't need these
+        #    read_targs+= read_targets
+    #handle contrasts within the base targets
+    if contrasts and base_targets:
         for c in contrasts:
-            base_targs +=[t.replace("__contrast__", c) for t in base_targets]
+            base_targs = [t.replace("__contrast__", c) for t in base_targets]
     else:
         base_targs = base_targets
+
+    # handle outputs with no name into (e.g. multiqc)
     if other_exts:
-        # no extension, just single filename that we don't want to generate for multiple assembly extensions
+        # no extension, just single filename that we don't want to generate for multiple reference extensions
         other_targs = [join(outdir, e) for e in other_exts]
     return base_targs + read_targs + other_targs
 
-def generate_program_targs(configD, samples, basename, assembly_exts, contrasts):
+def generate_program_targs(configD, samples, basename,ref_exts, contrasts):
     # given configD from each program, build targets
     outdir = configD['outdir']
     exts = configD['extensions']
-    if exts.get('assembly_extensions'): # this program is an assembler or only works with specific assemblies
-        assembly_exts = exts.get('assembly_extensions') # override generals with rule-specific assembly extensions
-    targets = generate_targs(outdir, basename, samples, assembly_exts, exts.get('base', None),exts.get('read'), exts.get('other'), contrasts)
+    if exts.get('reference_extensions'): # this program is an assembler or only works with specific assemblies
+        ref_exts = exts.get('reference_extensions', ['']) # override generals with rule-specific reference extensions
+    targets = generate_targs(outdir, basename, samples, ref_exts, exts.get('base', None),exts.get('read'), exts.get('other'), contrasts)
     return targets
 
 def generate_all_targs(configD, samples):
@@ -149,7 +157,7 @@ def generate_all_targs(configD, samples):
     workflows = configD['elvers_workflows']
     targs = []
     base = configD['basename']
-    assembly_exts = configD.get('assembly_extensions', [""])
+    ref_exts = configD.get('reference_extensions', [""])
     # add assertion to make sure workflow exists in config!
     #if workflows.get(workflow, None):
     target_rules = []
@@ -160,7 +168,7 @@ def generate_all_targs(configD, samples):
             target_rules += [flow]
     for r in set(target_rules):
         contrasts = configD[r]['program_params'].get('contrasts', [])
-        targs += generate_program_targs(configD[r]['elvers_params'], samples, base, assembly_exts, contrasts)
+        targs += generate_program_targs(configD[r]['elvers_params'], samples, base, ref_exts, contrasts)
     targs = list(set(targs))
     return targs
 

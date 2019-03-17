@@ -46,20 +46,20 @@ def build_default_params(workdir, targets):
         required_rules+= targD.get('targets', [])
     ruleParamsFiles = []
     includeRules = []
-    assembly_extensions = []
+    reference_extensions = []
     rules_dir = defaultParams['elvers_directories']['rules']
     for rule_name in required_rules:
         try:
             rule = glob.glob(os.path.join(workdir, rules_dir, '*', rule_name + '.rule'))[0]
             defaultParams[rule_name] = get_params(rule_name, os.path.dirname(rule))
-            assembly_exts = defaultParams[rule_name]['elvers_params']['extensions'].get('assembly_extensions', [])
-            assembly_extensions+=assembly_exts
+            ref_exts = defaultParams[rule_name]['elvers_params']['extensions'].get('reference_extensions', [])
+            reference_extensions+=ref_exts
             includeRules += [rule]
         except: # if allows user workflow input, can't do this here (check extra targs later?)
             sys.stderr.write(f"\n\tError: Can't add rules for extra target {rule_name}. Please fix.\n\n")
             sys.exit(-1)
     defaultParams['include_rules'] = list(set(includeRules))
-    defaultParams['assembly_extensions'] = list(set(assembly_extensions))
+    defaultParams['reference_extensions'] = list(set(reference_extensions))
     return defaultParams
 
 
@@ -218,15 +218,15 @@ To build an editable configfile to start work on your own data, run:
             sys.exit(-1)
         # first, grab all params in user config file
         configD = import_configfile(configfile)
-        # build info for assemblyInput
-        assembInput = configD.get('assemblyinput', None)
-        if assembInput:
-            targs+=['assemblyinput']
-            configD, assemblyinput_ext = handle_assemblyinput(assembInput, configD)
+        # build info for get_reference
+        refInput = configD.get('get_reference', None)
+        if refInput:
+            targs+=['get_reference']
+            configD, refinput_ext = handle_reference_input(refInput, configD)
         else:
-            assemblyinput_ext = None
-        if 'assemblyinput' in targs and not assembInput:
-            sys.stderr.write("\n\tError: trying to run `assemblyinput` workflow, but there's no assembly file specified in your configfile. Please fix.\n\n")
+            refinput_ext = None
+        if 'get_reference' in targs and not refInput:
+            sys.stderr.write("\n\tError: trying to get reference via `get_reference` rule, but there's no reference file specified in your configfile. Please fix.\n\n")
             sys.exit(-1)
         # next, grab all elvers defaults, including rule-specific default parameters (*_params.yaml files)
         paramsD = build_default_params(thisdir, targs)
@@ -265,15 +265,15 @@ To build an editable configfile to start work on your own data, run:
         # update defaults with user-specified parameters (main configfile)
         update_nested_dict(paramsD,configD) # configD takes priority over default params
 
-        # add extension to overall assembly_extensions info
-        if assemblyinput_ext: # note, need to do it here to prevent override with defaults
-            paramsD['assembly_extensions'] = list(set(paramsD.get('assembly_extensions', []) + [assemblyinput_ext]))
+        # add extension to overall reference_extensions info
+        if refinput_ext: # note, need to do it here to prevent override with defaults
+            paramsD['reference_extensions'] = list(set(paramsD.get('reference_extensions', []) + [refinput_ext]))
 
             # NOTE: I think this should be moved from here into an `input_checks` function that checks all appropriate inputs/outputs are specified for the rules in use, and provides appropriate links to docs to help guide the user.
             if paramsD.get('no_gene_trans_map', False):
                 if paramsD.get('deseq2'):
                     paramsD['deseq2']['program_params']['gene_trans_map'] = False
-                    sys.stderr.write("\tYou're using `assemblyinput` without specifying a gene-trans-map. Setting differential expression to transcript-level only. See https://dib-lab.github.io/elvers/deseq2/for details.\n")
+                    sys.stderr.write("\tYou're using `get_reference` without specifying a gene-trans-map. Setting differential expression to transcript-level only. See https://dib-lab.github.io/elvers/deseq2/for details.\n")
         # All params have been integrated. Now build fullpaths and print the complete paramsfile
 
         # use params to build directory structure
