@@ -1,6 +1,16 @@
 trinity:
   elvers_params:
     outdir: assembly
+    inputs:
+      # at least one required
+      read:
+        - diginorm
+        - kmer_trimmed
+        - trimmed
+        - raw
+    outputs:
+     reference:
+        - transcriptome
     extensions:
       reference_extensions: # use this extension only for all output of this assembler
         - _trinity

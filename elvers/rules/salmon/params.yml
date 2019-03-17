@@ -1,6 +1,14 @@
 salmon:
   elvers_params:
     outdir: quant
+    inputs:
+      read:
+        - trimmed
+        - raw
+      reference:
+        - transcriptome
+    outputs:
+      - counts
     extensions: 
       read:
         combine_units: True

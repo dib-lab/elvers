@@ -1,6 +1,9 @@
 get_data:
   elvers_params:
     outdir: input_data
+    outputs:
+      read:
+        - raw
     extensions:
       read:
         pe:
@@ -14,6 +17,11 @@ get_data:
 get_reference:
   elvers_params:
     outdir: assembly
+    outputs:
+      reference:
+        - transcriptome
+        - genome
+        - protein
     extensions:
       base:
         - '.fasta'

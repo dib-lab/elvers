@@ -1,6 +1,13 @@
 dammit:  
   elvers_params:
     outdir: annotation
+    inputs:
+      reference:
+        - transcriptome 
+    outputs:
+      reference:
+        - transcriptome
+    help: "Dammit is a de novo transcriptome annotation program. Please input a reference to annotate, or generate one via a de novo assembly program"
     extensions: 
       base: 
         - .dammit.gff3
