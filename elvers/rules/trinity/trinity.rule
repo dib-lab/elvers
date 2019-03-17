@@ -5,7 +5,7 @@ logs_dir  = config['elvers_directories']['logs']
 assembly_params = config['trinity']['program_params']
 
 assembly_dir = ep_params['outdir']
-assembly_extension = ep_params['extensions']['assembly_extensions'][0] # should only be a single entry here, default: '_trinity'
+assembly_extension = ep_params['extensions']['reference_extensions'][0] # should only be a single entry here, default: '_trinity'
 
 BASE = config['basename']
 

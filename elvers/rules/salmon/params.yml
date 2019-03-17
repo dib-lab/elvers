@@ -5,11 +5,11 @@ salmon:
       read:
         combine_units: True
         pe:
-          - _x___assembly__.salmon/quant.sf
-          - _x___assembly__.salmon/lib_format_counts.json
+          - _x___reference__.salmon/quant.sf
+          - _x___reference__.salmon/lib_format_counts.json
         se:
-          - _x___assembly__.salmon/quant.sf
-          - _x___assembly__.salmon/lib_format_counts.json
+          - _x___reference__.salmon/quant.sf
+          - _x___reference__.salmon/lib_format_counts.json
       base:
           - .salmonindex
   program_params:

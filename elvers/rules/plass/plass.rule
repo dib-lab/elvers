@@ -5,7 +5,7 @@ ep_params = config['plass']['elvers_params']
 assembly_params = config['plass']['program_params']
 
 assembly_dir = ep_params['outdir']
-assembly_extension = ep_params['extensions']['assembly_extensions'][0] # should only be a single entry here, default: '_plass'
+assembly_extension = ep_params['extensions']['reference_extensions'][0] # should only be a single entry here, default: '_plass'
 
 BASE = config['basename']
 
