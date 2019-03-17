@@ -24,7 +24,23 @@
               `       '--;            (' 
 
 ```
-eelpond started as a snakemake update of the Eel Pond Protocol for *de novo* RNAseq analysis. It has evolved slightly to enable a number of workflows for (mostly) RNA data, which can all be run via the `eelpond` workflow wrapper. `eelpond` uses [snakemake](https://snakemake.readthedocs.io) for workflow management and [conda](https://conda.io/docs/) for software installation. The code can be found [here](https://github.com/dib-lab/eelpond).
+
+eelpond is a transcriptome assembly, annotation and differential
+expression workflow system for Illumina RNAseq. The default workflow
+includes Trinity, dammit, and deseq2.
+
+eelpond started as a snakemake update of the Eel Pond Protocol for *de
+novo* RNAseq analysis. This assembly and annotation protocol was used
+for the
+[re-assembly, quality evaluation, and annotation of 678 microbial eukaryotic reference transcriptomes](https://academic.oup.com/gigascience/advance-article/doi/10.1093/gigascience/giy158/5241890),
+among others.
+
+eelpond has evolved to include workflows for
+(mostly) RNA data, which can all be run via the `eelpond` workflow
+wrapper. `eelpond` uses [snakemake](https://snakemake.readthedocs.io)
+for workflow management and [conda](https://conda.io/docs/) for
+software installation. The code can be found
+[here](https://github.com/dib-lab/eelpond).
 
 
 ## Getting Started
@@ -60,11 +76,14 @@ Now you can start running workflows on test data!
 
 The Eel Pond protocol (which inspired the `eelpond` name) included line-by-line commands that the user could follow along with using a test dataset provided in the instructions. We have re-implemented the protocol here to enable automated *de novo* transcriptome assembly, annotation, and quick differential expression analysis on a set of short-read Illumina data using a single command. See more about this protocol [here](eel_pond_workflow.md).
 
-To test the default workflow:
+To run the default workflow (assembly and annotation), do:
 ```
 ./run_eelpond examples/nema.yaml default
 ```
-This will download and run a small set of _Nematostella vectensis_ test data (from [Tulin et al., 2013](https://evodevojournal.biomedcentral.com/articles/10.1186/2041-9139-4-16))
+This will download, assemble, and annotate a small set of _Nematostella vectensis_ test data (from [Tulin et al., 2013](https://evodevojournal.biomedcentral.com/articles/10.1186/2041-9139-4-16)).
+
+Note: this will take about 30 minutes the first time you run it,
+because snakemake needs to install the various software packages.
 
 ## Running Your Own Data
 
