@@ -21,8 +21,7 @@ if db_dir:
 else:
     db_cmd = ""
 
-#db_cmd = ' --database-dir ' + db_dir if db_dir is not None else ""
-log = snakemake.log_fmt_shell(stdout=False, stderr=True)
+log = snakemake.log_fmt_shell(stdout=True, stderr=True)
 
 busco_dbs = [busco_dbs] if isinstance(busco_dbs, str) else busco_dbs
 busco_cmd = ' --busco-group ' + ' --busco-group '.join(busco_dbs) if busco_dbs is not None else ""
