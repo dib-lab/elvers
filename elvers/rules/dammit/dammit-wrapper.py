@@ -38,7 +38,7 @@ dammit_fasta = path.join(dammit_dir, assembly_name + '.dammit.fasta')
 dammit_gff3 = path.join(dammit_dir, assembly_name + '.dammit.fasta')
 
 # run installation of everything *except* busco groups
-shell("dammit databases --install {db_cmd} --n_threads {snakemake.threads} {db_extra} {log}")
+shell("dammit databases --install {db_cmd} {db_extra} {log}") #--n_threads {snakemake.threads}
 
 # busco groups need to be installed separately
 for busco_grp in busco_dbs:
