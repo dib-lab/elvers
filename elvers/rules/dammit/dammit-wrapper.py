@@ -15,7 +15,13 @@ busco_dbs = snakemake.params.get("busco_dbs", [])
 db_extra = snakemake.params.get("db_extra", "")
 db_only = snakemake.params.get('db_install_only', False)
 
-db_cmd = ' --database-dir ' + db_dir if db_dir is not None else ""
+if db_dir:
+    db_dir = path.expanduser(db_dir)
+    db_cmd = ' --database-dir ' + db_dir # if db_dir is not None else ""
+else:
+    db_cmd = ""
+
+#db_cmd = ' --database-dir ' + db_dir if db_dir is not None else ""
 log = snakemake.log_fmt_shell(stdout=False, stderr=True)
 
 busco_dbs = [busco_dbs] if isinstance(busco_dbs, str) else busco_dbs
@@ -43,6 +49,6 @@ if not db_only:
     shell("dammit annotate {snakemake.input} {db_cmd} --n_threads {snakemake.threads} --output-dir {dammit_dir} {annot_extra} {log}")
 
 # cp final dammit annot files to desired location / names
-shell("cp {dammit_fasta} {snakemake.output.fasta}") 
-shell("cp {dammit_gff3} {snakemake.output.gff3}") 
+shell("cp {dammit_fasta} {snakemake.output.fasta}")
+shell("cp {dammit_gff3} {snakemake.output.gff3}")
 
