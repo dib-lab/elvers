@@ -25,6 +25,10 @@ properties:
         type: string
       logs: 
         type: string
+      base_dir:
+        type: string
+      out_dir:
+        type: string
       outdirs:
         type: object
         properties:
@@ -59,6 +63,10 @@ properties:
         type: object
     required: 
       - default
+ include_rules:
+    type: array
+  reference_extensions:
+    type: array
 
 required:
   - basename
