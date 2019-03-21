@@ -25,7 +25,7 @@ from . import _program
 def build_default_params(workdir, targets):
     defaultParams = {}
     # first, figure out which parts of the pipeline are being run, and get those defaults
-    pipeline_defaultsFile = find_yaml(workdir, os.path.join('utils', 'pipeline_defaults'), 'pipeline_defaults')
+    pipeline_defaultsFile = find_input_file(os.path.join('utils', 'pipeline_defaults'), 'pipeline_defaults', add_paths = [workdir])
     pipeline_defaults = read_yaml(pipeline_defaultsFile)
     # grab general defaults
     defaultParams['basename'] = pipeline_defaults['basename']
@@ -168,7 +168,7 @@ To build an editable configfile to start work on your own data, run:
     thisdir = os.path.abspath(os.path.dirname(__file__))
     # print available workflows and rules, if desired
     if args.print_workflows or args.print_rules:
-        pipeline_defaultsFile = find_yaml(thisdir, os.path.join('utils', 'pipeline_defaults'), 'pipeline_defaults')
+        pipeline_defaultsFile = find_input_file(os.path.join('utils', 'pipeline_defaults'), 'pipeline_defaults', add_paths = [thisdir])
         print_available_workflows_and_tools(read_yaml(pipeline_defaultsFile), args.print_workflows, args.print_rules)
         sys.exit(0)
     targs = args.targets
@@ -212,7 +212,7 @@ To build an editable configfile to start work on your own data, run:
         write_config(default_params, targs, configfile)
         sys.exit(0)
     else:
-        configfile = find_yaml(thisdir, args.configfile, 'configfile') # find configfile
+        configfile = find_input_file(args.configfile, 'configfile', add_paths=[thisdir]) # find configfile
         if not configfile:
             sys.stderr.write('Error: cannot find configfile {}\n.'.format(args.configfile))
             sys.exit(-1)
@@ -222,7 +222,7 @@ To build an editable configfile to start work on your own data, run:
         refInput = configD.get('get_reference', None)
         if refInput:
             targs+=['get_reference']
-            configD, refinput_ext = handle_reference_input(refInput, configD)
+            configD, refinput_ext = handle_reference_input(configD, configfile)
         else:
             refinput_ext = None
         if 'get_reference' in targs and not refInput:
@@ -246,7 +246,7 @@ To build an editable configfile to start work on your own data, run:
         extra_configs = {}
         if args.extra_config:
             for c in args.extra_config:
-                extra_configs = import_configfile(find_yaml(thisdir, c, 'extra_config'), extra_configs)
+                extra_configs = import_configfile(find_input_file(c, 'extra_config', add_paths = [thisdir]), extra_configs)
 
         # 2. config_dict passed in on command line
         # ADVANCED ONLY - no checks in place, formatting matters. (to do: add checks)
