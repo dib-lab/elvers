@@ -36,6 +36,8 @@ properties:
               type: array
           help:
             type: string
+          citation:
+            type: string
         required:
           - outdir # eventually move this into outputs. involves changes in __main__
           - inputs
