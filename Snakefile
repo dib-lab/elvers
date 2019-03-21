@@ -2,10 +2,9 @@
 #
 # see script 'run_eelpond' in this directory for a convenient entry point.
 #
-# Quickstart: `conf/run dory-test full`
-#
 
-import os
+
+import os, sys
 from os.path import join
 import numpy as np
 import pandas as pd
@@ -13,14 +12,33 @@ from snakemake.utils import validate, min_version
 from ep_utils.utils import * 
 import glob
 
-min_version("5.1.2") #minimum snakemake version
+min_version("5.1.2") # minimum snakemake version
 
 from snakemake.remote import FTP, HTTP
 FTP = FTP.RemoteProvider()
 HTTP = HTTP.RemoteProvider()
 
-# read in sample info 
-samples = pd.read_csv(config["samples"],dtype=str, sep='\t').set_index(["sample", "unit"], drop=False)
+# get sample file
+try:
+    sample_file = config["samples"]
+except KeyError:
+    print("cannot find 'samples' entry in config file!", file=sys.stderr)
+    sys.exit(-1)
+
+# read in sample file
+try:
+    samples = pd.read_csv(sample_file, dtype=str, sep='\t')
+except:
+    print("ERROR reading sample file {}.".format(sample_file), file=sys.stderr)
+    raise
+
+try:
+    samples = samples.set_index(["sample", "unit"], drop=False)
+except:
+    print("ERROR interpreting sample file {}.".format(sample_file), file=sys.stderr)
+    print("(Is this a tab-delimited file?)", file=sys.stderr)
+    raise
+
 #validate(samples, schema="schemas/samples_v2.schema.yaml") # new version
 samples['name'] = samples["sample"].map(str) + '_' + samples["unit"].map(str)
 
