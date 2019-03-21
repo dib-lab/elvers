@@ -1,0 +1,12 @@
+# nema: a non-random subset of data from Tulin et al. (2013), that can
+# be used to do assembly and comparative expression analysis.
+
+# this sets the output directory name:
+basename: 'nema'
+
+# BROKEN: spaces not tabs in file
+samples: "tests/test_files/bad-samples-tsv.tsv"
+
+# this says to download samples specified as Web URLs:
+get_data:
+  download_data: True
