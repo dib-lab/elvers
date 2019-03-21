@@ -62,7 +62,7 @@ To deactivate after you've finished running `elvers`, type `conda deactivate`. Y
 
 Now. install the `elvers` package. 
 ```
-pip install .
+pip install -e .
 ```
 Now you can start running workflows on test data!
 
