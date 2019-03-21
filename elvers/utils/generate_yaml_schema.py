@@ -2,9 +2,9 @@ import os
 import sys
 import yaml
 import argparse
-## generate json schema from a yaml file
+## generate json/yaml schema from a yaml file
 
-# need to disable aliasing for the "properties" dictionaries to dump the appropriate yaml schema
+# this disables yaml aliasing, which allows the "properties" dictionaries to dump properly
 noalias_dumper = yaml.dumper.SafeDumper
 noalias_dumper.ignore_aliases = lambda self, data: True
 
@@ -20,11 +20,9 @@ def write_yaml(yamlD, paramsfile):
     with open(paramsfile, 'w') as params:
         yaml.dump(yamlD, stream=params, indent=2,  default_flow_style=False, Dumper=noalias_dumper)
 
-
-def build_program_params_schema(program, params):
+def build_schema(param_dict):
     properties = {}
-    program_params = params[program]['program_params']
-    for key, val in program_params.items():
+    for key, val in param_dict.items():
         if isinstance(val, str):
             properties[key] = {"type": "string"}
         elif isinstance(val, list):
@@ -34,14 +32,14 @@ def build_program_params_schema(program, params):
         elif isinstance(val, (int, float)):
             properties[key] = {"type": "number"}
         elif isinstance(val, dict):
-            properties[key] = {"type": "object"}
+            key_schema = build_schema(val)
+            properties[key] = {"type": "object", "properties": key_schema}
         else:
             print(f"Cannot determine type of {key} default input, {val}")
-            pass
+            pass # if type is not captured here, leave item out of the schema
     return properties
 
-
-def build_yaml_schema(args):
+def build_params_schema(args):
     template = read_yaml(args.template)
     params = read_yaml(args.params)
     program_names = list(params.keys())
@@ -49,11 +47,10 @@ def build_yaml_schema(args):
     final_schema['properties'] = {}
     for name in program_names:
         prog_schema = template['properties']['__prog__'].copy()
-        prog_schema['properties']['program_params']['properties'] = build_program_params_schema(name, params)
+        prog_schema['properties']['program_params']['properties'] = build_schema(params[name]['program_params'])
         final_schema['properties'][name] = prog_schema
     final_schema['required'] = program_names
     write_yaml(final_schema, args.schema_output)
-
 
 if __name__ == '__main__':
     """ very simple attempt at auto generating yaml schema for elvers rules"""
@@ -62,4 +59,4 @@ if __name__ == '__main__':
     p.add_argument('--template', default= "../schemas/param_schema_template.yaml")
     p.add_argument('-o', '--schema_output', default = 'testing_schema.yaml') #default = args.params.split('.')[0] + '_schema.yaml')
     args = p.parse_args()
-    sys.exit(build_yaml_schema(args))
+    sys.exit(build_params_schema(args))
