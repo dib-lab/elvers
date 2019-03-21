@@ -7,7 +7,7 @@ get_data:
           - "_1.fq.gz"
           - "_2.fq.gz"
         se:
-          - ".se.fq.gz" 
+          - "_1.fq.gz" 
   program_params:
     download_data: False
     use_ftp: False
