@@ -78,14 +78,16 @@ This will download and run a small set of _Nematostella vectensis_ test data (fr
 
 ## Running Your Own Data
 
-To run your own data, you'll need to create 1-2 files:
+To run your own data, you'll need to create one or more files:
 
-  - a `yaml` file containing basic configuration info. This file must specify read inputs (path to `tsv`) or assembly inputs (via `assemblyinput`)
-  optiononally:
-  - a `tsv` file containing your sample info
+  - a `yaml` file containing basic configuration info
+ 
+ This `yaml` config file must specify **either**:
+   - a `tsv` file containing your read sample info
+   - a reference file input (`.fasta` file and optional `gene_trans_map`)
 
 
-Generate these by following instructions here: [Understanding and Configuring Workflows](https://dib-lab.github.io/elvers/configure).
+Generate these files by following instructions here: [Understanding and Configuring Workflows](https://dib-lab.github.io/elvers/configure).
 
 
 ## Available Workflows
