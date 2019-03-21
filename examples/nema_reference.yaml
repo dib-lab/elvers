@@ -4,11 +4,11 @@
 # this sets the output directory name:
 basename: 'nema'
 
-# this describes the samples:
-samples: "examples/nema.samples.tsv"
 
 # this says to download samples specified as Web URLs:
 get_data:
+  # this describes the samples:
+  samples: "examples/nema.samples.tsv"
   download_data: True
 
 # this says to download a pre-made transcriptome reference and gene-trans map

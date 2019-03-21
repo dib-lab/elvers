@@ -8,4 +8,4 @@ get_data:
   # this says to download samples specified as Web URLs:
   download_data: True
   # this describes the samples:
-  samples: "examples/nema.samples.tsv"
+  samples: "nema.samples.tsv"

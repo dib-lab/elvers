@@ -98,6 +98,27 @@ def handle_reference_input(refInput, config):
     config['get_reference'] = {'program_params': program_params, 'eelpond_params': {'extensions':extensions}}
     return config, input_reference_extension
 
+def handle_samples_input(config, configfile):
+    program_params = config['get_data'].get('program_params')
+    samples_file = program_params.get('samples', None)
+    if samples_file:
+        samples_file = os.path.expanduser(samples_file) #handle ~
+        if os.path.exists(samples_file) and not os.path.isdir(samples_file):
+            samples_file = os.path.realpath(samples_file)
+        else:
+            paths = [os.getcwd(), os.path.realpath(os.path.dirname(configfile))]
+            for p in paths:
+                tryfile = os.path.join(p, samples_file)
+                if os.path.exists(tryfile) and not os.path.isdir(tryfile):
+                    samples_file = os.path.realpath(tryfile)
+                    break
+        assert os.path.exists(samples_file), f'Error: cannot find input samples tsv at {samples_file}\n'
+        config['get_data']['program_params']['samples'] = samples_file
+        sys.stderr.write(f'\tFound input samples tsv file at {samples_file}\n')
+    else:
+        sys.stderr.write("\n\tError: trying to run `get_data` workflow, but the samples tsv file is not specified in your configfile. Please fix.\n\n")
+    return config
+
 def generate_targs(outdir, basename, samples, ref_exts=[''], base_exts = None, read_exts = None, other_exts = None, contrasts = []):
     base_targets, read_targets, other_targs = [],[],[]
     # handle read targets
@@ -120,16 +141,17 @@ def generate_targs(outdir, basename, samples, ref_exts=[''], base_exts = None, r
     read_targs = []
     base_targs = []
     # build base targets (using reference extensions)
-    for ref_e in ref_exts:
-        refname = basename + ref_e
-        if base_exts:
-            for base_extension in base_exts:
-                base_targets += [join(outdir, refname + e) for e in base_exts]
-        if read_targets:
-            # handle read targets that contain reference info
-            read_targs+= [t.replace("__reference__", refname) for t in read_targets] #should return read_targets if nothing to replace
-        #else:  # thus don't need these
-        #    read_targs+= read_targets
+    if ref_exts:
+        for ref_e in ref_exts:
+            refname = basename + ref_e
+            if base_exts:
+                for base_extension in base_exts:
+                    base_targets += [join(outdir, refname + e) for e in base_exts]
+            if read_targets:
+                # handle read targets that contain reference info
+                read_targs+= [t.replace("__reference__", refname) for t in read_targets] #should return read_targets if nothing to replace
+    else:
+        read_targs = read_targets
     #handle contrasts within the base targets
     if contrasts and base_targets:
         for c in contrasts:
@@ -152,7 +174,7 @@ def generate_program_targs(configD, samples, basename,ref_exts, contrasts):
     targets = generate_targs(outdir, basename, samples, ref_exts, exts.get('base', None),exts.get('read'), exts.get('other'), contrasts)
     return targets
 
-def generate_all_targs(configD, samples):
+def generate_all_targs(configD, samples=None):
     # pass full config, program names. Call generate_program_targs to build each
     workflows = configD['elvers_workflows']
     targs = []
