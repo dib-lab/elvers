@@ -1,6 +1,6 @@
-# eelpond
+# elvers
 
-[![Build Status](https://travis-ci.org/dib-lab/eelpond.svg?branch=master)](https://travis-ci.org/dib-lab/eelpond)
+[![Build Status](https://travis-ci.org/dib-lab/elvers.svg?branch=master)](https://travis-ci.org/dib-lab/elvers)
 
 
 ```
@@ -24,7 +24,7 @@
               `       '--;            (' 
 
 ```
-eelpond started as a snakemake update of the Eel Pond Protocol for *de novo* RNAseq analysis. It has evolved slightly to enable a number of workflows for (mostly) RNA data, which can all be run via the `eelpond` workflow wrapper. `eelpond` uses [snakemake](https://snakemake.readthedocs.io) for workflow management and [conda](https://conda.io/docs/) for software installation. The code can be found [here](https://github.com/dib-lab/eelpond).
+elvers started as a snakemake update of the Eel Pond Protocol for *de novo* RNAseq analysis. It has evolved slightly to enable a number of workflows for (mostly) RNA data, which can all be run via the `elvers` workflow wrapper. `elvers` uses [snakemake](https://snakemake.readthedocs.io) for workflow management and [conda](https://conda.io/docs/) for software installation. The code can be found [here](https://github.com/dib-lab/elvers).
 
 
 ## Getting Started
@@ -39,46 +39,58 @@ echo export PATH="$HOME/miniconda3/bin:$PATH" >> ~/.bash_profile
 source ~/.bash_profile
 ```
 
-Now, get the eelpond code
+## Create a working environment and install `elvers`!
+
+`elvers` needs a few programs installed in order to run properly. To handle this, we run `elvers` within a conda environment that contains all dependencies.
+
+Get the **`elvers`** code
 ```
 git clone https://github.com/dib-lab/eelpond.git
-cd eelpond
+cd elvers
 ```
 
-Create a conda environment with all the dependencies for eelpond
+When you first get **`elvers`**, you'll need to create this environment on your machine:
 ```
-conda env create --file environment.yml -n eelpond
+conda env create --file environment.yml -n elvers-env
 ```
 
-Activate that environment. You'll need to do this anytime you want to run eelpond
+Now, activate that environment:
 ```
-conda activate eelpond
+conda activate elvers-env
+```
+To deactivate after you've finished running `elvers`, type `conda deactivate`. You'll need to reactivate this environment anytime you want to run elvers.
+
+Now. install the `elvers` package. 
+```
+pip install .
 ```
 Now you can start running workflows on test data!
 
 ## Default workflow: Eel Pond Protocol for *de novo* RNAseq analysis
 
-The Eel Pond protocol (which inspired the `eelpond` name) included line-by-line commands that the user could follow along with using a test dataset provided in the instructions. We have re-implemented the protocol here to enable automated *de novo* transcriptome assembly, annotation, and quick differential expression analysis on a set of short-read Illumina data using a single command. See more about this protocol [here](eel_pond_workflow.md).
+The Eel Pond protocol (which inspired the `elvers` name) included line-by-line commands that the user could follow along with using a test dataset provided in the instructions. We have re-implemented the protocol here to enable automated *de novo* transcriptome assembly, annotation, and quick differential expression analysis on a set of short-read Illumina data using a single command. See more about this protocol [here](eel_pond_workflow.md).
 
 To test the default workflow:
 ```
-./run_eelpond examples/nema.yaml default
+elvers examples/nema.yaml default
 ```
 This will download and run a small set of _Nematostella vectensis_ test data (from [Tulin et al., 2013](https://evodevojournal.biomedcentral.com/articles/10.1186/2041-9139-4-16))
 
 ## Running Your Own Data
 
-To run your own data, you'll need to create two files:
+To run your own data, you'll need to create 1-2 files:
 
-  - a `tsv` file containing your sample info
   - a `yaml` file containing basic configuration info. This file must specify read inputs (path to `tsv`) or assembly inputs (via `assemblyinput`)
+  optiononally:
+  - a `tsv` file containing your sample info
 
-Generate these by following instructions here: [Understanding and Configuring Workflows](https://dib-lab.github.io/eelpond/configure).
+
+Generate these by following instructions here: [Understanding and Configuring Workflows](https://dib-lab.github.io/elvers/configure).
 
 
 ## Available Workflows
 
-Currently, all workflows require a properly-formatted read inputs `tsv` file as input. Some workflows, e.g. `annotation` can work on either on a _de novo_ transcriptome or on previously-generated assemblies. To add an assembly as input, specify it via `assemblyinput` in the `yaml` config file, as described in [Understanding and Configuring Workflows](https://dib-lab.github.io/eelpond/configure). 
+Currently, all workflows require a properly-formatted read inputs `tsv` file as input. Some workflows, e.g. `annotation` can work on either on a _de novo_ transcriptome or on previously-generated assemblies. To add an assembly as input, specify it via `assemblyinput` in the `yaml` config file, as described in [Understanding and Configuring Workflows](https://dib-lab.github.io/elvers/configure). 
 
 
 **workflows**
@@ -100,20 +112,25 @@ Currently, all workflows require a properly-formatted read inputs `tsv` file as 
 
 You can see the available workflows (and which programs they run) by using the `--print_workflows` flag:
 ```
-./run_eelpond examples/nema.yaml --print_workflows
+elvers examples/nema.yaml --print_workflows
 ```
 
 Each included tool can also be run independently, if appropriate input files are provided. This is not always intuitive, so please see our documentation for running each tools for details (described as "Advanced Usage"). To see all available tools, run:
 
 ```
-./run_eelpond examples/nema.yaml --print_rules
+elvers examples/nema.yaml --print_rules
 ```
+
+## Citation information
+  
+This is *pre-publication* code; a manuscript is in preparation. Please contact the authors for the current citation information if you wish to use it and cite it.
+
 
 ## Additional Info
 
 See the help, here:
 ```
-./run_eelpond -h
+elvers -h
 ```
 
 **References:**  

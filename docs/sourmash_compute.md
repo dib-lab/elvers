@@ -1,27 +1,27 @@
 
 # Sourmash_Compute Subworkflow
 
-Subworkflows combine tools in the right order to facilitate file targeting withing `eelpond`. The "sourmash_compute" subworkflow conducts read quality trimming and kmer trimming prior to sourmash compute of the kmer-trimmed files. It currently also computes sourmash signatures for an assembly as well, which needs to be provided, either by running an assembly or providing one in your configfile. At the moment, this workflow consists of:
+Subworkflows combine tools in the right order to facilitate file targeting withing `elvers`. The "sourmash_compute" subworkflow conducts read quality trimming and kmer trimming prior to sourmash compute of the kmer-trimmed files. It currently also computes sourmash signatures for an assembly as well, which needs to be provided, either by running an assembly or providing one in your configfile. At the moment, this workflow consists of:
  
-  - [get_data](get_data.md) - an `eelpond` utility
+  - [get_data](get_data.md) - an `elvers` utility
   - [trimmomatic](trimmomatic.md)
   - [sourmash](sourmash.md)
 
 
 ## Quickstart
 
-If you've generated an assembly, even if you've already run `./run_eelpond examples/nema.yaml assemble`:
+If you've generated an assembly, even if you've already run `elvers examples/nema.yaml assemble`:
 
-   1) "Run" trinity assembly at the same time. If you've already run the assembly, `eelpond` will just locate your assembly file for `sourmash_compute`. 
+   1) "Run" trinity assembly at the same time. If you've already run the assembly, `elvers` will just locate your assembly file for `sourmash_compute`. 
    
    ```
-   ./run_eelpond examples/nema.yaml assemble sourmash_compute
+   elvers examples/nema.yaml assemble sourmash_compute
    ```
 
    2) OR, Pass an assembly in via `assemblyinput`, with an assembly specified in your config file.
    
    ```
-   ./run_eelpond assemblyinput sourmash_compute
+   elvers assemblyinput sourmash_compute
    ```
    
    In the configfile:
@@ -42,7 +42,7 @@ To set up your sample info and build a configfile, see [Understanding and Config
 
 If you want to add the `sourmash_compute` program parameters to a previously built configfile, run:
 ```
-./run_eelpond config.yaml sourmash_compute --print_params
+elvers config.yaml sourmash_compute --print_params
 ```
 
 A small set of parameters should print to your console:

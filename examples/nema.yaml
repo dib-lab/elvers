@@ -4,9 +4,8 @@
 # this sets the output directory name:
 basename: 'nema'
 
-# this describes the samples:
-samples: "examples/nema.samples.tsv"
-
-# this says to download samples specified as Web URLs:
 get_data:
+  # this says to download samples specified as Web URLs:
   download_data: True
+  # this describes the samples:
+  samples: "nema.samples.tsv"

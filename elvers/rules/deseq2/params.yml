@@ -1,0 +1,22 @@
+deseq2:
+  elvers_params:
+    outdir: diffexp
+    combine_units: True # needs to match with salmon's combine_units
+    extensions:
+      base:
+        - .deseq2.rds
+        - .deseq2.pca.pdf
+        - .c__contrast__.deseq2.tsv
+        - .c__contrast__.deseq2.padj_0.1.tsv
+        - .c__contrast__.deseq2.ma-plot.pdf
+  program_params:
+    gene_trans_map: True
+    # contrasts for the deseq2 results method
+    contrasts:
+      time0-vs-time6:
+        - time0
+        - time6
+    pca:
+      labels:
+      # columns of sample sheet to use for PCA
+        - condition

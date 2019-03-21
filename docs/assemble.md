@@ -1,8 +1,8 @@
 # Assemble Subworkflow
 
-Subworkflows combine tools in the right order to facilitate file targeting withing `eelpond`. The "assemble"" subworkflow conducts read quality trimming, kmer trimming, and assembly. At the moment, this workflow consists of:
+Subworkflows combine tools in the right order to facilitate file targeting withing `elvers`. The "assemble"" subworkflow conducts read quality trimming, kmer trimming, and assembly. At the moment, this workflow consists of:
  
-  - [get_data](get_data.md) - an `eelpond` utility
+  - [get_data](get_data.md) - an `elvers` utility
   - [trimmomatic](trimmomatic.md)
   - [fastqc](fastqc.md), run on both pre-trim and post-trim data
   - [khmer](khmer.md)
@@ -14,7 +14,7 @@ Subworkflows combine tools in the right order to facilitate file targeting withi
 To run the assemble subworkflow, run: 
 
 ```
-./run_eelpond examples/nema.yaml assemble
+elvers examples/nema.yaml assemble
 ```
 
 ## Configuring the assemble subworkflow 
@@ -23,7 +23,7 @@ To set up your sample info and build a configfile, see [Understanding and Config
 
 If you want to add the `assemble` program parameters to a previously built configfile, run:
 ```
-./run_eelpond config.yaml assemble --print_params
+elvers config.yaml assemble --print_params
 ```
 
 A small set of parameters should print to your console:

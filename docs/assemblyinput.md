@@ -1,7 +1,7 @@
 # Assembly Input Utility Rule
 
 
-If you want to use the downstream steps such as read quantification and differential expression on a previous assembly, you can use the `assemblyinput` utility to pass this assembly into `eelpond`.
+If you want to use the downstream steps such as read quantification and differential expression on a previous assembly, you can use the `assemblyinput` utility to pass this assembly into `elvers`.
 
 
 To do this, specify the file path for your input assembly (and optionally, a tab-separated gene to transcript map) in the config file.
@@ -10,7 +10,7 @@ To do this, specify the file path for your input assembly (and optionally, a tab
 
 The following will build a config for just the assemblyinput rule. 
 ```
-./run_eelpond new_config.yaml assemblyinput --build_config
+elvers new_config.yaml assemblyinput --build_config
 ```
 
 In here, you'll see a section for "assemblyinput" parameters that looks like this:

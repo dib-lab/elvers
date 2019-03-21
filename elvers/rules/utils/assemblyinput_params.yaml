@@ -1,0 +1,12 @@
+assemblyinput:
+  elvers_params:
+    outdir: assembly
+    extensions:
+      base:
+        - '.fasta'
+      #  - '.fasta.gene_trans_map'
+  # for user input
+  program_params:
+    assembly: examples/nema.assembly.fasta
+    gene_trans_map:  examples/nema.assembly.fasta.gene_trans_map
+    assembly_extension: '_input'

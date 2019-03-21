@@ -11,7 +11,7 @@
 
 To see the available workflows, run:
 ```
-./run_eelpond examples/nema.yaml --print_workflows
+elvers examples/nema.yaml --print_workflows
 ```
 
 You should see something like this:
@@ -98,7 +98,7 @@ You should see something like this:
 
 To see the available integrated programs, run:
 ```
-./run_eelpond examples/nema.yaml --print_rules
+elvers examples/nema.yaml --print_rules
 ```
 You should see something like this:
 ```

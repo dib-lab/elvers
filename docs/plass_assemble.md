@@ -1,8 +1,8 @@
 # Protein Assembly Subworkflow
 
-Subworkflows combine tools in the right order to facilitate file targeting withing `eelpond`. The "plass_assemble"" subworkflow conducts read quality trimming, kmer trimming, and protein-level assembly with [plass](plass.md). At the moment, this workflow consists of:
+Subworkflows combine tools in the right order to facilitate file targeting withing `elvers`. The "plass_assemble"" subworkflow conducts read quality trimming, kmer trimming, and protein-level assembly with [plass](plass.md). At the moment, this workflow consists of:
  
-  - [get_data](get_data.md) - an `eelpond` utility
+  - [get_data](get_data.md) - an `elvers` utility
   - [trimmomatic](trimmomatic.md)
   - [fastqc](fastqc.md), run on both pre-trim and post-trim data
   - [khmer](khmer.md)
@@ -14,7 +14,7 @@ Subworkflows combine tools in the right order to facilitate file targeting withi
 To run the plass_assemble subworkflow, run: 
 
 ```
-./run_eelpond examples/nema.yaml plass_assemble
+elvers examples/nema.yaml plass_assemble
 ```
 
 ## Configuring the assemble subworkflow 
@@ -23,7 +23,7 @@ To set up your sample info and build a configfile, see [Understanding and Config
 
 If you want to add the `plass_assemble` program parameters to a previously built configfile, run:
 ```
-./run_eelpond config.yaml plass_assemble --print_params
+elvers config.yaml plass_assemble --print_params
 ```
 
 A small set of parameters should print to your console:

@@ -1,0 +1,4 @@
+# Additional parameters required for testing the salmon rule
+
+salmon:
+  input_trimmomatic_trimmed: False

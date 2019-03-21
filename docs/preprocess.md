@@ -1,8 +1,8 @@
 # Preprocess Subworkflow
 
-Subworkflows combine tools in the right order to facilitate file targeting withing `eelpond`. The "preprocess" subworkflow conducts read quality trimming. At the moment, this workflow consists of:
+Subworkflows combine tools in the right order to facilitate file targeting withing `elvers`. The "preprocess" subworkflow conducts read quality trimming. At the moment, this workflow consists of:
  
-  - [get_data](get_data.md) - an `eelpond` utility
+  - [get_data](get_data.md) - an `elvers` utility
   - [trimmomatic](trimmomatic.md)
   - [fastqc](fastqc.md), run on both pre-trim and post-trim data
 
@@ -12,7 +12,7 @@ Subworkflows combine tools in the right order to facilitate file targeting withi
 To run the preprocess subworkflow, run: 
 
 ```
-./run_eelpond examples/nema.yaml preprocess
+elvers examples/nema.yaml preprocess
 ```
 
 ## Configuring the preprocess workflow 
@@ -21,7 +21,7 @@ To set up your sample info and build a configfile, see [Understanding and Config
 
 If you want to add the `preprocess` program parameters to a previously built configfile, run:
 ```
-./run_eelpond config.yaml preprocess --print_params
+elvers config.yaml preprocess --print_params
 ```
 
 A small set of parameters should print to your console:

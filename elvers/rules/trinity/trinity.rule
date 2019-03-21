@@ -1,0 +1,69 @@
+from os import path
+
+ep_params = config['trinity']['elvers_params']
+logs_dir  = config['elvers_directories']['logs']
+assembly_params = config['trinity']['program_params']
+
+assembly_dir = ep_params['outdir']
+assembly_extension = ep_params['extensions']['reference_extensions'][0] # should only be a single entry here, default: '_trinity'
+
+BASE = config['basename']
+
+def get_assembly_input(w):
+    r1,r2,single =[],[],[]
+    readsD = {}
+    if assembly_params.get('input_kmer_trimmed', True):
+        ext = '.khmer.fq.gz' 
+        input_dir = config['elvers_directories']['outdirs']['preprocess']
+    elif assembly_params.get('input_trimmomatic_trimmed', True):
+        ext = '.trim.fq.gz'
+        input_dir = config['elvers_directories']['outdirs']['preprocess']
+    else:
+        ext = '.fq.gz'
+        input_dir = config['elvers_directories']['outdirs']['input_data']
+    for s, u in samples.iterrows():
+        sample, unit = u['sample'],u['unit']
+        if is_single_end(sample, unit):
+            single+=[join(input_dir, f"{sample}_{unit}_se{ext}")]
+        else:
+            r1+= [join(input_dir, f"{sample}_{unit}_1{ext}")]
+            r2+= [join(input_dir, f"{sample}_{unit}_2{ext}")]
+    add_single = assembly_params.get('add_single_to_paired', False)
+    if len(r1) > 0:
+        if add_single == True:
+            r1 = r1 + single
+        readsD['left'] = r1
+        readsD['right'] = r2
+    else:
+        readsD['left'] = single
+    return readsD
+
+rule trinity:
+    input:
+        unpack(get_assembly_input)
+    output:
+        fasta = join(assembly_dir,"trinity_out_dir/Trinity.fasta"),
+        gene_trans_map = join(assembly_dir,"trinity_out_dir/Trinity.fasta.gene_trans_map"),
+    message:
+        """--- Assembling read data with Trinity --- """
+    params:
+        # optional parameters
+        seqtype=assembly_params.get('seqtype', 'fq'),
+        extra=assembly_params.get('extra', '')
+    threads: 4
+    log: join(logs_dir, 'trinity', 'trinity.log')
+    benchmark: join(logs_dir, 'trinity', 'trinity.benchmark')
+    conda: "environment.yml"
+	script: "trinity-wrapper.py"
+
+rule rename_trinity_fasta:
+    input: rules.trinity.output.fasta
+    output: join(assembly_dir, BASE + assembly_extension + '.fasta')
+    log: join(logs_dir, 'trinity/cp_assembly.log')
+    shell: ("cp {input} {output}") 
+
+rule rename_trinity_gene_trans_map:
+    input: rules.trinity.output.gene_trans_map
+    output: join(assembly_dir, BASE + assembly_extension + '.fasta.gene_trans_map')
+    log: join(logs_dir, 'trinity/cp_gt_map.log')
+    shell: ("cp {input} {output}") 

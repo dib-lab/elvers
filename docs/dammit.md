@@ -23,14 +23,14 @@ The full pipeline, which uses uniref90, needs several hundred GB of space and co
 
 For some species, we have found that the amount of RAM required can be proportional to the size of the transcriptome being annotated.
 
-While dammit runs, it will print out which tasks its running to the terminal. dammit is written with a library called [pydoit](http://www.pydoit.org), which is a python workflow library similar to GNU Make and Snakemake. This not only helps organize the underlying workflow, but also means that if we interrupt it, it should properly resume! Caveat: if your job dies, without properly shutting down, snakemake will leave your directory "locked" (a safety feature to prevent two runs/programs from editing the same file simultaneously). If this happens, you'll need to run `eelpond` with the `--unlock` flag.
+While dammit runs, it will print out which tasks its running to the terminal. dammit is written with a library called [pydoit](http://www.pydoit.org), which is a python workflow library similar to GNU Make and Snakemake. This not only helps organize the underlying workflow, but also means that if we interrupt it, it should properly resume! Caveat: if your job dies, without properly shutting down, snakemake will leave your directory "locked" (a safety feature to prevent two runs/programs from editing the same file simultaneously). If this happens, you'll need to run `elvers` with the `--unlock` flag.
 
 ## Dammit Commands
 
-dammit has two major subcommands: `dammit databases` and `dammit annotate`. `databases` checks that the databases are installed and prepared, and if run with the `--install` flag, will perform that installation and preparation. `annotate` then performs the annotation using installed tools and databases. These commands are automated and integrated into a single rule in `eelpond`. At some point, these may be split into `databases` and `annotate` if that functionality is desired, but it's not in
+dammit has two major subcommands: `dammit databases` and `dammit annotate`. `databases` checks that the databases are installed and prepared, and if run with the `--install` flag, will perform that installation and preparation. `annotate` then performs the annotation using installed tools and databases. These commands are automated and integrated into a single rule in `elvers`. At some point, these may be split into `databases` and `annotate` if that functionality is desired, but it's not in
 our immediate plans. 
 
-By default, databases are placed at `eelpond/databases`.
+By default, databases are placed at `elvers/databases`.
 
 Both `databases` and `annotate` have a `--quick` option, that only installs or runs a "quick" version of the pipeline: transdecoder
 
@@ -62,7 +62,7 @@ Be sure to set up your sample info and build a configfile first (see [Understand
 
 To see the available parameters for the `dammit` rule, run
 ```
-./run_eelpond config dammit --print_params
+elvers config dammit --print_params
 ```
 This will print the following:
 ```
@@ -109,23 +109,23 @@ ls trinity.nema.fasta.dammit/
     trinity.nema.fasta.dammit.gff3                trinity.nema.fasta.transdecoder.mRNA
 ```
 
-As part of eelpond, we copy the two most important files, `trinity.nema.fasta.dammit.fasta` and `trinity.nema.fasta.dammit.gff3` into the main `annotation` directory. `trinity.nema.fasta.dammit.stats.json` also gives summary stats that are quite useful.
+As part of elvers, we copy the two most important files, `trinity.nema.fasta.dammit.fasta` and `trinity.nema.fasta.dammit.gff3` into the main `annotation` directory. `trinity.nema.fasta.dammit.stats.json` also gives summary stats that are quite useful.
 
 If the above `dammit` command is run again, there will be a message:
 `**Pipeline is already completed!**`
 
 If you'd like to rerun the dammit pipeline, you'll need to use the `--forceall` flag, like so:
 ```
-./run_eelpond examples/nema.yaml annotation --forceall
+elvers examples/nema.yaml annotation --forceall
 ```
 
-## Additional Notes (non-eelpond): Parsing Dammit GFF3 files
+## Additional Notes (non-elvers): Parsing Dammit GFF3 files
 
 Camille wrote dammit in Python, which includes a library to parse gff3 dammit output. If you want to work with this gff3 downstream, use htis parsing library: 
 
-First, enter in a dammit environment. you can find the one eelpond uses, but it might also be easier to just make a new one using the dammit environment file:
+First, enter in a dammit environment. you can find the one elvers uses, but it might also be easier to just make a new one using the dammit environment file:
 ```
-# from within the eelpond directory
+# from within the elvers directory
 conda env create -n dammit --file rules/dammit/dammit-env.yaml
 source activate dammit
 ```

@@ -18,12 +18,12 @@ Given that nucleotide sequences are far more variable than protein sequences (th
 
 Run PLASS via the [Protein Assembly workflow](protein_assembly_workflow.md) or via the [plass_assemble subworkflow](plass_assemble.md). These workflows will run preprocessing and kmer-trimming for you prior to assembly, and may run additional downstream steps. To run PLASS as a standalone program, see "Advanced Usage" section below.
 ```
-./run_eelpond examples/nema.yaml plass_assemble
+elvers examples/nema.yaml plass_assemble
 ```
 
 ## PLASS Command
 
-On the command line, the command eelpond runs is approximately:
+On the command line, the command elvers runs is approximately:
 ```
 plass assemble input_1.fq input_2.fq \
   outputi_plass.fasta --threads snakemake.threads extra_params
@@ -41,7 +41,7 @@ Be sure to set up your sample info and build a configfile first (see [Understand
 
 To see the available parameters for the `plass` rule, run
 ```
-./run_eelpond config plass --print_params
+elvers config plass --print_params
 ```
 This will print the following:
 ```
@@ -61,25 +61,25 @@ In addition to changing parameters we've specifically enabled, you can modify th
 ```
 See the [PLASS documentation](https://plass.mmseqs.org) to learn more about the parameters you can pass to `PLASS`.
 
-Be sure the modified lines go into the config file you're using to run `eelpond` (see [Understanding and Configuring Workflows](configure.md)).
+Be sure the modified lines go into the config file you're using to run `elvers` (see [Understanding and Configuring Workflows](configure.md)).
 
 ## Advanced Usage: Running PLASS as a standalone rule
 
-You can run plass as a standalone rule, instead of withing a larger `eelpond` workflow. However, to do this, you need to make sure the input files are available.
+You can run plass as a standalone rule, instead of withing a larger `elvers` workflow. However, to do this, you need to make sure the input files are available.
 
 For plass, the default input files are kmer-trimmed input data (e.g. output of khmer).
 
 If you've already done this, you can run:
 ```
-./run_eelpond my_config plass
+elvers my_config plass
 ```
 If not, you can run the prior steps at the same time to make sure khmer can find these input files:
 ```
-./run_eelpond my_config get_data trimmomatic khmer plass
+elvers my_config get_data trimmomatic khmer plass
 ```
 
 ## Snakemake Rules
 
-We wrote a [PLASS snakemake wrapper](https://github.com/dib-lab/eelpond/blob/master/rules/plass/plass-wrapper.py) to run PLASS via snakemake. This wrapper has not yet been submitted to the snakemake-wrappers repository, but feel free to use it as needed.
+We wrote a [PLASS snakemake wrapper](https://github.com/dib-lab/elvers/blob/master/rules/plass/plass-wrapper.py) to run PLASS via snakemake. This wrapper has not yet been submitted to the snakemake-wrappers repository, but feel free to use it as needed.
 
-For snakemake afficionados, see our PLASS rule on [github](https://github.com/dib-lab/eelpond/blob/master/rules/plass/plass.rule).
+For snakemake afficionados, see our PLASS rule on [github](https://github.com/dib-lab/elvers/blob/master/rules/plass/plass.rule).

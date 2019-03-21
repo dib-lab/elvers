@@ -1,0 +1,117 @@
+# default settings: do not change these lightly! 
+
+#general settings
+basename: elvers
+
+# these outdirectories will be available to all workflows and rules
+elvers_directories:
+  rules: rules
+  animals: utils/animals
+  logs: logs
+  outdirs:
+    input_data: input_data
+    preprocess: preprocess
+    assemble: assembly
+    annotate: annotation
+    quantify: quant
+    diffexp: diffexp
+
+# programs to be run at each step of the pipeline
+# change these if you're sure you have new program 
+# params and targets right.
+elvers_workflows:
+  default:
+    include:
+      - get_data
+      - trimmomatic
+      - khmer
+      - trinity
+    targets:
+      - fastqc
+      - multiqc
+      - dammit
+      - salmon
+      - sourmash
+  protein_assembly:
+    include:
+      - get_data
+      - trimmomatic
+      - khmer
+      - plass
+      - pear
+    targets:
+      - fastqc
+      - multiqc
+      - paladin
+      - sourmash
+  input_data:
+    targets:
+      - get_data
+  preprocess:
+    include:
+      - get_data
+    targets:
+      - fastqc
+      - trimmomatic
+      - multiqc
+  kmer_trim:
+    include:
+      - get_data
+      - trimmomatic
+    targets:
+      - khmer
+  assemble:
+    include:
+      - get_data
+      - trimmomatic
+      - khmer
+    targets:
+      - trinity
+  assemblyinput:
+    targets:
+      - assemblyinput
+  annotate:
+    targets:
+      - dammit
+  quantify:
+    include:
+      - get_data
+      - trimmomatic
+    targets:
+      - salmon
+  diffexp:
+    include:
+      - get_data
+      - trimmomatic
+      - salmon
+    targets:
+      - deseq2
+  sourmash_compute:
+    include:
+      - get_data
+      - trimmomatic
+      - khmer
+    targets:
+      - sourmash
+  plass_assemble:
+    include:
+      - get_data
+      - trimmomatic
+      - khmer
+    targets:
+      - plass
+  paladin_map:
+    include:
+      - get_data
+      - trimmomatic
+      - khmer
+      - plass
+      - pear
+    targets:
+      - paladin
+  correct_reads:
+    include:
+      - get_data
+      - trimmomatic
+    targets:
+      - rcorrector

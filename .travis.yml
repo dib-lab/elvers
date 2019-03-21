@@ -31,11 +31,13 @@ install:
   - rm -fr $HOME/miniconda/envs/test-env
   - conda env create --file environment.yml -n test-env
   - source activate test-env
+  #- pip install -r requirements.txt
+  - python setup.py build install
 
 script:
   - pytest -v
-  - ./run_eelpond examples/nema.yaml get_data -t 4 --restart_times=3
-  - ./run_eelpond examples/nema.yaml assemble -t 4
-  - ./run_eelpond examples/yeast.yaml quantify diffexp -t 4 --restart_times=3
+  - elvers examples/nema.yaml get_data -t 4 --restart_times=3
+  - elvers examples/nema.yaml assemble -t 4
+  - elvers examples/yeast.yaml quantify diffexp -t 4 --restart_times=3
   - rm -fr $HOME/miniconda/envs/test-env $HOME/miniconda/pkgs/cache
   - find $HOME/miniconda -type f -printf '%TY-%Tm-%Td %TT %p\n' | sort -r | head

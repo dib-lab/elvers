@@ -1,0 +1,20 @@
+trinity:
+  elvers_params:
+    outdir: assembly
+    extensions:
+      reference_extensions: # use this extension only for all output of this assembler
+        - _trinity
+      base:
+        - .fasta
+        - .fasta.gene_trans_map
+  program_params:
+    # input kmer-trimmed reads
+    input_kmer_trimmed: True
+    # input trimmed-reads
+    input_trimmomatic_trimmed: False
+    # do we want to assemble the single reads with pe reads?
+    add_single_to_paired: False
+    max_memory : 30G
+    seqtype: fq
+    extra: ''
+

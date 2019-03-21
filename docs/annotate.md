@@ -1,6 +1,6 @@
 # Annotate Subworkflow
 
-Subworkflows combine tools in the right order to facilitate file targeting withing `eelpond`. The "annotate" subworkflow annotates a transcriptome. It requires an assembly to be provided, either by running an assembly or providing one in your configfile. 
+Subworkflows combine tools in the right order to facilitate file targeting withing `elvers`. The "annotate" subworkflow annotates a transcriptome. It requires an assembly to be provided, either by running an assembly or providing one in your configfile. 
 
 At the moment, this workflow consists of:
  
@@ -8,18 +8,18 @@ At the moment, this workflow consists of:
 
 ## Quickstart
 
-If you've generated an assembly, even if you've already run `./run_eelpond examples/nema.yaml assemble`:
+If you've generated an assembly, even if you've already run `elvers examples/nema.yaml assemble`:
 
-   1) "Run" trinity assembly at the same time.If you've already run the assembly, `eelpond` will just locateyour assembly file for `annotate`. 
+   1) "Run" trinity assembly at the same time.If you've already run the assembly, `elvers` will just locateyour assembly file for `annotate`. 
    
    ```
-   ./run_eelpond examples/nema.yaml assemble annotate
+   elvers examples/nema.yaml assemble annotate
    ```
   
    2) OR, Pass an assembly in via `assemblyinput` **with an assembly in your `yaml` configfile, e.g.:** 
    
    ```
-   ./run_eelpond assemblyinput annotate
+   elvers assemblyinput annotate
    ```
    
    In the configfile:
@@ -45,7 +45,7 @@ To set up your sample info and build a configfile, see [Understanding and Config
 
 If you want to add the `annotate` program parameters to a previously built configfile, run:
 ```
-./run_eelpond config.yaml annotate --print_params
+elvers config.yaml annotate --print_params
 ```
 
 A small set of parameters should print to your console:

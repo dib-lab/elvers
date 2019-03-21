@@ -43,7 +43,7 @@ Be sure to set up your sample info and build a configfile first (see [Understand
 
 To see the available parameters for the `trimmomatic` rule, run
 ```
-./run_eelpond config trimmomatic --print_params
+elvers config trimmomatic --print_params
 ```
 
 In here, you'll see a section for "trimmomatic" parameters that looks like this:
@@ -64,22 +64,22 @@ Override default params by modifying these lines. In addition to changing parame
 ```
   extra: 'HEADCROP:5' # to remove the first 5 bases at the front of the read.
 ```
-See the [Trimmomatic documentation](http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/TrimmomaticManual_V0.32.pdf) for parameters and options you can pass to Trimmomatic. Be sure the modified lines go into the config file you're using to run `eelpond` (see [Understanding and Configuring Workflows](configure.md)).
+See the [Trimmomatic documentation](http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/TrimmomaticManual_V0.32.pdf) for parameters and options you can pass to Trimmomatic. Be sure the modified lines go into the config file you're using to run `elvers` (see [Understanding and Configuring Workflows](configure.md)).
 
 
 ## Advanced Usage: Running Trimmomatic as a standalone rule
 
-You can run trimmomatic as a standalone rule, instead of withing a larger `eelpond` workflow. However, to do this, you need to make sure the input files are available.
+You can run trimmomatic as a standalone rule, instead of withing a larger `elvers` workflow. However, to do this, you need to make sure the input files are available.
 
 For Trimmomatic, the input files are your input data - either downloaded or linked into the `input_data` directory via `get_data`.
 
 If you've already done this, you can run:
 ```
-./run_eelpond my_config trimmomatic
+elvers my_config trimmomatic
 ```
 If not, you can run both at once to make sure trimmomatic can find its input files:
 ```
-./run_eelpond my_config get_data trimmomatic
+elvers my_config get_data trimmomatic
 ```
 
 
@@ -87,4 +87,4 @@ If not, you can run both at once to make sure trimmomatic can find its input fil
 
 We use a local copies of the [trimmomatic snakemake wrappers](https://snakemake-wrappers.readthedocs.io/en/stable/wrappers/trimmomatic.html) to run Trimmomatic.
 
-For snakemake afficionados, see the trimmomatic rules on [github](https://github.com/dib-lab/eelpond/blob/master/rules/trimmomatic/trimmomatic.rule).
+For snakemake afficionados, see the trimmomatic rules on [github](https://github.com/dib-lab/elvers/blob/master/rules/trimmomatic/trimmomatic.rule).

@@ -1,0 +1,15 @@
+sourmash:
+  elvers_params:
+    outdir: sourmash 
+    extensions: 
+      base:
+        - .sig
+      read:
+        pe:
+          - .paired.khmer.fq.sig
+        se:
+          - .se.khmer.fq.sig 
+  program_params:
+    k_size: 31
+    scaled: 1000
+    extra: ''

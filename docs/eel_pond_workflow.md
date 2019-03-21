@@ -1,6 +1,6 @@
 # Eel Pond Protocol Workflow
 
-The Eel Pond protocol (which inspired the eelpond name) included line-by-line commands that the user could follow along with using a test dataset provided in the instructions. We have re-implemented the protocol here to enable automated de novo transcriptome assembly, annotation, and quick differential expression analysis on a set of short-read Illumina data using a single command. See more about this protocol [here](https://eel-pond.readthedocs.io/en/latest/).
+The Eel Pond protocol (which inspired the elvers name) included line-by-line commands that the user could follow along with using a test dataset provided in the instructions. We have re-implemented the protocol here to enable automated de novo transcriptome assembly, annotation, and quick differential expression analysis on a set of short-read Illumina data using a single command. See more about this protocol [here](https://eel-pond.readthedocs.io/en/latest/).
 
 The "Eel Pond" Protocol for RNAseq consists of:
 
@@ -16,10 +16,10 @@ The "Eel Pond" Protocol for RNAseq consists of:
 
 This is the default workflow. To run:
 ```
-./run_eelpond examples/nema.yaml
+elvers examples/nema.yaml
 ```
 
-(You can be explicit and run the full default workflow with `./run_eelpond examples/nema.yaml default`)
+(You can be explicit and run the full default workflow with `elvers examples/nema.yaml default`)
 
 This will run a small set of Nematostella vectensis test data (from [Tulin et al., 2013](https://evodevojournal.biomedcentral.com/articles/10.1186/2041-9139-4-16)).
 
@@ -30,14 +30,14 @@ Set sample info and build a configfile first (see [Understanding and Configuring
 To build a config, run:
 
 ```
-./run_eelpond ep.yaml --build_config
+elvers ep.yaml --build_config
 ```
 
 The resulting `ep.yaml` configfile for this workflow will look something like this. The order of the parameters may be different and does not affect the order in which steps are run. Please see the documentation file for each individual program (linked above) for what parameters to modify.
 
 ```
   ####################  Eelpond Pipeline Configfile  ####################
-basename: eelpond
+basename: elvers
 experiment: _experiment1
 samples: samples.tsv ### PATH TO YOUR SAMPLE FILE GOES HERE
 

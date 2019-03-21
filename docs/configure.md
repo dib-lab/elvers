@@ -1,19 +1,19 @@
 # Understanding and Configuring Eelpond Workflows
 
-`eelpond` is designed to facilitate running standard workflows and analyses for sequence data. It integrates snakemake rules for commonly used tools, and provides several end-to-end protocols for analyzing RNAseq data. Workflows are highly customizable, and all command-line options for each tool are available for modification via the configuration file.
+`elvers` is designed to facilitate running standard workflows and analyses for sequence data. It integrates snakemake rules for commonly used tools, and provides several end-to-end protocols for analyzing RNAseq data. Workflows are highly customizable, and all command-line options for each tool are available for modification via the configuration file.
 
 
-**`eelpond`** uses the `yaml` _Yet Another Markup Language_ format to specify data inputs and modify run parameters. The only required information for this file is the location of the data inputs (reads, assembly, or both). 
+**`elvers`** uses the `yaml` _Yet Another Markup Language_ format to specify data inputs and modify run parameters. The only required information for this file is the location of the data inputs (reads, assembly, or both). 
 
 ## Specifying Input Data
 
-Let's start with the input data. There are two types of data that can go into eelpond: read data (gzipped fastq files), and assembly files (fasta) files. 
+Let's start with the input data. There are two types of data that can go into elvers: read data (gzipped fastq files), and assembly files (fasta) files. 
 
 ### Read Input
 
-To specify input data, we need to build a tab-separated samples file, e.g. `my-samples.tsv`. This file tells `eelpond` a name for each samples, and provides a location for the fastq files (local file path, or downloadable link).
+To specify input data, we need to build a tab-separated samples file, e.g. `my-samples.tsv`. This file tells `elvers` a name for each samples, and provides a location for the fastq files (local file path, or downloadable link).
 
-If we had our test data within the `data` folder in the main `eelpond` directory, the file would look like this:
+If we had our test data within the `data` folder in the main `elvers` directory, the file would look like this:
 
     ```
     sample  unit    fq1 fq2 condition
@@ -35,16 +35,17 @@ If we want to download the test data instead:
 
 **Note that proper formatting means all columns must be separated by tabs, not spaces!**
 
-Now, you need to provide the name and location of this file to `eelpond`. We do this in the `config.yaml` file, like so:
+Now, you need to provide the name and location of this file to `elvers`. We do this in the `config.yaml` file, like so:
 ```
-samples: /path/to/my-samples.tsv
-```
-
-The default functionality is to link data from another location on your computer into `eelpond`'s output directory. However, if you want to download data instead, you'll need to provide links in the `my-samples.tsv` file, and add a few lines to your `config.yaml`:
-
-```
-samples: /path/to/my-samples.tsv
 get_data:
+  samples: /path/to/my-samples.tsv
+```
+
+The default functionality is to link data from another location on your computer into `elvers`'s output directory. However, if you want to download data instead, you'll need to provide links in the `my-samples.tsv` file, and add a few lines to your `config.yaml`:
+
+```
+get_data:
+  samples: /path/to/my-samples.tsv
   download_data: True 
   use_ftp: False # set to true if you want to use FTP instead of HTTP
 ```
@@ -57,7 +58,7 @@ get_data:
   - If you have single-end samples, please be sure to include the `fq2` column, but leave the column blank
   - the `condition` column is used for differential expression comparisions in DESeq2. The "condition" values can be anything, but they need to correspond with the "contrast" information you pass into DESeq2. If using the `diffexp` workflow, see our docs [here](diffexp.md) and be sure to add the differential expression information into your `yaml` configuration file.
   - Formatting the `tsv` can be a bit annoying. It's slightly easier if you start from a working version by copying the sample data to a new file (see below).
-  - At the moment, `eelpond` assumes **all input data is gzipped**, so please input gzipped data!
+  - At the moment, `elvers` assumes **all input data is gzipped**, so please input gzipped data!
 
 
 If you'd like to start from a working version, copy (and then modify) the sample data:
@@ -66,14 +67,14 @@ If you'd like to start from a working version, copy (and then modify) the sample
 cp examples/nema.samples.tsv my_samples.tsv
 ```
 
-To run any read-based workflow, we need to get reads (and any assemblies already generated) into the right format for `eelpond`. We can either (1) link the data from another location on your machine, or (2) download the data via http or ftp. This is done through a utility rule called `get_data`.
+To run any read-based workflow, we need to get reads (and any assemblies already generated) into the right format for `elvers`. We can either (1) link the data from another location on your machine, or (2) download the data via http or ftp. This is done through a utility rule called `get_data`.
 
 ### Assembly Input
 
-If you'd like to use `eelpond` with an existing transcriptome assembly, you can specify this assembly in the configuration file. The assembly is copied into the working `eelpond` directory via a utility rule called `assemblyinput`. You can see the lines you need to use by running the following:
+If you'd like to use `elvers` with an existing transcriptome assembly, you can specify this assembly in the configuration file. The assembly is copied into the working `elvers` directory via a utility rule called `assemblyinput`. You can see the lines you need to use by running the following:
 
 ```
-./run_eelpond config.yaml assemblyinput --print_params
+elvers config.yaml assemblyinput --print_params
 ```
 
 You should see these parameters print to your screen:
@@ -96,7 +97,7 @@ We offer a number of workflows, including end-to-end workflows that conduct asse
 
 ### Available Workflows
 
-Currently, all workflows require a properly-formatted read inputs `tsv` file as input. Some workflows, e.g. `annotation`, can work on either on a  _de novo_ transcriptome generated by `eelpond`, or on previously-generated assemblies. To add an assembly as input, specify it via `assemblyinput` in the `yaml` config file, as described above. 
+Currently, all workflows require a properly-formatted read inputs `tsv` file as input. Some workflows, e.g. `annotation`, can work on either on a  _de novo_ transcriptome generated by `elvers`, or on previously-generated assemblies. To add an assembly as input, specify it via `assemblyinput` in the `yaml` config file, as described above. 
 
 
 **workflows**
@@ -120,13 +121,13 @@ Currently, all workflows require a properly-formatted read inputs `tsv` file as 
 
 You can see the available workflows (and which programs they run) by using the `--print_workflows` flag:
 ```
-./run_eelpond examples/nema.yaml --print_workflows
+elvers examples/nema.yaml --print_workflows
 ```
 
 Each included tool can also be run independently, if appropriate input files are provided. This is not always intuitive, so please see our documentation for running each tools for details (described as "Advanced Usage"). To see all available tools, run:
 
 ```
-./run_eelpond examples/nema.yaml --print_rules
+elvers examples/nema.yaml --print_rules
 ```
 
 ### Configuring Parameters for a workflow
@@ -136,7 +137,7 @@ For any workflow, we need to provide a configuration file that specifies the pat
 We can generate this file either by:
 
   1. Adding just the desired parameters
-  2. Allowing `eelpond` to build a (long) full configfile for us, and modifying as desired.
+  2. Allowing `elvers` to build a (long) full configfile for us, and modifying as desired.
 
 
 **Option 1: Adding just the required parameters**
@@ -144,7 +145,8 @@ We can generate this file either by:
 The configuration file primarily provides the location of the input data and/or input assembly. The simplest config file contains just this information.
 
 ```
-samples: samples.tsv
+get_data:
+  samples: samples.tsv
 ```
 or 
 ```
@@ -158,41 +160,40 @@ There are a few other options we can add to customize the name of the output dir
 
   - `basename: NAME`: helps determine file names and output directory (by default: `BASENAME_out`)
   - `experiment: EXPERIMENT`: some additional "experiment" info to add to the output directory name ( outdir: `BASENAME_EXPERIMENT_out`)
-  - `out_path: /full/path`: if you want to redirect the output to some location *not* under the `eelpond` directory.`
+  - `out_path: /full/path`: if you want to redirect the output to some location *not* under the `elvers` directory.`
 
 
 Now, if you'd like to run any particular program with non-default parameters, or you're running differential expression analysis, you'll need to add some info to the config. For any (each) program, follow this format to see program params:
 
 ```
-./run_eelpond config.yaml <PROGRAM> --print_params
+elvers config.yaml <PROGRAM> --print_params
 ```
 
 For example, for deseq2:
 ```
-./run_eelpond config.yaml deseq2 --print_params
+elvers config.yaml deseq2 --print_params
 ```
 
 Then copy and paste the parameters that show up in your terminal into your config file. Please see each program's documentation for additional info on what (and how) to modify each program. For example, if running an assembly, we definitely recommend modifying the `max_memory` parameter of Trinity.
 
 
-**Option 2: Use `eelpond` to add all parameters for our workflow of choice**
+**Option 2: Use `elvers` to add all parameters for our workflow of choice**
 
 To get a configfile for the default "eel pond" workflow, that you can modify, run:
 
 ```
-./run_eelpond my_workflow.yaml --build_config
+elvers my_workflow.yaml --build_config
 ```
 
 The output should be a `yaml` configfile. At the top, you should see:
 
 ```
   ####################  Eelpond Pipeline Configfile  ####################
-basename: eelpond
+basename: elvers
 experiment: _experiment1
-samples: samples.tsv
 ```
 
-First, change the `samples.tsv` name to your `my_samples.tsv` file. Then, modify the basename and any experiment info you'd like to add. The default output directory will be: `basename_experiment_out` within the main `eelpond` directory. If you'd like, you can add one more parameter to the top section: `out_path: OUTPUT_PATH`, if you'd like the output to go somewhere other than the `eelpond` directory. Note the basename and experiment are still used to determine the output directory name.
+First, change the `samples.tsv` name to your `my_samples.tsv` file. Then, modify the basename and any experiment info you'd like to add. The default output directory will be: `basename_experiment_out` within the main `elvers` directory. If you'd like, you can add one more parameter to the top section: `out_path: OUTPUT_PATH`, if you'd like the output to go somewhere other than the `elvers` directory. Note the basename and experiment are still used to determine the output directory name.
 
 
 **Customizing program parameters:**
@@ -201,6 +202,7 @@ Below this section, you should see some parameters for each program run in this 
 
 ```
 get_data:
+  samples: samples.tsv
   download_data: false
   use_ftp: false
 trimmomatic:

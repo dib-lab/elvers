@@ -1,8 +1,0 @@
-multiqc:
-  eelpond_params:
-    outdir: preprocess/fastqc
-    extensions: 
-      other:
-        - multiqc.html
-  program_params:
-    extra: ''

@@ -1,0 +1,6 @@
+include LICENSE README.md requirements.txt environment.yml
+recursive-include elvers *
+recursive-include examples *
+global-exclude *.orig
+global-exclude *.pyc
+global-exclude *.so

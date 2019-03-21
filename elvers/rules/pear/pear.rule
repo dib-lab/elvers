@@ -1,0 +1,42 @@
+from os.path import join
+
+logs_dir  = config['elvers_directories']['logs']
+ep_params = config['pear']['elvers_params']
+pear_params = config['pear']['program_params']
+
+input_dirname = ep_params['input_dir']
+input_dir     = config['elvers_directories']['outdirs'][input_dirname]
+ext           = ep_params['input_pattern']
+
+pear_dir = ep_params['outdir']
+
+def get_pairs(w):
+    readsD = {}
+    if not is_single_end(**w): # note, this requires unit to be in outputs!
+        readsD['r1'] = join(input_dir, f'{w.sample}_{w.unit}_1{ext}')
+        readsD['r2'] = join(input_dir, f'{w.sample}_{w.unit}_2{ext}')
+        return readsD
+    return readsD
+
+rule pear_read_merging:
+    """
+    Merge PE reads with PEAR, for input into PALADIN
+	"""
+    input:
+        unpack(get_pairs)
+    output: 
+        assembled = join(pear_dir, '{sample}_{unit}.pear_assembled.fq.gz'),
+        discarded = join(pear_dir, '{sample}_{unit}.pear_discarded.fq.gz'),
+        unassembled_r1 = join(pear_dir, '{sample}_{unit}.pear_unassembled_r1.fq.gz'),
+        unassembled_r2 = join(pear_dir, '{sample}_{unit}.pear_unassembled_r2.fq.gz'),
+    message:
+        """--- Merging paired reads using PEAR  ---"""
+    params:
+        pval = pear_params.get('pval',"0.01"),
+        max_memory = pear_params.get('max_memory', "4G"),
+        extra = pear_params.get('extra', '')
+    threads: 6
+    log: join(logs_dir, 'pear/{sample}_{unit}.log')
+    benchmark: join(logs_dir, 'pear/{sample}_{unit}.benchmark')
+    conda: 'environment.yml'
+    script: 'pear-wrapper.py'

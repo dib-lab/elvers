@@ -1,0 +1,18 @@
+# nema: a non-random subset of data from Tulin et al. (2013), that can
+# be used to do assembly and comparative expression analysis.
+
+# this sets the output directory name:
+basename: 'nema'
+
+
+# this says to download samples specified as Web URLs:
+get_data:
+  # this describes the samples:
+  samples: "examples/nema.samples.tsv"
+  download_data: True
+
+# this says to download a pre-made transcriptome reference and gene-trans map
+get_reference:
+  download_ref: True
+  reference: "https://osf.io/knrqy/download"
+  gene_trans_map: "https://osf.io/jqam4/download"
