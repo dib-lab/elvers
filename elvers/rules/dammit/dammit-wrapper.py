@@ -29,7 +29,7 @@ annot_extra = snakemake.params.get("annot_extra", "")
 assembly_name = path.basename(str(snakemake.input))
 dammit_dir =  path.join(outdir, assembly_name + '.dammit')
 dammit_fasta = path.join(dammit_dir, assembly_name + '.dammit.fasta')
-dammit_gff3 = path.join(dammit_dir, assembly_name + '.dammit.fasta')
+dammit_gff3 = path.join(dammit_dir, assembly_name + '.dammit.gff3')
 
 # run installation of everything *except* busco groups
 shell("dammit databases --install {db_cmd} {db_extra} {log}") #--n_threads {snakemake.threads}
