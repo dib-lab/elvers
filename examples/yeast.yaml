@@ -4,7 +4,7 @@ basename: yeast
 
   ####################  quantify  ####################  
 get_data:
-  samples: examples/yeast.samples.tsv
+  samples: yeast.samples.tsv
   download_data: true
   use_ftp: false
 salmon:

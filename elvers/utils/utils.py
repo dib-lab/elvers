@@ -102,21 +102,21 @@ def handle_samples_input(config, configfile):
     program_params = config['get_data'].get('program_params')
     samples_file = program_params.get('samples', None)
     if samples_file:
+        samples_file = os.path.expanduser(samples_file) #handle ~
         if os.path.exists(samples_file) and not os.path.isdir(samples_file):
-            samples = os.path.realpath(samples_file)
+            samples_file = os.path.realpath(samples_file)
         else:
-            paths = [os.path.getcwd(), os.path.dirname(configfile)]
+            paths = [os.getcwd(), os.path.realpath(os.path.dirname(configfile))]
             for p in paths:
                 tryfile = os.path.join(p, samples_file)
                 if os.path.exists(tryfile) and not os.path.isdir(tryfile):
-                    samples = os.path.realpath(tryfile)
+                    samples_file = os.path.realpath(tryfile)
                     break
+        assert os.path.exists(samples_file), f'Error: cannot find input samples tsv at {samples_file}\n'
+        config['get_data']['program_params']['samples'] = samples_file
+        sys.stderr.write(f'\tFound input samples tsv file at {samples_file}\n')
     else:
         sys.stderr.write("\n\tError: trying to run `get_data` workflow, but the samples tsv file is not specified in your configfile. Please fix.\n\n")
-
-    #assert os.path.exists(samples), f'Error: cannot find input samples tsv at {samples}\n'
-    config['get_data']['program_params']['samples'] = samples
-    sys.stderr.write(f'\tFound input samples tsv file at {samples}\n')
     return config
 
 def generate_targs(outdir, basename, samples, ref_exts=[''], base_exts = None, read_exts = None, other_exts = None, contrasts = []):
