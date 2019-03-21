@@ -228,9 +228,13 @@ To build an editable configfile to start work on your own data, run:
         if 'get_reference' in targs and not refInput:
             sys.stderr.write("\n\tError: trying to get reference via `get_reference` rule, but there's no reference file specified in your configfile. Please fix.\n\n")
             sys.exit(-1)
+        # check that samples file exists, targs include get_data, and build fullpath to samples file
+        if configD.get('get_data', None):
+            targs+=['get_data']
+            configD = handle_samples_input(configD, configfile)
+        targs = list(set(targs))
         # next, grab all elvers defaults, including rule-specific default parameters (*_params.yaml files)
         paramsD = build_default_params(thisdir, targs)
-
        ###############
         # Handle additional configuration modification
         # 1. extra config files
