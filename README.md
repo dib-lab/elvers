@@ -92,11 +92,6 @@ Generate these files by following instructions here: [Understanding and Configur
 
 ## Available Workflows
 
-Currently, all workflows require a properly-formatted read inputs `tsv` file as input. Some workflows, e.g. `annotation` can work on either on a _de novo_ transcriptome or on previously-generated assemblies. To add an assembly as input, specify it via `assemblyinput` in the `yaml` config file, as described in [Understanding and Configuring Workflows](https://dib-lab.github.io/elvers/configure). 
-
-
-**workflows**
-
   - preprocess: Read Quality Trimming and Filtering (fastqc, trimmomatic)
   - kmer_trim: Kmer Trimming and/or Digital Normalization (khmer)
   - assemble: Transcriptome Assembly (trinity)
