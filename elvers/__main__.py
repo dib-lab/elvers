@@ -298,6 +298,11 @@ To build an editable configfile to start work on your own data, run:
         except Exception as e:
            print(e)
            sys.exit(-1)
+         try:
+            check_workflow(paramsD)
+        except Exception as e:
+            print(e)
+            sys.exit(-1)
         # Note: Passing a configfile allows nested yaml/dictionary format.
         # Passing these params in via `config` would require a flat dictionary.
         paramsfile = os.path.join(os.path.dirname(configfile), '.ep_' + os.path.basename(configfile))
