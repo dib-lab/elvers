@@ -281,19 +281,11 @@ To build an editable configfile to start work on your own data, run:
         if refinput_ext: # note, need to do it here to prevent override with defaults
             paramsD['reference_extensions'] = list(set(paramsD.get('reference_extensions', []) + [refinput_ext]))
 
-
-            # NOTE: I think this should be moved from here into an `input_checks` function that checks all appropriate inputs/outputs are specified for the rules in use, and provides appropriate links to docs to help guide the user.
+        # This is now handled in the deseq2 rule, can remove from here. Do we need the sys.stderr notification?
         if paramsD.get('no_gene_trans_map', False):
             if paramsD.get('deseq2'):
                 paramsD['deseq2']['program_params']['gene_trans_map'] = False
                 sys.stderr.write("\tYou're using `get_reference` without specifying a gene-trans-map. Setting differential expression to transcript-level only. See https://dib-lab.github.io/elvers/deseq2/for details.\n")
-        # All params have been integrated. Now build fullpaths and print the complete paramsfile
-        try:
-            check_workflow(paramsD)
-        except Exception as e:
-            print(e)
-            sys.exit(-1)
-
         # use params to build directory structure
         paramsD = build_dirs(thisdir, paramsD)
         # aggregate the yaml schema for the pipeline (and all included rules) so we can validate against it
