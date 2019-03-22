@@ -298,7 +298,7 @@ To build an editable configfile to start work on your own data, run:
         except Exception as e:
            print(e)
            sys.exit(-1)
-         try:
+        try:
             check_workflow(paramsD)
         except Exception as e:
             print(e)
