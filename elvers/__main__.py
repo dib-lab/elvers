@@ -289,11 +289,11 @@ To build an editable configfile to start work on your own data, run:
 
         # use params to build directory structure
         paramsD = build_dirs(thisdir, paramsD)
-        # validate the params dictionary we've build, against config schema generated for the included targets
-
+        # validate the params dictionary we've built using config schema generated for the included targets, all rules paramss
         try:
             ## TODO: modify the validation schema based on targets (using generate_yaml_schema.py)
-            validate(paramsD, schema="schemas/elvers.fullschema.yaml") # new version
+            ## Also, if we're doing this, maybe pass in a subset of rulenames (included rules), and don't generate schema for the remaining
+            validate(paramsD, schema="schemas/elvers.fullschema.yaml")
         except Exception as e:
            print(e)
            sys.exit(-1)
