@@ -15,6 +15,8 @@ import snakemake
 import shutil
 import subprocess
 
+from snakemake.utils import validate
+
 from .utils.utils import *
 from .utils.pretty_config  import pretty_name, write_config
 from .utils.print_workflow_options import print_available_workflows_and_tools
@@ -287,6 +289,14 @@ To build an editable configfile to start work on your own data, run:
 
         # use params to build directory structure
         paramsD = build_dirs(thisdir, paramsD)
+        # validate the params dictionary we've build, against config schema generated for the included targets
+
+        try:
+            ## TODO: modify the validation schema based on targets (using generate_yaml_schema.py)
+            validate(paramsD, schema="schemas/elvers.fullschema.yaml") # new version
+        except Exception as e:
+           print(e)
+           sys.exit(-1)
         # Note: Passing a configfile allows nested yaml/dictionary format.
         # Passing these params in via `config` would require a flat dictionary.
         paramsfile = os.path.join(os.path.dirname(configfile), '.ep_' + os.path.basename(configfile))

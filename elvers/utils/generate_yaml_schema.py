@@ -12,7 +12,7 @@ elvers_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 noalias_dumper = yaml.dumper.SafeDumper
 noalias_dumper.ignore_aliases = lambda self, data: True
 
-def write_yaml(yamlD, paramsfile):
+def write_schema(yamlD, paramsfile):
     with open(paramsfile, 'w') as params:
         yaml.dump(yamlD, stream=params, indent=2,  default_flow_style=False, Dumper=noalias_dumper)
 
@@ -67,7 +67,7 @@ def build_params_schema(args):
     schema['properties']['elvers_workflows'] = {'type': 'object', 'properties': workflow_properties}#{'elvers: {'targets': targs}, 'required': ['elvers']}}
     schema['required'] = schema['required'] + targs
 
-    write_yaml(schema, args.schema_output)
+    write_schema(schema, args.schema_output)
 
 if __name__ == '__main__':
     """ very simple attempt at auto generating yaml schema for elvers """
