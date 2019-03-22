@@ -21,6 +21,7 @@ from .utils.utils import *
 from .utils.pretty_config  import pretty_name, write_config
 from .utils.print_workflow_options import print_available_workflows_and_tools
 from .utils.capture_stdout import CaptureStdout
+from .utils.generate_yaml_schema import *
 
 from . import _program
 
@@ -289,11 +290,13 @@ To build an editable configfile to start work on your own data, run:
 
         # use params to build directory structure
         paramsD = build_dirs(thisdir, paramsD)
-        # validate the params dictionary we've built using config schema generated for the included targets, all rules paramss
+        # aggregate the yaml schema for the pipeline (and all included rules) so we can validate against it
+        schemafile = os.path.join(os.path.dirname(configfile), '.ep_' + os.path.basename(configfile).rsplit('.y')[0] + '.schema.yaml')
+        rulenames = [os.path.basename(x).split('.rule')[0] for x in paramsD['include_rules']]
+        pipeline_schema = build_params_schema(paramsD, schemafile, rules=rulenames, targets =targs)
         try:
-            ## TODO: modify the validation schema based on targets (using generate_yaml_schema.py)
-            ## Also, if we're doing this, maybe pass in a subset of rulenames (included rules), and don't generate schema for the remaining
-            validate(paramsD, schema=find_input_file("schemas/elvers.fullschema.yaml", "schema", add_paths = [thisdir, os.path.join(thisdir, 'schemas')]))
+            # validate the params dictionary we've built using config schema generated for the included targets, all rules paramss
+            validate(paramsD, schema=schemafile)
         except Exception as e:
            print(e)
            sys.exit(-1)

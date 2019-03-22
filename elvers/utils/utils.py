@@ -73,7 +73,7 @@ def find_input_file(filename, name="input file", add_paths=[], add_suffixes = ['
                     break
     config_help = ""
     if "config" in name:
-        config_help = "   Use option '--build_config' to build a default {name} at {filename}.\n"
+        config_help = f"   Use option '--build_config' to build a default {name} at {filename}.\n"
 
     assert found_file, f'Error, cannot find specified {name} file {filename}\n\n\n' + config_help
     if name != 'pipeline_defaults':

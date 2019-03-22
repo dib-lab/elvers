@@ -44,30 +44,37 @@ def build_rule_params_schema(full_schema, params_schema_template, paramsfile):
         full_schema['properties'][name] = prog_schema
     return full_schema
 
-def build_params_schema(args):
-   # first, let's read in the pipeline defaults schema
+def build_params_schema(paramsfile, outfile, rules = [], targets = [], rule_template =None, elvers_schema = None, pipeline_schema = None):
+   # some setup, so we can use this within elvers main
+    if not rule_template:
+        rule_template = "rule_params.schema.yaml"
+    if not elvers_schema:
+        elvers_schema = "elvers_params.schema.yaml"
+    if not pipeline_schema:
+        pipeline_schema = "pipeline_defaults.schema.yaml"
     schema_dir = os.path.join(elvers_dir, "schemas")
-    schema = read_yaml(find_input_file(args.defaults_template, name="pipeline defaults schema", add_paths=[schema_dir]))
+
+   # first, let's read in the pipeline defaults schema
+    schema = read_yaml(find_input_file(pipeline_schema, name="pipeline defaults schema", add_paths=[schema_dir]))
     # the elvers params adds to the required sections of pipeline defaults. read in & update schema
-    elvers_extra = read_yaml(find_input_file(args.elvers_template, name="elvers params schema", add_paths=[schema_dir]))
+    elvers_extra = read_yaml(find_input_file(elvers_schema, name="elvers params schema", add_paths=[schema_dir]))
     update_nested_dict(schema, elvers_extra)
      # ok, now let's build schema for all
-    rule_template = read_yaml(find_input_file(args.rule_template, name="rule params schema template", add_paths=[schema_dir]))
+    template = read_yaml(find_input_file(rule_template, name="rule params schema template", add_paths=[schema_dir]))
     # how do locations work with installed packages!?
-    rule_paramsfiles = glob.glob(os.path.join(elvers_dir, 'rules', '*','params.yml'))
-    for paramsfile in rule_paramsfiles:
-        schema = build_rule_params_schema(schema, rule_template, paramsfile)
+    for rule in rules:
+        if rule in ['get_data', 'get_reference']:
+            rule = 'utils'
+        paramsfile = glob.glob(os.path.join(elvers_dir, 'rules', rule,'params.yml'))[0]
+        schema = build_rule_params_schema(schema, template, paramsfile)
 
-    # some tweaking using current targets. Set workflows to the current workflows. Set required to the rules in use
-    targs = args.targets  #['get_data', 'trinity']
+    # this is not exactly what we need, but it gets rid of `default` as a required target, so leave in for now.
+    workflow_properties={'elvers':{'targets':targets}, 'required': ['elvers']}
 
-    # this is not exactly what's ending up in there. Not sure we need this.
-    workflow_properties={'elvers':{'targets':targs}, 'required': ['elvers']}
+    schema['properties']['elvers_workflows'] = {'type': 'object', 'properties': workflow_properties}
+    schema['required'] = schema['required'] + rules
 
-    schema['properties']['elvers_workflows'] = {'type': 'object', 'properties': workflow_properties}#{'elvers: {'targets': targs}, 'required': ['elvers']}}
-    schema['required'] = schema['required'] + targs
-
-    write_schema(schema, args.schema_output)
+    write_schema(schema, outfile)
 
 if __name__ == '__main__':
     """ very simple attempt at auto generating yaml schema for elvers """
@@ -76,7 +83,8 @@ if __name__ == '__main__':
     p.add_argument('--rule_template', default= "rule_params.schema.yaml")
     p.add_argument('--elvers_template', default= "elvers_params.schema.yaml")
     p.add_argument('--defaults_template', default= "pipeline_defaults.schema.yaml")
+    p.add_argument('--rules', nargs='*', default=[])
     p.add_argument('--targets', nargs='*', default=[])
     p.add_argument('-o', '--schema_output', default = os.path.join(elvers_dir, 'schemas', 'elvers.fullschema.yaml'))
     args = p.parse_args()
-    sys.exit(build_params_schema(args))
+    sys.exit(build_params_schema(args.paramsfile, args.schema_output, args.rules, args.targets, args.rule_template, args.elvers_template, args.defaults_template))
