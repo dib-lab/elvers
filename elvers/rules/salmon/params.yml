@@ -8,7 +8,8 @@ salmon:
       reference:
         - transcriptome
     outputs:
-      - counts
+      read:
+        - counts
     extensions: 
       read:
         combine_units: True

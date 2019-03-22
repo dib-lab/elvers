@@ -15,6 +15,10 @@ properties:
 ## this all need to be edited via the build_yaml_schema script
   elvers_directories:
     required:
+      - animals
+      - rules
+      - logs
+      - outdirs
       - base_dir
       - out_dir
 

@@ -16,6 +16,10 @@ properties:
     type: string
   out_path: 
     type: string
+  include_rules:
+    type: array
+  reference_extensions:
+    type: array
   elvers_directories:
     type: object
     properties:
@@ -63,11 +67,6 @@ properties:
         type: object
     required: 
       - default
- include_rules:
-    type: array
-  reference_extensions:
-    type: array
-
 required:
   - basename
   - elvers_directories

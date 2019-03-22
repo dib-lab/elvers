@@ -4,6 +4,9 @@ get_data:
     outputs:
       read:
         - raw
+    inputs:
+      read:
+        - raw
     extensions:
       read:
         pe:
@@ -18,6 +21,11 @@ get_reference:
   elvers_params:
     outdir: assembly
     outputs:
+      reference:
+        - transcriptome
+        - genome
+        - protein
+    inputs:
       reference:
         - transcriptome
         - genome

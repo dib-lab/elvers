@@ -11,7 +11,6 @@ def find_Snakefile(workdir):
     assert os.path.exists(snakefile), 'Error: cannot find Snakefile at {}\n'.format(snakefile)
     return snakefile
 
-
 def read_yaml(filename):
     with open(filename, 'r') as stream:
         try:
@@ -193,11 +192,6 @@ def get_params(rule_name, rule_dir='rules'):
     # pass in a rule name & the directory that contains its paramsfile.
     # Return paramsD
     rule_paramsfile = os.path.join(rule_dir, 'params.yml')
-    rule_params = {}
-    with open(rule_paramsfile, 'r') as stream:
-        try:
-            paramsD = yaml.safe_load(stream) #, Loader=yaml.FullLoader)
-        except yaml.YAMLError as exc:
-            print(exc)
-        rule_params= paramsD[rule_name] # in case you have multiple programs in single params.yml
+    paramsD = read_yaml(rule_paramsfile)
+    rule_params = paramsD[rule_name]
     return rule_params
