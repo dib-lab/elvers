@@ -15,17 +15,20 @@ import snakemake
 import shutil
 import subprocess
 
+from snakemake.utils import validate
+
 from .utils.utils import *
 from .utils.pretty_config  import pretty_name, write_config
 from .utils.print_workflow_options import print_available_workflows_and_tools
 from .utils.capture_stdout import CaptureStdout
+from .utils.generate_yaml_schema import *
 
 from . import _program
 
 def build_default_params(workdir, targets):
     defaultParams = {}
     # first, figure out which parts of the pipeline are being run, and get those defaults
-    pipeline_defaultsFile = find_yaml(workdir, os.path.join('utils', 'pipeline_defaults'), 'pipeline_defaults')
+    pipeline_defaultsFile = find_input_file(os.path.join('utils', 'pipeline_defaults'), 'pipeline_defaults', add_paths = [workdir])
     pipeline_defaults = read_yaml(pipeline_defaultsFile)
     # grab general defaults
     defaultParams['basename'] = pipeline_defaults['basename']
@@ -168,7 +171,7 @@ To build an editable configfile to start work on your own data, run:
     thisdir = os.path.abspath(os.path.dirname(__file__))
     # print available workflows and rules, if desired
     if args.print_workflows or args.print_rules:
-        pipeline_defaultsFile = find_yaml(thisdir, os.path.join('utils', 'pipeline_defaults'), 'pipeline_defaults')
+        pipeline_defaultsFile = find_input_file(os.path.join('utils', 'pipeline_defaults'), 'pipeline_defaults', add_paths = [thisdir])
         print_available_workflows_and_tools(read_yaml(pipeline_defaultsFile), args.print_workflows, args.print_rules)
         sys.exit(0)
     targs = args.targets
@@ -212,7 +215,7 @@ To build an editable configfile to start work on your own data, run:
         write_config(default_params, targs, configfile)
         sys.exit(0)
     else:
-        configfile = find_yaml(thisdir, args.configfile, 'configfile') # find configfile
+        configfile = find_input_file(args.configfile, 'configfile', add_paths=[thisdir]) # find configfile
         if not configfile:
             sys.stderr.write('Error: cannot find configfile {}\n.'.format(args.configfile))
             sys.exit(-1)
@@ -222,7 +225,7 @@ To build an editable configfile to start work on your own data, run:
         refInput = configD.get('get_reference', None)
         if refInput:
             targs+=['get_reference']
-            configD, refinput_ext = handle_reference_input(refInput, configD)
+            configD, refinput_ext = handle_reference_input(configD, configfile)
         else:
             refinput_ext = None
         if 'get_reference' in targs and not refInput:
@@ -246,7 +249,7 @@ To build an editable configfile to start work on your own data, run:
         extra_configs = {}
         if args.extra_config:
             for c in args.extra_config:
-                extra_configs = import_configfile(find_yaml(thisdir, c, 'extra_config'), extra_configs)
+                extra_configs = import_configfile(find_input_file(c, 'extra_config', add_paths = [thisdir]), extra_configs)
 
         # 2. config_dict passed in on command line
         # ADVANCED ONLY - no checks in place, formatting matters. (to do: add checks)
@@ -278,15 +281,23 @@ To build an editable configfile to start work on your own data, run:
         if refinput_ext: # note, need to do it here to prevent override with defaults
             paramsD['reference_extensions'] = list(set(paramsD.get('reference_extensions', []) + [refinput_ext]))
 
-            # NOTE: I think this should be moved from here into an `input_checks` function that checks all appropriate inputs/outputs are specified for the rules in use, and provides appropriate links to docs to help guide the user.
-            if paramsD.get('no_gene_trans_map', False):
-                if paramsD.get('deseq2'):
-                    paramsD['deseq2']['program_params']['gene_trans_map'] = False
-                    sys.stderr.write("\tYou're using `get_reference` without specifying a gene-trans-map. Setting differential expression to transcript-level only. See https://dib-lab.github.io/elvers/deseq2/for details.\n")
-        # All params have been integrated. Now build fullpaths and print the complete paramsfile
-
+        # This is now handled in the deseq2 rule, can remove from here. Do we need the sys.stderr notification?
+        if paramsD.get('no_gene_trans_map', False):
+            if paramsD.get('deseq2'):
+                paramsD['deseq2']['program_params']['gene_trans_map'] = False
+                sys.stderr.write("\tYou're using `get_reference` without specifying a gene-trans-map. Setting differential expression to transcript-level only. See https://dib-lab.github.io/elvers/deseq2/for details.\n")
         # use params to build directory structure
         paramsD = build_dirs(thisdir, paramsD)
+        # aggregate the yaml schema for the pipeline (and all included rules) so we can validate against it
+        schemafile = os.path.join(os.path.dirname(configfile), '.ep_' + os.path.basename(configfile).rsplit('.y')[0] + '.schema.yaml')
+        rulenames = [os.path.basename(x).split('.rule')[0] for x in paramsD['include_rules']]
+        pipeline_schema = build_params_schema(paramsD, schemafile, rules=rulenames, targets =targs)
+        try:
+            # validate the params dictionary we've built using config schema generated for the included targets, all rules paramss
+            validate(paramsD, schema=schemafile)
+        except Exception as e:
+           print(e)
+           sys.exit(-1)
         # Note: Passing a configfile allows nested yaml/dictionary format.
         # Passing these params in via `config` would require a flat dictionary.
         paramsfile = os.path.join(os.path.dirname(configfile), '.ep_' + os.path.basename(configfile))

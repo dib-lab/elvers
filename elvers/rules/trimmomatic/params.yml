@@ -1,6 +1,12 @@
 trimmomatic:
   elvers_params:
     outdir: preprocess
+    inputs:
+      read:
+        - raw
+    outputs:
+      read:
+        - trimmed 
     extensions:
       read:
         pe:

@@ -1,6 +1,18 @@
 paladin:
   elvers_params:
     outdir: paladin
+    inputs:
+      read:
+        - merged
+        - trimmed
+        - raw
+      reference:
+        - protein_assembly
+    outputs:
+      - protein_mapped
+    help: "PALADIN is a protein sequence alignment tool designed for the accurate functional characterization of metagenomes."
+    citations:
+      - "Westbrook, Anthony et al. 'PALADIN: protein alignment for functional profiling whole metagenome shotgun data' Bioinformatics (Oxford, England) vol. 33,10 (2017): 1473-1478"
     extensions:
       reference_extensions: # use this extension only for all output of this assembler
         - _plass

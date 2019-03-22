@@ -1,6 +1,20 @@
 plass:
   elvers_params:
     outdir: assembly
+    inputs:
+      read:
+        - diginorm
+        - kmer_trimmed 
+        - trimmed
+        - raw
+    outputs:
+      reference:
+        - protein
+    
+    help: "Plass (Protein-Level ASSembler) is a software to assemble short read sequencing data on a protein level. The main purpose of Plass is the assembly of complex metagenomic datasets." 
+    citations:
+      - "Steinegger M, Mirdita M and Soeding J. Protein-level assembly increases protein sequence recovery from metagenomic samples manyfold. biorxiv, doi: doi.org/10.1101/386110 (2018)"
+
     extensions:
       reference_extensions: # use this extension only for all output of this assembler
         - _plass

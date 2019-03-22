@@ -1,0 +1,73 @@
+#####################################################################
+# This is the schema template for the elvers pipeline_defaults file.
+# Validate when importing pipeline_defaults to catch missing items.
+#####################################################################
+
+$schema: 'http://json-schema.org/draft-07/schema#'
+
+description: elvers pipeline defaults schema
+
+type: object
+
+properties:
+  basename:
+    type: string
+  experiment:
+    type: string
+  out_path: 
+    type: string
+  include_rules:
+    type: array
+  reference_extensions:
+    type: array
+  elvers_directories:
+    type: object
+    properties:
+      animals:
+        type: string
+      rules:
+        type: string
+      logs: 
+        type: string
+      base_dir:
+        type: string
+      out_dir:
+        type: string
+      outdirs:
+        type: object
+        properties:
+          input_data:
+            type: string
+          preprocess:
+            type: string
+          assemble:
+            type: string
+          annotate:
+            type: string
+          quantify:
+            type: string
+          diffexp:
+            type: string
+        required:
+          - input_data
+          - preprocess
+          - assemble
+          - annotate
+          - quantify
+          - diffexp
+    required:
+      - animals
+      - rules
+      - logs
+      - outdirs
+  elvers_workflows:
+    type: object
+    properties:
+      default:
+        type: object
+    required: 
+      - default
+required:
+  - basename
+  - elvers_directories
+  - elvers_workflows

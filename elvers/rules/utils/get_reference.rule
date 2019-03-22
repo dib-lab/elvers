@@ -11,7 +11,12 @@ reference_extension = getRef_params.get('reference_extension', '')
 
 # set up the vars we use in each of these options
 ref_in     =  os.path.realpath(getRef_params['reference'])
+gunzip_ref = False
 ref_out    =  os.path.join(ref_dir, basename + reference_extension + '.fasta')
+if ref_in.endswith('.gz'):
+    gunzip_ref = True
+    ref_out_gunzip = ref_out
+    ref_out = ref_out + '.gz'
 
 if getRef_params.get('gene_trans_map', None):
     gtmap_in   =  os.path.realpath(getRef_params['gene_trans_map'])
@@ -57,7 +62,6 @@ else:
             mkdir -p {params.ref_dir}
             ln -s {input} {output} 2> {log}
             """
-
     if getRef_params.get('gene_trans_map', None):
         rule link_input_gene_trans_map:
             input: gtmap_in 
@@ -69,3 +73,13 @@ else:
                 mkdir -p {params.ref_dir}
                 ln -s {input} {output} 2> {log}
                 """
+
+if gunzip_ref:
+    rule gunzip_input_reference:
+        input: ref_out
+        output: ref_out_gunzip
+        log: os.path.join(logs_dir, 'get_reference/gunzip_reference.log')
+        shell:
+            """
+            gunzip -c {input} > {output} 2> {log}
+            """

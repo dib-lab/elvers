@@ -1,5 +1,12 @@
 rcorrector:
   elvers_params:
+    outdir: 'preprocess/rcorrector'
+    inputs:
+      read:
+        - trimmed
+        - raw
+    outputs:
+      - kmer_trimmed
     input_pattern: .trim.fq.gz
     input_dir: preprocess
     extensions:

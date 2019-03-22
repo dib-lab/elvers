@@ -1,0 +1,30 @@
+###############################################################################
+# This is the schema template for all .ep_* params file passed to snakmemake.
+# Requires merging with:
+#  - pipeline defaults schema (only difference = more required here)
+#  - params schema for each included rule
+###############################################################################
+
+$schema: 'http://json-schema.org/draft-07/schema#'
+
+description: elvers input config schema template
+
+type: object
+
+properties:
+## this all need to be edited via the build_yaml_schema script
+  elvers_directories:
+    required:
+      - animals
+      - rules
+      - logs
+      - outdirs
+      - base_dir
+      - out_dir
+
+required:
+  - basename
+  - elvers_directories
+  - elvers_workflows
+  - include_rules
+  - reference_extensions

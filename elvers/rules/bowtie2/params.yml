@@ -1,7 +1,23 @@
 bowtie2:
-  extensions:
-    read:
-      pe:
-        - '.pe.bam'
-      se:
-        - '.se.bam'
+  elvers_params:
+    outdir: 'bowtie2'
+    inputs:
+      read:
+        - trimmed
+        - raw
+      reference:
+        - transcriptome
+    outputs:
+      read:
+        - mapped
+    help: "To run the bowtie2 rule, please provide input data, and either 1) run reference generation, or 2) provide a reference via the `get_reference` utility"
+    citations:
+      - "Langmead B, Salzberg S. Fast gapped-read alignment with Bowtie 2. Nature Methods. 2012, 9:357-359"
+    extensions:
+      read:
+        pe:
+          - '.pe.bam'
+        se:
+          - '.se.bam'
+  program_params:
+    extra: ''

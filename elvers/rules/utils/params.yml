@@ -1,19 +1,35 @@
 get_data:
   elvers_params:
     outdir: input_data
+    outputs:
+      read:
+        - raw
+    inputs:
+      read:
+        - raw
     extensions:
       read:
         pe:
           - "_1.fq.gz"
           - "_2.fq.gz"
         se:
-          - "_1.fq.gz" 
+          - "_1.fq.gz"
   program_params:
     download_data: False
     use_ftp: False
 get_reference:
   elvers_params:
     outdir: assembly
+    outputs:
+      reference:
+        - transcriptome
+        - genome
+        - protein
+    inputs:
+      reference:
+        - transcriptome
+        - genome
+        - protein
     extensions:
       base:
         - '.fasta'

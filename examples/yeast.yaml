@@ -34,6 +34,6 @@ deseq2:
 
 # define the location of the (already existing) reference transcriptome
 get_reference:
-  reference: 'examples/orf_coding.fasta.gz'
+  reference: 'orf_coding.fasta.gz'
   reference_extension: '_input'
 

@@ -11,22 +11,6 @@ def find_Snakefile(workdir):
     assert os.path.exists(snakefile), 'Error: cannot find Snakefile at {}\n'.format(snakefile)
     return snakefile
 
-def find_yaml(workdir, filename, name):
-    # find the workflow config file
-    workflowfile = None
-    if os.path.exists(filename) and not os.path.isdir(filename):
-        workflowfile = filename
-    else:
-        for suffix in ('', '.yaml', '.yml'):
-            tryfile = os.path.join(workdir, filename + suffix)
-            if os.path.exists(tryfile) and not os.path.isdir(tryfile):
-                if name != 'pipeline_defaults':
-                    sys.stderr.write('\tFound {} file at {}\n'.format(name, tryfile))
-                workflowfile = tryfile
-                break
-    assert workflowfile, f'Error, cannot find specified {name} file {filename}\n\n\n   Use option "--build_config" to build a default {name} at {filename}.\n'
-    return workflowfile
-
 def read_yaml(filename):
     with open(filename, 'r') as stream:
         try:
@@ -71,24 +55,47 @@ def update_nested_dict(d, other):
 def is_single_end(sample, unit, end = '', assembly = ''):
     return pd.isnull(samples.loc[(sample, unit), "fq2"])
 
-def handle_reference_input(refInput, config):
+def find_input_file(filename, name="input file", add_paths=[], add_suffixes = ['.yaml', '.yml']):
+    # for any file specified via command line, check if it exists at the current path, if not, try some other paths before returning a helpful error
+    found_file = None
+    filename = os.path.expanduser(filename) # handle ~!
+    paths_to_try = ['', os.getcwd()] + add_paths
+    suffixes_to_try = [''] + add_suffixes
+
+    if os.path.exists(filename) and not os.path.isdir(filename):
+        found_file = os.path.realpath(filename)
+    else:
+        for p in paths_to_try:
+            for s in suffixes_to_try:
+                tryfile = os.path.join(p, filename+ s)
+                if os.path.exists(tryfile) and not os.path.isdir(tryfile):
+                    found_file = os.path.realpath(tryfile)
+                    break
+    config_help = ""
+    if "config" in name:
+        config_help = f"   Use option '--build_config' to build a default {name} at {filename}.\n"
+
+    assert found_file, f'Error, cannot find specified {name} file {filename}\n\n\n' + config_help
+    if name != 'pipeline_defaults':
+        sys.stderr.write(f'\tFound {name} at {found_file}\n')
+    return found_file
+
+def handle_reference_input(config, configfile):
     extensions= {}
     program_params = config['get_reference'].get('program_params')
     referencefile = program_params.get('reference', None)
     if not program_params.get('download_ref', False):
         if referencefile:
-            assert os.path.exists(referencefile), 'Error: cannot find input reference at {}\n'.format(referencefile)
-            sys.stderr.write('\tFound input reference at {}\n'.format(referencefile))
-            referencefile = os.path.realpath(referencefile)
+            referencefile = find_input_file(referencefile, name="input reference", add_paths = [os.path.realpath(os.path.dirname(configfile))], add_suffixes = ['.fa', '.fasta'])
+            program_params['reference'] = referencefile
         else:
             sys.stderr.write("\n\tError: trying to run `get_reference` workflow, but there's no reference file specified in your configfile. Please fix.\n\n")
         # handle the gene_trans_map
         gtmap = program_params.get('gene_trans_map', '')
         if gtmap:
-            assert os.path.exists(gtmap), 'Error: cannot find reference gene_trans_map at {}\n'.format(gtmap)
-            sys.stderr.write('\tFound input reference gene-transcript map at {}\n'.format(gtmap))
+            gtmap = find_input_file(gtmap,"input reference gene_trans_map", add_paths = [os.path.realpath(os.path.dirname(configfile))], add_suffixes = [''])
+            program_params['gene_trans_map'] = gtmap
             extensions = {'base': ['.fasta', '.fasta.gene_trans_map']}
-            gtmap = os.path.realpath(gtmap)
         else:
             program_params['gene_trans_map'] = ''
             config['no_gene_trans_map']= True
@@ -102,22 +109,31 @@ def handle_samples_input(config, configfile):
     program_params = config['get_data'].get('program_params')
     samples_file = program_params.get('samples', None)
     if samples_file:
-        samples_file = os.path.expanduser(samples_file) #handle ~
-        if os.path.exists(samples_file) and not os.path.isdir(samples_file):
-            samples_file = os.path.realpath(samples_file)
-        else:
-            paths = [os.getcwd(), os.path.realpath(os.path.dirname(configfile))]
-            for p in paths:
-                tryfile = os.path.join(p, samples_file)
-                if os.path.exists(tryfile) and not os.path.isdir(tryfile):
-                    samples_file = os.path.realpath(tryfile)
-                    break
-        assert os.path.exists(samples_file), f'Error: cannot find input samples tsv at {samples_file}\n'
+        samples_file = find_input_file(samples_file, "samples tsv", add_paths = [os.path.realpath(os.path.dirname(configfile))], add_suffixes = ['.tsv'])
         config['get_data']['program_params']['samples'] = samples_file
-        sys.stderr.write(f'\tFound input samples tsv file at {samples_file}\n')
     else:
         sys.stderr.write("\n\tError: trying to run `get_data` workflow, but the samples tsv file is not specified in your configfile. Please fix.\n\n")
     return config
+
+def check_workflow(config):
+    # This is way too naive. Need to come up with a better version.
+    # Maybe we manually check the generated snakemake targs?
+    # Or just catch the snakemake error and print better help for which rule needs to be included?.
+    inputs, outputs = [],[]
+    for key, val in config.items():
+        if isinstance(val, dict):
+            if val.get('elvers_params'):
+                #import pdb;pdb.set_trace()
+                inputs += val['elvers_params']['inputs'].get('read', [])
+                inputs += val['elvers_params']['inputs'].get('reference', [])
+                outputs += val['elvers_params']['outputs'].get('read', [])
+                outputs += val['elvers_params']['outputs'].get('reference', [])
+                # leaving out "other" inputs/outputs, bc they're never used as inputs (so far)
+    try:
+        set(inputs) == set(outputs)
+    except:
+        #well this is uninformative
+        sys.stderr.write("chosen workflow is not valid")
 
 def generate_targs(outdir, basename, samples, ref_exts=[''], base_exts = None, read_exts = None, other_exts = None, contrasts = []):
     base_targets, read_targets, other_targs = [],[],[]
@@ -198,11 +214,6 @@ def get_params(rule_name, rule_dir='rules'):
     # pass in a rule name & the directory that contains its paramsfile.
     # Return paramsD
     rule_paramsfile = os.path.join(rule_dir, 'params.yml')
-    rule_params = {}
-    with open(rule_paramsfile, 'r') as stream:
-        try:
-            paramsD = yaml.safe_load(stream) #, Loader=yaml.FullLoader)
-        except yaml.YAMLError as exc:
-            print(exc)
-        rule_params= paramsD[rule_name] # in case you have multiple programs in single params.yml
+    paramsD = read_yaml(rule_paramsfile)
+    rule_params = paramsD[rule_name]
     return rule_params

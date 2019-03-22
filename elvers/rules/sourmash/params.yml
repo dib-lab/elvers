@@ -1,6 +1,20 @@
 sourmash:
   elvers_params:
     outdir: sourmash 
+    inputs:
+      read:
+        - kmer_trimmed
+        - trimmed
+        - raw
+      reference:
+        - transcriptome
+        - protein
+        - genome
+    outputs:
+      read:
+        - sourmash_signature
+      reference:
+        - sourmash_signature
     extensions: 
       base:
         - .sig

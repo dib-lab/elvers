@@ -5,7 +5,7 @@
 # Quickstart: './elvers examples/nema.yml' 
 #
 
-import os
+import os, sys
 from os.path import join
 import numpy as np
 import pandas as pd
@@ -14,7 +14,7 @@ import glob
 
 from elvers.utils.utils import *
 
-min_version("5.1.2") #minimum snakemake version
+min_version("5.1.2") # minimum snakemake version
 
 from snakemake.remote import FTP, HTTP
 FTP = FTP.RemoteProvider()
