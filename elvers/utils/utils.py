@@ -116,7 +116,9 @@ def handle_samples_input(config, configfile):
     return config
 
 def check_workflow(config):
-    # this is way too naive. Need to come up with a better version of this. Maybe we manually check the generated snakemake targs? Or just catch the snakemake error and print better help for which rule needs to be included?.
+    # This is way too naive. Need to come up with a better version.
+    # Maybe we manually check the generated snakemake targs?
+    # Or just catch the snakemake error and print better help for which rule needs to be included?.
     inputs, outputs = [],[]
     for key, val in config.items():
         if isinstance(val, dict):
@@ -132,8 +134,6 @@ def check_workflow(config):
     except:
         #well this is uninformative
         sys.stderr.write("chosen workflow is not valid")
-
-
 
 def generate_targs(outdir, basename, samples, ref_exts=[''], base_exts = None, read_exts = None, other_exts = None, contrasts = []):
     base_targets, read_targets, other_targs = [],[],[]

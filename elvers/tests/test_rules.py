@@ -21,9 +21,9 @@ def run_ruletest(rulename, testdir, extra_configD = {}, short = True): # can we 
     rulefile = glob.glob(os.path.join(homedir, 'elvers/rules', '*', rulename + '.rule'))[0]
     ruledir = os.path.dirname(rulefile)
     if short:
-         test_yml = os.path.join(here, 'test-data', 'short_test.yml')
+         test_yml = os.path.join(here, 'test_files', 'short_test.yml')
     else:
-         test_yml = os.path.join(here, 'test-data', 'long_test.yml')
+         test_yml = os.path.join(here, 'test_files', 'long_test.yml')
 
     additional_test_yml = glob.glob(os.path.join(ruledir, 'test','*.yml'))[0]
     add_params = []
@@ -33,7 +33,6 @@ def run_ruletest(rulename, testdir, extra_configD = {}, short = True): # can we 
     with TempDirectory() as location:
         # copy in test data
         os.chdir(os.path.join(here, testdir))
-        # need to be here in order to properly find any relative assemblyinput, etc paths. Maybe fix this in run_elvers to get path relative to file
         cmd = [elvers_cmd, test_yml, rulename, '--conda_prefix', conda_prefix, '--out_path', location] + add_params
         # short tests just do dryrun
         if short:
@@ -54,8 +53,8 @@ def run_ruletest(rulename, testdir, extra_configD = {}, short = True): # can we 
 
 
 def test_salmon_short():
-     run_ruletest('salmon', 'test-data', {})
-     run_ruletest('salmon', "test-data", {'salmon':{'program_params': {'quant_params':{'libtype': "IU"}}}})
+     run_ruletest('salmon', 'test_files', {})
+     run_ruletest('salmon', "test_files", {'salmon':{'program_params': {'quant_params':{'libtype': "IU"}}}})
 
 #def test_salmon_long():
      #run_ruletest('salmon', 'test', {}, short=False)
