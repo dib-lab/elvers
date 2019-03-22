@@ -25,7 +25,10 @@ def run_ruletest(rulename, testdir, extra_configD = {}, short = True): # can we 
     else:
          test_yml = os.path.join(here, 'test_files', 'long_test.yml')
 
-    additional_test_yml = glob.glob(os.path.join(ruledir, 'test','*.yml'))[0]
+    try:
+        additional_test_yml = glob.glob(os.path.join(ruledir, 'test','*.yml'))[0]
+    except:
+        additional_test_yml = None
     add_params = []
     if additional_test_yml:
         add_params = ['--extra_config', additional_test_yml]
@@ -55,6 +58,15 @@ def run_ruletest(rulename, testdir, extra_configD = {}, short = True): # can we 
 def test_salmon_short():
      run_ruletest('salmon', 'test_files', {})
      run_ruletest('salmon', "test_files", {'salmon':{'program_params': {'quant_params':{'libtype': "IU"}}}})
+
+def test_get_data_short():
+     run_ruletest('get_data', 'test_files', {})
+
+def test_get_reference_short():
+     run_ruletest('get_reference', 'test_files', {})
+
+def test_dammit_short():
+     run_ruletest('dammit', 'test_files', {})
 
 #def test_salmon_long():
      #run_ruletest('salmon', 'test', {}, short=False)
