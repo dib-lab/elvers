@@ -60,13 +60,13 @@ def build_params_schema(paramsfile, outfile, rules = [], targets = [], rule_temp
     elvers_extra = read_yaml(find_input_file(elvers_schema, name="elvers params schema", add_paths=[schema_dir]))
     update_nested_dict(schema, elvers_extra)
      # ok, now let's build schema for all
-    template = read_yaml(find_input_file(rule_template, name="rule params schema template", add_paths=[schema_dir]))
-    # how do locations work with installed packages!?
     for rule in rules:
         if rule in ['get_data', 'get_reference']:
             rule = 'utils'
+        # getting carryover between rules. to avoid, read in fresh each time.
+        r_template = read_yaml(find_input_file(rule_template, name="rule params schema template", add_paths=[schema_dir]))
         paramsfile = glob.glob(os.path.join(elvers_dir, 'rules', rule,'params.yml'))[0]
-        schema = build_rule_params_schema(schema, template, paramsfile)
+        schema = build_rule_params_schema(schema, r_template, paramsfile)
 
     # this is not exactly what we need, but it gets rid of `default` as a required target, so leave in for now.
     workflow_properties={'elvers':{'targets':targets}, 'required': ['elvers']}

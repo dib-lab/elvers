@@ -34,8 +34,7 @@ def run_ruletest(rulename, testdir, extra_configD = {}, short = True): # can we 
         # copy in test data
         os.chdir(os.path.join(here, testdir))
         # need to be here in order to properly find any relative assemblyinput, etc paths. Maybe fix this in run_elvers to get path relative to file
-        cmd = [elvers_cmd, test_yml, rulename, 'get_data', '--conda_prefix', conda_prefix, '--out_path', location] + add_params
-        ## NOTE: get data should be added automatically if we need the reads, via high-level input checks. Take out of here once that is implemented issue #110
+        cmd = [elvers_cmd, test_yml, rulename, '--conda_prefix', conda_prefix, '--out_path', location] + add_params
         # short tests just do dryrun
         if short:
             cmd.append('-n')

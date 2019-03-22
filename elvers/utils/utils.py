@@ -87,12 +87,14 @@ def handle_reference_input(config, configfile):
     if not program_params.get('download_ref', False):
         if referencefile:
             referencefile = find_input_file(referencefile, name="input reference", add_paths = [os.path.realpath(os.path.dirname(configfile))], add_suffixes = ['.fa', '.fasta'])
+            program_params['reference'] = referencefile
         else:
             sys.stderr.write("\n\tError: trying to run `get_reference` workflow, but there's no reference file specified in your configfile. Please fix.\n\n")
         # handle the gene_trans_map
         gtmap = program_params.get('gene_trans_map', '')
         if gtmap:
             gtmap = find_input_file(gtmap,"input reference gene_trans_map", add_paths = [os.path.realpath(os.path.dirname(configfile))], add_suffixes = [''])
+            program_params['gene_trans_map'] = gtmap
             extensions = {'base': ['.fasta', '.fasta.gene_trans_map']}
         else:
             program_params['gene_trans_map'] = ''
@@ -112,6 +114,26 @@ def handle_samples_input(config, configfile):
     else:
         sys.stderr.write("\n\tError: trying to run `get_data` workflow, but the samples tsv file is not specified in your configfile. Please fix.\n\n")
     return config
+
+def check_workflow(config):
+    # this is way too naive. Need to come up with a better version of this. Maybe we manually check the generated snakemake targs? Or just catch the snakemake error and print better help for which rule needs to be included?.
+    inputs, outputs = [],[]
+    for key, val in config.items():
+        if isinstance(val, dict):
+            if val.get('elvers_params'):
+                #import pdb;pdb.set_trace()
+                inputs += val['elvers_params']['inputs'].get('read', [])
+                inputs += val['elvers_params']['inputs'].get('reference', [])
+                outputs += val['elvers_params']['outputs'].get('read', [])
+                outputs += val['elvers_params']['outputs'].get('reference', [])
+                # leaving out "other" inputs/outputs, bc they're never used as inputs (so far)
+    try:
+        set(inputs) == set(outputs)
+    except:
+        #well this is uninformative
+        sys.stderr.write("chosen workflow is not valid")
+
+
 
 def generate_targs(outdir, basename, samples, ref_exts=[''], base_exts = None, read_exts = None, other_exts = None, contrasts = []):
     base_targets, read_targets, other_targs = [],[],[]
