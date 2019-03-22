@@ -293,7 +293,7 @@ To build an editable configfile to start work on your own data, run:
         try:
             ## TODO: modify the validation schema based on targets (using generate_yaml_schema.py)
             ## Also, if we're doing this, maybe pass in a subset of rulenames (included rules), and don't generate schema for the remaining
-            validate(paramsD, schema="schemas/elvers.fullschema.yaml")
+            validate(paramsD, schema=find_input_file("schemas/elvers.fullschema.yaml", "schema", add_paths = [thisdir, os.path.join(thisdir, 'schemas')]))
         except Exception as e:
            print(e)
            sys.exit(-1)
