@@ -114,7 +114,7 @@ You should see something like this:
 	deseq2
 	dammit
 	sourmash
-    assemblyinput
+    get_reference
 	plass
 	pear
 	paladin

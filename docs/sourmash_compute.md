@@ -18,22 +18,22 @@ If you've generated an assembly, even if you've already run `elvers examples/nem
    elvers examples/nema.yaml assemble sourmash_compute
    ```
 
-   2) OR, Pass an assembly in via `assemblyinput`, with an assembly specified in your config file.
+   2) OR, Pass an assembly in via `get_reference`, with an assembly specified in your config file.
    
    ```
-   elvers assemblyinput sourmash_compute
+   elvers get_reference sourmash_compute
    ```
    
    In the configfile:
 
-    assemblyinput:
-      assembly: examples/nema.assembly.fasta
+    get_reference:
+      reference: examples/nema.assembly.fasta
       gene_trans_map:  examples/nema.assembly.fasta.gene_trans_map #optional
-      assembly_extension: '_input'
+      reference_extension: '_input'
     
    
 This is commented out in the test data yaml, but go ahead and uncomment (remove leading `#`) in order to use this option. If you have a gene to transcript map, please specify it as well.   If not, delete this line from your `config`. The `assembly_extension` parameter is important: this is what allows us to build assemblies from several different assemblers on the same dataset. Feel free to use `_input`, as   specified above, or pick something equally simple yet more informative. **Note:
-    Please don't use additional underscores (`_`) in this extension!**. For more details, see the [assemblyinput documentation](assemblyinput.md). 
+    Please don't use additional underscores (`_`) in this extension!**. For more details, see the [get_reference documentation](get_reference.md). 
 
 
 ## Configuring the sourmash_compute subworkflow 

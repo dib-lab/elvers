@@ -1,6 +1,6 @@
 # Diffexp Subworkflow
 
-Subworkflows combine tools in the right order to facilitate file targeting withing `elvers`. The "diffexp" subworkflow conducts read quality trimming, salmon quantification and differential expression analysis. It requires an assembly to be provided, either by running an assembly or providing one in your configfile. If you have a gene-to-transcript map, this will also need to be specified via the `assemblyinput` parameter. If not, you'll need to modify the deseq2 parameters so
+Subworkflows combine tools in the right order to facilitate file targeting withing `elvers`. The "diffexp" subworkflow conducts read quality trimming, salmon quantification and differential expression analysis. It requires an assembly to be provided, either by running an assembly or providing one in your configfile. If you have a gene-to-transcript map, this will also need to be specified via the `get_reference` parameter. If not, you'll need to modify the deseq2 parameters so
 that the workflow will not expect this file. 
 
 At the moment, this workflow consists of:
@@ -20,24 +20,23 @@ If you've generated an assembly, even if you've already run `elvers examples/nem
    elvers examples/nema.yaml assemble diffexp
    ```
 
-   2) OR, Pass an assembly in via `assemblyinput` with an assembly in your `yaml` configfile, e.g.:
+   2) OR, Pass an assembly in via `get_reference` with an assembly in your `yaml` configfile, e.g.:
    
    ```
-   elvers assemblyinput diffexp
+   elvers get_reference diffexp
    ```
   
    In the configfile:
 
     ```
-    assemblyinput:
-      assembly: examples/nema.assemblyfasta
+    get_reference:
+      reference: examples/nema.assemblyfasta
       gene_trans_map:  examples/nema.assembly.fasta.gene_trans_map #optional
-      assembly_extension: '_input'
     ```
     
     This is commented out in the test data yaml, but go ahead and uncomment (remove leading `#`) in order to use this option. If you have a gene to transcript map, please specify it as well. If not, delete this line from your `config`, and be sure to tell `deseq2` not to use this file by setting `gene_trans_map: False` (see config below).
     
-    The `assembly_extension` parameter is important: this is what allows us to build assemblies from several different assemblers on the same dataset. Feel free to use `_input`, as specified above, or pick something equally simple yet more informative. **Note: Please don't use additional underscores (`_`) in this extension!**. For more details, see the [assemblyinput documentation](assemblyinput.md). 
+    The `assembly_extension` parameter is important: this is what allows us to build assemblies from several different assemblers on the same dataset. Feel free to use `_input`, as specified above, or pick something equally simple yet more informative. **Note: Please don't use additional underscores (`_`) in this extension!**. For more details, see the [get_reference documentation](get_reference.md). 
 
 
 ## Configuring the diffexp subworkflow 

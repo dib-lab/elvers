@@ -79,20 +79,20 @@ Specifying an assembly:
     
     elvers my_config plass_assemble paladin # elvers will run or locate the plass assembly
 
-  2) Alternatively, you can input an assembly via the [assemblyinput](assemblyinput.md) utility rule, with an assembly in your `yaml` configfile.
+  2) Alternatively, you can input an assembly via the [get_reference](get_reference.md) utility rule, with an assembly in your `yaml` configfile.
     
-    elvers assemblyinput paladin
+    elvers get_reference paladin
     
   In config file:
 
-    assemblyinput:
-      assembly: examples/nema.assembly.fasta
+    get_reference:
+      referemce: examples/nema.assembly.fasta
       gene_trans_map:  examples/nema.assembly.fasta.gene_trans_map #optional
-      assembly_extension: '_plass'
+      reference_extension: '_plass'
     
 
 This is commented out in the test data yaml, but go ahead and uncomment (remove leading `#`) in order to use this option. If you have a gene to transcript map, please specify it as well. If not, delete this line from    your `config`. The `assembly_extension` parameter is important: this is what allows us to build assemblies from several different assemblers on the same dataset. Make sure you set the `assembly_extension` parameter to plass, as paladin only works on plassassemblies (for the
-    moment). **Note: Please don't use additional underscores (`_`) in this extension!**. For more details, see the [assemblyinput documentation](assemblyinput.md).
+    moment). **Note: Please don't use additional underscores (`_`) in this extension!**. For more details, see the [get_reference documentation](get_reference.md).
 
 Specifying input reads:
 

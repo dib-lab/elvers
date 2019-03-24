@@ -1,4 +1,4 @@
-# EelPond
+# elvers
 
 
 ```
@@ -43,12 +43,11 @@ To run **`elvers`**, you need to input some data, either **reads, a reference tr
 
 ## Name disambiguation
 
-"Eel Pond" refers to the Eel Pond Protocol for *de novo* RNAseq analysis, previously developed by CT Brown and members of the dib-lab. This step-by-step protocol can be found [here](https://eel-pond.readthedocs.io/en/latest/). **elvers**, this software, started by automating the "Eel Pond Protocol", and evolved into a more general automated workflow system. The elvers name will be changed soon to prevent future confusion :).
-
+**`elvers`**, formerly `eelpond`, is an automated workflow system. It evolved from a snakemake update of the "Eel Pond" protocol for *de novo* RNAseq analysis, previously developed by CT Brown and members of the dib-lab. An automated version of this protocol is the `default` workflow in `elvers`, and the older,  step-by-step Eel Pond protocol can be found [here](https://eel-pond.readthedocs.io/en/latest/).
 
 ## Authors
 
-**`elvers`** was developed by N Tessa Pierce, with invaluable support and feedback from CT Brown, Charles Reid, Lisa Johnson, Taylor Reiter, Luiz Irber, and the entire dib-lab. 
+**`elvers`** was developed by N Tessa Pierce with invaluable support and feedback from CT Brown, Charles Reid, Lisa Johnson, Taylor Reiter, Luiz Irber, and the entire dib-lab. 
 
 ## Citation
 
