@@ -583,8 +583,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../assemblyinput/" title="assemblyinput" class="md-nav__link">
-      assemblyinput
+    <a href="../get_reference/" title="get_reference" class="md-nav__link">
+      get_reference
     </a>
   </li>
 
@@ -794,18 +794,18 @@
 <p>If you've generated an assembly, even if you've already run <code>elvers examples/nema.yaml assemble</code>:</p>
 <p>1) "Run" trinity assembly at the same time. If you've already run the assembly, <code>elvers</code> will just locateyour assembly file for <code>paladin_map</code>.</p>
 <p><code>elvers examples/nema.yaml assemble paladin_map</code></p>
-<p>2) OR, Pass an assembly in via <code>assemblyinput</code>, with an assembly in your <code>yaml</code> configfile, e.g.:
-   <code>elvers assemblyinput paladin_map</code></p>
+<p>2) OR, Pass an assembly in via <code>get_reference</code>, with an assembly in your <code>yaml</code> configfile, e.g.:
+   <code>elvers get_reference paladin_map</code></p>
 <p>In the configfile:</p>
-<div class="codehilite"><pre><span></span>assemblyinput:
-  assembly: examples/nema.assembly.fasta
+<div class="codehilite"><pre><span></span>get_reference:
+  reference: examples/nema.assembly.fasta
   gene_trans_map:  examples/nema.assembly.fasta.gene_trans_map #optional
-  assembly_extension: &#39;_plass&#39;
+  reference_extension: &#39;_plass&#39;
 </pre></div>
 
 
 <p>This is commented out in the test data yaml, but go ahead and uncomment (remove leading <code>#</code>) in order to use this option. If you have a gene to transcript map, please specify it as well.   If not, delete this line from your <code>config</code>. The <code>assembly_extension</code> parameter is important: this is what allows us to build assemblies from several different assemblers on the same dataset. Feel free to use <code>_input</code>, as   specified above, or pick something equally simple yet more informative. <strong>Note:
-    Please don't use additional underscores (<code>_</code>) in this extension!</strong>. For more details, see the <a href="../assemblyinput/">assemblyinput documentation</a>. </p>
+    Please don't use additional underscores (<code>_</code>) in this extension!</strong>. For more details, see the <a href="../get_reference/">get_reference documentation</a>. </p>
 <h2 id="configuring-the-paladin_map-subworkflow">Configuring the paladin_map subworkflow<a class="headerlink" href="#configuring-the-paladin_map-subworkflow" title="Permanent link">&para;</a></h2>
 <p>To set up your sample info and build a configfile, see <a href="../configure/">Understanding and Configuring Workflows</a>.</p>
 <p>If you want to add the <code>paladin_map</code> program parameters to a previously built configfile, run:</p>

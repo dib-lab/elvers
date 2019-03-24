@@ -590,8 +590,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../assemblyinput/" title="assemblyinput" class="md-nav__link">
-      assemblyinput
+    <a href="../get_reference/" title="get_reference" class="md-nav__link">
+      get_reference
     </a>
   </li>
 
@@ -803,21 +803,41 @@
 <li><a href="../dammit/">dammit</a></li>
 </ul>
 <h2 id="quickstart">Quickstart<a class="headerlink" href="#quickstart" title="Permanent link">&para;</a></h2>
-<p>If you've generated an assembly, even if you've already run <code>elvers examples/nema.yaml assemble</code>:</p>
-<p>1) "Run" trinity assembly at the same time.If you've already run the assembly, <code>elvers</code> will just locateyour assembly file for <code>annotate</code>. </p>
-<p><code>elvers examples/nema.yaml assemble annotate</code></p>
-<p>2) OR, Pass an assembly in via <code>assemblyinput</code> <strong>with an assembly in your <code>yaml</code> configfile, e.g.:</strong> </p>
-<p><code>elvers assemblyinput annotate</code></p>
-<p>In the configfile:</p>
-<div class="codehilite"><pre><span></span>assemblyinput:
-  assembly: examples/nema.assembly.fasta
-  gene_trans_map: examples/nema.assembly.fasta.gene_trans_map #optional
-  assembly_extension: &#39;_input&#39;
+<p>If you're starting a new <code>elvers</code> run using a reference file (even if you have previously built a <em>de novo</em> assembly via <code>elvers</code>), you need to help <code>elvers</code> find that assembly.</p>
+<div class="codehilite"><pre><span></span>Scenario 1: You&#39;re starting from your own reference file:
+
+You need to provide the reference in your `config.yaml` file:
+
+```
+get_reference:
+  reference: input reference fasta REQUIRED
+  gene_trans_map: OPTIONAL: provide a gene to transcript map for input transcriptome
+  reference_extension: &#39;_input&#39; OPTIONAL, changes naming
+  download_ref: the reference entry above is a link that needs to be downloaded
+  use_ftp: download via ftp instead of http
+```
+Once you add this to your configfile (e.g. `my_config.yaml`), you can run a reference/assembly-based workflow such as annotate.
+```
+elvers my_config.yaml annotate
+```
+For more details on reference specification, see the [get_reference documentation](get_reference.md). For annotation configuration, see below.
+
+Scenario 2: You&#39;ve previously run an assembly program via `elvers`:
+
+You _can_ provide the built reference in the same manner as above. However, if you&#39;re running more workflows in the same directory, you can also just specify the name of the assembly program that you used to generate the assembly. This will *not* rerun the assembly (unless you provide new input files). Instead, this will allow `elvers` to know where to look for your previously-generated reference file. Because we enable multiple referene generation programs, we don&#39;t want to assume
 </pre></div>
 
 
-<p>This is commented out in the test data yaml, but go ahead and uncomment (remove leading <code>#</code>) in order to use this option. If you have a gene to transcript map, please specify it as well.   If not, delete this line from your <code>config</code>. The <code>assembly_extension</code> parameter is important: this is what allows us to build assemblies from several different assemblers on the same dataset. Feel free to use <code>_input</code>, as   specified above, or pick something equally simple yet more informative. <strong>Note:
-    Please don't use additional underscores (<code>_</code>) in this extension!</strong>. For more details, see the <a href="../assemblyinput/">assemblyinput documentation</a>. </p>
+<p>which reference you'd like to use for downstream steps (in fact, if you provide multiple references, <code>elvers</code> will run the downstream steps on all references, assuming you provide unique <code>reference_extension</code> parameters so that the references are uniquely named.</p>
+<div class="codehilite"><pre><span></span>Example: You&#39;ve previously run the trinity assembly, and want to annotate it.
+
+```
+elvers examples/nema.yaml assemble annotate
+```
+Here, the `assemble` workflow just enables `elvers` to locate your assembly file for `annotate`.
+</pre></div>
+
+
 <h2 id="output-files">Output files:<a class="headerlink" href="#output-files" title="Permanent link">&para;</a></h2>
 <p>Your main output directory will be determined by your config file: by default it is <code>BASENAME_out</code> (you specify BASENAME).</p>
 <p>Dammit will output files in the <code>annotation</code> subdirectory of this output directory. The annotated fasta file will be <code>ASSEMBLY.dammit.fasta</code> and the annotation <code>gff3</code> file will be <code>ASSEMBLY.dammit.gff3</code>. Dammit will also produce a number of intermediate files that will be contained within an <code>ASSEMBLY.fasta.dammit</code> folder.</p>

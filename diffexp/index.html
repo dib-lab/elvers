@@ -583,8 +583,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../assemblyinput/" title="assemblyinput" class="md-nav__link">
-      assemblyinput
+    <a href="../get_reference/" title="get_reference" class="md-nav__link">
+      get_reference
     </a>
   </li>
 
@@ -783,7 +783,7 @@
                 
                 
                 <h1 id="diffexp-subworkflow">Diffexp Subworkflow<a class="headerlink" href="#diffexp-subworkflow" title="Permanent link">&para;</a></h1>
-<p>Subworkflows combine tools in the right order to facilitate file targeting withing <code>elvers</code>. The "diffexp" subworkflow conducts read quality trimming, salmon quantification and differential expression analysis. It requires an assembly to be provided, either by running an assembly or providing one in your configfile. If you have a gene-to-transcript map, this will also need to be specified via the <code>assemblyinput</code> parameter. If not, you'll need to modify the deseq2 parameters so
+<p>Subworkflows combine tools in the right order to facilitate file targeting withing <code>elvers</code>. The "diffexp" subworkflow conducts read quality trimming, salmon quantification and differential expression analysis. It requires an assembly to be provided, either by running an assembly or providing one in your configfile. If you have a gene-to-transcript map, this will also need to be specified via the <code>get_reference</code> parameter. If not, you'll need to modify the deseq2 parameters so
 that the workflow will not expect this file. </p>
 <p>At the moment, this workflow consists of:</p>
 <ul>
@@ -796,19 +796,18 @@ that the workflow will not expect this file. </p>
 <p>If you've generated an assembly, even if you've already run <code>elvers examples/nema.yaml assemble</code>:</p>
 <p>1) "Run" trinity assembly at the same time. If you've already run the assembly, <code>elvers</code> will just locate your assembly file for <code>diffexp</code>.</p>
 <p><code>elvers examples/nema.yaml assemble diffexp</code></p>
-<p>2) OR, Pass an assembly in via <code>assemblyinput</code> with an assembly in your <code>yaml</code> configfile, e.g.:</p>
-<p><code>elvers assemblyinput diffexp</code></p>
+<p>2) OR, Pass an assembly in via <code>get_reference</code> with an assembly in your <code>yaml</code> configfile, e.g.:</p>
+<p><code>elvers get_reference diffexp</code></p>
 <p>In the configfile:</p>
 <div class="codehilite"><pre><span></span>```
-assemblyinput:
-  assembly: examples/nema.assemblyfasta
+get_reference:
+  reference: examples/nema.assemblyfasta
   gene_trans_map:  examples/nema.assembly.fasta.gene_trans_map #optional
-  assembly_extension: &#39;_input&#39;
 ```
 
 This is commented out in the test data yaml, but go ahead and uncomment (remove leading `#`) in order to use this option. If you have a gene to transcript map, please specify it as well. If not, delete this line from your `config`, and be sure to tell `deseq2` not to use this file by setting `gene_trans_map: False` (see config below).
 
-The `assembly_extension` parameter is important: this is what allows us to build assemblies from several different assemblers on the same dataset. Feel free to use `_input`, as specified above, or pick something equally simple yet more informative. **Note: Please don&#39;t use additional underscores (`_`) in this extension!**. For more details, see the [assemblyinput documentation](assemblyinput.md).
+The `assembly_extension` parameter is important: this is what allows us to build assemblies from several different assemblers on the same dataset. Feel free to use `_input`, as specified above, or pick something equally simple yet more informative. **Note: Please don&#39;t use additional underscores (`_`) in this extension!**. For more details, see the [get_reference documentation](get_reference.md).
 </pre></div>
 
 

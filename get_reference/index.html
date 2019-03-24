@@ -11,7 +11,7 @@
       <meta http-equiv="x-ua-compatible" content="ie=edge">
       
       
-        <link rel="canonical" href="http://dib-lab.github.io/elvers/assemblyinput/">
+        <link rel="canonical" href="http://dib-lab.github.io/elvers/get_reference/">
       
       
       
@@ -38,7 +38,7 @@
     
     
       
-        <title>assemblyinput - elvers</title>
+        <title>get_reference - elvers</title>
       
     
     
@@ -102,7 +102,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="../#assembly-input-utility-rule" tabindex="1" class="md-skip">
+      <a href="../#get-reference-utility-rule" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -128,7 +128,7 @@
                 elvers
               </span>
               <span class="md-header-nav__topic">
-                assemblyinput
+                get_reference
               </span>
             
           
@@ -546,8 +546,8 @@
       
     
     
-    <a href="./" title="assemblyinput" class="md-nav__link md-nav__link--active">
-      assemblyinput
+    <a href="./" title="get_reference" class="md-nav__link md-nav__link--active">
+      get_reference
     </a>
     
   </li>
@@ -723,29 +723,25 @@
               
                 
                 
-                <h1 id="assembly-input-utility-rule">Assembly Input Utility Rule<a class="headerlink" href="#assembly-input-utility-rule" title="Permanent link">&para;</a></h1>
-<p>If you want to use the downstream steps such as read quantification and differential expression on a previous assembly, you can use the <code>assemblyinput</code> utility to pass this assembly into <code>elvers</code>.</p>
-<p>To do this, specify the file path for your input assembly (and optionally, a tab-separated gene to transcript map) in the config file.</p>
-<h1 id="specify-input-assembly">Specify Input Assembly<a class="headerlink" href="#specify-input-assembly" title="Permanent link">&para;</a></h1>
-<p>The following will build a config for just the assemblyinput rule. </p>
-<div class="codehilite"><pre><span></span>elvers new_config.yaml assemblyinput --build_config
-</pre></div>
-
-
-<p>In here, you'll see a section for "assemblyinput" parameters that looks like this:</p>
-<div class="codehilite"><pre><span></span>  ####################  assemblyinput  ####################
-assemblyinput:
-  assembly: examples/nema.assembly.fasta
+                <h1 id="get-reference-utility-rule">Get Reference Utility Rule<a class="headerlink" href="#get-reference-utility-rule" title="Permanent link">&para;</a></h1>
+<p>For <code>elvers</code> workflows that start with or otherwise utilize a reference, the keyword <code>get_reference</code> can be used to provide that reference (and for transcriptomes, an optional tab-separated gene-to-transcript map). If you provide the <code>get_reference</code> keyword and information in your configuration file, the <code>get_reference</code> utility rule with either download or softlink your reference into your <code>elvers</code> directory so it can be utilized for any specified workflows.</p>
+<h1 id="specify-input-reference">Specify Input reference<a class="headerlink" href="#specify-input-reference" title="Permanent link">&para;</a></h1>
+<p>The default get_reference parameters are as follows:</p>
+<div class="codehilite"><pre><span></span>get_reference:
+  reference: examples/nema.assembly.fasta
   gene_trans_map: examples/nema.assembly.fasta.gene_trans_map
-  assembly_extension: _input
+  reference_extension: _input
+  download_ref: false # download the reference using http (or ftp)
+  use_ftp: false # switch download method from http to ftp
 </pre></div>
 
 
-<p>These filename correspond to a test Trinity assembly we provide for the <code>nema</code> test data. To use your own files, specify the file path to your <code>fasta</code> file. If you have a gene to transcript map, please specify it as well. If not, delete this line from your <code>config</code>. The <code>assembly_extension</code> parameter is important: this is what allows us to build assemblies from several different assemblers on the same dataset. Feel free to use <code>_input</code>, as specified above, or pick something equally simple yet
-more informative. <strong>Note: Please don't use additional underscores (<code>_</code>) in this extension!</strong></p>
-<p><em>Coming soon: option to download this assembly instead</em></p>
+<p>( to see these, you can run <code>elvers config get_reference --print_params</code>)</p>
+<p>The default filenames correspond to a test Trinity transcriptome we provide for the <code>nema</code> test data. To use your own files, specify the file path to your <code>fasta</code> file via the <code>reference</code> parameter. If you have a gene to transcript mapi (transcriptomes only), please specify it as well. If not, do not include the <code>gene_trans_map</code> line in your <code>config</code>. The <code>reference_extension</code> parameter is an optional parameter that allows us to use multiple references or assemblies. For example, you can
+build a <em>de novo</em> transcriptome with Trinity and input a reference transcriptome and do all downstream steps (e.g. quantification and differential expression) on both assemblies. All assemblies generated via <code>elvers</code> rules will have an extension corresponding to the program they were generated with. If you choose to add a <code>reference_extension</code>, feel free to use <code>_input</code>, as specified above, or pick something equally simple yet
+more informative, but <strong>please don't use additional underscores (<code>_</code>) in this extension!</strong></p>
 <h2 id="output-files">Output Files<a class="headerlink" href="#output-files" title="Permanent link">&para;</a></h2>
-<p>The output of the <code>assemblyinput</code> step is your assembly (and optional gene-transcript map) copied into a subdirectory (<code>assembly</code>) within your output directory (BASENAME_out). </p>
+<p>The output of the <code>get_reference</code> step is your reference (and optional gene-transcript map) copied into a subdirectory (<code>reference</code>) within your output directory (BASENAME_out). </p>
                 
                   
                 

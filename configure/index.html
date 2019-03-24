@@ -310,8 +310,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#assembly-input" title="Assembly Input" class="md-nav__link">
-    Assembly Input
+  <a href="#reference-input" title="Reference Input" class="md-nav__link">
+    Reference Input
   </a>
   
 </li>
@@ -619,8 +619,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../assemblyinput/" title="assemblyinput" class="md-nav__link">
-      assemblyinput
+    <a href="../get_reference/" title="get_reference" class="md-nav__link">
+      get_reference
     </a>
   </li>
 
@@ -803,8 +803,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#assembly-input" title="Assembly Input" class="md-nav__link">
-    Assembly Input
+  <a href="#reference-input" title="Reference Input" class="md-nav__link">
+    Reference Input
   </a>
   
 </li>
@@ -918,34 +918,52 @@ sample  unit    fq1 fq2 condition
 
 
 <p>To run any read-based workflow, we need to get reads (and any assemblies already generated) into the right format for <code>elvers</code>. We can either (1) link the data from another location on your machine, or (2) download the data via http or ftp. This is done through a utility rule called <code>get_data</code>.</p>
-<h3 id="assembly-input">Assembly Input<a class="headerlink" href="#assembly-input" title="Permanent link">&para;</a></h3>
-<p>If you'd like to use <code>elvers</code> with an existing transcriptome assembly, you can specify this assembly in the configuration file. The assembly is copied into the working <code>elvers</code> directory via a utility rule called <code>assemblyinput</code>. You can see the lines you need to use by running the following:</p>
-<div class="codehilite"><pre><span></span>elvers config.yaml assemblyinput --print_params
+<h3 id="reference-input">Reference Input<a class="headerlink" href="#reference-input" title="Permanent link">&para;</a></h3>
+<p>If you're starting a new <code>elvers</code> run using a reference file (even if you have previously built a <em>de novo</em> assembly via <code>elvers</code>), you need to help <code>elvers</code> find that assembly.</p>
+<div class="codehilite"><pre><span></span>Scenario 1: You&#39;re starting from your own reference file:
+
+You need to provide the reference in your `config.yaml` file:
+
+```
+get_reference:
+  reference: input reference fasta REQUIRED
+  gene_trans_map: OPTIONAL: provide a gene to transcript map for input transcriptome
+  reference_extension: &#39;_input&#39; OPTIONAL, changes naming
+  download_ref: the reference entry above is a link that needs to be downloaded
+  use_ftp: download via ftp instead of http
+```
+Once you add this to your configfile (e.g. `my_config.yaml`), you can run a reference/assembly-based workflow such as annotate.
+```
+elvers my_config.yaml annotate
+```
+For more details on reference specification, see the [get_reference documentation](get_reference.md). For annotation configuration, see below.
+
+Scenario 2: You&#39;ve previously run an assembly program via `elvers`:
+
+You _can_ provide the built reference in the same manner as above. However, if you&#39;re running more workflows in the same directory, you can also just specify the name of the assembly program that you used to generate the assembly. This will *not* rerun the assembly (unless you provide new input files). Instead, this will allow `elvers` to know where to look for your previously-generated reference     file. Because we enable multiple referene generation programs, we don&#39;t want to assume
 </pre></div>
 
 
-<p>You should see these parameters print to your screen:</p>
-<div class="codehilite"><pre><span></span>  ####################  assemblyinput  ####################
-assemblyinput:
-  assembly: examples/nema.assembly.fasta
-  gene_trans_map: examples/nema.assembly.fasta.gene_trans_map
-  assembly_extension: _input
-  #####################################################
+<p>which reference you'd like to use for downstream steps (in fact, if you provide multiple references, <code>elvers</code> will run the downstream steps on all references, assuming you provide unique               <code>reference_extension</code> parameters so that the references are uniquely named.</p>
+<div class="codehilite"><pre><span></span>Example: You&#39;ve previously run the trinity assembly, and want to annotate it.
+
+```
+elvers examples/nema.yaml assemble annotate
+```
+Here, the `assemble` workflow just enables `elvers` to locate your assembly file for `annotate`.
 </pre></div>
 
 
-<p>These filenames correspond to a test Trinity assembly we built using the <code>nema</code> test data. To use your own files, specify the file path to your <code>fasta</code> file. If you have a gene to transcript map, please specify it as well. If not, do not add that line to your <code>config</code>. The <code>assembly_extension</code> parameter is important: this is what allows us to build assemblies from several different assemblers on the same dataset. Feel free to use <code>_input</code>, as specified above, or pick something equally simple yet
-informative. <strong>Note: Please don't use additional underscores (<code>_</code>) in this extension!</strong> </p>
 <h2 id="choosing-and-running-a-workflow">Choosing and running a workflow<a class="headerlink" href="#choosing-and-running-a-workflow" title="Permanent link">&para;</a></h2>
 <p>We offer a number of workflows, including end-to-end workflows that conduct assembly through differential expression analysis. The default workflow is the <a href="../eel_pond_workflow/">Eel Pond RNAseq workflow</a>, which conducts <em>de novo</em> transcriptome assembly, annotation, and quick differential expression analysis on a set of short-read Illumina data using a single command. </p>
 <h3 id="available-workflows">Available Workflows<a class="headerlink" href="#available-workflows" title="Permanent link">&para;</a></h3>
-<p>Currently, all workflows require a properly-formatted read inputs <code>tsv</code> file as input. Some workflows, e.g. <code>annotation</code>, can work on either on a  <em>de novo</em> transcriptome generated by <code>elvers</code>, or on previously-generated assemblies. To add an assembly as input, specify it via <code>assemblyinput</code> in the <code>yaml</code> config file, as described above. </p>
+<p>Currently, all workflows require a properly-formatted read inputs <code>tsv</code> file as input. Some workflows, e.g. <code>annotation</code>, can work on either on a  <em>de novo</em> transcriptome generated by <code>elvers</code>, or on previously-generated assemblies. To add an assembly as input, specify it via <code>get_reference</code> in the <code>yaml</code> config file, as described above. </p>
 <p><strong>workflows</strong></p>
 <ul>
 <li>preprocess: Read Quality Trimming and Filtering (fastqc, trimmomatic)</li>
 <li>kmer_trim: Kmer Trimming and/or Digital Normalization (khmer)</li>
 <li>assemble: Transcriptome Assembly (trinity)</li>
-<li>assemblyinput: Specify assembly for downstream steps</li>
+<li>get_reference: Specify assembly for downstream steps</li>
 <li>annotate : Annotate the transcriptome (dammit)</li>
 <li>sourmash_compute: Build sourmash signatures for the reads and assembly (sourmash)</li>
 <li>quantify: Quantify transcripts (salmon)</li>
@@ -969,7 +987,7 @@ informative. <strong>Note: Please don't use additional underscores (<code>_</cod
 
 
 <h3 id="configuring-parameters-for-a-workflow">Configuring Parameters for a workflow<a class="headerlink" href="#configuring-parameters-for-a-workflow" title="Permanent link">&para;</a></h3>
-<p>For any workflow, we need to provide a configuration file that specifies the path to your samples file or assemblyinput (discussed above).</p>
+<p>For any workflow, we need to provide a configuration file that specifies the path to your samples file or get_reference (discussed above).</p>
 <p>We can generate this file either by:</p>
 <ol>
 <li>Adding just the desired parameters</li>
@@ -983,9 +1001,8 @@ informative. <strong>Note: Please don't use additional underscores (<code>_</cod
 
 
 <p>or </p>
-<div class="codehilite"><pre><span></span>assemblyinput:
-  assembly: assembly.fasta
-  assembly_extension: &quot;_input&quot;
+<div class="codehilite"><pre><span></span>get_reference:
+  reference: assembly.fasta
 </pre></div>
 
 
@@ -1013,7 +1030,9 @@ informative. <strong>Note: Please don't use additional underscores (<code>_</cod
 
 
 <p>The output should be a <code>yaml</code> configfile. At the top, you should see:</p>
-<div class="codehilite"><pre><span></span>  ####################  Eelpond Pipeline Configfile  ####################
+<div class="codehilite"><pre><span></span>#
+# elvers workflow configuration
+#
 basename: elvers
 experiment: _experiment1
 </pre></div>

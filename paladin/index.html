@@ -538,8 +538,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../assemblyinput/" title="assemblyinput" class="md-nav__link">
-      assemblyinput
+    <a href="../get_reference/" title="get_reference" class="md-nav__link">
+      get_reference
     </a>
   </li>
 
@@ -903,21 +903,21 @@ paladin:
 </pre></div>
 
 
-<p>2) Alternatively, you can input an assembly via the <a href="../assemblyinput/">assemblyinput</a> utility rule, with an assembly in your <code>yaml</code> configfile.</p>
-<div class="codehilite"><pre><span></span>elvers assemblyinput paladin
+<p>2) Alternatively, you can input an assembly via the <a href="../get_reference/">get_reference</a> utility rule, with an assembly in your <code>yaml</code> configfile.</p>
+<div class="codehilite"><pre><span></span>elvers get_reference paladin
 </pre></div>
 
 
 <p>In config file:</p>
-<div class="codehilite"><pre><span></span>assemblyinput:
-  assembly: examples/nema.assembly.fasta
+<div class="codehilite"><pre><span></span>get_reference:
+  referemce: examples/nema.assembly.fasta
   gene_trans_map:  examples/nema.assembly.fasta.gene_trans_map #optional
-  assembly_extension: &#39;_plass&#39;
+  reference_extension: &#39;_plass&#39;
 </pre></div>
 
 
 <p>This is commented out in the test data yaml, but go ahead and uncomment (remove leading <code>#</code>) in order to use this option. If you have a gene to transcript map, please specify it as well. If not, delete this line from    your <code>config</code>. The <code>assembly_extension</code> parameter is important: this is what allows us to build assemblies from several different assemblers on the same dataset. Make sure you set the <code>assembly_extension</code> parameter to plass, as paladin only works on plassassemblies (for the
-    moment). <strong>Note: Please don't use additional underscores (<code>_</code>) in this extension!</strong>. For more details, see the <a href="../assemblyinput/">assemblyinput documentation</a>.</p>
+    moment). <strong>Note: Please don't use additional underscores (<code>_</code>) in this extension!</strong>. For more details, see the <a href="../get_reference/">get_reference documentation</a>.</p>
 <p>Specifying input reads:</p>
 <p>If you haven't yet run read trimming and merging, you'll also need to run those steps:</p>
 <div class="codehilite"><pre><span></span>elvers my_config get_data trimmomatic pear paladin
