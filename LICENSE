@@ -3,7 +3,7 @@ License
 =======
 
 Files: *
-Copyright: 2018-2019, The Regents of the University of California, North Carolina State University, and University of Washington.
+Copyright: 2018-2019, The Regents of the University of California.
 License: BSD-3-Clause
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are
@@ -18,8 +18,7 @@ License: BSD-3-Clause
        with the distribution.
  
      * Neither the name of The Regents of the University of
-       California, North Carolina State University, or the University
-       of Washington, nor the names of contributors may be used to
+       California nor the names of contributors may be used to
        endorse or promote products derived from this software without
        specific prior written permission.
  
