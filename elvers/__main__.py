@@ -215,7 +215,7 @@ To build an editable configfile to start work on your own data, run:
         write_config(default_params, targs, configfile)
         sys.exit(0)
     else:
-        configfile = find_input_file(args.configfile, 'configfile', add_paths=[thisdir]) # find configfile
+        configfile = find_input_file(args.configfile, 'configfile', add_paths=[thisdir], verbose=True) # find configfile
         if not configfile:
             sys.stderr.write('Error: cannot find configfile {}\n.'.format(args.configfile))
             sys.exit(-1)
@@ -249,7 +249,7 @@ To build an editable configfile to start work on your own data, run:
         extra_configs = {}
         if args.extra_config:
             for c in args.extra_config:
-                extra_configs = import_configfile(find_input_file(c, 'extra_config', add_paths = [thisdir]), extra_configs)
+                extra_configs = import_configfile(find_input_file(c, 'extra_config', add_paths = [thisdir], verbose =True), extra_configs)
 
         # 2. config_dict passed in on command line
         # ADVANCED ONLY - no checks in place, formatting matters. (to do: add checks)

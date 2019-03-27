@@ -55,7 +55,7 @@ def update_nested_dict(d, other):
 def is_single_end(sample, unit, end = '', assembly = ''):
     return pd.isnull(samples.loc[(sample, unit), "fq2"])
 
-def find_input_file(filename, name="input file", add_paths=[], add_suffixes = ['.yaml', '.yml']):
+def find_input_file(filename, name="input file", add_paths=[], add_suffixes = ['.yaml', '.yml'], verbose = False):
     # for any file specified via command line, check if it exists at the current path, if not, try some other paths before returning a helpful error
     found_file = None
     filename = os.path.expanduser(filename) # handle ~!
@@ -76,7 +76,7 @@ def find_input_file(filename, name="input file", add_paths=[], add_suffixes = ['
         config_help = f"   Use option '--build_config' to build a default {name} at {filename}.\n"
 
     assert found_file, f'Error, cannot find specified {name} file {filename}\n\n\n' + config_help
-    if name != 'pipeline_defaults':
+    if verbose:
         sys.stderr.write(f'\tFound {name} at {found_file}\n')
     return found_file
 

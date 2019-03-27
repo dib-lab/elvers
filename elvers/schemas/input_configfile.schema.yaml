@@ -1,0 +1,52 @@
+$schema: http://json-schema.org/draft-07/schema#
+
+description: elvers input config schema template
+
+type: object
+
+properties:
+  basename:
+    type: string
+  experiment:
+    type: string
+  out_path:
+    type: string
+  
+#  get_reference:
+#    type: object
+#    properties:
+#      program_params:
+#        type: object
+#        properties:
+#          download_ref:
+#            type: boolean
+#          use_ftp:
+#            type: boolean
+#          reference:
+#            type: string
+#          reference_extension:
+#            type: string
+#          gene_trans_map:
+#            type: string
+#        required:
+#          - reference
+#  get_data:
+#    type: object
+#    properties:
+#      program_params:
+#        type: object
+#        properties:
+#          download_data:
+#            type: boolean
+#          use_ftp:
+#            type: boolean
+#          samples:
+#            type: string
+#        required:
+#          - samples
+
+#anyOf:
+  #required:
+  #  - get_data
+  #required:
+    #- get_reference

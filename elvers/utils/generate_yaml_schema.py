@@ -46,13 +46,13 @@ def build_rule_params_schema(full_schema, params_schema_template, paramsfile):
 
 def build_params_schema(paramsfile, outfile, rules = [], targets = [], rule_template =None, elvers_schema = None, pipeline_schema = None):
    # some setup, so we can use this within elvers main
+    schema_dir = os.path.join(elvers_dir, "schemas")
     if not rule_template:
         rule_template = "rule_params.schema.yaml"
     if not elvers_schema:
         elvers_schema = "elvers_params.schema.yaml"
     if not pipeline_schema:
         pipeline_schema = "pipeline_defaults.schema.yaml"
-    schema_dir = os.path.join(elvers_dir, "schemas")
 
    # first, let's read in the pipeline defaults schema
     schema = read_yaml(find_input_file(pipeline_schema, name="pipeline defaults schema", add_paths=[schema_dir]))
@@ -70,7 +70,6 @@ def build_params_schema(paramsfile, outfile, rules = [], targets = [], rule_temp
 
     # this is not exactly what we need, but it gets rid of `default` as a required target, so leave in for now.
     workflow_properties={'elvers':{'targets':targets}, 'required': ['elvers']}
-
     schema['properties']['elvers_workflows'] = {'type': 'object', 'properties': workflow_properties}
     schema['required'] = schema['required'] + rules
 
