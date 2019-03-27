@@ -51,6 +51,33 @@ def update_nested_dict(d, other):
         else:
             d[k] = v
 
+def read_samples(config):
+    try:
+        samples_file = config["get_data"]["program_params"]["samples"]
+    except KeyError:
+        print("cannot find 'samples' entry in config file! Please provide a samples file for the `get_data` utility", file=sys.stderr)
+        sys.exit(-1)
+    if '.tsv' in samples_file or '.csv' in samples_file:
+        separator = '\t'
+        if '.csv' in samples_file:
+            separator = ','
+        try:
+            samples = pd.read_csv(samples_file, dtype=str, sep=separator).set_index(["sample", "unit"], drop=False)
+            validate(samples, schema="schemas/samples_v2.schema.yaml") # new version
+            samples['name'] = samples["sample"].map(str) + '_' + samples["unit"].map(str)
+        except Exception as e:
+            sys.stderr.write(f"\n\tError: {samples_file} file is not properly formatted. Please fix.\n\n")
+            print(e)
+    elif '.xls' in samples_file:
+        try:
+            samples = pd.read_excel(samples_file, dtype=str).set_index(["sample", "unit"], drop=False)
+            validate(samples, schema="schemas/samples_v2.schema.yaml") # new version
+            samples['name'] = samples["sample"].map(str) + '_' + samples["unit"].map(str)
+        except Exception as e:
+            sys.stderr.write(f"\n\tError: {samples_file} file is not properly formatted. Please fix.\n\n")
+            print(e)
+    return samples
+
 # sample checks
 def is_single_end(sample, unit, end = '', assembly = ''):
     return pd.isnull(samples.loc[(sample, unit), "fq2"])
