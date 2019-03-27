@@ -221,6 +221,12 @@ To build an editable configfile to start work on your own data, run:
             sys.exit(-1)
         # first, grab all params in user config file
         configD = import_configfile(configfile)
+        if configD.get('workflows', None):
+            # how do we want to handle the 'default'? Here: If nothing specified, use `default`. If any workflows specified (commandline or config), do not add default.
+            if targs == ['default']:
+                targs = configD['workflows']
+            else:
+                targs = targs + configD['workflows']
         # build info for get_reference
         refInput = configD.get('get_reference', None)
         if refInput:
@@ -240,8 +246,6 @@ To build an editable configfile to start work on your own data, run:
                 sys.stderr.write("\n\tError: trying to get input data, but can't find the samples file. Please fix.\n\n")
                 print(e)
                 sys.exit(-1)
-        if configD.get('workflows', None):
-            targs = targs + configD['workflows']
         targs = list(set(targs))
         # next, grab all elvers defaults, including rule-specific default parameters (*_params.yaml files)
         paramsD = build_default_params(thisdir, targs)
