@@ -240,6 +240,8 @@ To build an editable configfile to start work on your own data, run:
                 sys.stderr.write("\n\tError: trying to get input data, but can't find the samples file. Please fix.\n\n")
                 print(e)
                 sys.exit(-1)
+        if configD.get('workflows', None):
+            targs = targs + configD['workflows']
         targs = list(set(targs))
         # next, grab all elvers defaults, including rule-specific default parameters (*_params.yaml files)
         paramsD = build_default_params(thisdir, targs)
