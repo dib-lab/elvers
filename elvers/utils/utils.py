@@ -4,6 +4,7 @@ import yaml
 import collections
 import pandas as pd
 from os.path import join
+from snakemake.utils import validate
 
 # general utilities
 def find_Snakefile(workdir):
@@ -52,6 +53,7 @@ def update_nested_dict(d, other):
             d[k] = v
 
 def read_samples(config):
+    elvers_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     try:
         samples_file = config["get_data"]["program_params"]["samples"]
     except KeyError:
@@ -63,7 +65,7 @@ def read_samples(config):
             separator = ','
         try:
             samples = pd.read_csv(samples_file, dtype=str, sep=separator).set_index(["sample", "unit"], drop=False)
-            validate(samples, schema="schemas/samples_v2.schema.yaml") # new version
+            validate(samples, schema=os.path.join(elvers_dir,"schemas/samples_v2.schema.yaml"))
             samples['name'] = samples["sample"].map(str) + '_' + samples["unit"].map(str)
         except Exception as e:
             sys.stderr.write(f"\n\tError: {samples_file} file is not properly formatted. Please fix.\n\n")
