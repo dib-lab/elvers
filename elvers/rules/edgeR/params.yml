@@ -1,13 +1,11 @@
 edgeR:  
   elvers_params:
     outdir: 'edgeR'
-    inputs:
-      read:
-        - counts
-        - trimmed
-        - raw 
-      reference:
-        - transcriptome 
+    input_options:
+      counts:
+        read:
+          pe:
+          se:
     outputs:
       reference: 
         - differential_expression

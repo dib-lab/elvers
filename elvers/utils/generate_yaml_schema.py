@@ -40,6 +40,10 @@ def build_rule_params_schema(full_schema, params_schema_template, paramsfile):
     program_names = list(params.keys())
     for name in program_names:
         prog_schema = params_schema_template['properties']['__prog__'].copy()
+        # elvers_params (build proper inputs schema)
+        if name not in ['get_data', 'get_reference']:
+            prog_schema['properties']['elvers_params']['properties']['input_options'] = build_schema(params[name]['elvers_params']['input_options'])
+        # program_params
         prog_schema['properties']['program_params']['properties'] = build_schema(params[name]['program_params'])
         full_schema['properties'][name] = prog_schema
     return full_schema
@@ -62,7 +66,8 @@ def build_params_schema(paramsfile, outfile, rules = [], targets = [], rule_temp
      # ok, now let's build schema for all
     for rule in rules:
         if rule in ['get_data', 'get_reference']:
-            rule = 'utils'
+            rule = 'utils' ## need to validate differently --> no need for inputs!
+
         # getting carryover between rules. to avoid, read in fresh each time.
         r_template = read_yaml(find_input_file(rule_template, name="rule params schema template", add_paths=[schema_dir]))
         paramsfile = glob.glob(os.path.join(elvers_dir, 'rules', rule,'params.yml'))[0]

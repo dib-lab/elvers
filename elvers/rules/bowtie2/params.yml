@@ -1,13 +1,13 @@
 bowtie2:
   elvers_params:
-    outdir: 'bowtie2'
-    inputs:
+    input_options:
       read:
         - trimmed
         - raw
       reference:
         - transcriptome
     outputs:
+      outdir: 'bowtie2'
       read:
         - mapped
     help: "To run the bowtie2 rule, please provide input data, and either 1) run reference generation, or 2) provide a reference via the `get_reference` utility"

@@ -51,6 +51,7 @@ failwhale = animalsD['failwhale']
 # include all rule files
 includeRules = config['include_rules']
 for r in includeRules:
+    print(r)
     include: r
 
 onstart: 
@@ -78,8 +79,17 @@ onsuccess:
     ##
     shell('cat {fish}')
 
+# aggregate output files
+outfiles, output_files = [],[]
+outdir = config['elvers_directories']['out_dir']
+for key, val in config.items():
+    if isinstance(val, dict):
+        if val.get('elvers_params', None):
+            outfiles += val['elvers_params']['outputs']['output_files']
+output_files = [os.path.join(outdir, x) for x in outfiles]
+
 rule elvers:
-    input: generate_all_targs(config, samples)
+    input: output_files#config['output_files'] #generate_all_targs(config, samples)
 
 onerror:
     # to do: be more helpful here :)

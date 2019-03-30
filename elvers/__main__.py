@@ -51,11 +51,12 @@ def build_default_params(workdir, targets):
     includeRules = []
     reference_extensions = []
     rules_dir = defaultParams['elvers_directories']['rules']
+    required_rules = set(required_rules)
     for rule_name in required_rules:
         try:
             rule = glob.glob(os.path.join(workdir, rules_dir, '*', rule_name + '.rule'))[0]
             defaultParams[rule_name] = get_params(rule_name, os.path.dirname(rule))
-            ref_exts = defaultParams[rule_name]['elvers_params']['extensions'].get('reference_extensions', [])
+            ref_exts = defaultParams[rule_name]['elvers_params']['outputs']['extensions'].get('reference_extensions', [])
             reference_extensions+=ref_exts
             includeRules += [rule]
         except: # if allows user workflow input, can't do this here (check extra targs later?)
@@ -238,10 +239,12 @@ To build an editable configfile to start work on your own data, run:
             sys.stderr.write("\n\tError: trying to get reference via `get_reference` rule, but there's no reference file specified in your configfile. Please fix.\n\n")
             sys.exit(-1)
         # check that samples file exists, targs include get_data, and build fullpath to samples file
+        samples = None
         if configD.get('get_data', None):
             targs+=['get_data']
             try:
                 configD = handle_samples_input(configD, configfile)
+                samples = read_samples(configD)
             except Exception as e:
                 sys.stderr.write("\n\tError: trying to get input data, but can't find the samples file. Please fix.\n\n")
                 print(e)
@@ -294,6 +297,10 @@ To build an editable configfile to start work on your own data, run:
                 sys.stderr.write("\tYou're using `get_reference` without specifying a gene-trans-map. Setting differential expression to transcript-level only. See https://dib-lab.github.io/elvers/deseq2/for details.\n")
         # use params to build directory structure
         paramsD = build_dirs(thisdir, paramsD)
+
+        # okay, now lets generate targs and check all required inputs are available
+        paramsD = generate_inputs_outputs(paramsD, samples)
+
         # aggregate the yaml schema for the pipeline (and all included rules) so we can validate against it
         schemafile = os.path.join(os.path.dirname(configfile), '.ep_' + os.path.basename(configfile).rsplit('.y')[0] + '.schema.yaml')
         rulenames = [os.path.basename(x).split('.rule')[0] for x in paramsD['include_rules']]
@@ -304,11 +311,12 @@ To build an editable configfile to start work on your own data, run:
         except Exception as e:
            print(e)
            sys.exit(-1)
-        try:
-            check_workflow(paramsD)
-        except Exception as e:
-            print(e)
-            sys.exit(-1)
+        #import pdb;pdb.set_trace()
+        #try:
+        #    check_workflow(paramsD)
+        #except Exception as e:
+        #    print(e)
+        #    sys.exit(-1)
         # Note: Passing a configfile allows nested yaml/dictionary format.
         # Passing these params in via `config` would require a flat dictionary.
         paramsfile = os.path.join(os.path.dirname(configfile), '.ep_' + os.path.basename(configfile))

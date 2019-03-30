@@ -219,6 +219,53 @@ def generate_program_targs(configD, samples, basename,ref_exts, contrasts):
     targets = generate_targs(outdir, basename, samples, ref_exts, exts.get('base', None),exts.get('read'), exts.get('other'), contrasts)
     return targets
 
+def generate_rule_targs(basename, ref_exts, rule_config, rulename, samples):
+    contrasts = rule_config['program_params'].get('contrasts', [])
+    outdir = rule_config['elvers_params']['outputs']['outdir']
+    out_exts = rule_config['elvers_params']['outputs']['extensions']
+
+    if out_exts.get('reference_extensions'): # this program is an assembler or only works with specific assemblies
+        out_ref_exts = out_exts.get('reference_extensions', ['']) # override generals with rule-specific reference extensions
+    else:
+        out_ref_exts = ref_exts
+
+    outputs = generate_targs(outdir, basename, samples, out_ref_exts, out_exts.get('base', None),out_exts.get('read'), out_exts.get('other'), contrasts)
+    rule_config['elvers_params']['outputs']['output_files'] = outputs
+
+    ## inputs are slightly more complicated - there are options! ##
+    if rulename == 'get_data':
+        samples_file = rule_config['program_params']['samples'] # should be present (validated) prior to here
+        rule_config['elvers_params']['input_options'] = {'get_data': {'indir': os.path.dirname(samples_file), 'input_files': [samples_file]}}
+    elif rulename == 'get_reference':
+        reference = config['program_params']['reference'] # should be present (validated) prior to here
+        rule_config['elvers_params']['input_options'] = {'get_ref': {'indir': os.path.dirname(reference), 'input_files': [reference]}}
+
+    else:
+        for input_option in rule_config['elvers_params']['input_options']:
+            info = rule_config['elvers_params']['input_options'][input_option]
+            indir = info.get('indir', rulename)
+            in_exts = info['extensions']
+            if in_exts.get('reference_extensions'): # this program is an assembler or only works with specific assemblies
+                in_ref_exts = in_exts.get('reference_extensions', ['']) # override generals with rule-specific reference extensions
+            else:
+                in_ref_exts = ref_exts
+            inputs = generate_targs(outdir, basename, samples, in_ref_exts, in_exts.get('base', None),in_exts.get('read'), in_exts.get('other'), contrasts)
+            rule_config['elvers_params']['input_options'][input_option]['input_files'] = inputs
+
+    return rule_config
+
+def generate_inputs_outputs(config, samples=None):
+    all_inputs, all_outputs = [],[]
+    base = config['basename']
+    ref_exts = config.get('reference_extensions', [""])
+    for key, val in config.items():
+        if isinstance(val, dict):
+            if val.get('elvers_params', None):
+                rulename = key
+                rule_config = val
+                config[rulename]  = generate_rule_targs(base, ref_exts, rule_config, rulename, samples)
+    return config
+
 def generate_all_targs(configD, samples=None):
     # pass full config, program names. Call generate_program_targs to build each
     workflows = configD['elvers_workflows']
