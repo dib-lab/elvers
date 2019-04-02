@@ -4,7 +4,7 @@ from os.path import join
 ############
 logs_dir  = config['elvers_directories']['logs']
 #input dirs
-qc_dir   = config['multiqc']['elvers_params']['outdir']
+qc_dir   = config['multiqc']['elvers_params']['outputs']['outdir']
 # program params
 multiqc_params = config['multiqc']['program_params']
 ###############
