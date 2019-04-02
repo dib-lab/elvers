@@ -236,7 +236,7 @@ def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, 
         samples_file = rule_config['program_params']['samples'] # should be present (validated) prior to here
         rule_config['elvers_params']['input_options'] = {'get_data': {'indir': os.path.dirname(samples_file), 'input_files': [samples_file]}}
     elif rulename == 'get_reference':
-        reference = config['program_params']['reference'] # should be present (validated) prior to here
+        reference = rule_config['program_params']['reference'] # should be present (validated) prior to here
         rule_config['elvers_params']['input_options'] = {'get_ref': {'indir': os.path.dirname(reference), 'input_files': [reference]}}
 
     else:

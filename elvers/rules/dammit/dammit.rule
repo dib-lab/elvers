@@ -2,7 +2,7 @@ from os.path import join
 
 logs_dir  = config['elvers_directories']['logs']
 assembly_dir= config['elvers_directories']['outdirs']['assemble']
-dammit_dir = config['dammit']['elvers_params']['outdir']
+dammit_dir = config['dammit']['elvers_params']['outputs']['outdir']
 
 dammit_params = config['dammit']['program_params']
 
