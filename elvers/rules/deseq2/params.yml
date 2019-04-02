@@ -3,14 +3,14 @@ deseq2:
     input_options:
       counts:
         extensions:
-# need to specify assembly/reference required in here.
+          # need to specify assembly/reference required in here.
           read:
             pe:
               - 'salmon/quant.sf'
             se:
               - 'salmon/quant.sf'
-      reference:
-        - transcriptome
+          base:
+           - '.fasta'
     outputs:
       outdir: diffexp
       combine_units: True # needs to match with salmon's combine_units

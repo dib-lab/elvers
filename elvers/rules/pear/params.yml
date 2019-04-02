@@ -1,25 +1,36 @@
 pear:
   elvers_params:
-    outdir: preprocess/pear
-    inputs:
-      read:
-        - trimmed
-        - raw
+    input_options:
+      trimmed:
+        indir: preprocess
+        extensions:
+          read:
+            pe:
+              - "_1.trim.fq.gz"
+              - "_2.trim.fq.gz"
+            se:
+              - "_se.trim.fq.gz"
+      raw:
+        indir: input_data
+        extensions:
+          read:
+            pe:
+              - "_1.fq.gz"
+              - "_2.fq.gz"
+            se:
+              - "_1.fq.gz"
     outputs:
-      read:
-        - merged
+      outdir: preprocess/pear
+      extensions: 
+        read:
+          pe:
+            - .pear_assembled.fq.gz
+            - .pear_discarded.fq.gz
+            - .pear_unassembled_r1.fq.gz
+            - .pear_unassembled_r2.fq.gz
     help: "PEAR is an ultrafast, memory-efficient and highly accurate pair-end read merger."
     citations:
       - "Jiajie Zhang, Kassian Kobert, Tomáš Flouri, Alexandros Stamatakis; PEAR: a fast and accurate Illumina Paired-End reAd mergeR, Bioinformatics, Volume 30, Issue 5, 1 March 2014, Pages 614–620, https://doi.org/10.1093/bioinformatics/btt593"
-    input_pattern: .trim.fq.gz
-    input_dir: preprocess
-    extensions: 
-      read:
-        pe:
-          - .pear_assembled.fq.gz
-          - .pear_discarded.fq.gz
-          - .pear_unassembled_r1.fq.gz
-          - .pear_unassembled_r2.fq.gz
   program_params:
     # input trimmed-reads
     input_trimmomatic_trimmed: True

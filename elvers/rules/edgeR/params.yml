@@ -1,14 +1,26 @@
 edgeR:  
   elvers_params:
-    outdir: 'edgeR'
     input_options:
-      counts:
-        read:
-          pe:
-          se:
+         counts:
+        extensions:
+          # need to specify assembly/reference required in here.
+          read:
+            pe:
+              - 'salmon/quant.sf'
+            se:
+              - 'salmon/quant.sf'
+          base:
+           - '.fasta'
     outputs:
-      reference: 
-        - differential_expression
+      outdir: diffexp
+      combine_units: True # needs to match with salmon's combine_units
+      extensions:
+        base:
+          - .edgeR.rds
+          - .edgeR.pca.pdf
+          - .c__contrast__.edgeR.tsv
+          - .c__contrast__.edgeR.padj_0.1.tsv
+          - .c__contrast__.edgeR.ma-plot.pdf 
     help: "edgeR can be used to conduct differential expression analysis for RNAseq data"
     citations:
       - "Robinson MD, McCarthy DJ, Smyth GK (2010). 'edgeR: a Bioconductor package for differential expression analysis of digital gene expression data.' Bioinformatics, 26(1), 139-140."
