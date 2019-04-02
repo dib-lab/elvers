@@ -1,28 +1,39 @@
 sourmash:
   elvers_params:
-    outdir: sourmash 
-    inputs:
-      read:
-        - kmer_trimmed
-        - trimmed
-        - raw
+    input_options:
+      trimmed:
+        indir: preprocess
+        extensions:
+          read:
+            pe:
+              - "_1.trim.fq.gz"
+              - "_2.trim.fq.gz"
+            se:
+              - "_se.trim.fq.gz"
+      raw:
+        indir: input_data
+        extensions:
+          read:
+            pe:
+              - "_1.fq.gz"
+              - "_2.fq.gz"
+            se:
+              - "_1.fq.gz"
       reference:
-        - transcriptome
-        - protein
-        - genome
+        indir: assembly
+        extensions:
+          base:
+            - .fasta
     outputs:
-      read:
-        - sourmash_signature
-      reference:
-        - sourmash_signature
-    extensions: 
-      base:
-        - .sig
-      read:
-        pe:
-          - .paired.khmer.fq.sig
-        se:
-          - .se.khmer.fq.sig 
+      outdir: sourmash 
+      extensions: 
+        base:
+          - .sig
+        read:
+          pe:
+            - .paired.khmer.fq.sig
+          se:
+            - .se.khmer.fq.sig 
   program_params:
     k_size: 31
     scaled: 1000
