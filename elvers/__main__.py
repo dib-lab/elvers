@@ -108,8 +108,8 @@ def build_dirs(ep_dir, params):
     for rule in included_rules:
         prog = os.path.basename(rule).split('.rule')[0]
         # if no outdir, just use program name
-        prog_dir = params[prog]['elvers_params'].get('outdir', prog)
-        params[prog]['elvers_params']['outdir'] = os.path.join(outdir, prog_dir)
+        prog_dir = params[prog]['elvers_params']['outputs'].get('outdir', prog)
+        params[prog]['elvers_params']['outputs']['outdir'] = os.path.join(outdir, prog_dir)
     return params
 
 def main():

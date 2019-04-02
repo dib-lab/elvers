@@ -219,7 +219,7 @@ def generate_program_targs(configD, samples, basename,ref_exts, contrasts):
     targets = generate_targs(outdir, basename, samples, ref_exts, exts.get('base', None),exts.get('read'), exts.get('other'), contrasts)
     return targets
 
-def generate_rule_targs(basename, ref_exts, rule_config, rulename, samples):
+def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, samples):
     contrasts = rule_config['program_params'].get('contrasts', [])
     outdir = rule_config['elvers_params']['outputs']['outdir']
     out_exts = rule_config['elvers_params']['outputs']['extensions']
@@ -228,7 +228,6 @@ def generate_rule_targs(basename, ref_exts, rule_config, rulename, samples):
         out_ref_exts = out_exts.get('reference_extensions', ['']) # override generals with rule-specific reference extensions
     else:
         out_ref_exts = ref_exts
-
     outputs = generate_targs(outdir, basename, samples, out_ref_exts, out_exts.get('base', None),out_exts.get('read'), out_exts.get('other'), contrasts)
     rule_config['elvers_params']['outputs']['output_files'] = outputs
 
@@ -243,13 +242,13 @@ def generate_rule_targs(basename, ref_exts, rule_config, rulename, samples):
     else:
         for input_option in rule_config['elvers_params']['input_options']:
             info = rule_config['elvers_params']['input_options'][input_option]
-            indir = info.get('indir', rulename)
+            indir = os.path.join(home_outdir, info.get('indir', 'input_data'))
             in_exts = info['extensions']
             if in_exts.get('reference_extensions'): # this program is an assembler or only works with specific assemblies
                 in_ref_exts = in_exts.get('reference_extensions', ['']) # override generals with rule-specific reference extensions
             else:
                 in_ref_exts = ref_exts
-            inputs = generate_targs(outdir, basename, samples, in_ref_exts, in_exts.get('base', None),in_exts.get('read'), in_exts.get('other'), contrasts)
+            inputs = generate_targs(indir, basename, samples, in_ref_exts, in_exts.get('base', None),in_exts.get('read'), in_exts.get('other'), contrasts)
             rule_config['elvers_params']['input_options'][input_option]['input_files'] = inputs
 
     return rule_config
@@ -258,12 +257,13 @@ def generate_inputs_outputs(config, samples=None):
     all_inputs, all_outputs = [],[]
     base = config['basename']
     ref_exts = config.get('reference_extensions', [""])
+    home_outdir = config['elvers_directories']['out_dir']
     for key, val in config.items():
         if isinstance(val, dict):
             if val.get('elvers_params', None):
                 rulename = key
                 rule_config = val
-                config[rulename]  = generate_rule_targs(base, ref_exts, rule_config, rulename, samples)
+                config[rulename]  = generate_rule_targs(home_outdir, base, ref_exts, rule_config, rulename, samples)
     return config
 
 def generate_all_targs(configD, samples=None):
