@@ -41,12 +41,11 @@ def build_default_params(workdir, targets):
     # find targs the user entered that are not in our default info.
     extra_targs = [t for t in targets if t not in ep_workflows]
     for e in extra_targs: # assume extra targets are single rules, and add to the workflow
-        workflows_to_run[e] = {'include': [e], 'targets': [e]}
+        workflows_to_run[e] = [e]
     # For each rule in the desired workflow, save rulename and grab rule params
     required_rules = []
-    for targD in workflows_to_run.values():
-        required_rules+= targD.get('include', [])
-        required_rules+= targD.get('targets', [])
+    for rule_list in workflows_to_run.values():
+        required_rules += rule_list
     ruleParamsFiles = []
     includeRules = []
     reference_extensions = []
