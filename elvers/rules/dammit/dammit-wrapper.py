@@ -45,7 +45,7 @@ for busco_grp in busco_dbs:
 
 if not db_only:
 # run annotation
-    shell("dammit annotate {snakemake.input} {db_cmd} --n_threads {snakemake.threads} --output-dir {dammit_dir} {annot_extra} {log}")
+    shell("dammit annotate {snakemake.input} {db_cmd} --no-rename --n_threads {snakemake.threads} --output-dir {dammit_dir} {annot_extra} {log}")
 
 # cp final dammit annot files to desired location / names
 shell("cp {dammit_fasta} {snakemake.output.fasta}")
