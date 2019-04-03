@@ -27,11 +27,10 @@ def run_ruletest(rulename, testdir, extra_configD = {}, short = True): # can we 
 
     try:
         additional_test_yml = glob.glob(os.path.join(ruledir, 'test','*.yml'))[0]
+        add_params = ['--extra_config', additional_test_yml]
     except:
         additional_test_yml = None
-    add_params = []
-    if additional_test_yml:
-        add_params = ['--extra_config', additional_test_yml]
+        add_params = []
 
     with TempDirectory() as location:
         # copy in test data
@@ -55,18 +54,31 @@ def run_ruletest(rulename, testdir, extra_configD = {}, short = True): # can we 
             os.chdir(here) # back to tests dir
 
 
-def test_salmon_short():
-     run_ruletest('salmon', 'test_files', {})
-     run_ruletest('salmon', "test_files", {'salmon':{'program_params': {'quant_params':{'libtype': "IU"}}}})
-
 def test_get_data_short():
      run_ruletest('get_data', 'test_files', {})
+
+def test_get_data_long():
+     run_ruletest('get_data', 'test_files', {}, short = False)
 
 def test_get_reference_short():
      run_ruletest('get_reference', 'test_files', {})
 
+def test_get_reference_long():
+     run_ruletest('get_reference', 'test_files', {}, short = False)
+
 def test_dammit_short():
      run_ruletest('dammit', 'test_files', {})
+
+def test_salmon_short():
+     run_ruletest('salmon', 'test_files', {})
+     run_ruletest('salmon', "test_files", {'salmon':{'program_params': {'quant_params':{'libtype': "IU"}}}})
+
+def test_trimmomatic_short():
+     run_ruletest('trimmomatic', 'test_files', {})
+
+#def test_khmer_short():
+#     run_ruletest('khmer', 'test_files', {})
+
 
 #def test_salmon_long():
      #run_ruletest('salmon', 'test', {}, short=False)
