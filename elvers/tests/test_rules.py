@@ -76,8 +76,11 @@ def test_salmon_short():
 def test_trimmomatic_short():
      run_ruletest('trimmomatic', 'test_files', {})
 
-#def test_khmer_short():
-#     run_ruletest('khmer', 'test_files', {})
+def test_khmer_short():
+     run_ruletest('khmer', 'test_files', {})
+
+#def test_khmer_long():
+#     run_ruletest('khmer', 'test_files', {}, short=False)
 
 
 #def test_salmon_long():

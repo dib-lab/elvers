@@ -21,6 +21,7 @@ khmer:
         se:
           - '.se.khmer.fq.gz'
   program_params:
+    input_trimmed: True
     diginorm: True
     ksize: 20
     Z: 18
