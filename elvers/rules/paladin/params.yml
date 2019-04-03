@@ -9,7 +9,8 @@ paladin:
       reference:
         - protein_assembly
     outputs:
-      - protein_mapped
+      other:
+        - protein_mapped
     help: "PALADIN is a protein sequence alignment tool designed for the accurate functional characterization of metagenomes."
     citations:
       - "Westbrook, Anthony et al. 'PALADIN: protein alignment for functional profiling whole metagenome shotgun data' Bioinformatics (Oxford, England) vol. 33,10 (2017): 1473-1478"
@@ -30,6 +31,8 @@ paladin:
           - _x___reference__.paladin.sort.bam.flagstat
           - _x___reference__.paladin.sort.bam.bai
   program_params:
+    input_pear_merged: True
+    input_trimmed: False
     index_params:
       reference_type: '3'
     alignment_params:

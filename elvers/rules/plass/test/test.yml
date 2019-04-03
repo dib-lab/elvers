@@ -4,4 +4,3 @@
 plass:
   input_kmer_trimmed: False
   input_trimmed: False
-  max_memory: 4G

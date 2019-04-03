@@ -11,8 +11,6 @@ pear:
     help: "PEAR is an ultrafast, memory-efficient and highly accurate pair-end read merger."
     citations:
       - "Jiajie Zhang, Kassian Kobert, Tomáš Flouri, Alexandros Stamatakis; PEAR: a fast and accurate Illumina Paired-End reAd mergeR, Bioinformatics, Volume 30, Issue 5, 1 March 2014, Pages 614–620, https://doi.org/10.1093/bioinformatics/btt593"
-    input_pattern: .trim.fq.gz
-    input_dir: preprocess
     extensions: 
       read:
         pe:
@@ -22,7 +20,7 @@ pear:
           - .pear_unassembled_r2.fq.gz
   program_params:
     # input trimmed-reads
-    input_trimmomatic_trimmed: True
+    input_trimmed: True
     # input kmer-trimmed reads
     input_kmer_trimmed: False
     pval: .01
