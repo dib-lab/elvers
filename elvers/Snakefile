@@ -51,7 +51,6 @@ failwhale = animalsD['failwhale']
 # include all rule files
 includeRules = config['include_rules']
 for r in includeRules:
-    print(r)
     include: r
 
 onstart: 
