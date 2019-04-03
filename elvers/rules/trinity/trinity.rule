@@ -48,6 +48,7 @@ rule trinity:
         """--- Assembling read data with Trinity --- """
     params:
         # optional parameters
+        max_memory=assembly_params.get('max_memory', '10G'),
         seqtype=assembly_params.get('seqtype', 'fq'),
         extra=assembly_params.get('extra', '')
     threads: 4

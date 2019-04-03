@@ -1,0 +1,7 @@
+
+# Additional parameters required for testing the trinity rule
+
+trinity:
+  input_kmer_trimmed: False
+  input_trimmomatic_trimmed: False
+  max_memory: 4G
