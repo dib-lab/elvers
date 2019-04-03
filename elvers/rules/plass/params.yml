@@ -24,7 +24,7 @@ plass:
     # input kmer-trimmed reads
     input_kmer_trimmed: True
     # input trimmed-reads
-    input_trimmomatic_trimmed: False
+    input_trimmed: False
     # do we want to assemble the single reads with pe reads?
     add_single_to_paired: False
     extra: ''

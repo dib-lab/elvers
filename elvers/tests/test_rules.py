@@ -11,14 +11,16 @@ import pandas as pd
 from .utils import TempDirectory, write_yaml
 from .const import (here, test_config_yaml, elvers_cmd)
 
+elvers_dir = os.path.dirname(os.path.dirname(here))
+
+
 def run_ruletest(rulename, testdir, extra_configD = {}, short = True): # can we pass in rulename, paramsD here, testdata, short yes/no?
     """ test a rule or workflow"""
     # set up dirs
-    homedir = os.path.dirname(os.path.dirname(here))
-    conda_prefix = os.path.join(homedir, '.snakemake')
+    conda_prefix = os.path.join(elvers_dir, '.snakemake')
 
     # test info from rule
-    rulefile = glob.glob(os.path.join(homedir, 'elvers/rules', '*', rulename + '.rule'))[0]
+    rulefile = glob.glob(os.path.join(elvers_dir, 'elvers/rules', '*', rulename + '.rule'))[0]
     ruledir = os.path.dirname(rulefile)
     if short:
          test_yml = os.path.join(here, 'test_files', 'short_test.yml')
@@ -53,47 +55,57 @@ def run_ruletest(rulename, testdir, extra_configD = {}, short = True): # can we 
         finally:
             os.chdir(here) # back to tests dir
 
-
 def test_get_data_short():
-     run_ruletest('get_data', 'test_files', {})
+    run_ruletest('get_data', 'test_files', {})
 
 def test_get_data_long():
-     run_ruletest('get_data', 'test_files', {}, short = False)
+    run_ruletest('get_data', 'test_files', {}, short = False)
 
 def test_get_reference_short():
-     run_ruletest('get_reference', 'test_files', {})
+    run_ruletest('get_reference', 'test_files', {})
 
 def test_get_reference_long():
-     run_ruletest('get_reference', 'test_files', {}, short = False)
+    run_ruletest('get_reference', 'test_files', {}, short = False)
 
 def test_dammit_short():
-     run_ruletest('dammit', 'test_files', {})
+    run_ruletest('dammit', 'test_files', {})
+
+def test_dammit_long():
+    db_dir = os.path.join(elvers_dir, 'databases')
+    run_ruletest('dammit', 'test_files', {'dammit':{'db_dir': db_dir}}, short=False)
 
 def test_salmon_short():
-     run_ruletest('salmon', 'test_files', {})
-     run_ruletest('salmon', "test_files", {'salmon':{'program_params': {'quant_params':{'libtype': "IU"}}}})
+    run_ruletest('salmon', 'test_files', {})
+    run_ruletest('salmon', "test_files", {'salmon':{'quant_params':{'libtype': "IU"}}})
+
+def test_salmon_long():
+     run_ruletest('salmon', 'test', {}, short=False)
 
 def test_trimmomatic_short():
-     run_ruletest('trimmomatic', 'test_files', {})
+    run_ruletest('trimmomatic', 'test_files', {})
 
 def test_trimmomatic_long():
-     run_ruletest('trimmomatic', 'test_files', {}, short=False)
+    run_ruletest('trimmomatic', 'test_files', {}, short=False)
 
 def test_khmer_short():
-     run_ruletest('khmer', 'test_files', {})
+    run_ruletest('khmer', 'test_files', {})
 
 def test_khmer_long():
-     run_ruletest('khmer', 'test_files', {}, short=False)
+    run_ruletest('khmer', 'test_files', {}, short=False)
 
 def test_trinity_short():
-     run_ruletest('trinity', 'test_files', {})
+    run_ruletest('trinity', 'test_files', {})
 
 def test_trinity_long():
-     run_ruletest('trinity', 'test_files', {}, short=False)
+    run_ruletest('trinity', 'test_files', {}, short=False)
+
+def test_plass_short():
+    run_ruletest('plass', 'test_files', {})
+
+def test_plass_long():
+    run_ruletest('plass', 'test_files', {}, short=False)
 
 
-#def test_salmon_long():
-     #run_ruletest('salmon', 'test', {}, short=False)
 
 
 
