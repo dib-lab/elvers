@@ -8,6 +8,10 @@ authors:
  - name: N Tessa Pierce
    orcid: 0000-0002-2942-5331 
    affiliation: University of California, Davis
+ - name: Charles Reid
+   orcid:
+   affiliation: University of California, Davis
+   
  - name: C. Titus Brown
    orcid: 0000-0001-6001-2677
    affiliation: University of California, Davis
