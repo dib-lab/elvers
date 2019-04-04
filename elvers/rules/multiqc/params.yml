@@ -1,24 +1,8 @@
 multiqc:
   elvers_params:
     input_options:
-      fastqc_input:
-        indir: preprocess/fastqc
-        extensions:
-          read: # we're currently only using multiqc to read fastqc results. This may change in the future 
-            pe:
-              - '_1_fastqc.zip'
-              - '_1_fastqc.html'
-              - '_1.trim_fastqc.zip'
-              - '_1.trim_fastqc.html'
-              - '_2_fastqc.zip'
-              - '_2_fastqc.html'
-              - '_2.trim_fastqc.zip'
-              - '_2.trim_fastqc.html'
-            se:
-              - '_1_fastqc.zip'
-              - '_1_fastqc.html'
-              - '_se.trim_fastqc.zip'
-              - '_se.trim_fastqc.html'
+      read:
+        - preprocess_fastqc
     outputs:
       outdir: preprocess/fastqc
       extensions:

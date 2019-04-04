@@ -4,24 +4,9 @@ fastqc:
       - "FastQC A Quality Control tool for High Throughput Sequence Data http://www.bioinformatics.babraham.ac.uk/projects/fastqc/ by S. Andrews"
     help: "fastqc is used to QC reads"
     input_options:
-      trimmed:
-        indir: preprocess
-        extensions:
-          read:
-            pe:
-              - "_1.trim.fq.gz"
-              - "_2.trim.fq.gz"
-            se:
-              - "_se.trim.fq.gz"
-      raw:
-        indir: input_data
-        extensions:
-          read:
-            pe:
-              - "_1.fq.gz"
-              - "_2.fq.gz"
-            se:
-              - "_1.fq.gz"
+      read:
+        - trimmed
+        - raw
     outputs:
       outdir: preprocess/fastqc
       extensions: 

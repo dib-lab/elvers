@@ -36,6 +36,32 @@ default_extensions:
             - "_2.rcorr.fq.gz"
           se:
             - "_se.rcorr.fq.gz"
+    preprocess_fastqc:
+      indir: preprocess/fastqc
+      extensions:
+        read: 
+          pe:
+            - '_1_fastqc.zip'
+            - '_1_fastqc.html'
+            - '_1.trim_fastqc.zip'
+            - '_1.trim_fastqc.html'
+            - '_2_fastqc.zip'
+            - '_2_fastqc.html'
+            - '_2.trim_fastqc.zip'
+            - '_2.trim_fastqc.html'
+          se:
+            - '_1_fastqc.zip'
+            - '_1_fastqc.html'
+            - '_se.trim_fastqc.zip'
+            - '_se.trim_fastqc.html'
+    salmon_quants:
+      indir: quant
+      extensions:
+        read:
+          pe:
+            - 'salmon/quant.sf'
+          se:
+            - 'salmon/quant.sf'
   reference:
     fasta:
       indir: assembly
