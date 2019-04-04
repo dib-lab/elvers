@@ -14,19 +14,20 @@ from .const import (here, test_config_yaml, elvers_cmd)
 elvers_dir = os.path.dirname(os.path.dirname(here))
 
 
-def run_ruletest(rulename, testdir = "test_files", extra_configD = {}, protein_ref = False, short = True, envs_only=False): # can we pass in rulename, paramsD here, testdata, short yes/no?
+def run_ruletest(rulename, extra_configD = {}, protein_ref = False, short = True, envs_only=False): # can we pass in rulename, paramsD here, testdata, short yes/no?
     """ test a rule or workflow"""
     # set up dirs
     conda_prefix = os.path.join(elvers_dir, '.snakemake')
     # test info from rule
     rulefile = glob.glob(os.path.join(elvers_dir, 'elvers/rules', '*', rulename + '.rule'))[0]
     ruledir = os.path.dirname(rulefile)
+    testdir = os.path.join(here, "test_files")
     if protein_ref:
-        test_yml = os.path.join(here, 'test_files', 'prot_test.yml')
+        test_yml = os.path.join(testdir, 'prot_test.yml')
     elif short:
-        test_yml = os.path.join(here, 'test_files', 'short_test.yml')
+        test_yml = os.path.join(testdir, 'short_test.yml')
     else:
-        test_yml = os.path.join(here, 'test_files', 'long_test.yml')
+        test_yml = os.path.join(testdir, 'long_test.yml')
     try:
         additional_test_yml = glob.glob(os.path.join(ruledir, 'test','test.yml'))[0]
         add_params = ['--extra_config', additional_test_yml]
@@ -34,11 +35,11 @@ def run_ruletest(rulename, testdir = "test_files", extra_configD = {}, protein_r
         additional_test_yml = None
         add_params = []
 
-# test creating and updating environments
+    # test creating and updating environments
     if envs_only:
         cmd = cmd.append('--create_envs_only')
-#    if os.path.exists(os.path.join(testdir,".snakemake")):
-#        shutil.rmtree(os.path.join(testdir,".snakemake"))
+   #    if os.path.exists(os.path.join(testdir,".snakemake")):
+   #        shutil.rmtree(os.path.join(testdir,".snakemake"))
 
     with TempDirectory() as location:
         # copy in test data

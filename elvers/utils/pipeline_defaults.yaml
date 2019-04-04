@@ -1,6 +1,5 @@
 # default settings: do not change these lightly! 
 
-#general settings
 basename: elvers
 
 # these outdirectories will be available to all workflows and rules
@@ -16,77 +15,61 @@ elvers_directories:
     quantify: quant
     diffexp: diffexp
 
-# programs to be run at each step of the pipeline
-# change these if you're sure you have new program 
-# params and targets right.
+# rules to be run for each workflow Add or change 
+# these only if you're sure you have new prog params right.
 elvers_workflows:
   default:
-    - get_data
     - trimmomatic
-    - khmer
-    - trinity
     - fastqc
     - multiqc
+    - khmer
+    - trinity
     - dammit
     - salmon
     - sourmash
   protein_assembly:
-    - get_data
     - trimmomatic
+    - fastqc
+    - multiqc
     - khmer
     - plass
     - pear
-    - fastqc
-    - multiqc
     - paladin
     - sourmash
-  input_data:
-    - get_data
   preprocess:
-    - get_data
-    - fastqc
     - trimmomatic
+    - fastqc
     - multiqc
   kmer_trim:
-    - get_data
     - trimmomatic
     - khmer
   assemble:
-    - get_data
     - trimmomatic
     - khmer
     - trinity
-  assemblyinput:
-    - assemblyinput
   annotate:
     - dammit
   quantify:
-    - get_data
     - trimmomatic
     - salmon
   diffexp:
-    - get_data
     - trimmomatic
     - salmon
     - deseq2
   sourmash_compute:
-    - get_data
     - trimmomatic
     - khmer
     - sourmash
   plass_assemble:
-    - get_data
     - trimmomatic
     - khmer
     - plass
   paladin_map:
-    - get_data
     - trimmomatic
     - khmer
     - plass
     - pear
     - paladin
   correct_reads:
-    - get_data
     - trimmomatic
     - rcorrector

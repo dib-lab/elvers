@@ -1,0 +1,51 @@
+default_extensions:
+  reads:
+    raw:
+      dir: input_data
+      extensions:
+        read:
+          pe:
+            - "_1.fq.gz"
+            - "_2.fq.gz"
+          se:
+            - "_1.fq.gz"
+    trimmed:
+      dir: preprocess
+      extensions:
+        read:
+          pe:
+            - "_1.trim.fq.gz"
+            - "_2.trim.fq.gz"
+          se:
+            - "_se.trim.fq.gz"
+    kmer_trimmed:
+      dir: preprocess
+      extensions:
+        read:
+          pe:
+            - "_1.khmer.fq.gz"
+            - "_2.khmer.fq.gz"
+          se:
+            - "_se.khmer.fq.gz"
+    rcorrector_trimmed:
+      dir: preprocess/rcorrector
+      extensions:
+        read:
+          pe:
+            - "_1.rcorr.fq.gz"
+            - "_2.rcorr.fq.gz"
+          se:
+            - "_se.rcorr.fq.gz"
+  reference:
+    fasta:
+      dir: assembly
+      extensions:
+        base:
+          - ".fasta"
+    plass_fasta:
+      dir: assembly
+      extensions:
+        reference_extensions:
+          - _plass
+        base:
+          - ".fasta"
