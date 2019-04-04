@@ -221,6 +221,10 @@ To build an editable configfile to start work on your own data, run:
             sys.exit(-1)
         # first, grab all params in user config file
         configD = import_configfile(configfile)
+        if args.out_path:
+            if configD.get('out_path'):
+                sys.stderr.write(f"\n\tWarning: out_path specified both in config and on command line. Choosing command input {out_path}")
+            configD['out_path'] = args.out_path
         # build info for get_reference
         refInput = configD.get('get_reference', None)
         if refInput:
