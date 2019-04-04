@@ -1,11 +1,4 @@
 from os.path import join
-from ep_utils.utils import get_params
-
-# default params from local yml params file
-#rcorrector_params = get_params('rcorrector')
-# override defaults with snakemake config (main configfile or snakemake --config)
-#if 'rcorrector' in config.keys():
-#    rcorr_params.update(config['rcorrector']) 
 
 logs_dir  = config['elvers_directories']['logs']
 data_dir    = config['elvers_directories']['outdirs']['input_data']
@@ -13,14 +6,17 @@ data_dir    = config['elvers_directories']['outdirs']['input_data']
 rcorr_params = config['rcorrector']['program_params']
 ep_params = config['rcorrector']['elvers_params']
 
-# get inputs
-input_dirname = ep_params['input_dir']
-input_dir     = config['elvers_directories']['outdirs'][input_dirname]
-ext           = ep_params['input_pattern']
 #combine_units = ep_params['extensions']['read']['combine_units']
-
 # get outdir
 rcorr_dir     = ep_params['outdir']
+
+if rcorr_params.get('input_trimmed', True):
+    input_dir = config['elvers_directories']['outdirs']['preprocess']
+    ext = '.trim.fq.gz'
+else:
+    input_dir = config['elvers_directories']['outdirs']['input_data']
+    ext = '.fq.gz'
+
 
 # use if you don't want to collapse technical replicates ("units" column)
 def get_sample_no_combine(w):

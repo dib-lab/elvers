@@ -124,6 +124,11 @@ def test_paladin_short():
 def test_paladin_long():
     run_ruletest('paladin', protein_ref = True,short = False)
 
+def test_rcorrector_short():
+    run_ruletest('rcorrector')
+
+def test_rcorrector_long():
+    run_ruletest('rcorrector', short = False)
 
 
 

@@ -6,9 +6,8 @@ rcorrector:
         - trimmed
         - raw
     outputs:
-      - kmer_trimmed
-    input_pattern: .trim.fq.gz
-    input_dir: preprocess
+      read:
+        - rcorrected
     extensions:
       read:
         combine_units: False
@@ -18,4 +17,5 @@ rcorrector:
         se:
           - ".se.rcorr.fq.gz"
   program_params:
+    input_trimmed: True
     extra: ''
