@@ -4,6 +4,7 @@ dammit:
       reference:
         - fasta
     outputs:
+      name: dammit_annotation
       outdir: annotation
       extensions: 
         base: 

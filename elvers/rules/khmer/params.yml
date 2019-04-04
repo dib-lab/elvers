@@ -6,6 +6,7 @@ khmer:
         - rcorrector_trimmed
         - raw
     outputs:
+      name: kmer_trimmed
       outdir: preprocess
       extensions:
         read:

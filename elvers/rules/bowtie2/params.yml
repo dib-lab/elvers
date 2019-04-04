@@ -5,6 +5,7 @@ bowtie2:
         - trimmed
         - raw
     outputs:
+      name: bowtie2_mapped
       outdir: 'bowtie2'
       extensions:
         read:

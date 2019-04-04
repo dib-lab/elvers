@@ -5,6 +5,7 @@ pear:
         - trimmed
         - raw
     outputs:
+      name: pear_merged
       outdir: preprocess/pear
       extensions: 
         read:

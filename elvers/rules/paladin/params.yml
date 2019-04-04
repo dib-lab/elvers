@@ -7,6 +7,7 @@ paladin:
       reference:
         - plass_fasta
     outputs:
+      name: paladin_mapped
       outdir: paladin
       extensions:
         reference_extensions: # use this extension only for all output of this assembler

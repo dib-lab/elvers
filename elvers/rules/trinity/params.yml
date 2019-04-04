@@ -6,6 +6,7 @@ trinity:
         - trimmed
         - raw
     outputs:
+      name: fasta
       outdir: assembly
       extensions:
         reference_extensions: # use this extension only for all output of this assembler

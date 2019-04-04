@@ -8,6 +8,7 @@ fastqc:
         - trimmed
         - raw
     outputs:
+      name: preprocess_fastqc
       outdir: preprocess/fastqc
       extensions: 
         read:

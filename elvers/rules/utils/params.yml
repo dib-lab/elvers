@@ -1,6 +1,7 @@
 get_data:
   elvers_params:
     outputs:
+      name: raw
       outdir: input_data
       extensions:
         read:
@@ -15,6 +16,7 @@ get_data:
 get_reference:
   elvers_params:
     outputs:
+      name: fasta
       outdir: assembly
       extensions:
         base:

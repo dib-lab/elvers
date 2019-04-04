@@ -6,6 +6,7 @@ plass:
         - trimmed
         - raw
     outputs:
+      name: plass_fasta
       outdir: assembly
       extensions:
         reference_extensions: # use this extension only for all output of this assembler

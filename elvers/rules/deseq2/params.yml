@@ -4,6 +4,7 @@ deseq2:
       read:
         - salmon_quants
     outputs:
+      name: deseq2_diffexp
       outdir: diffexp
       combine_units: True # needs to match with salmon's combine_units
       extensions:

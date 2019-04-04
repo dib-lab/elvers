@@ -4,6 +4,7 @@ multiqc:
       read:
         - preprocess_fastqc
     outputs:
+      name: multiqc
       outdir: preprocess/fastqc
       extensions:
         other:

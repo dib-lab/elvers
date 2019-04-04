@@ -4,6 +4,7 @@ trimmomatic:
       read:
         - raw
     outputs:
+      name: trimmed
       outdir: preprocess
       extensions:
         read:
