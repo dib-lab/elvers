@@ -1,35 +1,10 @@
 plass:
   elvers_params:
     input_options:
-      kmer_trimmed:
-        indir: preprocess
-        extensions:
-          read:
-            pe:
-              - '_1.khmer.fq.gz'
-              - '_2.khmer.fq.gz'
-              - '.paired.khmer.fq.gz'
-              - '.single.khmer.fq.gz'
-            se:
-              - '.se.khmer.fq.gz'
-      trimmed:
-        indir: preprocess
-        extensions:
-          read:
-            pe:
-              - "_1.trim.fq.gz"
-              - "_2.trim.fq.gz"
-            se:
-              - "_se.trim.fq.gz"
-      raw:
-        indir: input_data
-        extensions:
-          read:
-            pe:
-              - "_1.fq.gz"
-              - "_2.fq.gz"
-            se:
-              - "_1.fq.gz"
+      read:
+        - kmer_trimmed
+        - trimmed
+        - raw
     outputs:
       outdir: assembly
       extensions:

@@ -1,15 +1,8 @@
 trimmomatic:
   elvers_params:
     input_options:
-      raw:
-        indir: input_data
-        extensions:
-          read:
-            pe:
-              - "_1.fq.gz"
-              - "_2.fq.gz"
-            se:
-              - "_1.fq.gz"
+      read:
+        - raw
     outputs:
       outdir: preprocess
       extensions:

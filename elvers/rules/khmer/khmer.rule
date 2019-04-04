@@ -9,6 +9,9 @@ diginorm = khmer_params.get('diginorm', True)
 if khmer_params.get('input_trimmed', True):
     input_dir = config['elvers_directories']['outdirs']['preprocess']
     ext = '.trim.fq.gz'
+elif khmer_params.get('input_rcorrector_trimmed', False):
+    input_dir = os.path.join(config['elvers_directories']['outdirs']['preprocess'], 'rcorrector')
+    ext = '.rcorr.fq.gz'
 else:
     input_dir = config['elvers_directories']['outdirs']['input_data']
     ext = '.fq.gz'

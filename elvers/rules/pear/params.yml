@@ -1,24 +1,9 @@
 pear:
   elvers_params:
     input_options:
-      trimmed:
-        indir: preprocess
-        extensions:
-          read:
-            pe:
-              - "_1.trim.fq.gz"
-              - "_2.trim.fq.gz"
-            se:
-              - "_se.trim.fq.gz"
-      raw:
-        indir: input_data
-        extensions:
-          read:
-            pe:
-              - "_1.fq.gz"
-              - "_2.fq.gz"
-            se:
-              - "_1.fq.gz"
+      read:
+        - trimmed
+        - raw
     outputs:
       outdir: preprocess/pear
       extensions: 

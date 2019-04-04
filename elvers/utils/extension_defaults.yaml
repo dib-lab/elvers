@@ -1,7 +1,7 @@
 default_extensions:
-  reads:
+  read:
     raw:
-      dir: input_data
+      indir: input_data
       extensions:
         read:
           pe:
@@ -10,7 +10,7 @@ default_extensions:
           se:
             - "_1.fq.gz"
     trimmed:
-      dir: preprocess
+      indir: preprocess
       extensions:
         read:
           pe:
@@ -19,7 +19,7 @@ default_extensions:
           se:
             - "_se.trim.fq.gz"
     kmer_trimmed:
-      dir: preprocess
+      indir: preprocess
       extensions:
         read:
           pe:
@@ -28,7 +28,7 @@ default_extensions:
           se:
             - "_se.khmer.fq.gz"
     rcorrector_trimmed:
-      dir: preprocess/rcorrector
+      indir: preprocess/rcorrector
       extensions:
         read:
           pe:
@@ -38,12 +38,12 @@ default_extensions:
             - "_se.rcorr.fq.gz"
   reference:
     fasta:
-      dir: assembly
+      indir: assembly
       extensions:
         base:
           - ".fasta"
     plass_fasta:
-      dir: assembly
+      indir: assembly
       extensions:
         reference_extensions:
           - _plass
