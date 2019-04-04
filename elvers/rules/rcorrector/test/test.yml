@@ -1,0 +1,4 @@
+# additional test params for rcorrector
+
+rcorrector:
+  input_trimmed: False

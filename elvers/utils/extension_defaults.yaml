@@ -1,0 +1,77 @@
+default_extensions:
+  read:
+    raw:
+      indir: input_data
+      extensions:
+        read:
+          pe:
+            - "_1.fq.gz"
+            - "_2.fq.gz"
+          se:
+            - "_1.fq.gz"
+    trimmed:
+      indir: preprocess
+      extensions:
+        read:
+          pe:
+            - "_1.trim.fq.gz"
+            - "_2.trim.fq.gz"
+          se:
+            - "_se.trim.fq.gz"
+    kmer_trimmed:
+      indir: preprocess
+      extensions:
+        read:
+          pe:
+            - "_1.khmer.fq.gz"
+            - "_2.khmer.fq.gz"
+          se:
+            - "_se.khmer.fq.gz"
+    rcorrector_trimmed:
+      indir: preprocess/rcorrector
+      extensions:
+        read:
+          pe:
+            - "_1.rcorr.fq.gz"
+            - "_2.rcorr.fq.gz"
+          se:
+            - "_se.rcorr.fq.gz"
+    preprocess_fastqc:
+      indir: preprocess/fastqc
+      extensions:
+        read: 
+          pe:
+            - '_1_fastqc.zip'
+            - '_1_fastqc.html'
+            - '_1.trim_fastqc.zip'
+            - '_1.trim_fastqc.html'
+            - '_2_fastqc.zip'
+            - '_2_fastqc.html'
+            - '_2.trim_fastqc.zip'
+            - '_2.trim_fastqc.html'
+          se:
+            - '_1_fastqc.zip'
+            - '_1_fastqc.html'
+            - '_se.trim_fastqc.zip'
+            - '_se.trim_fastqc.html'
+    salmon_quants:
+      indir: quant
+      extensions:
+        read:
+          pe:
+            - 'salmon/quant.sf'
+          se:
+            - 'salmon/quant.sf'
+  reference:
+    fasta:
+      indir: assembly
+      extensions:
+        base:
+          - ".fasta"
+    plass_fasta:
+      indir: assembly
+      extensions:
+        reference_extensions:
+          - _plass
+        base:
+          - ".fasta"

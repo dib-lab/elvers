@@ -15,7 +15,7 @@ def get_assembly_input(w):
     if assembly_params.get('input_kmer_trimmed', True):
         ext = '.khmer.fq.gz' 
         input_dir = config['elvers_directories']['outdirs']['preprocess']
-    elif assembly_params.get('input_trimmomatic_trimmed', True):
+    elif assembly_params.get('input_trimmed', True):
         ext = '.trim.fq.gz'
         input_dir = config['elvers_directories']['outdirs']['preprocess']
     else:
@@ -48,6 +48,7 @@ rule trinity:
         """--- Assembling read data with Trinity --- """
     params:
         # optional parameters
+        max_memory=assembly_params.get('max_memory', '10G'),
         seqtype=assembly_params.get('seqtype', 'fq'),
         extra=assembly_params.get('extra', '')
     threads: 4

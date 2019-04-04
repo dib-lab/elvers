@@ -1,0 +1,14 @@
+# nema: a non-random subset of data from Tulin et al. (2013), that can
+# be used to do assembly and comparative expression analysis.
+
+# this sets the output directory name:
+basename: 'longtest'
+
+get_data:
+  download_data: True
+  samples: "nema.samples.tsv"
+
+get_reference:
+  download_ref: True
+  reference: "https://osf.io/knrqy/download"
+  gene_trans_map: "https://osf.io/jqam4/download"

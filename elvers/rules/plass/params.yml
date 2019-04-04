@@ -1,35 +1,10 @@
 plass:
   elvers_params:
     input_options:
-      kmer_trimmed:
-        indir: preprocess
-        extensions:
-          read:
-            pe:
-              - '_1.khmer.fq.gz'
-              - '_2.khmer.fq.gz'
-              - '.paired.khmer.fq.gz'
-              - '.single.khmer.fq.gz'
-            se:
-              - '.se.khmer.fq.gz'
-      trimmed:
-        indir: preprocess
-        extensions:
-          read:
-            pe:
-              - "_1.trim.fq.gz"
-              - "_2.trim.fq.gz"
-            se:
-              - "_se.trim.fq.gz"
-      raw:
-        indir: input_data
-        extensions:
-          read:
-            pe:
-              - "_1.fq.gz"
-              - "_2.fq.gz"
-            se:
-              - "_1.fq.gz"
+      read:
+        - kmer_trimmed
+        - trimmed
+        - raw
     outputs:
       outdir: assembly
       extensions:
@@ -46,7 +21,7 @@ plass:
     # input kmer-trimmed reads
     input_kmer_trimmed: True
     # input trimmed-reads
-    input_trimmomatic_trimmed: False
+    input_trimmed: False
     # do we want to assemble the single reads with pe reads?
     add_single_to_paired: False
     extra: ''

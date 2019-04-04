@@ -88,7 +88,7 @@ def find_input_file(filename, name="input file", add_paths=[], add_suffixes = ['
     # for any file specified via command line, check if it exists at the current path, if not, try some other paths before returning a helpful error
     found_file = None
     filename = os.path.expanduser(filename) # handle ~!
-    paths_to_try = ['', os.getcwd()] + add_paths
+    paths_to_try = ['', os.getcwd(), os.path.dirname(os.path.abspath(__file__))] + add_paths
     suffixes_to_try = [''] + add_suffixes
 
     if os.path.exists(filename) and not os.path.isdir(filename):
@@ -219,7 +219,7 @@ def generate_program_targs(configD, samples, basename,ref_exts, contrasts):
     targets = generate_targs(outdir, basename, samples, ref_exts, exts.get('base', None),exts.get('read'), exts.get('other'), contrasts)
     return targets
 
-def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, samples):
+def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, samples, default_exts):
     contrasts = rule_config['program_params'].get('contrasts', [])
     outdir = rule_config['elvers_params']['outputs']['outdir']
     out_exts = rule_config['elvers_params']['outputs']['extensions']
@@ -240,17 +240,21 @@ def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, 
         rule_config['elvers_params']['input_options'] = {'get_ref': {'indir': os.path.dirname(reference), 'input_files': [reference]}}
 
     else:
-        for input_option in rule_config['elvers_params']['input_options']:
-            info = rule_config['elvers_params']['input_options'][input_option]
-            indir = os.path.join(home_outdir, info.get('indir', 'input_data'))
-            in_exts = info['extensions']
-            if in_exts.get('reference_extensions'): # this program is an assembler or only works with specific assemblies
-                in_ref_exts = in_exts.get('reference_extensions', ['']) # override generals with rule-specific reference extensions
-            else:
-                in_ref_exts = ref_exts
-            inputs = generate_targs(indir, basename, samples, in_ref_exts, in_exts.get('base', None),in_exts.get('read'), in_exts.get('other'), contrasts)
-            rule_config['elvers_params']['input_options'][input_option]['input_files'] = inputs
-
+        all_input_exts = {}
+        input_options = rule_config['elvers_params']['input_options'] # read, reference, other
+        for input_type, options in input_options.items():
+            for option in options:
+                info = default_exts['default_extensions'][input_type][option]
+                all_input_exts[option] = info
+                indir = os.path.join(home_outdir, info.get('indir', 'input_data'))
+                in_exts = info['extensions']
+                if in_exts.get('reference_extensions'): # this program is an assembler or only works with specific assemblies
+                    in_ref_exts = in_exts.get('reference_extensions', ['']) # override generals with rule-specific reference extensions
+                else:
+                    in_ref_exts = ref_exts
+                input_files = generate_targs(indir, basename, samples, in_ref_exts, in_exts.get('base', None),in_exts.get('read'), in_exts.get('other'), contrasts)
+                all_input_exts[option]['input_files'] = generate_targs(indir, basename, samples, in_ref_exts, in_exts.get('base', None),in_exts.get('read'), in_exts.get('other'), contrasts)
+        rule_config['elvers_params']['input_options'] = all_input_exts
     return rule_config
 
 def generate_inputs_outputs(config, samples=None):
@@ -258,12 +262,13 @@ def generate_inputs_outputs(config, samples=None):
     base = config['basename']
     ref_exts = config.get('reference_extensions', [""])
     home_outdir = config['elvers_directories']['out_dir']
+    ext_defaults = read_yaml(find_input_file("extension_defaults.yaml", name = "extension defaults", add_paths=['utils']))
     for key, val in config.items():
         if isinstance(val, dict):
             if val.get('elvers_params', None):
                 rulename = key
                 rule_config = val
-                config[rulename]  = generate_rule_targs(home_outdir, base, ref_exts, rule_config, rulename, samples)
+                config[rulename] = generate_rule_targs(home_outdir, base, ref_exts, rule_config, rulename, samples, ext_defaults)
     return config
 
 def generate_all_targs(configD, samples=None):

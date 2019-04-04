@@ -2,22 +2,30 @@ from os.path import join
 
 logs_dir  = config['elvers_directories']['logs']
 
-trim_dir    = config['elvers_directories']['outdirs']['preprocess']
 khmer_dir = config['khmer']['elvers_params']['outputs']['outdir']
-
 khmer_params = config['khmer']['program_params']
 diginorm = khmer_params.get('diginorm', True)
+
+if khmer_params.get('input_trimmed', True):
+    input_dir = config['elvers_directories']['outdirs']['preprocess']
+    ext = '.trim.fq.gz'
+elif khmer_params.get('input_rcorrector_trimmed', False):
+    input_dir = os.path.join(config['elvers_directories']['outdirs']['preprocess'], 'rcorrector')
+    ext = '.rcorr.fq.gz'
+else:
+    input_dir = config['elvers_directories']['outdirs']['input_data']
+    ext = '.fq.gz'
 
 def get_trimmed(w):
     readsD = {}
     if not is_single_end(**w):
-        readsD['r1'] = expand(join(trim_dir, '{sample}_{unit}_1.trim.fq.gz'),**w)
-        readsD['r2'] = expand(join(trim_dir, '{sample}_{unit}_2.trim.fq.gz'),**w)
+        readsD['r1'] = expand(join(input_dir, '{sample}_{unit}_1{ext}'),**w, ext=ext)
+        readsD['r2'] = expand(join(input_dir, '{sample}_{unit}_2{ext}'),**w, ext=ext)
         # conflict with se pattern matching. Also just take extra time for little benefit
-        #readsD['r1_unpaired'] = expand(join(trim_dir, "{sample}_{unit}_1.se.trim.fq.gz"),**w)
-        #readsD['r2_unpaired'] = expand(join(trim_dir, "{sample}_{unit}_2.se.trim.fq.gz") **w)
+        #readsD['r1_unpaired'] = expand(join(input_dir, "{sample}_{unit}_1.se.trim.fq.gz"),**w)
+        #readsD['r2_unpaired'] = expand(join(input_dir, "{sample}_{unit}_2.se.trim.fq.gz") **w)
         return readsD
-    return expand(join(trim_dir, '{sample}_{unit}.se.trim.fq.gz'), **w)
+    return expand(join(input_dir, '{sample}_{unit}.se{ext}z'), **w, ext=ext)
 
 
 if diginorm:

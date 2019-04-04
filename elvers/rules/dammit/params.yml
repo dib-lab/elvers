@@ -2,10 +2,7 @@ dammit:
   elvers_params:
     input_options:
       reference:
-        extensions:
-          indir: assembly
-          base:
-            - .fasta
+        - fasta
     outputs:
       outdir: annotation
       extensions: 

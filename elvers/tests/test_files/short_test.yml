@@ -10,5 +10,3 @@ get_data:
 # location of test input assembly 
 get_reference:
   reference: "reference/transcriptome.fasta"
-assemblyinput:
-  assembly: "reference/transcriptome.fasta"

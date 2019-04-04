@@ -10,7 +10,11 @@ basename = config['basename']
 reference_extension = getRef_params.get('reference_extension', '')
 
 # set up the vars we use in each of these options
-ref_in     =  os.path.realpath(getRef_params['reference'])
+if getRef_params.get('download_ref'):
+    ref_in =getRef_params['reference']
+else:
+    ref_in = os.path.realpath(getRef_params['reference'])
+
 gunzip_ref = False
 ref_out    =  os.path.join(ref_dir, basename + reference_extension + '.fasta')
 if ref_in.endswith('.gz'):

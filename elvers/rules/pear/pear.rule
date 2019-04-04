@@ -12,6 +12,15 @@ pear_dir = ep_params['outputs']['outdir']
 
 def get_pairs(w):
     readsD = {}
+    if pear_params.get('input_kmer_trimmed', True):
+        ext = '.khmer.fq.gz'
+        input_dir = config['elvers_directories']['outdirs']['preprocess']
+    elif pear_params.get('input_trimmed', True):
+        ext = '.trim.fq.gz'
+        input_dir = config['elvers_directories']['outdirs']['preprocess']
+    else:
+        ext = '.fq.gz'
+        input_dir = config['elvers_directories']['outdirs']['input_data']
     if not is_single_end(**w): # note, this requires unit to be in outputs!
         readsD['r1'] = join(input_dir, f'{w.sample}_{w.unit}_1{ext}')
         readsD['r2'] = join(input_dir, f'{w.sample}_{w.unit}_2{ext}')

@@ -90,7 +90,7 @@ rule elvers:
 
 onerror:
     # to do: be more helpful here :)
-    print("  Oh no! Something wen't wrong here\n")
+    print("  Oh no! Something went wrong here\n")
     shell('cat {failwhale}')
 
 

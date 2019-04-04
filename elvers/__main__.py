@@ -221,6 +221,10 @@ To build an editable configfile to start work on your own data, run:
             sys.exit(-1)
         # first, grab all params in user config file
         configD = import_configfile(configfile)
+        if args.out_path:
+            if configD.get('out_path'):
+                sys.stderr.write(f"\n\tWarning: out_path specified both in config and on command line. Choosing command input {out_path}")
+            configD['out_path'] = args.out_path
         if configD.get('workflows', None):
             # how do we want to handle the 'default'? Here: If nothing specified, use `default`. If any workflows specified (commandline or config), do not add default.
             if targs == ['default']:

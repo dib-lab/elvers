@@ -1,32 +1,11 @@
 paladin:
   elvers_params:
     input_options:
-      trimmed:
-        indir: preprocess
-        extensions:
-          reference_extensions:
-            - _plass
-          base:
-            - '.fasta'
-          read:
-            pe:
-              - "_1.trim.fq.gz"
-              - "_2.trim.fq.gz"
-            se:
-              - "_se.trim.fq.gz"
-      raw:
-        indir: input_data
-        extensions:
-          reference_extensions:
-            - _plass
-          base:
-            - '.fasta'
-          read:
-            pe:
-              - "_1.fq.gz"
-              - "_2.fq.gz"
-            se:
-              - "_1.fq.gz"
+      read:
+        - trimmed
+        - raw
+      reference:
+        - plass_fasta
     outputs:
       outdir: paladin
       extensions:
@@ -49,6 +28,8 @@ paladin:
     citations:
       - "Westbrook, Anthony et al. 'PALADIN: protein alignment for functional profiling whole metagenome shotgun data' Bioinformatics (Oxford, England) vol. 33,10 (2017): 1473-1478"
   program_params:
+    input_pear_merged: True
+    input_trimmed: False
     index_params:
       reference_type: '3'
     alignment_params:
