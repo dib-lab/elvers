@@ -9,7 +9,7 @@ logs_dir  = config['elvers_directories']['logs']
 assembly_dir  = config['elvers_directories']['outdirs']['assemble']
 combine_units = ep_params['extensions']['read']['combine_units']
 
-if salmon_params.get('input_trimmomatic_trimmed', True):
+if salmon_params.get('input_trimmed', True):
     input_dir = config['elvers_directories']['outdirs']['preprocess']
     ext = '.trim.fq.gz'
 else:

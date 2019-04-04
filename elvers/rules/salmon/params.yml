@@ -22,7 +22,7 @@ salmon:
       base:
           - .salmonindex
   program_params:
-    input_trimmomatic_trimmed: True
+    input_trimmed: True
     index_params:
       extra: '' # extra info for the program
     quant_params:

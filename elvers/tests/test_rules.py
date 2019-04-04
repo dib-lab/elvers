@@ -79,14 +79,14 @@ def test_dammit_short():
 
 def test_dammit_long():
     db_dir = os.path.join(elvers_dir, 'databases')
-    run_ruletest('dammit', {'dammit':{'db_dir': db_dir}}, short=False)
+    run_ruletest('dammit', extra_configD = {'dammit':{'db_dir': db_dir}}, short=False)
 
 def test_salmon_short():
     run_ruletest('salmon')
-    run_ruletest('salmon', {'salmon':{'quant_params':{'libtype': "IU"}}})
+    run_ruletest('salmon', extra_configD = {'salmon':{'quant_params':{'libtype': "IU"}}})
 
 def test_salmon_long():
-     run_ruletest('salmon', testdir = 'test', short=False)
+     run_ruletest('salmon', short=False)
 
 def test_trimmomatic_short():
     run_ruletest('trimmomatic')

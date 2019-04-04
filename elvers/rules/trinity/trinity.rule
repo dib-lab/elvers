@@ -15,7 +15,7 @@ def get_assembly_input(w):
     if assembly_params.get('input_kmer_trimmed', True):
         ext = '.khmer.fq.gz' 
         input_dir = config['elvers_directories']['outdirs']['preprocess']
-    elif assembly_params.get('input_trimmomatic_trimmed', True):
+    elif assembly_params.get('input_trimmed', True):
         ext = '.trim.fq.gz'
         input_dir = config['elvers_directories']['outdirs']['preprocess']
     else:
