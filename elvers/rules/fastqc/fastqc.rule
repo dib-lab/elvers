@@ -6,7 +6,7 @@ logs_dir  = config['elvers_directories']['logs']
 data_dir = config['elvers_directories']['outdirs']['input_data']
 trim_dir = config['elvers_directories']['outdirs']['preprocess']
 #outdir
-qc_dir   = config['fastqc']['elvers_params']['outdir']
+qc_dir   = config['fastqc']['elvers_params']['outputs']['outdir']
 # program params
 fastqc_params = config['fastqc']['program_params']
 

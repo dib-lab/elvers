@@ -21,97 +21,72 @@ elvers_directories:
 # params and targets right.
 elvers_workflows:
   default:
-    include:
-      - get_data
-      - trimmomatic
-      - khmer
-      - trinity
-    targets:
-      - fastqc
-      - multiqc
-      - dammit
-      - salmon
-      - sourmash
+    - get_data
+    - trimmomatic
+    - khmer
+    - trinity
+    - fastqc
+    - multiqc
+    - dammit
+    - salmon
+    - sourmash
   protein_assembly:
-    include:
-      - get_data
-      - trimmomatic
-      - khmer
-      - plass
-      - pear
-    targets:
-      - fastqc
-      - multiqc
-      - paladin
-      - sourmash
+    - get_data
+    - trimmomatic
+    - khmer
+    - plass
+    - pear
+    - fastqc
+    - multiqc
+    - paladin
+    - sourmash
   input_data:
-    targets:
-      - get_data
+    - get_data
   preprocess:
-    include:
-      - get_data
-    targets:
-      - fastqc
-      - trimmomatic
-      - multiqc
+    - get_data
+    - fastqc
+    - trimmomatic
+    - multiqc
   kmer_trim:
-    include:
-      - get_data
-      - trimmomatic
-    targets:
-      - khmer
+    - get_data
+    - trimmomatic
+    - khmer
   assemble:
-    include:
-      - get_data
-      - trimmomatic
-      - khmer
-    targets:
-      - trinity
+    - get_data
+    - trimmomatic
+    - khmer
+    - trinity
   assemblyinput:
-    targets:
-      - assemblyinput
+    - assemblyinput
   annotate:
-    targets:
-      - dammit
+    - dammit
   quantify:
-    include:
-      - get_data
-      - trimmomatic
-    targets:
-      - salmon
+    - get_data
+    - trimmomatic
+    - salmon
   diffexp:
-    include:
-      - get_data
-      - trimmomatic
-      - salmon
-    targets:
-      - deseq2
+    - get_data
+    - trimmomatic
+    - salmon
+    - deseq2
   sourmash_compute:
-    include:
-      - get_data
-      - trimmomatic
-      - khmer
-    targets:
-      - sourmash
+    - get_data
+    - trimmomatic
+    - khmer
+    - sourmash
   plass_assemble:
-    include:
-      - get_data
-      - trimmomatic
-      - khmer
-    targets:
-      - plass
+    - get_data
+    - trimmomatic
+    - khmer
+    - plass
   paladin_map:
-    include:
-      - get_data
-      - trimmomatic
-      - khmer
-      - plass
-      - pear
-    targets:
-      - paladin
+    - get_data
+    - trimmomatic
+    - khmer
+    - plass
+    - pear
+    - paladin
   correct_reads:
-    include:
-      - get_data
-      - trimmomatic
-    targets:
-      - rcorrector
+    - get_data
+    - trimmomatic
+    - rcorrector

@@ -1,25 +1,36 @@
 salmon:
   elvers_params:
-    outdir: quant
-    inputs:
-      read:
-        - trimmed
-        - raw
-      reference:
-        - transcriptome
+    input_options:
+      trimmed:
+        indir: preprocess
+        extensions:
+          read:
+            pe:
+              - "_1.trim.fq.gz"
+              - "_2.trim.fq.gz"
+            se:
+              - "_se.trim.fq.gz"
+      raw:
+        indir: input_data
+        extensions:
+          read:
+            pe:
+              - "_1.fq.gz"
+              - "_2.fq.gz"
+            se:
+              - "_1.fq.gz"
     outputs:
-      read:
-        - counts
-    extensions: 
-      read:
-        combine_units: True
-        pe:
-          - _x___reference__.salmon/quant.sf
-          - _x___reference__.salmon/lib_format_counts.json
-        se:
-          - _x___reference__.salmon/quant.sf
-          - _x___reference__.salmon/lib_format_counts.json
-      base:
+      outdir: quant
+      extensions: 
+        read:
+          combine_units: True
+          pe:
+            - _x___reference__.salmon/quant.sf
+            - _x___reference__.salmon/lib_format_counts.json
+          se:
+            - _x___reference__.salmon/quant.sf
+            - _x___reference__.salmon/lib_format_counts.json
+        base:
           - .salmonindex
   program_params:
     input_trimmed: True

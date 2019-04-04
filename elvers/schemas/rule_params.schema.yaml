@@ -1,6 +1,6 @@
 $schema: 'http://json-schema.org/draft-07/schema#'
 
-description: elvers params schema
+description: rule params schema template
 
 type: object
 
@@ -11,38 +11,63 @@ properties:
       elvers_params:
         type: object
         properties:
-          outdir:
-            type: string
-          inputs:
-            type: object
-            reference:
-              type: array
-            read:
-              type: array
-          outputs:
-            type: object
-            reference:
-              type: array
-            read:
-              type: array
-            other:
-              type: array
-          extensions:
-            read:
-              type: array
-            base:
-              type: array
-            assembly_extensions:
-              type: array
           help:
             type: string
           citations:
             type: array
+          input_options:
+            type: object
+            properties:
+              __option__:
+                type: object
+                properties:
+                  indir: 
+                    type: string
+                  extensions:
+                    type: object
+                    read:
+                      type: object
+                      properties:
+                        pe:
+                          type: array
+                        se:
+                          type: array
+                    base:
+                      type: array
+                    other:
+                      type: array
+                    reference_extensions:
+                      type: array
+              required:
+                - indir
+                - extensions
+          outputs:
+            type: object
+            properties:
+              outdir:
+                type: string
+              extensions:
+                type: object
+                properties:
+                  read:
+                    type: object
+                    properties:
+                      pe:
+                        type: array
+                      se:
+                        type: array
+                  base:
+                    type: array
+                  other:
+                    type: array
+                  reference_extensions:
+                    type: array
+            required:
+              - outdir
+              - extensions
         required:
-          - outdir # eventually move this into outputs. involves changes in __main__
-          - inputs
+          - input_options
           - outputs
-          - extensions
 
       program_params:
         type: object

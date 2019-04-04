@@ -14,9 +14,9 @@ assembly_dir  = config['elvers_directories']['outdirs']['assemble']
 input_dirname = bowtie2_params['input_dir']
 input_dir     = config['elvers_directories']['outdirs'][input_dirname]
 
-quant_dir     = salmon_params['elvers_dirname']
-ext           =  salmon_params['input_pattern']
-combine_units = salmon_params['extensions']['read']['combine_units']
+quant_dir     = bt2_params['elvers_params']['outputs']['outdir']
+ext           =  bt2_params['input_pattern']
+combine_units = btw_params['extensions']['read']['combine_units']
 
 
 # use if you don't want to collapse technical replicates ("units" column; deseq2 not supported)

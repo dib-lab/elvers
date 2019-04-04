@@ -7,7 +7,7 @@ logs_dir  = config['elvers_directories']['logs']
 
 # get inputs
 assembly_dir  = config['elvers_directories']['outdirs']['assemble']
-combine_units = ep_params['extensions']['read']['combine_units']
+combine_units = ep_params['outputs']['extensions']['read']['combine_units']
 
 if salmon_params.get('input_trimmed', True):
     input_dir = config['elvers_directories']['outdirs']['preprocess']
@@ -17,7 +17,7 @@ else:
     ext = '.fq.gz'
 
 # get outdir
-quant_dir     = ep_params['outdir']
+quant_dir     = ep_params['outputs']['outdir']
 
 # use if you don't want to collapse technical replicates ("units" column; deseq2 not supported)
 def get_sample_no_combine(w):

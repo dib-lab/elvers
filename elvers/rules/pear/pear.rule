@@ -4,10 +4,11 @@ logs_dir  = config['elvers_directories']['logs']
 ep_params = config['pear']['elvers_params']
 pear_params = config['pear']['program_params']
 
-pear_dir = ep_params['outdir']
+input_dirname = "preprocess"
+input_dir     = config['elvers_directories']['outdirs'][input_dirname]
+ext           = ".trim.fq.gz" 
 
-
-
+pear_dir = ep_params['outputs']['outdir']
 
 def get_pairs(w):
     readsD = {}

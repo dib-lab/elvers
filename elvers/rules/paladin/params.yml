@@ -1,35 +1,53 @@
 paladin:
   elvers_params:
-    outdir: paladin
-    inputs:
-      read:
-        - merged
-        - trimmed
-        - raw
-      reference:
-        - protein_assembly
+    input_options:
+      trimmed:
+        indir: preprocess
+        extensions:
+          reference_extensions:
+            - _plass
+          base:
+            - '.fasta'
+          read:
+            pe:
+              - "_1.trim.fq.gz"
+              - "_2.trim.fq.gz"
+            se:
+              - "_se.trim.fq.gz"
+      raw:
+        indir: input_data
+        extensions:
+          reference_extensions:
+            - _plass
+          base:
+            - '.fasta'
+          read:
+            pe:
+              - "_1.fq.gz"
+              - "_2.fq.gz"
+            se:
+              - "_1.fq.gz"
     outputs:
-      other:
-        - protein_mapped
+      outdir: paladin
+      extensions:
+        reference_extensions: # use this extension only for all output of this assembler
+          - _plass
+        base:
+          - '.fasta.bwt'
+        read:
+          pe:
+            - _x___reference__.paladin.bam
+            - _x___reference__.paladin.sort.bam
+            - _x___reference__.paladin.sort.bam.flagstat
+            - _x___reference__.paladin.sort.bam.bai
+          se:
+            - _x___reference__.paladin.bam
+            - _x___reference__.paladin.sort.bam
+            - _x___reference__.paladin.sort.bam.flagstat
+            - _x___reference__.paladin.sort.bam.bai
     help: "PALADIN is a protein sequence alignment tool designed for the accurate functional characterization of metagenomes."
     citations:
       - "Westbrook, Anthony et al. 'PALADIN: protein alignment for functional profiling whole metagenome shotgun data' Bioinformatics (Oxford, England) vol. 33,10 (2017): 1473-1478"
-    extensions:
-      reference_extensions: # use this extension only for all output of this assembler
-        - _plass
-      base:
-        - '.fasta.bwt'
-      read:
-        pe:
-          - _x___reference__.paladin.bam
-          - _x___reference__.paladin.sort.bam
-          - _x___reference__.paladin.sort.bam.flagstat
-          - _x___reference__.paladin.sort.bam.bai
-        se:
-          - _x___reference__.paladin.bam
-          - _x___reference__.paladin.sort.bam
-          - _x___reference__.paladin.sort.bam.flagstat
-          - _x___reference__.paladin.sort.bam.bai
   program_params:
     input_pear_merged: True
     input_trimmed: False

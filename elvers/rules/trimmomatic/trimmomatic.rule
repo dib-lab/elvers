@@ -3,7 +3,7 @@ from os.path import join
 data_dir    = config['elvers_directories']['outdirs']['input_data']
 logs_dir  = config['elvers_directories']['logs']
 trim_params = config['trimmomatic']['program_params']
-trim_dir    = config['trimmomatic']['elvers_params']['outdir']
+trim_dir    = config['trimmomatic']['elvers_params']['outputs']['outdir']
 
 base_dir = config['elvers_directories']['base_dir']
 

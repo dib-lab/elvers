@@ -40,19 +40,23 @@ def build_rule_params_schema(full_schema, params_schema_template, paramsfile):
     program_names = list(params.keys())
     for name in program_names:
         prog_schema = params_schema_template['properties']['__prog__'].copy()
+        # elvers_params (build proper inputs schema)
+        if name not in ['get_data', 'get_reference']:
+            prog_schema['properties']['elvers_params']['properties']['input_options'] = build_schema(params[name]['elvers_params']['input_options'])
+        # program_params
         prog_schema['properties']['program_params']['properties'] = build_schema(params[name]['program_params'])
         full_schema['properties'][name] = prog_schema
     return full_schema
 
 def build_params_schema(paramsfile, outfile, rules = [], targets = [], rule_template =None, elvers_schema = None, pipeline_schema = None):
    # some setup, so we can use this within elvers main
+    schema_dir = os.path.join(elvers_dir, "schemas")
     if not rule_template:
         rule_template = "rule_params.schema.yaml"
     if not elvers_schema:
         elvers_schema = "elvers_params.schema.yaml"
     if not pipeline_schema:
         pipeline_schema = "pipeline_defaults.schema.yaml"
-    schema_dir = os.path.join(elvers_dir, "schemas")
 
    # first, let's read in the pipeline defaults schema
     schema = read_yaml(find_input_file(pipeline_schema, name="pipeline defaults schema", add_paths=[schema_dir]))
@@ -62,7 +66,8 @@ def build_params_schema(paramsfile, outfile, rules = [], targets = [], rule_temp
      # ok, now let's build schema for all
     for rule in rules:
         if rule in ['get_data', 'get_reference']:
-            rule = 'utils'
+            rule = 'utils' ## need to validate differently --> no need for inputs!
+
         # getting carryover between rules. to avoid, read in fresh each time.
         r_template = read_yaml(find_input_file(rule_template, name="rule params schema template", add_paths=[schema_dir]))
         paramsfile = glob.glob(os.path.join(elvers_dir, 'rules', rule,'params.yml'))[0]
@@ -70,7 +75,6 @@ def build_params_schema(paramsfile, outfile, rules = [], targets = [], rule_temp
 
     # this is not exactly what we need, but it gets rid of `default` as a required target, so leave in for now.
     workflow_properties={'elvers':{'targets':targets}, 'required': ['elvers']}
-
     schema['properties']['elvers_workflows'] = {'type': 'object', 'properties': workflow_properties}
     schema['required'] = schema['required'] + rules
 

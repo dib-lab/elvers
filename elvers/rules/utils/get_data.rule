@@ -2,6 +2,8 @@ import os
 
 logs_dir  = config['elvers_directories']['logs']
 data_dir = config['elvers_directories']['outdirs']['input_data']
+# alternate, valid way to specify same dir:
+#data_dir = config['get_data']['elvers_params']['outputs']['outdir']
 
 get_data_params = config['get_data']['program_params']
 
