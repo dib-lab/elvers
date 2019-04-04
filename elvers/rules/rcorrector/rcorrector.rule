@@ -8,7 +8,7 @@ ep_params = config['rcorrector']['elvers_params']
 
 #combine_units = ep_params['extensions']['read']['combine_units']
 # get outdir
-rcorr_dir     = ep_params['outdir']
+rcorr_dir     = ep_params['outputs']['outdir']
 
 if rcorr_params.get('input_trimmed', True):
     input_dir = config['elvers_directories']['outdirs']['preprocess']
