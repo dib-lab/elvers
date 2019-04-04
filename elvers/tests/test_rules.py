@@ -64,18 +64,21 @@ def run_ruletest(rulename, testdir = "test_files", extra_configD = {}, protein_r
 def test_get_data_short():
     run_ruletest('get_data')
 
+@pytest.mark.long
 def test_get_data_long():
     run_ruletest('get_data', short = False)
 
 def test_get_reference_short():
     run_ruletest('get_reference')
 
+@pytest.mark.long
 def test_get_reference_long():
     run_ruletest('get_reference', short = False)
 
 def test_dammit_short():
     run_ruletest('dammit')
 
+@pytest.mark.long
 def test_dammit_long():
     db_dir = os.path.join(elvers_dir, 'databases')
     run_ruletest('dammit', extra_configD = {'dammit':{'db_dir': db_dir}}, short=False)
@@ -84,49 +87,56 @@ def test_salmon_short():
     run_ruletest('salmon')
     run_ruletest('salmon', extra_configD = {'salmon':{'quant_params':{'libtype': "IU"}}})
 
+@pytest.mark.long
 def test_salmon_long():
      run_ruletest('salmon', short=False)
 
 def test_trimmomatic_short():
     run_ruletest('trimmomatic')
 
+@pytest.mark.long
 def test_trimmomatic_long():
     run_ruletest('trimmomatic', short=False)
 
 def test_khmer_short():
     run_ruletest('khmer')
 
+@pytest.mark.long
 def test_khmer_long():
     run_ruletest('khmer', short=False)
 
 def test_trinity_short():
     run_ruletest('trinity')
 
+@pytest.mark.long
 def test_trinity_long():
     run_ruletest('trinity', short=False)
 
 def test_plass_short():
     run_ruletest('plass')
 
+@pytest.mark.long
 def test_plass_long():
     run_ruletest('plass', short=False)
 
 def test_pear_short():
     run_ruletest('pear')
 
+@pytest.mark.long
 def test_pear_long():
     run_ruletest('pear', short = False)
 
 def test_paladin_short():
     run_ruletest('paladin', protein_ref = True)
 
+@pytest.mark.long
 def test_paladin_long():
     run_ruletest('paladin', protein_ref = True,short = False)
 
 def test_rcorrector_short():
     run_ruletest('rcorrector')
 
+@pytest.mark.long
 def test_rcorrector_long():
     run_ruletest('rcorrector', short = False)
-
 
