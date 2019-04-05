@@ -6,7 +6,7 @@ quant_dir= config['elvers_directories']['outdirs']['quantify']
 
 deseq_params = config['deseq2']['program_params']
 ep_params = config['deseq2']['elvers_params']
-deseq_dir = config['deseq2']['elvers_params']['outdir']
+deseq_dir = config['deseq2']['elvers_params']['outputs']['outdir']
 
 # this is handled in elvers main, but redundancy doesn't hurt
 if config.get('no_gene_trans_map', False):

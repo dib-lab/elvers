@@ -1,0 +1,5 @@
+# Additional parameters required for testing the pear rule
+
+pear:
+  input_kmer_trimmed: False
+  input_trimmed: False

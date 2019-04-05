@@ -1,28 +1,26 @@
 salmon:
   elvers_params:
-    outdir: quant
-    inputs:
+    input_options:
       read:
         - trimmed
         - raw
       reference:
-        - transcriptome
+        - fasta
     outputs:
-      read:
-        - counts
-    extensions: 
-      read:
-        combine_units: True
-        pe:
-          - _x___reference__.salmon/quant.sf
-          - _x___reference__.salmon/lib_format_counts.json
-        se:
-          - _x___reference__.salmon/quant.sf
-          - _x___reference__.salmon/lib_format_counts.json
-      base:
+      outdir: quant
+      extensions: 
+        read:
+          combine_units: True
+          pe:
+            - _x___reference__.salmon/quant.sf
+            - _x___reference__.salmon/lib_format_counts.json
+          se:
+            - _x___reference__.salmon/quant.sf
+            - _x___reference__.salmon/lib_format_counts.json
+        base:
           - .salmonindex
   program_params:
-    input_trimmomatic_trimmed: True
+    input_trimmed: True
     index_params:
       extra: '' # extra info for the program
     quant_params:

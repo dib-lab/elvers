@@ -1,21 +1,19 @@
 rcorrector:
   elvers_params:
-    outdir: 'preprocess/rcorrector'
-    inputs:
+    input_options:
       read:
         - trimmed
         - raw
     outputs:
-      - kmer_trimmed
-    input_pattern: .trim.fq.gz
-    input_dir: preprocess
-    extensions:
-      read:
-        combine_units: False
-        pe:
-          - "_1.rcorr.fq.gz"
-          - "_2.rcorr.fq.gz"
-        se:
-          - ".se.rcorr.fq.gz"
+      outdir: 'preprocess/rcorrector'
+      extensions:
+        read:
+          combine_units: False
+          pe:
+            - "_1.rcorr.fq.gz"
+            - "_2.rcorr.fq.gz"
+          se:
+            - ".se.rcorr.fq.gz"
   program_params:
+    input_trimmed: True
     extra: ''

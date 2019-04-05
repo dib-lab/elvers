@@ -1,38 +1,24 @@
 get_data:
   elvers_params:
-    outdir: input_data
     outputs:
-      read:
-        - raw
-    inputs:
-      read:
-        - raw
-    extensions:
-      read:
-        pe:
-          - "_1.fq.gz"
-          - "_2.fq.gz"
-        se:
-          - "_1.fq.gz"
+      outdir: input_data
+      extensions:
+        read:
+          pe:
+            - "_1.fq.gz"
+            - "_2.fq.gz"
+          se:
+            - "_1.fq.gz"
   program_params:
     download_data: False
     use_ftp: False
 get_reference:
   elvers_params:
-    outdir: assembly
     outputs:
-      reference:
-        - transcriptome
-        - genome
-        - protein
-    inputs:
-      reference:
-        - transcriptome
-        - genome
-        - protein
-    extensions:
-      base:
-        - '.fasta'
+      outdir: assembly
+      extensions:
+        base:
+          - '.fasta'
       #  - '.fasta.gene_trans_map'
   program_params:
     reference: examples/nema.assembly.fasta

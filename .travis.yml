@@ -35,7 +35,7 @@ install:
   - python setup.py build install
 
 script:
-  - pytest -v
+  - pytest -m "not long"
   - elvers examples/nema.yaml get_data -t 4 --restart_times=3
   - elvers examples/nema.yaml assemble -t 4
   - elvers examples/yeast.yaml quantify diffexp -t 4 --restart_times=3

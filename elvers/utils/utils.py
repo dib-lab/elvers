@@ -4,6 +4,7 @@ import yaml
 import collections
 import pandas as pd
 from os.path import join
+from snakemake.utils import validate
 
 # general utilities
 def find_Snakefile(workdir):
@@ -51,15 +52,43 @@ def update_nested_dict(d, other):
         else:
             d[k] = v
 
+def read_samples(config):
+    elvers_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    try:
+        samples_file = config["get_data"]["program_params"]["samples"]
+    except KeyError:
+        print("cannot find 'samples' entry in config file! Please provide a samples file for the `get_data` utility", file=sys.stderr)
+        sys.exit(-1)
+    if '.tsv' in samples_file or '.csv' in samples_file:
+        separator = '\t'
+        if '.csv' in samples_file:
+            separator = ','
+        try:
+            samples = pd.read_csv(samples_file, dtype=str, sep=separator).set_index(["sample", "unit"], drop=False)
+            validate(samples, schema=os.path.join(elvers_dir,"schemas/samples_v2.schema.yaml"))
+            samples['name'] = samples["sample"].map(str) + '_' + samples["unit"].map(str)
+        except Exception as e:
+            sys.stderr.write(f"\n\tError: {samples_file} file is not properly formatted. Please fix.\n\n")
+            print(e)
+    elif '.xls' in samples_file:
+        try:
+            samples = pd.read_excel(samples_file, dtype=str).set_index(["sample", "unit"], drop=False)
+            validate(samples, schema="schemas/samples_v2.schema.yaml") # new version
+            samples['name'] = samples["sample"].map(str) + '_' + samples["unit"].map(str)
+        except Exception as e:
+            sys.stderr.write(f"\n\tError: {samples_file} file is not properly formatted. Please fix.\n\n")
+            print(e)
+    return samples
+
 # sample checks
 def is_single_end(sample, unit, end = '', assembly = ''):
     return pd.isnull(samples.loc[(sample, unit), "fq2"])
 
-def find_input_file(filename, name="input file", add_paths=[], add_suffixes = ['.yaml', '.yml']):
+def find_input_file(filename, name="input file", add_paths=[], add_suffixes = ['.yaml', '.yml'], verbose = False):
     # for any file specified via command line, check if it exists at the current path, if not, try some other paths before returning a helpful error
     found_file = None
     filename = os.path.expanduser(filename) # handle ~!
-    paths_to_try = ['', os.getcwd()] + add_paths
+    paths_to_try = ['', os.getcwd(), os.path.dirname(os.path.abspath(__file__))] + add_paths
     suffixes_to_try = [''] + add_suffixes
 
     if os.path.exists(filename) and not os.path.isdir(filename):
@@ -76,7 +105,7 @@ def find_input_file(filename, name="input file", add_paths=[], add_suffixes = ['
         config_help = f"   Use option '--build_config' to build a default {name} at {filename}.\n"
 
     assert found_file, f'Error, cannot find specified {name} file {filename}\n\n\n' + config_help
-    if name != 'pipeline_defaults':
+    if verbose:
         sys.stderr.write(f'\tFound {name} at {found_file}\n')
     return found_file
 
@@ -189,6 +218,58 @@ def generate_program_targs(configD, samples, basename,ref_exts, contrasts):
         ref_exts = exts.get('reference_extensions', ['']) # override generals with rule-specific reference extensions
     targets = generate_targs(outdir, basename, samples, ref_exts, exts.get('base', None),exts.get('read'), exts.get('other'), contrasts)
     return targets
+
+def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, samples, default_exts):
+    contrasts = rule_config['program_params'].get('contrasts', [])
+    outdir = rule_config['elvers_params']['outputs']['outdir']
+    out_exts = rule_config['elvers_params']['outputs']['extensions']
+
+    if out_exts.get('reference_extensions'): # this program is an assembler or only works with specific assemblies
+        out_ref_exts = out_exts.get('reference_extensions', ['']) # override generals with rule-specific reference extensions
+    else:
+        out_ref_exts = ref_exts
+    outputs = generate_targs(outdir, basename, samples, out_ref_exts, out_exts.get('base', None),out_exts.get('read'), out_exts.get('other'), contrasts)
+    rule_config['elvers_params']['outputs']['output_files'] = outputs
+
+    ## inputs are slightly more complicated - there are options! ##
+    if rulename == 'get_data':
+        samples_file = rule_config['program_params']['samples'] # should be present (validated) prior to here
+        rule_config['elvers_params']['input_options'] = {'get_data': {'indir': os.path.dirname(samples_file), 'input_files': [samples_file]}}
+    elif rulename == 'get_reference':
+        reference = rule_config['program_params']['reference'] # should be present (validated) prior to here
+        rule_config['elvers_params']['input_options'] = {'get_ref': {'indir': os.path.dirname(reference), 'input_files': [reference]}}
+
+    else:
+        all_input_exts = {}
+        input_options = rule_config['elvers_params']['input_options'] # read, reference, other
+        for input_type, options in input_options.items():
+            for option in options:
+                info = default_exts['default_extensions'][input_type][option]
+                all_input_exts[option] = info
+                indir = os.path.join(home_outdir, info.get('indir', 'input_data'))
+                in_exts = info['extensions']
+                if in_exts.get('reference_extensions'): # this program is an assembler or only works with specific assemblies
+                    in_ref_exts = in_exts.get('reference_extensions', ['']) # override generals with rule-specific reference extensions
+                else:
+                    in_ref_exts = ref_exts
+                input_files = generate_targs(indir, basename, samples, in_ref_exts, in_exts.get('base', None),in_exts.get('read'), in_exts.get('other'), contrasts)
+                all_input_exts[option]['input_files'] = generate_targs(indir, basename, samples, in_ref_exts, in_exts.get('base', None),in_exts.get('read'), in_exts.get('other'), contrasts)
+        rule_config['elvers_params']['input_options'] = all_input_exts
+    return rule_config
+
+def generate_inputs_outputs(config, samples=None):
+    all_inputs, all_outputs = [],[]
+    base = config['basename']
+    ref_exts = config.get('reference_extensions', [""])
+    home_outdir = config['elvers_directories']['out_dir']
+    ext_defaults = read_yaml(find_input_file("extension_defaults.yaml", name = "extension defaults", add_paths=['utils']))
+    for key, val in config.items():
+        if isinstance(val, dict):
+            if val.get('elvers_params', None):
+                rulename = key
+                rule_config = val
+                config[rulename] = generate_rule_targs(home_outdir, base, ref_exts, rule_config, rulename, samples, ext_defaults)
+    return config
 
 def generate_all_targs(configD, samples=None):
     # pass full config, program names. Call generate_program_targs to build each

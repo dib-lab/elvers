@@ -1,31 +1,31 @@
 fastqc:
   elvers_params:
-    outdir: preprocess/fastqc
-    inputs:
-      read:
-        - raw
-        - trimmed
-    outputs:
-      read:
-        - fastqc_report
-    help: "fastqc is used to QC reads"
     citations:
       - "FastQC A Quality Control tool for High Throughput Sequence Data http://www.bioinformatics.babraham.ac.uk/projects/fastqc/ by S. Andrews"
-    extensions: 
+    help: "fastqc is used to QC reads"
+    input_options:
       read:
-        pe:
-          - '_1_fastqc.zip'
-          - '_1_fastqc.html'
-          - '_1.trim_fastqc.zip'
-          - '_1.trim_fastqc.html'
-          - '_2_fastqc.zip'
-          - '_2_fastqc.html'
-          - '_2.trim_fastqc.zip'
-          - '_2.trim_fastqc.html'
-        se:
-          - '_1_fastqc.zip'
-          - '_1_fastqc.html'
-          - '_se.trim_fastqc.zip'
-          - '_se.trim_fastqc.html'
+        - trimmed
+        - raw
+    outputs:
+      outdir: preprocess/fastqc
+      extensions: 
+        read:
+          pe:
+            - '_1_fastqc.zip'
+            - '_1_fastqc.html'
+            - '_1.trim_fastqc.zip'
+            - '_1.trim_fastqc.html'
+            - '_2_fastqc.zip'
+            - '_2_fastqc.html'
+            - '_2.trim_fastqc.zip'
+            - '_2.trim_fastqc.html'
+          se:
+            - '_1_fastqc.zip'
+            - '_1_fastqc.html'
+            - '_se.trim_fastqc.zip'
+            - '_se.trim_fastqc.html'
   program_params:
+    input_trimmed: True
+    input_raw: True
     extra: ''
