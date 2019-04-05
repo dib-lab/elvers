@@ -150,7 +150,7 @@ To build an editable configfile to start work on your own data, run:
     parser.add_argument('-r', '--print_rules', action='store_true', help='just show available rules')
     parser.add_argument('-p', '--print_params', action='store_true', help='print parameters for chosen workflows or rules')
     parser.add_argument('--build_config', action='store_true', help='just build the default parameter file')
-    parser.add_argument('--slurm_config', action='store_true', default=None)
+    parser.add_argument('--slurm_config', default=None)
 
     # advanced args below (maybe separate so these don't always print out)
     parser.add_argument('--report', default="report.html", help='filename for a final report of this run. This will be in the logs dir, unless you provide an absolute path.')
