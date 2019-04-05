@@ -275,14 +275,15 @@ To build an editable configfile to start work on your own data, run:
 
         # if we're adding any additional contrasts, get rid of the example ones!
         # check extra configs
-        if extra_configs.get('deseq2'):
-           if extra_configs['deseq2']['program_params'].get('contrasts'):
-               paramsD['deseq2']['program_params']['contrasts'] = {} # get rid of default contrasts
+        if 'deseq2' in targs:
+            if extra_configs.get('deseq2'):
+               if extra_configs['deseq2']['program_params'].get('contrasts'):
+                   paramsD['deseq2']['program_params']['contrasts'] = {} # get rid of default contrasts
 
-        # check main configfile
-        if configD.get('deseq2'):
-            if configD['deseq2']['program_params'].get('contrasts'):
-                paramsD['deseq2']['program_params']['contrasts'] = {} # get rid of default contrasts
+            # check main configfile
+            if configD.get('deseq2'):
+                if configD['deseq2']['program_params'].get('contrasts'):
+                    paramsD['deseq2']['program_params']['contrasts'] = {} # get rid of default contrasts
 
         # first update with extra configs, then with main configfile
         update_nested_dict(paramsD,extra_configs)
