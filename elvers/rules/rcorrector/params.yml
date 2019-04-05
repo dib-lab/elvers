@@ -10,6 +10,8 @@ rcorrector:
       extensions:
         read:
           combine_units: False
+          common_ext: 
+            - ".rcorr.fq.gz"
           pe:
             - "_1.rcorr.fq.gz"
             - "_2.rcorr.fq.gz"

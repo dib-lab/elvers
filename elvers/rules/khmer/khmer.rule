@@ -4,21 +4,18 @@ prog = "khmer"
 
 logs_dir  = config['elvers_directories']['logs']
 elvers_params = config[prog]['elvers_params']
-output_dir = ['outputs']['outdir']
 prog_params = config[prog]['program_params']
 
-input_list = prog_params.get('input', ['trimmed'])
-for inp.lower() in input_list:
-    if inp == 'trimmed':
-        input_dir = config['elvers_directories']['outdirs']['preprocess']
-        ext = '.trim.fq.gz'
-    elif inp == 'rcorrector_trimmed':
-        input_dir = elvers_params['input_options']['rcorrector_trimmed']
-        input_dir = os.path.join(config['elvers_directories']['outdirs']['preprocess'], 'rcorrector')
-        ext = '.rcorr.fq.gz'
-    else:
-        input_dir = config['elvers_directories']['outdirs']['input_data']
-        ext = '.fq.gz'
+# set output dir
+output_dir = elvers_params['outputs']['outdir']
+# set default input dir, extensions
+input_dir = config['elvers_directories']['outdirs']['preprocess']
+ext = '.trim.fq.gz'
+# get input we're using in this case
+input_name = prog_params.get('input', 'trimmed').lower()
+# update input_dir, ext
+input_dir = elvers_params['input_options'][input_name].get('indir', input_dir )
+ext = elvers_params['input_options'][input_name]['extensions']['read'].get('common_ext', ext)
 
 diginorm = prog_params.get('diginorm', True)
 
@@ -31,7 +28,7 @@ def get_trimmed(w):
         #readsD['r1_unpaired'] = expand(join(input_dir, "{sample}_{unit}_1.se.trim.fq.gz"),**w)
         #readsD['r2_unpaired'] = expand(join(input_dir, "{sample}_{unit}_2.se.trim.fq.gz") **w)
         return readsD
-    return expand(join(input_dir, '{sample}_{unit}.se{ext}z'), **w, ext=ext)
+    return expand(join(input_dir, '{sample}_{unit}.se{ext}'), **w, ext=ext)
 
 
 if diginorm:

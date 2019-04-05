@@ -1,34 +1,44 @@
-fastqc:
+fastqc_pretrim:
   elvers_params:
     citations:
       - "FastQC A Quality Control tool for High Throughput Sequence Data http://www.bioinformatics.babraham.ac.uk/projects/fastqc/ by S. Andrews"
     help: "fastqc is used to QC reads"
     input_options:
       read:
-        - trimmed
         - raw
-    outputs:
-      name: preprocess_fastqc
-      outdir: preprocess/fastqc
-      extensions: 
-        read:
-          pe:
-            - '_1_fastqc.zip'
-            - '_1_fastqc.html'
-            - '_1.trim_fastqc.zip'
-            - '_1.trim_fastqc.html'
-            - '_2_fastqc.zip'
-            - '_2_fastqc.html'
-            - '_2.trim_fastqc.zip'
-            - '_2.trim_fastqc.html'
-          se:
-            - '_1_fastqc.zip'
-            - '_1_fastqc.html'
-            - '_se.trim_fastqc.zip'
-            - '_se.trim_fastqc.html'
+    output_options:
+      fastqc_pretrim:
+        outdir: preprocess/fastqc
+        extensions: 
+          read:
+            common_ext: 
+              - "_fastqc.zip"
+              - "_fastqc.html"
+            pe:
+              - '_1_fastqc.zip'
+              - '_1_fastqc.html'
+              - '_2_fastqc.zip'
+              - '_2_fastqc.html'
+            se:
+              - '_1_fastqc.zip'
+              - '_1_fastqc.html'
+      fastqc_trimmed:
+        outdir: preprocess/fastqc
+        extensions:
+          read:
+            common_ext:
+              - "_fastqc.zip"
+              - "_fastqc.html"
+            pe:
+              - '_1.trim_fastqc.zip'
+              - '_1.trim_fastqc.html'
+              - '_2.trim_fastqc.zip'
+              - '_2.trim_fastqc.html'
+            se:
+              - '_se.trim_fastqc.zip'
+              - '_se.trim_fastqc.html'
   program_params:
     input:
-      - trimmed
       - raw
-    input_raw: True
+      - trimmed
     extra: ''

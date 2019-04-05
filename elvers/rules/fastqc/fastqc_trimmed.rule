@@ -1,0 +1,41 @@
+import os, re
+from os.path import join
+
+prog = "fastqc"
+
+logs_dir  = config['elvers_directories']['logs']
+elvers_params = config[prog]['elvers_params']
+prog_params = config[prog]['program_params']
+
+# set output dir
+output_dir = elvers_params['outputs']['outdir']
+# set default input dir, extensions
+input_dir = config['elvers_directories']['outdirs']['input_data']
+ext = '.fq.gz'
+
+# get input we're using in this case
+input_name = prog_params.get('input').lower()
+# update input_dir, ext
+input_dir = elvers_params['input_options'][input_name].get('indir', input_dir)
+ext = elvers_params['input_options'][input_name]['extensions']['read'].get('common_ext', ext)
+ext_prefix = ext.split('.fq')[0] # get extension prior to ".fq" 
+
+def get_input(wildcards):
+    if not is_single_end(**wildcards): 
+        return expand(join(input_dir, '{sample}_{unit}_{end}{ext}'), **wildcards, ext=ext) 
+    return expand(join(input_dir, '{sample}_{unit}_{end}{ext}'), **wildcards, ext=ext)
+
+rule fastqc_pretrim:
+    input: get_input
+    output:
+        html=join(output_dir,'{sample}_{unit}_{end}_fastqc.html'),
+        zip=join(output_dir,'{sample}_{unit}_{end}_fastqc.zip')
+    params: prog_params.get('extra', "")
+    wildcard_constraints:
+        end = ['_1' + ext_prefix, '_2' + ext_prefix, '_se'+ ext_prefix]
+    log: 
+        join(logs_dir, 'fastqc/{sample}_{unit}_{end}.log')
+    benchmark:
+        join(logs_dir, 'fastqc/{sample}_{unit}_{end}.benchmark')
+    conda: "environment.yml"
+	script: "wrapper.py"

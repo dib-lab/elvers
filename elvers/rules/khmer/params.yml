@@ -10,6 +10,8 @@ khmer:
       outdir: preprocess
       extensions:
         read:
+          common_ext: 
+            - ".khmer.fq.gz"
           pe:
             - '_1.khmer.fq.gz'
             - '_2.khmer.fq.gz'
@@ -21,8 +23,7 @@ khmer:
     citations:
       - "Crusoe MR, Alameldin HF, Awad S et al. The khmer software package: enabling efficient nucleotide sequence analysis. F1000Research 2015, 4:900 (https://doi.org/10.12688/f1000research.6924.1)"
   program_params:
-    input: 
-      - trimmed
+    input: trimmed
     diginorm: True
     ksize: 20
     Z: 18
