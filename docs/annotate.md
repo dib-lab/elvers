@@ -8,31 +8,40 @@ At the moment, this workflow consists of:
 
 ## Quickstart
 
-If you've generated an assembly, even if you've already run `elvers examples/nema.yaml assemble`:
-
-   1) "Run" trinity assembly at the same time.If you've already run the assembly, `elvers` will just locateyour assembly file for `annotate`. 
-   
-   ```
-   elvers examples/nema.yaml assemble annotate
-   ```
-  
-   2) OR, Pass an assembly in via `assemblyinput` **with an assembly in your `yaml` configfile, e.g.:** 
-   
-   ```
-   elvers assemblyinput annotate
-   ```
-   
-   In the configfile:
-    
-    assemblyinput:
-      assembly: examples/nema.assembly.fasta
-      gene_trans_map: examples/nema.assembly.fasta.gene_trans_map #optional
-      assembly_extension: '_input'
-   
-   This is commented out in the test data yaml, but go ahead and uncomment (remove leading `#`) in order to use this option. If you have a gene to transcript map, please specify it as well.   If not, delete this line from your `config`. The `assembly_extension` parameter is important: this is what allows us to build assemblies from several different assemblers on the same dataset. Feel free to use `_input`, as   specified above, or pick something equally simple yet more informative. **Note:
-    Please don't use additional underscores (`_`) in this extension!**. For more details, see the [assemblyinput documentation](assemblyinput.md). 
+If you're starting a new `elvers` run using a reference file (even if you have previously built a _de novo_ assembly via `elvers`), you need to help `elvers` find that assembly.
 
 
+    Scenario 1: You're starting from your own reference file:
+
+    You need to provide the reference in your `config.yaml` file:
+   
+    ```
+    get_reference:
+      reference: input reference fasta REQUIRED
+      gene_trans_map: OPTIONAL: provide a gene to transcript map for input transcriptome
+      reference_extension: '_input' OPTIONAL, changes naming
+      download_ref: the reference entry above is a link that needs to be downloaded
+      use_ftp: download via ftp instead of http
+    ```
+    Once you add this to your configfile (e.g. `my_config.yaml`), you can run a reference/assembly-based workflow such as annotate.
+    ```
+    elvers my_config.yaml annotate
+    ```
+    For more details on reference specification, see the [get_reference documentation](get_reference.md). For annotation configuration, see below.
+
+    Scenario 2: You've previously run an assembly program via `elvers`:
+
+    You _can_ provide the built reference in the same manner as above. However, if you're running more workflows in the same directory, you can also just specify the name of the assembly program that you used to generate the assembly. This will *not* rerun the assembly (unless you provide new input files). Instead, this will allow `elvers` to know where to look for your previously-generated reference file. Because we enable multiple referene generation programs, we don't want to assume
+   which reference you'd like to use for downstream steps (in fact, if you provide multiple references, `elvers` will run the downstream steps on all references, assuming you provide unique `reference_extension` parameters so that the references are uniquely named.
+   
+    Example: You've previously run the trinity assembly, and want to annotate it.
+   
+    ```
+    elvers examples/nema.yaml assemble annotate
+    ```
+    Here, the `assemble` workflow just enables `elvers` to locate your assembly file for `annotate`.  
+
+   
 ## Output files:
 
 Your main output directory will be determined by your config file: by default it is `BASENAME_out` (you specify BASENAME).

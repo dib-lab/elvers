@@ -12,7 +12,7 @@ elvers -h
   - preprocess: Read Quality Trimming and Filtering (fastqc, trimmomatic)
   - kmer_trim: Kmer Trimming and/or Digital Normalization (khmer)
   - assemble: Transcriptome Assembly (trinity)
-  - assemblyinput: Specify assembly for downstream steps
+  - get_reference: Specify assembly for downstream steps
   - annotate : Annotate the transcriptome (dammit, sourmash)
   - quantify: Quantify transcripts (salmon)
   - full: preprocess, kmer_trim, assemble, annotate, quantify

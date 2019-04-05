@@ -62,7 +62,7 @@ nav:
       - 'trimmomatic': trimmomatic.md
       - 'khmer': khmer.md
       - 'trinity': trinity.md
-      - 'assemblyinput': assemblyinput.md
+      - 'get_reference': get_reference.md
       - 'dammit': dammit.md
       - 'sourmash': sourmash.md
       - 'salmon': salmon.md
