@@ -18,10 +18,7 @@ pear:
     citations:
       - "Jiajie Zhang, Kassian Kobert, Tomáš Flouri, Alexandros Stamatakis; PEAR: a fast and accurate Illumina Paired-End reAd mergeR, Bioinformatics, Volume 30, Issue 5, 1 March 2014, Pages 614–620, https://doi.org/10.1093/bioinformatics/btt593"
   program_params:
-    # input trimmed-reads
-    input_trimmed: True
-    # input kmer-trimmed reads
-    input_kmer_trimmed: False
+    input: trimmed
     pval: .01
     max_memory: 4G
     extra: ''

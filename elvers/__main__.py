@@ -47,7 +47,6 @@ def build_default_params(workdir, targets):
     for rule_list in workflows_to_run.values():
         required_rules += rule_list
     includeRules = []
-    output_names = []
     reference_extensions = []
     rules_dir = defaultParams['elvers_directories']['rules']
     required_rules = set(required_rules)
@@ -55,7 +54,6 @@ def build_default_params(workdir, targets):
         try:
             rule = glob.glob(os.path.join(workdir, rules_dir, '*', rule_name + '.rule'))[0]
             defaultParams[rule_name] = get_params(rule_name, os.path.dirname(rule))
-            output_names.append(defaultParams[rule_name]['elvers_params']['outputs'].get('name', rule_name))
             ref_exts = defaultParams[rule_name]['elvers_params']['outputs']['extensions'].get('reference_extensions', [])
             reference_extensions+=ref_exts
             includeRules += [rule]

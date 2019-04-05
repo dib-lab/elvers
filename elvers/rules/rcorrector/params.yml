@@ -16,5 +16,6 @@ rcorrector:
           se:
             - ".se.rcorr.fq.gz"
   program_params:
-    input_trimmed: True
+    input:
+      - trimmed
     extra: ''

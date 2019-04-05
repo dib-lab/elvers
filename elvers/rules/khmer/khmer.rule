@@ -1,20 +1,26 @@
 from os.path import join
 
+prog = "khmer"
+
 logs_dir  = config['elvers_directories']['logs']
+elvers_params = config[prog]['elvers_params']
+output_dir = ['outputs']['outdir']
+prog_params = config[prog]['program_params']
 
-khmer_dir = config['khmer']['elvers_params']['outputs']['outdir']
-khmer_params = config['khmer']['program_params']
-diginorm = khmer_params.get('diginorm', True)
+input_list = prog_params.get('input', ['trimmed'])
+for inp.lower() in input_list:
+    if inp == 'trimmed':
+        input_dir = config['elvers_directories']['outdirs']['preprocess']
+        ext = '.trim.fq.gz'
+    elif inp == 'rcorrector_trimmed':
+        input_dir = elvers_params['input_options']['rcorrector_trimmed']
+        input_dir = os.path.join(config['elvers_directories']['outdirs']['preprocess'], 'rcorrector')
+        ext = '.rcorr.fq.gz'
+    else:
+        input_dir = config['elvers_directories']['outdirs']['input_data']
+        ext = '.fq.gz'
 
-if khmer_params.get('input_trimmed', True):
-    input_dir = config['elvers_directories']['outdirs']['preprocess']
-    ext = '.trim.fq.gz'
-elif khmer_params.get('input_rcorrector_trimmed', False):
-    input_dir = os.path.join(config['elvers_directories']['outdirs']['preprocess'], 'rcorrector')
-    ext = '.rcorr.fq.gz'
-else:
-    input_dir = config['elvers_directories']['outdirs']['input_data']
-    ext = '.fq.gz'
+diginorm = prog_params.get('diginorm', True)
 
 def get_trimmed(w):
     readsD = {}
@@ -35,8 +41,8 @@ if diginorm:
         """
         input: unpack(get_trimmed)
         output: 
-            paired=join(khmer_dir,'{sample}_{unit}.paired.khmer.fq.gz'),
-            single=join(khmer_dir,'{sample}_{unit}.single.khmer.fq.gz'),
+            paired=join(output_dir,'{sample}_{unit}.paired.khmer.fq.gz'),
+            single=join(output_dir,'{sample}_{unit}.single.khmer.fq.gz'),
         message:
             """--- khmer trimming of low-abundance kmers and digital normalization ---"""
         params:
@@ -61,7 +67,7 @@ if diginorm:
         kmer trim and diginorm with khmer
         """
         input: get_trimmed
-        output: join(khmer_dir, '{sample}_{unit}.se.khmer.fq.gz'),
+        output: join(output_dir, '{sample}_{unit}.se.khmer.fq.gz'),
         message:
             """--- khmer trimming of low-abundance kmers and digital normalization ---"""
         params:
@@ -86,8 +92,8 @@ else:
         """
         input: unpack(get_trimmed)
         output: 
-            paired=join(khmer_dir,'{sample}_{unit}.paired.khmer.fq.gz'),
-            single=join(khmer_dir,'{sample}_{unit}.single.khmer.fq.gz'),
+            paired=join(output_dir,'{sample}_{unit}.paired.khmer.fq.gz'),
+            single=join(output_dir,'{sample}_{unit}.single.khmer.fq.gz'),
         message: """--- khmer trimming of low-abundance kmers ---"""
         params:
             k = khmer_params.get('ksize', 20),
@@ -108,7 +114,7 @@ else:
         khmer trim se, no diginorm
         """
         input: get_trimmed
-        output: join(khmer_dir, '{sample}_{unit}.se.khmer.fq.gz'),
+        output: join(output_dir, '{sample}_{unit}.se.khmer.fq.gz'),
         message:
             """--- khmer trimming of low-abundance kmers ---"""
         params:
@@ -128,10 +134,10 @@ else:
 
 
 rule khmer_split_paired:
-    input: join(khmer_dir,'{sample}_{unit}.paired.khmer.fq.gz'),
+    input: join(output_dir,'{sample}_{unit}.paired.khmer.fq.gz'),
     output:
-        r1=join(khmer_dir, '{sample}_{unit}_1.khmer.fq.gz'),
-        r2=join(khmer_dir, '{sample}_{unit}_2.khmer.fq.gz'),
+        r1=join(output_dir, '{sample}_{unit}_1.khmer.fq.gz'),
+        r2=join(output_dir, '{sample}_{unit}_2.khmer.fq.gz'),
     threads: 2 
     log: join(logs_dir, 'khmer/{sample}_{unit}.split_pe.log')
     benchmark: join(logs_dir, 'khmer/{sample}_{unit}.split_pe.benchmark')

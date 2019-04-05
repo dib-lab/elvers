@@ -13,4 +13,6 @@ multiqc:
     citations:
       - "Philip Ewels, Måns Magnusson, Sverker Lundin, Max Käller; MultiQC: summarize analysis results for multiple tools and samples in a single report, Bioinformatics, Volume 32, Issue 19, 1 October 2016, Pages 3047–3048, https://doi.org/10.1093/bioinformatics/btw354"
   program_params:
+    input: 
+      - preprocess_fastqc
     extra: ''

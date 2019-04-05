@@ -29,8 +29,8 @@ paladin:
     citations:
       - "Westbrook, Anthony et al. 'PALADIN: protein alignment for functional profiling whole metagenome shotgun data' Bioinformatics (Oxford, England) vol. 33,10 (2017): 1473-1478"
   program_params:
-    input_pear_merged: True
-    input_trimmed: False
+    input:
+      - pear_merged
     index_params:
       reference_type: '3'
     alignment_params:

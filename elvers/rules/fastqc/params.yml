@@ -27,6 +27,8 @@ fastqc:
             - '_se.trim_fastqc.zip'
             - '_se.trim_fastqc.html'
   program_params:
-    input_trimmed: True
+    input:
+      - trimmed
+      - raw
     input_raw: True
     extra: ''

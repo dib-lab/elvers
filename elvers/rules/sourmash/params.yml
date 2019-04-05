@@ -18,6 +18,9 @@ sourmash:
           se:
             - .se.khmer.fq.sig 
   program_params:
+    input: 
+      - kmer_trimmed
+      - fasta
     k_size: 31
     scaled: 1000
     extra: ''
