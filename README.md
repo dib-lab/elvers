@@ -45,7 +45,7 @@ source ~/.bash_profile
 
 Get the **`elvers`** code
 ```
-git clone https://github.com/dib-lab/eelpond.git
+git clone https://github.com/dib-lab/elvers.git
 cd elvers
 ```
 
