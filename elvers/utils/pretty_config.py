@@ -30,8 +30,8 @@ def write_config(paramsD, targets, out = None):
     seen_rules = []
     for targ in targets:
        # grab all rules, their params for target pipeliness
-        include_rules = paramsD['elvers_workflows'][targ].get('include', [])
-        targets = paramsD['elvers_workflows'][targ].get('targets', [])
+        include_rules = paramsD['elvers_workflows'].get(targ, [])
+        #targets = paramsD['elvers_workflows'][targ].get('targets', [])
         all_rules = include_rules+targets
         targ_params = {}
         for r in all_rules:
