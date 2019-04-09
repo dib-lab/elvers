@@ -1,4 +1,4 @@
-khmer:
+khmer_reads:
   elvers_params:
     input_options:
       read:
@@ -16,6 +16,11 @@ khmer:
             - '.single.khmer.fq.gz'
           se:
             - '.se.khmer.fq.gz'
+        ## also these extensions if diginorm
+        #base:
+        #  - '_1.khmer_diginorm.fq.gz'
+        #  - '_2.khmer_diginorm.fq.gz'
+        #  - '.se.khmer_diginorm.fq.gz'
     help: "The khmer software is a set of command-line tools for working with DNA shotgun sequencing data from genomes, transcriptomes, metagenomes, and single cells. khmer can make de novo assemblies faster, and sometimes better. khmer can also identify (and fix) problems with shotgun data."
     citations:
       - "Crusoe MR, Alameldin HF, Awad S et al. The khmer software package: enabling efficient nucleotide sequence analysis. F1000Research 2015, 4:900 (https://doi.org/10.12688/f1000research.6924.1)"
