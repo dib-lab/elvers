@@ -838,18 +838,18 @@
 <p>Linux is the recommended OS. Nearly everything also works on MacOSX, but some programs (FastQC, Trinity) are troublesome.</p>
 <h2 id="installations-conda">Installations: Conda<a class="headerlink" href="#installations-conda" title="Permanent link">&para;</a></h2>
 <p><strong><code>elvers</code></strong> uses <a href="conda.io">conda</a>, an open source package and environment management system, to manage tool installations. The quickest way to get started with conda is to install <a href="https://conda.io/miniconda.html">miniconda</a>. </p>
+<p>If you don't have conda yet, install <a href="https://conda.io/miniconda.html">miniconda</a> (for Ubuntu 16.04 <a href="https://use.jetstream-cloud.org/application/images/107">Jetstream image</a>):</p>
 <div class="codehilite"><pre><span></span>wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
-bash Miniconda3-latest-Linux-x86_64.sh -b
-echo export PATH=&quot;$HOME/miniconda3/bin:$PATH&quot; &gt;&gt; ~/.bash_profile
-source ~/.bash_profile
+bash Miniconda3-latest-Linux-x86_64.sh
 </pre></div>
 
 
+<p>Be sure to answer 'yes' to all yes/no questions. You'll need to restart your terminal for conda to be active.</p>
 <p>As a side note, if you're working on a cloud computing system, you may be able to find an image where conda has been pre-installed (such as this Ubuntu 16.04 <a href="https://use.jetstream-cloud.org/application/images/107">Jetstream image</a>). </p>
 <h2 id="create-a-working-environment-and-install-elvers">Create a working environment and install Elvers!<a class="headerlink" href="#create-a-working-environment-and-install-elvers" title="Permanent link">&para;</a></h2>
 <p><code>elvers</code> needs a few programs installed in order to run properly. To handle this, we run <code>elvers</code> within a conda environment that contains all dependencies. </p>
 <p>Get the <strong><code>elvers</code></strong> code</p>
-<div class="codehilite"><pre><span></span>git clone https://github.com/dib-lab/eelpond.git
+<div class="codehilite"><pre><span></span>git clone https://github.com/dib-lab/elvers.git
 cd elvers
 </pre></div>
 
@@ -866,7 +866,7 @@ cd elvers
 
 <p>To deactivate after you've finished running <code>elvers</code>, type <code>conda deactivate</code>. You'll need to reactivate this environment anytime you want to run elvers.</p>
 <p>Now. install the <code>elvers</code> package</p>
-<div class="codehilite"><pre><span></span>pip install .
+<div class="codehilite"><pre><span></span>pip install -e &#39;.&#39;
 </pre></div>
 
 
