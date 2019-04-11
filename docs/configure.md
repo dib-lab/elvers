@@ -74,35 +74,34 @@ To run any read-based workflow, we need to get reads (and any assemblies already
 If you're starting a new `elvers` run using a reference file (even if you have previously built a _de novo_ assembly via `elvers`), you need to help `elvers` find that assembly.
 
 
-    Scenario 1: You're starting from your own reference file:
+Scenario 1: You're starting from your own reference file:
 
-    You need to provide the reference in your `config.yaml` file:
+You need to provide the reference in your `config.yaml` file:
+```
+get_reference:
+  reference: input reference fasta REQUIRED
+  gene_trans_map: OPTIONAL: provide a gene to transcript map for input transcriptome
+  reference_extension: '_input' OPTIONAL, changes naming
+  download_ref: the reference entry above is a link that needs to be downloaded
+  use_ftp: download via ftp instead of http
+```
+Once you add this to your configfile (e.g. `my_config.yaml`), you can run a reference/assembly-based workflow such as annotate.
+```
+elvers my_config.yaml annotate
+```
+For more details on reference specification, see the [get_reference documentation](get_reference.md). For annotation configuration, see below.
 
-    ```
-    get_reference:
-      reference: input reference fasta REQUIRED
-      gene_trans_map: OPTIONAL: provide a gene to transcript map for input transcriptome
-      reference_extension: '_input' OPTIONAL, changes naming
-      download_ref: the reference entry above is a link that needs to be downloaded
-      use_ftp: download via ftp instead of http
-    ```
-    Once you add this to your configfile (e.g. `my_config.yaml`), you can run a reference/assembly-based workflow such as annotate.
-    ```
-    elvers my_config.yaml annotate
-    ```
-    For more details on reference specification, see the [get_reference documentation](get_reference.md). For annotation configuration, see below.
+Scenario 2: You've previously run an assembly program via `elvers`:
 
-    Scenario 2: You've previously run an assembly program via `elvers`:
+You _can_ provide the built reference in the same manner as above. However, if you're running more workflows in the same directory, you can also just specify the name of the assembly program that you used to generate the assembly. This will *not* rerun the assembly (unless you provide new input files). Instead, this will allow `elvers` to know where to look for your previously-generated reference     file. Because we enable multiple referene generation programs, we don't want to assume
+which reference you'd like to use for downstream steps (in fact, if you provide multiple references, `elvers` will run the downstream steps on all references, assuming you provide unique               `reference_extension` parameters so that the references are uniquely named.
 
-    You _can_ provide the built reference in the same manner as above. However, if you're running more workflows in the same directory, you can also just specify the name of the assembly program that you used to generate the assembly. This will *not* rerun the assembly (unless you provide new input files). Instead, this will allow `elvers` to know where to look for your previously-generated reference     file. Because we enable multiple referene generation programs, we don't want to assume
-   which reference you'd like to use for downstream steps (in fact, if you provide multiple references, `elvers` will run the downstream steps on all references, assuming you provide unique               `reference_extension` parameters so that the references are uniquely named.
+Example: You've previously run the trinity assembly, and want to annotate it.
 
-    Example: You've previously run the trinity assembly, and want to annotate it.
-
-    ```
-    elvers examples/nema.yaml assemble annotate
-    ```
-    Here, the `assemble` workflow just enables `elvers` to locate your assembly file for `annotate`.
+```
+elvers examples/nema.yaml assemble annotate
+```
+Here, the `assemble` workflow just enables `elvers` to locate your assembly file for `annotate`.
 
 
 ## Choosing and running a workflow
@@ -175,11 +174,12 @@ There are a few other options we can add to customize the name of the output dir
   - `experiment: EXPERIMENT`: some additional "experiment" info to add to the output directory name ( outdir: `BASENAME_EXPERIMENT_out`)
   - `out_path: /full/path`: if you want to redirect the output to some location *not* under the `elvers` directory.
   - Finally, to specify a specific set of workflows or tools to use, add `workflows` to your `yaml` file:
-    ```
-    workflows: 
-      - fastqc
-      - trimmomatic
-    ``` 
+
+```
+workflows: 
+  - fastqc
+  - trimmomatic
+``` 
 
 
 Now, if you'd like to run any particular program with non-default parameters, or you're running differential expression analysis, you'll need to add some info to the config. For any (each) program, follow this format to see program params:
