@@ -1010,7 +1010,15 @@ Here, the `assemble` workflow just enables `elvers` to locate your assembly file
 <ul>
 <li><code>basename: NAME</code>: helps determine file names and output directory (by default: <code>BASENAME_out</code>)</li>
 <li><code>experiment: EXPERIMENT</code>: some additional "experiment" info to add to the output directory name ( outdir: <code>BASENAME_EXPERIMENT_out</code>)</li>
-<li><code>out_path: /full/path</code>: if you want to redirect the output to some location <em>not</em> under the <code>elvers</code> directory.`</li>
+<li><code>out_path: /full/path</code>: if you want to redirect the output to some location <em>not</em> under the <code>elvers</code> directory.</li>
+<li>Finally, to specify a specific set of workflows or tools to use, add <code>workflows</code> to your <code>yaml</code> file:
+    ```
+    workflows: <ul>
+<li>fastqc</li>
+<li>trimmomatic
+``` </li>
+</ul>
+</li>
 </ul>
 <p>Now, if you'd like to run any particular program with non-default parameters, or you're running differential expression analysis, you'll need to add some info to the config. For any (each) program, follow this format to see program params:</p>
 <div class="codehilite"><pre><span></span>elvers config.yaml &lt;PROGRAM&gt; --print_params
