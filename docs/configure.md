@@ -173,7 +173,13 @@ There are a few other options we can add to customize the name of the output dir
 
   - `basename: NAME`: helps determine file names and output directory (by default: `BASENAME_out`)
   - `experiment: EXPERIMENT`: some additional "experiment" info to add to the output directory name ( outdir: `BASENAME_EXPERIMENT_out`)
-  - `out_path: /full/path`: if you want to redirect the output to some location *not* under the `elvers` directory.`
+  - `out_path: /full/path`: if you want to redirect the output to some location *not* under the `elvers` directory.
+  - Finally, to specify a specific set of workflows or tools to use, add `workflows` to your `yaml` file:
+    ```
+    workflows: 
+      - fastqc
+      - trimmomatic
+    ``` 
 
 
 Now, if you'd like to run any particular program with non-default parameters, or you're running differential expression analysis, you'll need to add some info to the config. For any (each) program, follow this format to see program params:
