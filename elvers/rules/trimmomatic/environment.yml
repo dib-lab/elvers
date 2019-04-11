@@ -3,5 +3,5 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - trimmomatic ==0.38
-  - pigz ==2.3.4
+  - trimmomatic=0.38
+  - pigz=2.3.4
