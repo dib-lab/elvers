@@ -15,23 +15,23 @@ To specify input data, we need to build a tab-separated samples file, e.g. `my-s
 
 If we had our test data within the `data` folder in the main `elvers` directory, the file would look like this:
 
-    ```
-    sample  unit    fq1 fq2 condition
-    0Hour   001 data/0Hour_ATCACG_L002_R1_001.extract.fastq.gz data/0Hour_ATCACG_L002_R2_001.extract.fastq.gz time0
-    0Hour   002 data/0Hour_ATCACG_L002_R1_002.extract.fastq.gz data/0Hour_ATCACG_L002_R2_002.extract.fastq.gz time0
-    6Hour   001 data/6Hour_CGATGT_L002_R1_001.extract.fastq.gz data/6Hour_CGATGT_L002_R2_001.extract.fastq.gz time6
-    6Hour   002 data/6Hour_CGATGT_L002_R1_002.extract.fastq.gz data/6Hour_CGATGT_L002_R2_002.extract.fastq.gz time6
-    ```
+```
+sample  unit    fq1 fq2 condition
+0Hour   001 data/0Hour_ATCACG_L002_R1_001.extract.fastq.gz data/0Hour_ATCACG_L002_R2_001.extract.fastq.gz time0
+0Hour   002 data/0Hour_ATCACG_L002_R1_002.extract.fastq.gz data/0Hour_ATCACG_L002_R2_002.extract.fastq.gz time0
+6Hour   001 data/6Hour_CGATGT_L002_R1_001.extract.fastq.gz data/6Hour_CGATGT_L002_R2_001.extract.fastq.gz time6
+6Hour   002 data/6Hour_CGATGT_L002_R1_002.extract.fastq.gz data/6Hour_CGATGT_L002_R2_002.extract.fastq.gz time6
+```
 
 If we want to download the test data instead:
 
-    ```
-    sample  unit    fq1 fq2 condition
-    0Hour   001 https://osf.io/vw4dt/download   https://osf.io/b47s2/download   time0
-    0Hour   002 https://osf.io/92jr6/download   https://osf.io/qzea8/download   time0
-    6Hour   001 https://osf.io/ft3am/download   https://osf.io/jqmsx/download   time6
-    6Hour   002 https://osf.io/rnkq3/download   https://osf.io/bt9vh/download   time6
-    ```
+```
+sample  unit    fq1 fq2 condition
+0Hour   001 https://osf.io/vw4dt/download   https://osf.io/b47s2/download   time0
+0Hour   002 https://osf.io/92jr6/download   https://osf.io/qzea8/download   time0
+6Hour   001 https://osf.io/ft3am/download   https://osf.io/jqmsx/download   time6
+6Hour   002 https://osf.io/rnkq3/download   https://osf.io/bt9vh/download   time6
+```
 
 **Note that proper formatting means all columns must be separated by tabs, not spaces!**
 
@@ -74,7 +74,7 @@ To run any read-based workflow, we need to get reads (and any assemblies already
 If you're starting a new `elvers` run using a reference file (even if you have previously built a _de novo_ assembly via `elvers`), you need to help `elvers` find that assembly.
 
 
-Scenario 1: You're starting from your own reference file:
+**Scenario 1: You're starting from your own reference file:**
 
 You need to provide the reference in your `config.yaml` file:
 ```
@@ -91,7 +91,7 @@ elvers my_config.yaml annotate
 ```
 For more details on reference specification, see the [get_reference documentation](get_reference.md). For annotation configuration, see below.
 
-Scenario 2: You've previously run an assembly program via `elvers`:
+**Scenario 2: You've previously run an assembly program via `elvers`:**
 
 You _can_ provide the built reference in the same manner as above. However, if you're running more workflows in the same directory, you can also just specify the name of the assembly program that you used to generate the assembly. This will *not* rerun the assembly (unless you provide new input files). Instead, this will allow `elvers` to know where to look for your previously-generated reference     file. Because we enable multiple referene generation programs, we don't want to assume
 which reference you'd like to use for downstream steps (in fact, if you provide multiple references, `elvers` will run the downstream steps on all references, assuming you provide unique               `reference_extension` parameters so that the references are uniquely named.
@@ -173,7 +173,7 @@ There are a few other options we can add to customize the name of the output dir
   - `basename: NAME`: helps determine file names and output directory (by default: `BASENAME_out`)
   - `experiment: EXPERIMENT`: some additional "experiment" info to add to the output directory name ( outdir: `BASENAME_EXPERIMENT_out`)
   - `out_path: /full/path`: if you want to redirect the output to some location *not* under the `elvers` directory.
-  - Finally, to specify a specific set of workflows or tools to use, add `workflows` to your `yaml` file:
+  - Finally, to specify a specific set of workflows or tools to use, add `workflows` to your `yaml` file. In this case, we just want to run `fastqc` and `trimmomatic`:
 
 ```
 workflows: 
