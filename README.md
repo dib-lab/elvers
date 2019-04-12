@@ -1,6 +1,6 @@
 # elvers
 
-[![Build Status](https://travis-ci.org/dib-lab/eelpond.svg?branch=master)](https://travis-ci.org/dib-lab/elvers)
+[![Build Status](https://travis-ci.org/dib-lab/elvers.svg?branch=master)](https://travis-ci.org/dib-lab/elvers)
 
 
 ```
@@ -34,10 +34,9 @@ Linux is the recommended OS. Nearly everything also works on MacOSX, but some pr
 If you don't have conda yet, install [miniconda](https://conda.io/miniconda.html) (for Ubuntu 16.04 [Jetstream image](https://use.jetstream-cloud.org/application/images/107)):
 ```
 wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
-bash Miniconda3-latest-Linux-x86_64.sh -b
-echo export PATH="$HOME/miniconda3/bin:$PATH" >> ~/.bash_profile
-source ~/.bash_profile
+bash Miniconda3-latest-Linux-x86_64.sh
 ```
+Be sure to answer 'yes' to all yes/no questions. You'll need to restart your terminal for conda to be active.
 
 ## Create a working environment and install `elvers`!
 

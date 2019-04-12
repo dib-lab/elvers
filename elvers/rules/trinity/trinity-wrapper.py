@@ -40,6 +40,6 @@ if not seqtype:
 outdir = path.dirname(snakemake.output[0])
 assert 'trinity' in outdir, "output directory name must contain 'trinity'"
 
-log = snakemake.log_fmt_shell(stdout=False, stderr=True)
+log = snakemake.log_fmt_shell(stdout=True, stderr=True)
 
 shell("Trinity {input_cmd} --CPU {snakemake.threads} --max_memory {max_memory} --seqType {seqtype} --output {outdir} {snakemake.params.extra} {log}")
