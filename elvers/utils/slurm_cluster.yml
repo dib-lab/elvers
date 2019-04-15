@@ -1,4 +1,4 @@
-# slurm_cluster.yml - cluster configuration for eelpond
+# slurm_cluster.yml - cluster configuration for elvers
 __default__:
     account: account_name
     partition: partition_name 
