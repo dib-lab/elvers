@@ -2,10 +2,10 @@ sample	unit	fq1	fq2	condition
 0Hour	001	https://s3-us-west-2.amazonaws.com/eelpond.ucdavis.edu/nema-extract/0Hour_001_1.fq.gz	https://s3-us-west-2.amazonaws.com/eelpond.ucdavis.edu/nema-extract/0Hour_001_2.fq.gz	time0
 0Hour	002	https://s3-us-west-2.amazonaws.com/eelpond.ucdavis.edu/nema-extract/0Hour_002_1.fq.gz	https://s3-us-west-2.amazonaws.com/eelpond.ucdavis.edu/nema-extract/0Hour_002_2.fq.gz	time0
 0Hour	003	https://s3-us-west-2.amazonaws.com/eelpond.ucdavis.edu/nema-extract/0Hour_003_1.fq.gz	https://s3-us-west-2.amazonaws.com/eelpond.ucdavis.edu/nema-extract/0Hour_003_2.fq.gz	time0
-0Hour	004	https://s3-us-west-2.amazonaws.com/eelpond.ucdavis.edu/nema-extract/0Hour_004_1.fq.gz	https://s3-us-west-2.amazonaws.com/eelpond.ucdavis.edu/nema-extract/0Hour_004_2.fq.gz	time0
-0Hour	005	https://s3-us-west-2.amazonaws.com/eelpond.ucdavis.edu/nema-extract/0Hour_005_1.fq.gz	https://s3-us-west-2.amazonaws.com/eelpond.ucdavis.edu/nema-extract/0Hour_005_2.fq.gz	time0
+0Hourb	004	https://s3-us-west-2.amazonaws.com/eelpond.ucdavis.edu/nema-extract/0Hour_004_1.fq.gz	https://s3-us-west-2.amazonaws.com/eelpond.ucdavis.edu/nema-extract/0Hour_004_2.fq.gz	time0
+0Hourb	005	https://s3-us-west-2.amazonaws.com/eelpond.ucdavis.edu/nema-extract/0Hour_005_1.fq.gz	https://s3-us-west-2.amazonaws.com/eelpond.ucdavis.edu/nema-extract/0Hour_005_2.fq.gz	time0
 6Hour	001	https://s3-us-west-2.amazonaws.com/eelpond.ucdavis.edu/nema-extract/6Hour_001_1.fq.gz	https://s3-us-west-2.amazonaws.com/eelpond.ucdavis.edu/nema-extract/6Hour_001_2.fq.gz	time6
 6Hour	002	https://s3-us-west-2.amazonaws.com/eelpond.ucdavis.edu/nema-extract/6Hour_002_1.fq.gz	https://s3-us-west-2.amazonaws.com/eelpond.ucdavis.edu/nema-extract/6Hour_002_2.fq.gz	time6
 6Hour	003	https://s3-us-west-2.amazonaws.com/eelpond.ucdavis.edu/nema-extract/6Hour_003_1.fq.gz	https://s3-us-west-2.amazonaws.com/eelpond.ucdavis.edu/nema-extract/6Hour_003_2.fq.gz	time6
-6Hour	004	https://s3-us-west-2.amazonaws.com/eelpond.ucdavis.edu/nema-extract/6Hour_004_1.fq.gz	https://s3-us-west-2.amazonaws.com/eelpond.ucdavis.edu/nema-extract/6Hour_004_2.fq.gz	time6
-6Hour	005	https://s3-us-west-2.amazonaws.com/eelpond.ucdavis.edu/nema-extract/6Hour_005_1.fq.gz	https://s3-us-west-2.amazonaws.com/eelpond.ucdavis.edu/nema-extract/6Hour_005_2.fq.gz	time6
+6Hourb	004	https://s3-us-west-2.amazonaws.com/eelpond.ucdavis.edu/nema-extract/6Hour_004_1.fq.gz	https://s3-us-west-2.amazonaws.com/eelpond.ucdavis.edu/nema-extract/6Hour_004_2.fq.gz	time6
+6Hourb	005	https://s3-us-west-2.amazonaws.com/eelpond.ucdavis.edu/nema-extract/6Hour_005_1.fq.gz	https://s3-us-west-2.amazonaws.com/eelpond.ucdavis.edu/nema-extract/6Hour_005_2.fq.gz	time6

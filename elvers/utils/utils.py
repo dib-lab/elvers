@@ -128,10 +128,11 @@ def handle_reference_input(config, configfile):
         else:
             program_params['gene_trans_map'] = ''
             config['no_gene_trans_map']= True
+            extensions = {'base': ['.fasta']}
     # grab user-input reference extension
     input_reference_extension = program_params.get('reference_extension', '_input')
     extensions['reference_extensions'] = [input_reference_extension]
-    config['get_reference'] = {'program_params': program_params, 'eelpond_params': {'extensions':extensions}}
+    config['get_reference'] = {'program_params': program_params, 'elvers_params': {'outputs': {'extensions':extensions}}}
     return config, input_reference_extension
 
 def handle_samples_input(config, configfile):
@@ -181,29 +182,26 @@ def generate_targs(outdir, basename, samples, ref_exts=[''], base_exts = None, r
             read_targets+=[join(outdir, name + e) for e in se_ext for name in se_names]
         if pe_ext and len(pe_names) > 0:
             read_targets+=[join(outdir, name + e) for e in pe_ext for name in pe_names]
-
     # handle base targets, e.g. refname_ext.fasta or refname_ext.stats
     read_targs = []
     base_targs = []
     # build base targets (using reference extensions)
     if ref_exts:
-        for ref_e in ref_exts:
-            refname = basename + ref_e
-            if base_exts:
-                for base_extension in base_exts:
-                    base_targets += [join(outdir, refname + e) for e in base_exts]
-            if read_targets:
-                # handle read targets that contain reference info
-                read_targs+= [t.replace("__reference__", refname) for t in read_targets] #should return read_targets if nothing to replace
+        references = [basename + e for e in ref_exts]
     else:
-        read_targs = read_targets
+        references = [basename]
+    for refname in references:
+        if base_exts:
+            base_targets += [join(outdir, refname + e) for e in base_exts]
+        if read_targets:
+            # handle read targets that contain reference info
+            read_targs+= [t.replace("__reference__", refname) for t in read_targets] #should return read_targets if nothing to replace
     #handle contrasts within the base targets
     if contrasts and base_targets:
         for c in contrasts:
             base_targs = [t.replace("__contrast__", c) for t in base_targets]
     else:
         base_targs = base_targets
-
     # handle outputs with no name into (e.g. multiqc)
     if other_exts:
         # no extension, just single filename that we don't want to generate for multiple reference extensions
@@ -228,6 +226,7 @@ def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, 
         out_ref_exts = out_exts.get('reference_extensions', ['']) # override generals with rule-specific reference extensions
     else:
         out_ref_exts = ref_exts
+
     outputs = generate_targs(outdir, basename, samples, out_ref_exts, out_exts.get('base', None),out_exts.get('read'), out_exts.get('other'), contrasts)
     rule_config['elvers_params']['outputs']['output_files'] = outputs
 
@@ -238,7 +237,6 @@ def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, 
     elif rulename == 'get_reference':
         reference = rule_config['program_params']['reference'] # should be present (validated) prior to here
         rule_config['elvers_params']['input_options'] = {'get_ref': {'indir': os.path.dirname(reference), 'input_files': [reference]}}
-
     else:
         all_input_exts = {}
         input_options = rule_config['elvers_params']['input_options'] # read, reference, other

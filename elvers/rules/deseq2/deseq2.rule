@@ -21,14 +21,14 @@ def get_deseq2_threads(wildcards=None):
 def get_quant(w):
     quant =[]
     inputD = {}
-    if ep_params.get('combine_units', True):
+    if ep_params['outputs'].get('combine_units'):
         sample_list = set(samples.index.get_level_values('sample'))
         quant = expand(join(quant_dir, "{sample}_x_{assembly}.salmon/quant.sf"), sample = sample_list, **w)
     else:
         # didn't combine units at the salmon level
         for s, u in samples.iterrows():
             sample, unit = u['sample'],u['unit']
-            quant+=[join(input_dir, f"{sample}_{unit}_x_{w.assembly}.salmon/quant.sf")]
+            quant+=[join(quant_dir, f"{sample}_{unit}_x_{w.assembly}.salmon/quant.sf")]
     inputD['quant'] = quant
     if deseq_params.get('gene_trans_map'):
         inputD['gene_trans_map'] = join(assembly_dir, f"{w.assembly}.fasta.gene_trans_map")

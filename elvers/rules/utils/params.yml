@@ -23,6 +23,6 @@ get_reference:
   program_params:
     reference: examples/nema.assembly.fasta
     gene_trans_map:  examples/nema.assembly.fasta.gene_trans_map
-    reference_extension: '_input'
+    reference_extension: ''
     download_ref: False
     use_ftp: False

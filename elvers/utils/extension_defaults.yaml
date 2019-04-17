@@ -59,9 +59,9 @@ default_extensions:
       extensions:
         read:
           pe:
-            - 'salmon/quant.sf'
+            - '_x___reference__.salmon/quant.sf'
           se:
-            - 'salmon/quant.sf'
+            - '_x___reference__.salmon/quant.sf'
   reference:
     fasta:
       indir: assembly
