@@ -130,7 +130,7 @@ def handle_reference_input(config, configfile):
             config['no_gene_trans_map']= True
             extensions = {'base': ['.fasta']}
     # grab user-input reference extension
-    input_reference_extension = program_params.get('reference_extension', '_input')
+    input_reference_extension = program_params.get('reference_extension', '')
     extensions['reference_extensions'] = [input_reference_extension]
     config['get_reference'] = {'program_params': program_params, 'elvers_params': {'outputs': {'extensions':extensions}}}
     return config, input_reference_extension

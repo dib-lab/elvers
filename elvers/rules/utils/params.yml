@@ -19,7 +19,6 @@ get_reference:
       extensions:
         base:
           - '.fasta'
-      #  - '.fasta.gene_trans_map'
   program_params:
     reference: examples/nema.assembly.fasta
     gene_trans_map:  examples/nema.assembly.fasta.gene_trans_map
