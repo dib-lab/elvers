@@ -1,5 +1,5 @@
 
-  ####################  Eelpond Pipeline Configfile  ####################  
+  ####################  Elvers Pipeline Configfile  ####################  
 basename: yeast
 
   ####################  quantify  ####################  
@@ -10,14 +10,14 @@ get_data:
 salmon:
   index_params:
     extra: ''
-  input_trimmomatic_trimmed: true
+  input_trimmed: true
   quant_params:
     extra: ''
     libtype: A
 trimmomatic:
   adapter_file:
-    pe_path: ep_utils/TruSeq3-PE-2.fa
-    se_path: ep_utils/TruSeq3-SE.fa
+    pe_path: utils/TruSeq3-PE-2.fa
+    se_path: utils/TruSeq3-SE.fa
   extra: ''
   trim_cmd: ILLUMINACLIP:{}:2:40:15 LEADING:2 TRAILING:2 SLIDINGWINDOW:4:15 MINLEN:25
 
@@ -35,5 +35,5 @@ deseq2:
 # define the location of the (already existing) reference transcriptome
 get_reference:
   reference: 'orf_coding.fasta.gz'
-  reference_extension: '_input'
+  #reference_extension: '_input'
 

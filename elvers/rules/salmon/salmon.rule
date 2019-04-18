@@ -12,9 +12,11 @@ combine_units = ep_params['outputs']['extensions']['read']['combine_units']
 if salmon_params.get('input_trimmed', True):
     input_dir = config['elvers_directories']['outdirs']['preprocess']
     ext = '.trim.fq.gz'
+    se_ext = 'se'
 else:
     input_dir = config['elvers_directories']['outdirs']['input_data']
     ext = '.fq.gz'
+    se_ext = '1'
 
 # get outdir
 quant_dir     = ep_params['outputs']['outdir']
@@ -38,7 +40,7 @@ def get_sample_combine_units(w):
             r1+= [join(input_dir, f"{w.sample}_{unit}_1{ext}")]
             r2+= [join(input_dir, f"{w.sample}_{unit}_2{ext}")]
         else:
-            r+= [join(input_dir, f"{w.sample}_{unit}_se{ext}")]
+            r+= [join(input_dir, f"{w.sample}_{unit}_{se_ext}{ext}")]
     if r1:
         readsD['r1'] = r1
         readsD['r2'] = r2
