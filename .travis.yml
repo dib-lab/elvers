@@ -38,6 +38,7 @@ script:
   - pytest -m "not long"
   - elvers examples/nema.yaml get_data -t 4 --restart_times=3
   - elvers examples/nema.yaml assemble -t 4
+  - elvers examples/yeast.yaml quantify -t 4 --restart_times=3
   - elvers examples/yeast.yaml quantify diffexp -t 4 --restart_times=3
   - rm -fr $HOME/miniconda/envs/test-env $HOME/miniconda/pkgs/cache
   - find $HOME/miniconda -type f -printf '%TY-%Tm-%Td %TT %p\n' | sort -r | head
