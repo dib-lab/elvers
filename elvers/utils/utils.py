@@ -78,7 +78,13 @@ def read_samples(config):
         except Exception as e:
             sys.stderr.write(f"\n\tError: {samples_file} file is not properly formatted. Please fix.\n\n")
             print(e)
-    return samples
+    # check for single-unit case
+    if (samples['sample'].value_counts() > 1).any():
+        config['ignore_units'] = True
+    # column 4 is "condition", but can change name
+    if (samples.iloc[:, 4].value_counts() < 2).any():
+        config['all_replicated'] = False
+    return samples, config
 
 # sample checks
 def is_single_end(sample, unit, end = '', assembly = ''):

@@ -18,6 +18,9 @@ else:
     ext = '.fq.gz'
     se_ext = '1'
 
+if config.get('ignore_units'):
+    combine_units = False
+
 # get outdir
 quant_dir     = ep_params['outputs']['outdir']
 

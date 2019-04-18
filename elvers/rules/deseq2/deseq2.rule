@@ -18,10 +18,13 @@ def get_deseq2_threads(wildcards=None):
     few_coeffs = False if wildcards is None else len(get_contrast(wildcards)) < 10
     return 1 if len(samples) < 100 or few_coeffs else 6
 
+
+combine_units = ep_params['outputs'].get('combine_units')
+
 def get_quant(w):
     quant =[]
     inputD = {}
-    if ep_params['outputs'].get('combine_units'):
+    if combine_units and not config.get('ignore_units', False):
         sample_list = set(samples.index.get_level_values('sample'))
         quant = expand(join(quant_dir, "{sample}_x_{assembly}.salmon/quant.sf"), sample = sample_list, **w)
     else:
