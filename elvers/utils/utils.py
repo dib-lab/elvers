@@ -79,7 +79,7 @@ def read_samples(config):
             sys.stderr.write(f"\n\tError: {samples_file} file is not properly formatted. Please fix.\n\n")
             print(e)
     # check for single-unit case
-    if (samples['sample'].value_counts() > 1).any():
+    if not (samples['sample'].value_counts() > 1).any():
         config['ignore_units'] = True
     # column 4 is "condition", but can change name
     if (samples.iloc[:, 4].value_counts() < 2).any():
@@ -171,14 +171,14 @@ def check_workflow(config):
         #well this is uninformative
         sys.stderr.write("chosen workflow is not valid")
 
-def generate_targs(outdir, basename, samples, ref_exts=[''], base_exts = None, read_exts = None, other_exts = None, contrasts = []):
+def generate_targs(outdir, basename, samples, ref_exts=[''], base_exts = None, read_exts = None, other_exts = None, contrasts = [], ignore_units=False):
     base_targets, read_targets, other_targs = [],[],[]
     # handle read targets
     if read_exts:
         pe_ext = read_exts.get('pe', None)
         se_ext = read_exts.get('se', None)
         combine_units = read_exts.get('combine_units', False)
-        if combine_units:
+        if combine_units and not ignore_units:
             se_names = samples.loc[samples["fq2"].isnull(), 'sample'].tolist()
             pe_names = samples.loc[samples["fq2"].notnull(), 'sample'].tolist()
         else:
@@ -223,7 +223,7 @@ def generate_program_targs(configD, samples, basename,ref_exts, contrasts):
     targets = generate_targs(outdir, basename, samples, ref_exts, exts.get('base', None),exts.get('read'), exts.get('other'), contrasts)
     return targets
 
-def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, samples, default_exts):
+def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, samples, default_exts, ignore_units):
     contrasts = rule_config['program_params'].get('contrasts', [])
     outdir = rule_config['elvers_params']['outputs']['outdir']
     out_exts = rule_config['elvers_params']['outputs']['extensions']
@@ -233,7 +233,7 @@ def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, 
     else:
         out_ref_exts = ref_exts
 
-    outputs = generate_targs(outdir, basename, samples, out_ref_exts, out_exts.get('base', None),out_exts.get('read'), out_exts.get('other'), contrasts)
+    outputs = generate_targs(outdir, basename, samples, out_ref_exts, out_exts.get('base', None),out_exts.get('read'), out_exts.get('other'), contrasts, ignore_units)
     rule_config['elvers_params']['outputs']['output_files'] = outputs
 
     ## inputs are slightly more complicated - there are options! ##
@@ -267,12 +267,13 @@ def generate_inputs_outputs(config, samples=None):
     ref_exts = config.get('reference_extensions', [""])
     home_outdir = config['elvers_directories']['out_dir']
     ext_defaults = read_yaml(find_input_file("extension_defaults.yaml", name = "extension defaults", add_paths=['utils']))
+    ignore_units = config.get('ignore_units', False)
     for key, val in config.items():
         if isinstance(val, dict):
             if val.get('elvers_params', None):
                 rulename = key
                 rule_config = val
-                config[rulename] = generate_rule_targs(home_outdir, base, ref_exts, rule_config, rulename, samples, ext_defaults)
+                config[rulename] = generate_rule_targs(home_outdir, base, ref_exts, rule_config, rulename, samples, ext_defaults, ignore_units)
     return config
 
 def generate_all_targs(configD, samples=None):

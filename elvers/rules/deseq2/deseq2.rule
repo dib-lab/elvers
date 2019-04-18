@@ -20,11 +20,12 @@ def get_deseq2_threads(wildcards=None):
 
 
 combine_units = ep_params['outputs'].get('combine_units')
+ignore_units =  config.get('ignore_units', False)
 
 def get_quant(w):
     quant =[]
     inputD = {}
-    if combine_units and not config.get('ignore_units', False):
+    if combine_units and not ignore_units:
         sample_list = set(samples.index.get_level_values('sample'))
         quant = expand(join(quant_dir, "{sample}_x_{assembly}.salmon/quant.sf"), sample = sample_list, **w)
     else:
