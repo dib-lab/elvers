@@ -27,7 +27,6 @@ deseq2:
     wt-vs-mut:
     - wt
     - mut
-  gene_trans_map: false
   pca:
     labels:
     - condition
@@ -35,5 +34,4 @@ deseq2:
 # define the location of the (already existing) reference transcriptome
 get_reference:
   reference: 'orf_coding.fasta.gz'
-  #reference_extension: '_input'
 
