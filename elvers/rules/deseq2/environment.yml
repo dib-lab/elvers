@@ -5,6 +5,7 @@ channels:
 dependencies:
   - r-base=3.5.1
   - bioconductor-deseq2=1.22.1
-  - bioconductor-genomeinfodbdata=1.2.0 
-  - bioconductor-biocparallel 
-  - bioconductor-tximport 
+  - bioconductor-genomeinfodbdata
+  - bioconductor-genomeinfodb
+  - bioconductor-biocparallel
+  - bioconductor-tximport

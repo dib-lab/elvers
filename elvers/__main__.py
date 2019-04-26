@@ -248,7 +248,7 @@ To build an editable configfile to start work on your own data, run:
             targs+=['get_data']
             try:
                 configD = handle_samples_input(configD, configfile)
-                samples = read_samples(configD)
+                samples, configD = read_samples(configD)
             except Exception as e:
                 sys.stderr.write("\n\tError: trying to get input data, but can't find the samples file. Please fix.\n\n")
                 print(e)

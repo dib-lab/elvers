@@ -43,7 +43,7 @@ def run_ruletest(rulename, extra_configD = {}, protein_ref = False, short = True
 
     with TempDirectory() as location:
         # copy in test data
-        os.chdir(os.path.join(here, testdir))
+        os.chdir(testdir)
         cmd = [elvers_cmd, test_yml, rulename, '--conda_prefix', conda_prefix, '--out_path', location] + add_params
         # short tests just do dryrun
         if short:
@@ -132,7 +132,7 @@ def test_paladin_short():
 
 @pytest.mark.long
 def test_paladin_long():
-    run_ruletest('paladin', protein_ref = True,short = False)
+    run_ruletest('paladin', protein_ref = True, short = False)
 
 def test_rcorrector_short():
     run_ruletest('rcorrector')
