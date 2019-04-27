@@ -1,4 +1,4 @@
-fastqc_pretrim:
+fastqc:
   elvers_params:
     citations:
       - "FastQC A Quality Control tool for High Throughput Sequence Data http://www.bioinformatics.babraham.ac.uk/projects/fastqc/ by S. Andrews"
@@ -25,8 +25,8 @@ fastqc_pretrim:
               - '_1_fastqc.zip'
               - '_1_fastqc.html'
       fastqc_trimmed:
-        outdir: preprocess/fastqc
         input: trimmed
+        outdir: preprocess/fastqc
         extensions:
           read:
             common_ext:
@@ -41,7 +41,7 @@ fastqc_pretrim:
               - '_se.trim_fastqc.zip'
               - '_se.trim_fastqc.html'
   program_params:
-    input:
+    inputs:
       - raw
       - trimmed
     extra: ''

@@ -151,25 +151,53 @@ def handle_samples_input(config, configfile):
         sys.stderr.write("\n\tError: trying to run `get_data` workflow, but the samples tsv file is not specified in your configfile. Please fix.\n\n")
     return config
 
-def check_workflow(config):
+#def check_workflow(config):
     # This is way too naive. Need to come up with a better version.
     # Maybe we manually check the generated snakemake targs?
     # Or just catch the snakemake error and print better help for which rule needs to be included?.
-    inputs, outputs = [],[]
+#    inputs, outputs = [],[]
+#    for key, val in config.items():
+#        if isinstance(val, dict):
+#            if val.get('elvers_params'):
+                #import pdb;pdb.set_trace()
+#                inputs += val['elvers_params']['inputs'].get('read', [])
+#                inputs += val['elvers_params']['inputs'].get('reference', [])
+#                outputs += val['elvers_params']['outputs'].get('read', [])
+#                outputs += val['elvers_params']['outputs'].get('reference', [])
+                # leaving out "other" inputs/outputs, bc they're never used as inputs (so far)
+#    try:
+#        set(inputs) == set(outputs)
+#    except:
+        #well this is uninformative
+#        sys.stderr.write("chosen workflow is not valid")
+
+
+def select_outputs(config):
+    # Here we go from "output_options" --> outputs. Mostly, we want to map inputs (program_params) directly to outputs
+    # if more than one input, then more than one output. Some of these will have different folders. How do we handle this?
+    # might need to get rid of outdir, and just do os.path.dirname on each output? Not sure yet. Or maybe we just select outputs
+    # so that we can build all required directories and generate the output targets for snakemake, then put outputs: named_output
+    # = same structure as "output_options", just different name, bc it signifies that we're making ALL these outputs.
+    reference_extensions = config.get('reference_extensions', [])
     for key, val in config.items():
         if isinstance(val, dict):
             if val.get('elvers_params'):
-                #import pdb;pdb.set_trace()
-                inputs += val['elvers_params']['inputs'].get('read', [])
-                inputs += val['elvers_params']['inputs'].get('reference', [])
-                outputs += val['elvers_params']['outputs'].get('read', [])
-                outputs += val['elvers_params']['outputs'].get('reference', [])
-                # leaving out "other" inputs/outputs, bc they're never used as inputs (so far)
-    try:
-        set(inputs) == set(outputs)
-    except:
-        #well this is uninformative
-        sys.stderr.write("chosen workflow is not valid")
+                # this is a program! proceed
+                inputs = val['program_params']['inputs']
+                outputs = {}
+                ref_exts = []
+                for output_name, output_info in val['elvers_params']['output_options'].items():
+                    import pdb;pdb.set_trace()
+                    if output_name in inputs:
+                        outputs[output_name] = output_info
+                        ref_exts = output_info['extensions'].get('reference_extensions', [])
+                        reference_extensions+=ref_exts
+                import pdb;pdb.set_trace()
+                config[key][val]['elvers_params']['outputs'] = outputs
+                # maybe we also want to pop out the output_options, to minimize clutter
+    config['reference_extensions'] = reference_extensions
+    return config
+
 
 def generate_targs(outdir, basename, samples, ref_exts=[''], base_exts = None, read_exts = None, other_exts = None, contrasts = [], ignore_units=False):
     base_targets, read_targets, other_targs = [],[],[]
@@ -279,20 +307,41 @@ def generate_inputs_outputs(config, samples=None):
     # check_inputs
     all_rules = []
     all_extensions = {'read':[], 'base':[], 'other':[]}
-    # this runs through and finds all available extensions from the config. BUT TO DO - we actually want to do this
-# from all rules in the elvers dir instead! (in case things have been run previously, and are not being run right now!)
-    for rulename, val in config.items():
-        if val and isinstance(val, dict):
-            if val.get('elvers_params'):
-                all_rules.append(rulename)
-                exts = val['elvers_params']['outputs']
-                name = exts.get('name', rulename)
-                if exts['extensions'].get('read'):
-                    all_extensions['read'] = {name: exts}
-                if exts['extensions'].get('base'):
-                    all_extensions['base'] = {name: exts}
-                if exts['extensions'].get('other'):
-                    all_extensions['other'] = {name: exts}
+
+    ### get all available inputs instead of just the ones in this config file###
+    rules_dir = config['elvers_directories'].get('rules', 'rules')
+    all_rules = glob.glob(os.path.join( rules_dir, '*', '*.rule'))
+    all_params = {}
+    for rule in all_rules:
+        try:
+            rule_name = os.path.basename(rule).split('.rule')[0]
+            all_params[rule_name] = get_params(rule_name, os.path.dirname(rule))
+        except:
+            sys.stderr.write(f"\n\tError: Can't decipher params.yml for elvers rule {rule_name}. Please fix.\n\n")
+    for rulename, val in all_params.items():
+        output_options = val['elvers_params']['output_options']
+        #exts = val['elvers_params']['output_options']
+        for out_name, val in output_options.items():
+            if val['extensions'].get('read'):
+                all_extensions['read'] = {out_name: val}
+            if val['extensions'].get('base'):
+                all_extensions['base'] = {name: val}
+            if val['extensions'].get('other'):
+                all_extensions['other'] = {name: val}
+    # this runs through and finds all available extensions from the config.
+    #for rulename, val in config.items():
+    #    if val and isinstance(val, dict):
+    #        if val.get('elvers_params'):
+    #            all_rules.append(rulename)
+    #            exts = val['elvers_params']['outputs']
+    #            name = exts.get('name', rulename)
+    #            if exts['extensions'].get('read'):
+    #                all_extensions['read'] = {name: exts}
+    #            if exts['extensions'].get('base'):
+    #                all_extensions['base'] = {name: exts}
+    #            if exts['extensions'].get('other'):
+    #                all_extensions['other'] = {name: exts}
+    #import pdb;pbd.set_trace()
     for rule in all_rules:
         config[rule] = generate_rule_targs(home_outdir, base, ref_exts, config[rule], rule, samples, all_extensions)
     # previous iteration of this:
