@@ -6,8 +6,10 @@ fastqc_pretrim:
     input_options:
       read:
         - raw
+        - trimmed
     output_options:
       fastqc_pretrim:
+        input: raw
         outdir: preprocess/fastqc
         extensions: 
           read:
@@ -24,6 +26,7 @@ fastqc_pretrim:
               - '_1_fastqc.html'
       fastqc_trimmed:
         outdir: preprocess/fastqc
+        input: trimmed
         extensions:
           read:
             common_ext:

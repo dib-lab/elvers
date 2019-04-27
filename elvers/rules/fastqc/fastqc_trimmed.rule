@@ -25,7 +25,7 @@ def get_input(wildcards):
         return expand(join(input_dir, '{sample}_{unit}_{end}{ext}'), **wildcards, ext=ext) 
     return expand(join(input_dir, '{sample}_{unit}_{end}{ext}'), **wildcards, ext=ext)
 
-rule fastqc_pretrim:
+rule fastqc:
     input: get_input
     output:
         html=join(output_dir,'{sample}_{unit}_{end}_fastqc.html'),
