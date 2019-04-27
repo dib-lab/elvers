@@ -23,7 +23,7 @@ HTTP = HTTP.RemoteProvider()
 # if we need data, read in sample info. Do high-level checking in main script to make sure samples exists, prior to getting here.
 samples = None
 if config.get('get_data', None):
-    samples = read_samples(config)
+    samples, config = read_samples(config)
 
     # note, this function *needs* to be in this file, or added somewhere it can be accessed by all rules
     def is_single_end(sample, unit, end = '', assembly = ''):

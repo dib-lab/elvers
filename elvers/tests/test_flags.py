@@ -43,12 +43,12 @@ Job counts:
 	1	rename_trinity_fasta
 	1	rename_trinity_gene_trans_map
 	1	salmon_index
-	2	salmon_quant_combine_units
+	4	salmon_quant_combine_units
 	1	sourmash_compute_assembly
 	10	sourmash_compute_pe_interleaved
 	10	trimmomatic_pe
 	1	trinity
-	110'''
+	112'''
         # Skip the first element b/c empty line
         for line in verify_present.split("\n")[1:]:
             self.assertIn(line,p_out)
