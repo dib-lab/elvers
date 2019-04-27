@@ -149,6 +149,8 @@ To build an editable configfile to start work on your own data, run:
     parser.add_argument('-r', '--print_rules', action='store_true', help='just show available rules')
     parser.add_argument('-p', '--print_params', action='store_true', help='print parameters for chosen workflows or rules')
     parser.add_argument('--build_config', action='store_true', help='just build the default parameter file')
+    parser.add_argument('--cluster_config', default=None)
+    parser.add_argument('--cluster_cmd', default=None)
 
     # advanced args below (maybe separate so these don't always print out)
     parser.add_argument('--report', default="report.html", help='filename for a final report of this run. This will be in the logs dir, unless you provide an absolute path.')
@@ -246,7 +248,7 @@ To build an editable configfile to start work on your own data, run:
             targs+=['get_data']
             try:
                 configD = handle_samples_input(configD, configfile)
-                samples = read_samples(configD)
+                samples, configD = read_samples(configD)
             except Exception as e:
                 sys.stderr.write("\n\tError: trying to get input data, but can't find the samples file. Please fix.\n\n")
                 print(e)
@@ -273,14 +275,15 @@ To build an editable configfile to start work on your own data, run:
 
         # if we're adding any additional contrasts, get rid of the example ones!
         # check extra configs
-        if extra_configs.get('deseq2'):
-           if extra_configs['deseq2']['program_params'].get('contrasts'):
-               paramsD['deseq2']['program_params']['contrasts'] = {} # get rid of default contrasts
+        if 'deseq2' in targs:
+            if extra_configs.get('deseq2'):
+               if extra_configs['deseq2']['program_params'].get('contrasts'):
+                   paramsD['deseq2']['program_params']['contrasts'] = {} # get rid of default contrasts
 
-        # check main configfile
-        if configD.get('deseq2'):
-            if configD['deseq2']['program_params'].get('contrasts'):
-                paramsD['deseq2']['program_params']['contrasts'] = {} # get rid of default contrasts
+            # check main configfile
+            if configD.get('deseq2'):
+                if configD['deseq2']['program_params'].get('contrasts'):
+                    paramsD['deseq2']['program_params']['contrasts'] = {} # get rid of default contrasts
 
         # first update with extra configs, then with main configfile
         update_nested_dict(paramsD,extra_configs)
@@ -359,6 +362,8 @@ To build an editable configfile to start work on your own data, run:
                                      unlock=args.unlock,
                                      verbose=args.verbose, debug_dag=args.debug,
                                      conda_prefix=args.conda_prefix,
+                                     cluster_config=args.cluster_config,
+                                     cluster=args.cluster_cmd,
                                      create_envs_only=args.create_envs_only,
                                      restart_times=args.restart_times,
                                      printdag=building_dag, keepgoing=args.keep_going,

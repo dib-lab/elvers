@@ -19,10 +19,10 @@ trimmomatic:
               - "_se.trim.fq.gz"
   program_params:
     input: raw
-    trim_cmd: "ILLUMINACLIP:{}:2:40:15 LEADING:2 TRAILING:2 SLIDINGWINDOW:4:15 MINLEN:25"
+    trim_cmd: "ILLUMINACLIP:{}:2:40:15 LEADING:2 TRAILING:2 SLIDINGWINDOW:4:5 MINLEN:25"
     adapter_file:
-      pe_path: "ep_utils/TruSeq3-PE-2.fa"
-      se_path: "ep_utils/TruSeq3-SE.fa"
+      pe_path: "utils/TruSeq3-PE-2.fa"
+      se_path: "utils/TruSeq3-SE.fa"
       #pe_url: "https://raw.githubusercontent.com/timflutre/trimmomatic/master/adapters/TruSeq3-PE-2.fa"
       #se_url: "https://raw.githubusercontent.com/timflutre/trimmomatic/master/adapters/TruSeq3-SE.fa"
     extra: ''

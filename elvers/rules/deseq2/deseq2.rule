@@ -18,17 +18,21 @@ def get_deseq2_threads(wildcards=None):
     few_coeffs = False if wildcards is None else len(get_contrast(wildcards)) < 10
     return 1 if len(samples) < 100 or few_coeffs else 6
 
+
+combine_units = ep_params['outputs'].get('combine_units')
+ignore_units =  config.get('ignore_units', False)
+
 def get_quant(w):
     quant =[]
     inputD = {}
-    if ep_params.get('combine_units', True):
+    if combine_units and not ignore_units:
         sample_list = set(samples.index.get_level_values('sample'))
         quant = expand(join(quant_dir, "{sample}_x_{assembly}.salmon/quant.sf"), sample = sample_list, **w)
     else:
         # didn't combine units at the salmon level
         for s, u in samples.iterrows():
             sample, unit = u['sample'],u['unit']
-            quant+=[join(input_dir, f"{sample}_{unit}_x_{w.assembly}.salmon/quant.sf")]
+            quant+=[join(quant_dir, f"{sample}_{unit}_x_{w.assembly}.salmon/quant.sf")]
     inputD['quant'] = quant
     if deseq_params.get('gene_trans_map'):
         inputD['gene_trans_map'] = join(assembly_dir, f"{w.assembly}.fasta.gene_trans_map")
@@ -44,7 +48,7 @@ if deseq_params.get('gene_trans_map'):
         params:
             samples=config["get_data"]["program_params"]["samples"]
         conda:
-            "environment.yml"
+            "env_1.18.yml"
         log:
             join(logs_dir,  'deseq2', "{assembly}.deseq2.init.log")
         benchmark:
@@ -61,7 +65,7 @@ else:
         params:
             samples=config["get_data"]["program_params"]["samples"]
         conda:
-            "environment.yml"
+            "env_1.18.yml" 
         log:
             join(logs_dir,  'deseq2', "{assembly}.deseq2.init.log")
         benchmark:
@@ -79,7 +83,7 @@ rule deseq2_pca:
     params:
         pca_labels=deseq_params["pca"]["labels"]
     conda:
-        "environment.yml"
+        "env_1.18.yml" 
     log:
         join(logs_dir, 'deseq2', "{assembly}.deseq2.pca.log")
     benchmark:
@@ -104,7 +108,7 @@ rule deseq2:
     params:
         contrast=get_contrast
     conda:
-        "environment.yml"
+        "env_1.18.yml" 
     log:
         join(logs_dir, 'deseq2', "{assembly}.c{contrast}.deseq2.log")
     benchmark:
