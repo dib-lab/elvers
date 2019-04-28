@@ -110,7 +110,7 @@ def build_dirs(ep_dir, params):
         # if no outdir, just use program name
         for out_name, out_info in params[prog]['elvers_params']['outputs'].items():
             prog_dir = out_info.get('outdir', prog)
-            params[prog]['elvers_params']['outputs']['out_name']['outdir'] = os.path.join(outdir, prog_dir)
+            params[prog]['elvers_params']['outputs'][out_name]['outdir'] = os.path.join(outdir, prog_dir)
     return params
 
 def main():
@@ -306,8 +306,6 @@ To build an editable configfile to start work on your own data, run:
 
         # OUTPUT_OPTIONS --> need to have solid OUTPUTS by here.
         paramsD = select_outputs(paramsD)
-
-
 
         # use params to build directory structure
         paramsD = build_dirs(thisdir, paramsD)

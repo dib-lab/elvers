@@ -3,13 +3,14 @@ dammit:
     input_options:
       reference:
         - fasta
-    outputs:
-      name: dammit_annotation
-      outdir: annotation
-      extensions: 
-        base: 
-          - .dammit.gff3
-          - .dammit.fasta
+    output_options:
+      dammit_annotation:
+        input: fasta
+        outdir: annotation
+        extensions: 
+          base: 
+            - .dammit.gff3
+            - .dammit.fasta
     help: "Dammit is a de novo transcriptome annotation program. Please input a reference to annotate, or generate one via a de novo assembly program"
   program_params:
     input:

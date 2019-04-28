@@ -10,22 +10,23 @@ salmon:
         - raw
       reference:
         - fasta
-    outputs:
-      name: salmon_quant
-      outdir: quant
-      extensions: 
-        read:
-          combine_units: True
-          pe:
-            - _x___reference__.salmon/quant.sf
-            - _x___reference__.salmon/lib_format_counts.json
-          se:
-            - _x___reference__.salmon/quant.sf
-            - _x___reference__.salmon/lib_format_counts.json
-        base:
-          - .salmonindex
+    output_options:
+      salmon_quant:
+        input: trimmed
+        outdir: quant
+        extensions: 
+          read:
+            combine_units: True
+            pe:
+              - _x___reference__.salmon/quant.sf
+              - _x___reference__.salmon/lib_format_counts.json
+            se:
+              - _x___reference__.salmon/quant.sf
+              - _x___reference__.salmon/lib_format_counts.json
+          base:
+            - .salmonindex
   program_params:
-    input: 
+    inputs: 
       - trimmed
     index_params:
       extra: '' # extra info for the program

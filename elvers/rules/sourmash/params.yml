@@ -6,19 +6,20 @@ sourmash:
         - raw
       reference:
         - fasta
-    outputs:
-      name: sourmash_signature
-      outdir: sourmash 
-      extensions: 
-        base:
-          - .sig
-        read:
-          pe:
-            - .paired.khmer.fq.sig
-          se:
-            - .se.khmer.fq.sig 
+    output_options:
+      sourmash_signature:
+        input: any
+        outdir: sourmash 
+        extensions: 
+          base:
+            - .sig
+          read:
+            pe:
+              - .paired.khmer.fq.sig
+            se:
+              - .se.khmer.fq.sig 
   program_params:
-    input: 
+    inputs: 
       - kmer_trimmed
       - fasta
     k_size: 31

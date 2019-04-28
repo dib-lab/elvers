@@ -4,6 +4,7 @@ import yaml
 import collections
 import pandas as pd
 from os.path import join
+import glob
 from snakemake.utils import validate
 
 # general utilities
@@ -182,19 +183,23 @@ def select_outputs(config):
     for key, val in config.items():
         if isinstance(val, dict):
             if val.get('elvers_params'):
-                # this is a program! proceed
-                inputs = val['program_params']['inputs']
-                outputs = {}
-                ref_exts = []
-                for output_name, output_info in val['elvers_params']['output_options'].items():
-                    import pdb;pdb.set_trace()
-                    if output_name in inputs:
-                        outputs[output_name] = output_info
-                        ref_exts = output_info['extensions'].get('reference_extensions', [])
-                        reference_extensions+=ref_exts
-                import pdb;pdb.set_trace()
-                config[key][val]['elvers_params']['outputs'] = outputs
-                # maybe we also want to pop out the output_options, to minimize clutter
+                if key not in ['get_data', 'get_reference']:
+                    # this is a program! proceed
+                    inputs = val['program_params']['inputs']
+                    outputs = {}
+                    ref_exts = []
+                    for output_name, output_info in val['elvers_params']['output_options'].items():
+                        input_for_this_output = output_info['input']
+                        if input_for_this_output in inputs: # choose the output that corresponds to the input going in
+                            outputs[output_name] = output_info
+                            ref_exts = output_info['extensions'].get('reference_extensions', [])
+                            reference_extensions+=ref_exts
+                    val['elvers_params']['outputs'] = outputs
+                else:
+                    val['elvers_params']['outputs'] = val['elvers_params']['output_options']
+                del val['elvers_params']['output_options']
+                config[key] = val
+            # maybe we also want to get rid of the output_options, to minimize clutter
     config['reference_extensions'] = reference_extensions
     return config
 
@@ -319,6 +324,8 @@ def generate_inputs_outputs(config, samples=None):
         except:
             sys.stderr.write(f"\n\tError: Can't decipher params.yml for elvers rule {rule_name}. Please fix.\n\n")
     for rulename, val in all_params.items():
+        print(rulename)
+        print(val)
         output_options = val['elvers_params']['output_options']
         #exts = val['elvers_params']['output_options']
         for out_name, val in output_options.items():

@@ -3,8 +3,9 @@ trimmomatic:
     input_options:
       read:
         - raw
-    outputs:
+    output_options:
       trimmed:
+        input: raw
         outdir: preprocess
         extensions:
           read:
@@ -18,7 +19,8 @@ trimmomatic:
             se:
               - "_se.trim.fq.gz"
   program_params:
-    input: raw
+    inputs: 
+      - raw
     trim_cmd: "ILLUMINACLIP:{}:2:40:15 LEADING:2 TRAILING:2 SLIDINGWINDOW:4:5 MINLEN:25"
     adapter_file:
       pe_path: "utils/TruSeq3-PE-2.fa"

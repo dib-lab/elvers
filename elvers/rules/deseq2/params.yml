@@ -3,22 +3,24 @@ deseq2:
     input_options:
       read:
         - salmon_quants
-    outputs:
-      name: deseq2_diffexp
-      outdir: diffexp
-      combine_units: True # needs to match with salmon's combine_units
-      extensions:
-        base:
-          - .deseq2.rds
-          - .deseq2.pca.pdf
-          - .c__contrast__.deseq2.tsv
-          - .c__contrast__.deseq2.padj_0.1.tsv
-          - .c__contrast__.deseq2.ma-plot.pdf
+    output_options:
+      deseq2_diffexp:
+        input: salmon_quants
+        outdir: diffexp
+        combine_units: True # needs to match with salmon's combine_units
+        extensions:
+          base:
+            - .deseq2.rds
+            - .deseq2.pca.pdf
+            - .c__contrast__.deseq2.tsv
+            - .c__contrast__.deseq2.padj_0.1.tsv
+            - .c__contrast__.deseq2.ma-plot.pdf
     help: "deseq2 can be used to conduct differential expression analysis of RNAseq data."
     citations: 
       - "Love, M.I., Huber, W., Anders, S. (2014) Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2. Genome Biology, 15:550. 10.1186/s13059-014-0550-8"
   program_params:
-    input: salmon_quant
+    inputs: 
+      - salmon_quant
     gene_trans_map: True
     # contrasts for the deseq2 results method
     contrasts:

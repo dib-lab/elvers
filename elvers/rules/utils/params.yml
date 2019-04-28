@@ -11,6 +11,8 @@ get_data:
             se:
               - "_1.fq.gz"
   program_params:
+    inputs:
+      - samples_file
     download_data: False
     use_ftp: False
 get_reference:
