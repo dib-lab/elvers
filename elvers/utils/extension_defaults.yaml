@@ -16,7 +16,7 @@ available_extensions:
         - .c__contrast__.deseq2.tsv
         - .c__contrast__.deseq2.padj_0.1.tsv
         - .c__contrast__.deseq2.ma-plot.pdf
-      input: salmon_quants
+      input: salmon_quant
       outdir: diffexp
     fasta:
       extensions:

@@ -2,10 +2,10 @@ deseq2:
   elvers_params:
     input_options:
       read:
-        - salmon_quants
+        - salmon_quant
     output_options:
       deseq2_diffexp:
-        input: salmon_quants
+        input: salmon_quant
         outdir: diffexp
         combine_units: True # needs to match with salmon's combine_units
         extensions:
