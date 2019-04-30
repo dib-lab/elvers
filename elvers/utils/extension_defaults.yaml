@@ -62,7 +62,7 @@ available_extensions:
           se:
           - _x___reference__.salmon/quant.sf
           - _x___reference__.salmon/lib_format_counts.json
-      input: trimmed
+      input: any
       outdir: quant
     sourmash_signature: &id003
       extensions:

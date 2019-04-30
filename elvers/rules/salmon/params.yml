@@ -12,7 +12,7 @@ salmon:
         - fasta
     output_options:
       salmon_quant:
-        input: trimmed
+        input: any
         outdir: quant
         extensions: 
           read:
@@ -28,6 +28,7 @@ salmon:
   program_params:
     inputs: 
       - trimmed
+      - fasta
     index_params:
       extra: '' # extra info for the program
     quant_params:
