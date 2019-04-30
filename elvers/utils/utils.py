@@ -182,7 +182,6 @@ def select_outputs(config):
     for key, val in config.items():
         if isinstance(val, dict):
             if val.get('elvers_params'):
-                print(key)
                 if key not in ['get_data', 'get_reference']:
                     # this is a program! proceed
                     inputs = val['program_params']['inputs']
@@ -263,7 +262,6 @@ def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, 
     outdir = ""
     for outname, output_info in rule_config['elvers_params']['outputs'].items():
         outdir = output_info['outdir']
-        print(outdir)
         out_exts = output_info['extensions']
         if out_exts.get('reference_extensions'): # this program is an assembler or only works with specific assemblies
             out_ref_exts = out_exts.get('reference_extensions', ['']) # override generals with rule-specific reference extensions
@@ -330,6 +328,7 @@ def generate_inputs_outputs(config, samples=None):
             all_params[rule_name] = get_params(rule_name, os.path.dirname(rule))
         except:
             sys.stderr.write(f"\n\tError: Can't decipher params.yml for elvers rule {rule_name}. Please fix.\n\n")
+    available_exts = {}
     for rulename, val in all_params.items():
         output_options = val['elvers_params']['output_options']
         #exts = val['elvers_params']['output_options']
@@ -340,6 +339,10 @@ def generate_inputs_outputs(config, samples=None):
                 all_extensions['base'][out_name] = val
             if val['extensions'].get('other'):
                 all_extensions['other'][out_name] = val
+
+    available_exts['available_extensions'] = all_extensions
+    utils_dir = os.path.dirname(os.path.abspath(__file__))
+    write_yaml(available_exts, os.path.join(utils_dir, 'extension_defaults.yaml'))
     include_rulenames = [os.path.basename(x).split('.rule')[0] for x in config['include_rules']]
     for rule in rulenames:
         if rule in config.keys():

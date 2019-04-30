@@ -2,22 +2,11 @@ multiqc:
   elvers_params:
     input_options:
       read:
-        - preprocess_fastqc
+        - fastqc_pretrim
+        - fastqc_trimmed 
     output_options:
-      multiqc_pretrim:
-        input: fastqc_pretrim 
-        outdir: preprocess/fastqc
-        extensions:
-          other:
-            - multiqc.html
-      multiqc_trimmed:
-        input: fastqc_trimmed
-        outdir: preprocess/fastqc
-        extensions:
-          other:
-            - multiqc.html
       multiqc_all:
-        input: fastqc_pretrim
+        input: any 
         outdir: preprocess/fastqc
         extensions:
           other:
