@@ -7,52 +7,18 @@ logs_dir  = config['elvers_directories']['logs']
 elvers_params = config[prog]['elvers_params']
 prog_params = config[prog]['program_params']
 
-
 inputs = prog_params['inputs']
-#input_info = []
-
-#input_files = []
-#input_dirs = []
-#exts = []
-
-#for inp in inputs:
-#    input_info = elvers_params['input_options'][inp]
-#    input_files += input_info['input_files']
-#    input_dirs += input_info['outdir']
-    #exts += input_info['extensions']['read']['common_ext']
-    #input_info.append((input_dir, ext))
-
-#exts = ['fq.gz', 'trim.fq.gz']
 
 # set output dir
 output_dir = os.path.dirname(elvers_params['outputs']['output_files'][0])
-# set default input dir, extensions
-#input_dir = config['elvers_directories']['outdirs']['input_data']
-#ext = '.fq.gz'
-
-# get input we're using in this case
-#input_name = prog_params.get('input').lower()
-# update input_dir, ext
-#input_dir = elvers_params['input_options'][input_name].get('indir', input_dir)
-#ext = elvers_params['input_options'][input_name]['extensions']['read'].get('common_ext', ext)
-#ext_prefix = ext.split('.fq')[0] # get extension prior to ".fq" 
-
-#def get_input(wildcards):
-#    if not is_single_end(**wildcards): 
-#        inp = expand(join(input_dir, '{sample}_{unit}_{end}{ext}'), **wildcards, input_dir = input_dirs, ext=exts) 
-#        print(inp)
-#        inputs = [x for x in inp if x in input_files]
-#        return inputs
-#    inp = expand(join(input_dir, '{sample}_{unit}_{end}{ext}'), **wildcards, ext=exts)
-#    inputs = [x for x in inp if x in input_files]
-#    return inputs
 
 if "raw" in inputs:
+    raw_dir = os.path.dirname(elvers_params['input_options']['raw']['input_files'][0])
+ 
     def get_pretrim(wildcards):
-        input_dir = os.path.dirname(elvers_params['input_options']['raw']['input_files'][0])
         if not is_single_end(**wildcards): 
-            return expand(join(input_dir, '{sample}_{unit}_{end}.fq.gz'), **wildcards)
-        return expand(join(input_dir, '{sample}_{unit}_{end}.fq.gz'), **wildcards)
+            return expand(join(raw_dir, '{sample}_{unit}_{end}.fq.gz'), **wildcards)
+        return expand(join(raw_dir, '{sample}_{unit}_{end}.fq.gz'), **wildcards)
     
     rule fastqc_pretrim:
         input: get_pretrim
@@ -62,7 +28,7 @@ if "raw" in inputs:
         params: 
             prog_params.get('extra', "")
         wildcard_constraints:
-            end = ['_1', '_2', '_se']
+            end = ['1', '2', 'se']
         log: 
             join(logs_dir, 'fastqc/{sample}_{unit}_{end}.log')
         benchmark:
@@ -71,28 +37,22 @@ if "raw" in inputs:
         script: "wrapper.py"
 
 if "trimmed" in inputs:
-    input_dir = os.path.dirname(elvers_params['input_options']['trimmed']['input_files'][0])
-    print(input_dir)
-    def get_trimmed(wildcards):
-        input_dir = os.path.dirname(elvers_params['input_options']['trimmed']['input_files'][0])
-        if not is_single_end(**wildcards): 
-            return expand(join(input_dir, '{sample}_{unit}_{end}.fq.gz'), **wildcards)
-        return expand(join(input_dir, '{sample}_{unit}_{end}.fq.gz'), **wildcards)
+    trim_dir = os.path.dirname(elvers_params['input_options']['trimmed']['input_files'][0])
 
-#def get_trimmed(wildcards):
-#    trim_dir = os.path.dirname(elvers_params['input_options']['trimmed']['input_files'][0])
-#    if not is_single_end(**wildcards): 
-#        return expand(join(trim_dir, '{sample}_{unit}_{end}.fq.gz'), **wildcards) 
-#    return expand(join(trim_dir, '{sample}_{unit}_{end}.fq.gz'), **wildcards)
+    def get_trimmed(wildcards):
+        if not is_single_end(**wildcards): 
+            return expand(join(trim_dir, '{sample}_{unit}_{end}.fq.gz'), **wildcards)
+        return expand(join(trim_dir, '{sample}_{unit}_{end}.fq.gz'), **wildcards)
 
     rule fastqc_trimmed:
-        input: get_trimmed
+        input:
+           get_trimmed
         output:
             html=join(output_dir,'{sample}_{unit}_{end}_fastqc.html'),
             zip=join(output_dir,'{sample}_{unit}_{end}_fastqc.zip')
         params: prog_params.get('extra', "")
-        wildcard_constraints:
-            end = ['_1.trim', '_2.trim', '_se.trim']
+        #wildcard_constraints: # this makes it fail! 
+        #    end = ['1.trim', '2.trim', 'se.trim']
         log: 
             join(logs_dir, 'fastqc/{sample}_{unit}_{end}.log')
         benchmark:
@@ -100,20 +60,23 @@ if "trimmed" in inputs:
         conda: "environment.yml"
         script: "wrapper.py"
 
+
 if "rcorrector_trimmed" in inputs:
+    rcorr_dir = os.path.dirname(elvers_params['input_options']['rcorrector_trimmed']['input_files'][0])
+ 
     def get_rcorr(wildcards):
-        input_dir = os.path.dirname(elvers_params['input_options']['rcorrector_trimmed']['input_files'][0])
         if not is_single_end(**wildcards): 
-            return expand(join(input_dir, '{sample}_{unit}_{end}.rcorr.fq.gz'), **wildcards)
-        return expand(join(input_dir, '{sample}_{unit}_{end}.rcorr.fq.gz'), **wildcards)
+            return expand(join(rcorr_dir, '{sample}_{unit}_{end}.rcorr.fq.gz'), **wildcards)
+        return expand(join(rcorr_dir, '{sample}_{unit}_{end}.rcorr.fq.gz'), **wildcards)
+
     rule fastqc_rcorr:
         input: get_rcorr
         output:
             html=join(output_dir,'{sample}_{unit}_{end}_fastqc.html'),
             zip=join(output_dir,'{sample}_{unit}_{end}_fastqc.zip')
         params: prog_params.get('extra', "")
-        wildcard_constraints:
-            end = ['_1.rcorr', '_2.rcorr', '_se.rcorr']
+    #    wildcard_constraints:
+     #       end = ['1.rcorr', '2.rcorr', 'se.rcorr']
         log: 
             join(logs_dir, 'fastqc/{sample}_{unit}_{end}.log')
         benchmark:

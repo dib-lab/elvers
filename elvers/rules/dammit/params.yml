@@ -13,7 +13,7 @@ dammit:
             - .dammit.fasta
     help: "Dammit is a de novo transcriptome annotation program. Please input a reference to annotate, or generate one via a de novo assembly program"
   program_params:
-    input:
+    inputs:
       - fasta
     db_dir: databases
     db_extra: '' 

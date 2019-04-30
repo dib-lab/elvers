@@ -5,6 +5,19 @@ rcorrector:
         - trimmed
         - raw
     output_options:
+      rcorrector_raw:
+        input: trimmed
+        outdir: 'preprocess/rcorrector'
+        extensions:
+          read:
+            combine_units: False
+            common_ext:
+              - ".rcorr.fq.gz"
+            pe:
+              - "_1.rcorr.fq.gz"
+              - "_2.rcorr.fq.gz"
+            se:
+              - ".se.rcorr.fq.gz"
       rcorrector_trimmed:
         input: trimmed
         outdir: 'preprocess/rcorrector'

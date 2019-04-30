@@ -4,8 +4,20 @@ multiqc:
       read:
         - preprocess_fastqc
     output_options:
-      multiqc:
-        input: preprocess_fastqc
+      multiqc_pretrim:
+        input: fastqc_pretrim 
+        outdir: preprocess/fastqc
+        extensions:
+          other:
+            - multiqc.html
+      multiqc_trimmed:
+        input: fastqc_trimmed
+        outdir: preprocess/fastqc
+        extensions:
+          other:
+            - multiqc.html
+      multiqc_all:
+        input: fastqc_pretrim
         outdir: preprocess/fastqc
         extensions:
           other:
@@ -14,6 +26,7 @@ multiqc:
     citations:
       - "Philip Ewels, Måns Magnusson, Sverker Lundin, Max Käller; MultiQC: summarize analysis results for multiple tools and samples in a single report, Bioinformatics, Volume 32, Issue 19, 1 October 2016, Pages 3047–3048, https://doi.org/10.1093/bioinformatics/btw354"
   program_params:
-    input: 
-      - preprocess_fastqc
+    inputs: 
+      - fastqc_pretrim
+      - fastqc_trimmed
     extra: ''

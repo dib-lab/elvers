@@ -182,6 +182,7 @@ def select_outputs(config):
     for key, val in config.items():
         if isinstance(val, dict):
             if val.get('elvers_params'):
+                print(key)
                 if key not in ['get_data', 'get_reference']:
                     # this is a program! proceed
                     inputs = val['program_params']['inputs']
@@ -259,8 +260,10 @@ def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, 
     contrasts = rule_config['program_params'].get('contrasts', [])
     # handle outputs (sometimes multiple outputs)
     output_files = []
+    outdir = ""
     for outname, output_info in rule_config['elvers_params']['outputs'].items():
         outdir = output_info['outdir']
+        print(outdir)
         out_exts = output_info['extensions']
         if out_exts.get('reference_extensions'): # this program is an assembler or only works with specific assemblies
             out_ref_exts = out_exts.get('reference_extensions', ['']) # override generals with rule-specific reference extensions
@@ -270,6 +273,7 @@ def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, 
         outputs = generate_targs(outdir, basename, samples, out_ref_exts, out_exts.get('base', None),out_exts.get('read'), out_exts.get('other'), contrasts, ignore_units)
         output_files += outputs
     rule_config['elvers_params']['outputs']['output_files'] = output_files
+    rule_config['elvers_params']['outputs']['outdir'] = outdir
 
     # handle input options!
     if rulename == 'get_data':
