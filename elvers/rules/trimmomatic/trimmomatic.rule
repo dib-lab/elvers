@@ -7,7 +7,8 @@ elvers_params = config[prog]['elvers_params']
 prog_params = config[prog]['program_params']
 
 # set output dir
-output_dir = elvers_params['outputs']['outdir']
+#output_dir = elvers_params['outputs']['outdir']
+output_dir = os.path.dirname(elvers_params['outputs']['output_files'][0])
 # set default input dir, extensions
 input_dir = config['elvers_directories']['outdirs']['input_data']
 ext = '.fq.gz'

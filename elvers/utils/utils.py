@@ -160,7 +160,6 @@ def handle_samples_input(config, configfile):
 #    for key, val in config.items():
 #        if isinstance(val, dict):
 #            if val.get('elvers_params'):
-                #import pdb;pdb.set_trace()
 #                inputs += val['elvers_params']['inputs'].get('read', [])
 #                inputs += val['elvers_params']['inputs'].get('reference', [])
 #                outputs += val['elvers_params']['outputs'].get('read', [])
@@ -256,20 +255,23 @@ def generate_program_targs(configD, samples, basename,ref_exts, contrasts):
     targets = generate_targs(outdir, basename, samples, ref_exts, exts.get('base', None),exts.get('read'), exts.get('other'), contrasts)
     return targets
 
-def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, samples, default_exts, ignore_units):
+def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, samples, all_input_options, ignore_units):
     contrasts = rule_config['program_params'].get('contrasts', [])
-    outdir = rule_config['elvers_params']['outputs']['outdir']
-    out_exts = rule_config['elvers_params']['outputs']['extensions']
+    # handle outputs (sometimes multiple outputs)
+    output_files = []
+    for outname, output_info in rule_config['elvers_params']['outputs'].items():
+        outdir = output_info['outdir']
+        out_exts = output_info['extensions']
+        if out_exts.get('reference_extensions'): # this program is an assembler or only works with specific assemblies
+            out_ref_exts = out_exts.get('reference_extensions', ['']) # override generals with rule-specific reference extensions
+        else:
+            out_ref_exts = ref_exts
 
-    if out_exts.get('reference_extensions'): # this program is an assembler or only works with specific assemblies
-        out_ref_exts = out_exts.get('reference_extensions', ['']) # override generals with rule-specific reference extensions
-    else:
-        out_ref_exts = ref_exts
+        outputs = generate_targs(outdir, basename, samples, out_ref_exts, out_exts.get('base', None),out_exts.get('read'), out_exts.get('other'), contrasts, ignore_units)
+        output_files += outputs
+    rule_config['elvers_params']['outputs']['output_files'] = output_files
 
-    outputs = generate_targs(outdir, basename, samples, out_ref_exts, out_exts.get('base', None),out_exts.get('read'), out_exts.get('other'), contrasts, ignore_units)
-    rule_config['elvers_params']['outputs']['output_files'] = outputs
-
-    ## inputs are slightly more complicated - there are options! ##
+    # handle input options!
     if rulename == 'get_data':
         samples_file = rule_config['program_params']['samples'] # should be present (validated) prior to here
         rule_config['elvers_params']['input_options'] = {'get_data': {'indir': os.path.dirname(samples_file), 'input_files': [samples_file]}}
@@ -283,7 +285,7 @@ def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, 
         for input_type, options in input_options.items():
             for option in options:
                 try:
-                    info = all_exts[input_type].get(option)
+                    info = all_input_options[input_type].get(option)
                     all_input_exts[option] = info
                     indir = os.path.join(home_outdir, info.get('outdir', 'input_data'))
                     in_exts = info['extensions']
@@ -296,8 +298,8 @@ def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, 
                 except:
                     not_found.append(option)
                 if not_found == options:
-                    option_list = ", ".join(options)
-                    sys.stderr.write(f"cannot find input files for {rule}. Please add a target that produces any of the following {option_list}")
+                    option_list = "\n  " + "\n  ".join(options)
+                    sys.stderr.write(f"cannot find input files for {rulename}. Please add a target that produces any of the following: {option_list}")
                     sys.exit(-1)
         rule_config['elvers_params']['input_options'] = all_input_exts
     return rule_config
@@ -311,53 +313,32 @@ def generate_inputs_outputs(config, samples=None):
     ignore_units = config.get('ignore_units', False)
     # check_inputs
     all_rules = []
-    all_extensions = {'read':[], 'base':[], 'other':[]}
-
+    all_extensions = {'read':{}, 'base':{}, 'other':{}}
     ### get all available inputs instead of just the ones in this config file###
     rules_dir = config['elvers_directories'].get('rules', 'rules')
     all_rules = glob.glob(os.path.join( rules_dir, '*', '*.rule'))
     all_params = {}
+    rulenames = []
     for rule in all_rules:
         try:
             rule_name = os.path.basename(rule).split('.rule')[0]
+            rulenames.append(rule_name)
             all_params[rule_name] = get_params(rule_name, os.path.dirname(rule))
         except:
             sys.stderr.write(f"\n\tError: Can't decipher params.yml for elvers rule {rule_name}. Please fix.\n\n")
     for rulename, val in all_params.items():
-        print(rulename)
-        print(val)
         output_options = val['elvers_params']['output_options']
         #exts = val['elvers_params']['output_options']
         for out_name, val in output_options.items():
             if val['extensions'].get('read'):
-                all_extensions['read'] = {out_name: val}
+                all_extensions['read'][out_name] =  val
             if val['extensions'].get('base'):
-                all_extensions['base'] = {name: val}
+                all_extensions['base'][out_name] = val
             if val['extensions'].get('other'):
-                all_extensions['other'] = {name: val}
-    # this runs through and finds all available extensions from the config.
-    #for rulename, val in config.items():
-    #    if val and isinstance(val, dict):
-    #        if val.get('elvers_params'):
-    #            all_rules.append(rulename)
-    #            exts = val['elvers_params']['outputs']
-    #            name = exts.get('name', rulename)
-    #            if exts['extensions'].get('read'):
-    #                all_extensions['read'] = {name: exts}
-    #            if exts['extensions'].get('base'):
-    #                all_extensions['base'] = {name: exts}
-    #            if exts['extensions'].get('other'):
-    #                all_extensions['other'] = {name: exts}
-    #import pdb;pbd.set_trace()
-    for rule in all_rules:
-        config[rule] = generate_rule_targs(home_outdir, base, ref_exts, config[rule], rule, samples, all_extensions)
-    # previous iteration of this:
-    #for key, val in config.items():
-    #    if isinstance(val, dict):
-    #        if val.get('elvers_params', None):
-    #            rulename = key
-    #            rule_config = val
-    #            config[rulename] = generate_rule_targs(home_outdir, base, ref_exts, rule_config, rulename, samples, ext_defaults, ignore_units)
+                all_extensions['other'][out_name] = val
+    for rule in rulenames:
+        if rule in config.keys():
+            config[rule] = generate_rule_targs(home_outdir, base, ref_exts, config[rule], rule, samples, all_extensions, ignore_units)
     return config
 
 def generate_all_targs(configD, samples=None):
