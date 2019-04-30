@@ -48,7 +48,7 @@ available_extensions:
         - .fasta
         reference_extensions:
         - _plass
-      input: kmer_trimmed
+      input: any
       outdir: assembly
     salmon_quant: &id002
       extensions:

@@ -7,7 +7,7 @@ plass:
         - raw
     output_options:
       plass_fasta:
-        input: kmer_trimmed
+        input: any
         outdir: assembly
         extensions:
           reference_extensions: # use this extension only for all output of this assembler
