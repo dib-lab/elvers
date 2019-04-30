@@ -40,7 +40,11 @@ def get_assembly_input(w):
         readsD['left'] = r1
         readsD['right'] = r2
     else:
-        readsD['left'] = single
+        if len(single) > 0:
+            readsD['left'] = single
+        else:
+           sys.stderr.write("\t No samples to assemble. If subsetting, please check that the values of `assembly_subset` match your sample names. See https://dib-lab.github.io/elvers/trinity for details.\n") 
+           sys.exit(-1)
     return readsD
 
 rule trinity:
