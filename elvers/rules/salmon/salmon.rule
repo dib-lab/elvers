@@ -11,15 +11,6 @@ combine_units = ep_params['outputs']['salmon_quant']['extensions']['read']['comb
 
 inputs = prog_params['inputs']
 
-if 'trimmed' in inputs:
-    input_dir = config['elvers_directories']['outdirs']['preprocess']
-    ext = '.trim.fq.gz'
-    se_ext = 'se'
-elif 'raw' in inputs:
-    input_dir = config['elvers_directories']['outdirs']['input_data']
-    ext = '.fq.gz'
-    se_ext = '1'
-
 if config.get('ignore_units'):
     combine_units = False
 
@@ -29,6 +20,14 @@ quant_dir     = ep_params['outputs']['outdir']
 # use if you don't want to collapse technical replicates ("units" column; deseq2 not supported)
 def get_sample_no_combine(w):
     readsD = {}
+    if 'trimmed' in inputs:
+        input_dir = config['elvers_directories']['outdirs']['preprocess']
+        ext = '.trim.fq.gz'
+        se_ext = 'se'
+    elif 'raw' in inputs:
+        input_dir = config['elvers_directories']['outdirs']['input_data']
+        ext = '.fq.gz'
+        se_ext = '1'
     if not is_single_end(**w): # note, this requires unit to be in outputs!
         readsD['r1'] = join(input_dir, f'{w.sample}_{w.unit}_1{ext}')
         readsD['r2'] = join(input_dir, f'{w.sample}_{w.unit}_2{ext}')
@@ -39,6 +38,14 @@ def get_sample_no_combine(w):
 def get_sample_combine_units(w):
     readsD = {}
     r1,r2,r = [],[],[]
+    if 'trimmed' in inputs:
+        input_dir = config['elvers_directories']['outdirs']['preprocess']
+        ext = '.trim.fq.gz'
+        se_ext = 'se'
+    elif 'raw' in inputs:
+        input_dir = config['elvers_directories']['outdirs']['input_data']
+        ext = '.fq.gz'
+        se_ext = '1'
     unit_list = samples.groupby(level=0).get_group(w.sample)['unit'].tolist()
     for unit in unit_list:
         if not is_single_end(w.sample, unit):
