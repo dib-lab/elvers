@@ -8,7 +8,7 @@ salmon:
       read:
         - trimmed
         - raw
-      reference:
+      base:
         - fasta
     output_options:
       salmon_quant:

@@ -1,19 +1,21 @@
 from os.path import join
 import pandas as pd
 
-salmon_params = config['salmon']['program_params']
+prog_params = config['salmon']['program_params']
 ep_params = config['salmon']['elvers_params']
 logs_dir  = config['elvers_directories']['logs']
 
 # get inputs
 assembly_dir  = config['elvers_directories']['outdirs']['assemble']
-combine_units = ep_params['outputs']['extensions']['read']['combine_units']
+combine_units = ep_params['outputs']['salmon_quant']['extensions']['read']['combine_units']
 
-if salmon_params.get('input_trimmed', True):
+inputs = prog_params['inputs']
+
+if 'trimmed' in inputs:
     input_dir = config['elvers_directories']['outdirs']['preprocess']
     ext = '.trim.fq.gz'
     se_ext = 'se'
-else:
+elif 'raw' in inputs:
     input_dir = config['elvers_directories']['outdirs']['input_data']
     ext = '.fq.gz'
     se_ext = '1'
@@ -31,7 +33,7 @@ def get_sample_no_combine(w):
         readsD['r1'] = join(input_dir, f'{w.sample}_{w.unit}_1{ext}')
         readsD['r2'] = join(input_dir, f'{w.sample}_{w.unit}_2{ext}')
         return readsD
-    readsD['r'] = join(input_dir, f'{w.sample}_{w.unit}_se{ext}')
+    readsD['r'] = join(input_dir, f'{w.sample}_{w.unit}_{se_ext}{ext}')
     return readsD
 
 def get_sample_combine_units(w):
@@ -65,7 +67,7 @@ rule salmon_index:
         """--- Indexing the transcriptome with Salmon ---"""
     threads: 10
     params:
-        extra = salmon_params['index_params'].get('extra', '')
+        extra = prog_params['index_params'].get('extra', '')
     log:join(logs_dir, 'salmon','{assembly}_index.log')
     benchmark:join(logs_dir, 'salmon','{assembly}_index.benchmark')
     conda: "environment.yml"
@@ -85,8 +87,8 @@ if combine_units:
         message:
             """--- Quantifying transcripts with Salmon ---"""
         params:
-            libtype = salmon_params['quant_params'].get('libtype', 'A'),
-            extra = salmon_params['quant_params'].get('extra', '')
+            libtype = prog_params['quant_params'].get('libtype', 'A'),
+            extra = prog_params['quant_params'].get('extra', '')
         threads: 20
         log: join(logs_dir, 'salmon/{sample}_x_{assembly}.log')
         benchmark: join(logs_dir, 'salmon/{sample}_x_{assembly}.benchmark')
@@ -106,8 +108,8 @@ else:
         message:
             """--- Quantifying transcripts with Salmon ---"""
         params:
-            libtype = salmon_params['quant_params'].get('libtype', 'A'),
-            extra = salmon_params['quant_params'].get('extra', '')
+            libtype = prog_params['quant_params'].get('libtype', 'A'),
+            extra = prog_params['quant_params'].get('extra', '')
         threads: 20
         log:join(logs_dir, 'salmon/{sample}_{unit}_x_{assembly}.log')
         benchmark:join(logs_dir, 'salmon/{sample}_{unit}_x_{assembly}.benchmark')
