@@ -5,7 +5,7 @@ paladin:
         - pear_merged
         - trimmed
         - raw
-      reference:
+      base:
         - plass_fasta
     output_options:
       paladin_mapped:
