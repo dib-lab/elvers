@@ -9,7 +9,7 @@ paladin:
         - plass_fasta
     output_options:
       paladin_mapped:
-        input: pear_merged
+        input: any
         outdir: paladin
         extensions:
           reference_extensions: # use this extension only for all output of this assembler
@@ -33,6 +33,7 @@ paladin:
   program_params:
     inputs:
       - pear_merged
+      - fasta
     index_params:
       reference_type: '3'
     alignment_params:

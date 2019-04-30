@@ -40,7 +40,7 @@ available_extensions:
           - _x___reference__.paladin.sort.bam.bai
         reference_extensions:
         - _plass
-      input: pear_merged
+      input: any
       outdir: paladin
     plass_fasta:
       extensions:
