@@ -1,7 +1,7 @@
 dammit:  
   elvers_params:
     input_options:
-      reference:
+      base:
         - fasta
     output_options:
       dammit_annotation:

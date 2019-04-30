@@ -43,12 +43,12 @@ if diginorm:
         message:
             """--- khmer trimming of low-abundance kmers and digital normalization ---"""
         params:
-            k = khmer_params.get('ksize', 20),
-            Z = khmer_params.get('Z', 18), 
-            C = khmer_params.get('C', 3), 
-            memory = khmer_params.get('memory', 4e9),
-            cov = khmer_params.get('coverage', 20),
-            extra = khmer_params.get('extra', '')
+            k = prog_params.get('ksize', 20),
+            Z = prog_params.get('Z', 18), 
+            C = prog_params.get('C', 3), 
+            memory = prog_params.get('memory', 4e9),
+            cov = prog_params.get('coverage', 20),
+            extra = prog_params.get('extra', '')
         threads: 10
         log: join(logs_dir, 'khmer/{sample}_{unit}.pe.diginorm.log')
         benchmark: join(logs_dir, 'khmer/{sample}_{unit}.pe.diginorm.benchmark')
@@ -68,12 +68,12 @@ if diginorm:
         message:
             """--- khmer trimming of low-abundance kmers and digital normalization ---"""
         params:
-            k = khmer_params['ksize'],
-            Z = khmer_params['Z'],
-            C = khmer_params['C'],
-            memory = khmer_params['memory'],
-            cov = khmer_params['coverage'],
-            extra = khmer_params['extra']
+            k = prog_params['ksize'],
+            Z = prog_params['Z'],
+            C = prog_params['C'],
+            memory = prog_params['memory'],
+            cov = prog_params['coverage'],
+            extra = prog_params['extra']
         threads: 2
         log: join(logs_dir, 'khmer/{sample}_{unit}.se.diginorm.log')
         benchmark: join(logs_dir, 'khmer/{sample}_{unit}.se.diginorm.benchmark')
@@ -93,11 +93,11 @@ else:
             single=join(output_dir,'{sample}_{unit}.single.khmer.fq.gz'),
         message: """--- khmer trimming of low-abundance kmers ---"""
         params:
-            k = khmer_params.get('ksize', 20),
-            Z = khmer_params.get('Z', 18), 
-            C = khmer_params.get('C', 3), 
-            memory = khmer_params.get('memory', 4e9),
-            extra = khmer_params.get('extra', '')
+            k = prog_params.get('ksize', 20),
+            Z = prog_params.get('Z', 18), 
+            C = prog_params.get('C', 3), 
+            memory = prog_params.get('memory', 4e9),
+            extra = prog_params.get('extra', '')
         threads: 10
         log: join(logs_dir, 'khmer/{sample}_{unit}.pe.log')
         benchmark: join(logs_dir, 'khmer/{sample}_{unit}.pe.benchmark')
@@ -115,11 +115,11 @@ else:
         message:
             """--- khmer trimming of low-abundance kmers ---"""
         params:
-            k = khmer_params['ksize'],
-            Z = khmer_params['Z'],
-            C = khmer_params['C'],
-            memory = khmer_params['memory'],
-            extra = khmer_params['extra']
+            k = prog_params['ksize'],
+            Z = prog_params['Z'],
+            C = prog_params['C'],
+            memory = prog_params['memory'],
+            extra = prog_params['extra']
         threads: 2
         log: join(logs_dir, 'khmer/{sample}_{unit}.se.log')
         benchmark: join(logs_dir, 'khmer/{sample}_{unit}.se.benchmark')

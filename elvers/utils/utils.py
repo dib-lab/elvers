@@ -189,7 +189,7 @@ def select_outputs(config):
                     ref_exts = []
                     for output_name, output_info in val['elvers_params']['output_options'].items():
                         input_for_this_output = output_info['input']
-                        if input_for_this_output in inputs: # choose the output that corresponds to the input going in
+                        if any([input_for_this_output in inputs, input_for_this_output == 'any']): # choose the output that corresponds to the input going in
                             outputs[output_name] = output_info
                             ref_exts = output_info['extensions'].get('reference_extensions', [])
                             reference_extensions+=ref_exts
