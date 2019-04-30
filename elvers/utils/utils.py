@@ -336,9 +336,13 @@ def generate_inputs_outputs(config, samples=None):
                 all_extensions['base'][out_name] = val
             if val['extensions'].get('other'):
                 all_extensions['other'][out_name] = val
+    include_rulenames = [os.path.basename(x).split('.rule')[0] for x in config['include_rules']]
     for rule in rulenames:
         if rule in config.keys():
-            config[rule] = generate_rule_targs(home_outdir, base, ref_exts, config[rule], rule, samples, all_extensions, ignore_units)
+            if rule not in include_rulenames:
+                del config[rule] # bc we won't have built all the elvers_params.
+            else:
+                config[rule] = generate_rule_targs(home_outdir, base, ref_exts, config[rule], rule, samples, all_extensions, ignore_units)
     return config
 
 def generate_all_targs(configD, samples=None):
