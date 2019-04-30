@@ -4,7 +4,7 @@ sourmash:
       read:
         - trimmed
         - raw
-      reference:
+      base:
         - fasta
     output_options:
       sourmash_signature:
