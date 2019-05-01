@@ -52,7 +52,7 @@ def update_nested_dict(d, other):
         else:
             d[k] = v
 
-def read_samples(config):
+def read_samples(config, build_sra_links = False):
     elvers_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     try:
         samples_file = config["get_data"]["program_params"]["samples"]
@@ -65,19 +65,33 @@ def read_samples(config):
             separator = ','
         try:
             samples = pd.read_csv(samples_file, dtype=str, sep=separator).set_index(["sample", "unit"], drop=False)
-            validate(samples, schema=os.path.join(elvers_dir,"schemas/samples_v2.schema.yaml"))
-            samples['name'] = samples["sample"].map(str) + '_' + samples["unit"].map(str)
         except Exception as e:
             sys.stderr.write(f"\n\tError: {samples_file} file is not properly formatted. Please fix.\n\n")
             print(e)
     elif '.xls' in samples_file:
         try:
             samples = pd.read_excel(samples_file, dtype=str).set_index(["sample", "unit"], drop=False)
-            validate(samples, schema="schemas/samples_v2.schema.yaml") # new version
-            samples['name'] = samples["sample"].map(str) + '_' + samples["unit"].map(str)
         except Exception as e:
             sys.stderr.write(f"\n\tError: {samples_file} file is not properly formatted. Please fix.\n\n")
             print(e)
+   if build_sra_links:
+       #base_link = "ftp://ftp.sra.ebi.ac.uk/vol1/fastq/"
+       #fq1_end = '_1.fastq.gz'
+       #fq2_end = '_2.fastq.gz'
+       # HOW TO HANDLE PE VS SE????
+## use build_link function, below. ** STILL NEED TO TEST***
+       if "SRR" in samples.columns:
+           samples['fq1'] = samples['SRR'].apply(lambda x : base_link + x[0:6] + '/00' + x[-1] + '/' + x + '/' + x + fq1_end)
+           samples['fq2'] = df.apply(lambda row : build_fq2, axis=1)
+        if "LibraryLayout" in samples:
+            if samples['LibraryLayout'] =="PAIRED":
+                samples['fq2'] = samples['SRR'].apply(lambda x : base_link + x[0:6] + '/00' + x[-1] + '/' + x  '/' + x + fq2_end)
+    try:
+        validate(samples, schema=os.path.join(elvers_dir,"schemas/samples_v2.schema.yaml"))
+    except Exception as e:
+        sys.stderr.write(f"\n\tError: {samples_file} file is not properly formatted. Please fix.\n\n")
+        print(e)
+    samples['name'] = samples["sample"].map(str) + '_' + samples["unit"].map(str)
     # check for single-unit case
     if not (samples['sample'].value_counts() > 1).any():
         config['ignore_units'] = True
@@ -85,6 +99,18 @@ def read_samples(config):
     if (samples.iloc[:, 4].value_counts() < 2).any():
         config['all_replicated'] = False
     return samples, config
+
+
+def build_fq2(row):
+    base_link = "ftp://ftp.sra.ebi.ac.uk/vol1/fastq/"
+    #fq1_end = '_1.fastq.gz'
+    fq2_end = '_2.fastq.gz'
+    row['SRR'] = SRR
+    row['fq1'] = base_link + SRR[0:6] + '/00' + SRR[-1] + '/' + SRR + '/' + SRR + fq2_end)
+    if row['LibraryLayout'] == "PAIRED":
+        fq2 = base_link + SRR[0:6] + '/00' + SRR[-1] + '/' + SRR  + '/' + SRR + fq2_end)
+    return fq2
+
 
 # sample checks
 def is_single_end(sample, unit, end = '', assembly = ''):
