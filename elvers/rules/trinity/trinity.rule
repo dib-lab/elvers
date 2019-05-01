@@ -2,7 +2,7 @@ from os import path
 
 ep_params = config['trinity']['elvers_params']
 logs_dir  = config['elvers_directories']['logs']
-assembly_params = config['trinity']['program_params']
+prog_params = config['trinity']['program_params']
 
 assembly_dir = ep_params['outputs']['outdir']
 assembly_extension = ep_params['outputs']['extensions']['reference_extensions'][0] # should only be a single entry here, default: '_trinity'
@@ -12,30 +12,39 @@ BASE = config['basename']
 def get_assembly_input(w):
     r1,r2,single =[],[],[]
     readsD = {}
-    if assembly_params.get('input_kmer_trimmed', True):
+    if prog_params.get('input_kmer_trimmed', True):
         ext = '.khmer.fq.gz' 
         input_dir = config['elvers_directories']['outdirs']['preprocess']
-    elif assembly_params.get('input_trimmed', True):
+    elif prog_params.get('input_trimmed', True):
         ext = '.trim.fq.gz'
         input_dir = config['elvers_directories']['outdirs']['preprocess']
     else:
         ext = '.fq.gz'
         input_dir = config['elvers_directories']['outdirs']['input_data']
+    
+    assembly_subset = prog_params.get('assembly_subset')
     for s, u in samples.iterrows():
         sample, unit = u['sample'],u['unit']
+        if assembly_subset:
+            if sample not in assembly_subset:
+                continue
         if is_single_end(sample, unit):
             single+=[join(input_dir, f"{sample}_{unit}_se{ext}")]
         else:
             r1+= [join(input_dir, f"{sample}_{unit}_1{ext}")]
             r2+= [join(input_dir, f"{sample}_{unit}_2{ext}")]
-    add_single = assembly_params.get('add_single_to_paired', False)
+    add_single = prog_params.get('add_single_to_paired', False)
     if len(r1) > 0:
         if add_single == True:
             r1 = r1 + single
         readsD['left'] = r1
         readsD['right'] = r2
     else:
-        readsD['left'] = single
+        if len(single) > 0:
+            readsD['left'] = single
+        else:
+           sys.stderr.write("\t No samples to assemble. If subsetting, please check that the values of `assembly_subset` match your sample names. See https://dib-lab.github.io/elvers/trinity for details.\n") 
+           sys.exit(-1)
     return readsD
 
 rule trinity:
@@ -48,9 +57,9 @@ rule trinity:
         """--- Assembling read data with Trinity --- """
     params:
         # optional parameters
-        max_memory=assembly_params.get('max_memory', '10G'),
-        seqtype=assembly_params.get('seqtype', 'fq'),
-        extra=assembly_params.get('extra', '')
+        max_memory=prog_params.get('max_memory', '10G'),
+        seqtype=prog_params.get('seqtype', 'fq'),
+        extra=prog_params.get('extra', '')
     threads: 4
     log: join(logs_dir, 'trinity', 'trinity.log')
     benchmark: join(logs_dir, 'trinity', 'trinity.benchmark')
