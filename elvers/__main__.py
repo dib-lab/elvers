@@ -146,6 +146,7 @@ To build an editable configfile to start work on your own data, run:
     parser.add_argument('--out_path', type=str, default = None)
     parser.add_argument('-n', '--dry-run', action='store_true')
     parser.add_argument('-v', '--verbose', action='store_true')
+    parser.add_argument('--per_sample_assemblies', action='store_true')
     parser.add_argument('-w', '--print_workflows', action='store_true', help='just show available workflows')
     parser.add_argument('-r', '--print_rules', action='store_true', help='just show available rules')
     parser.add_argument('-p', '--print_params', action='store_true', help='print parameters for chosen workflows or rules')
