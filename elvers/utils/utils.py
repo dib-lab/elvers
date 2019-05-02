@@ -74,18 +74,11 @@ def read_samples(config, build_sra_links = False):
         except Exception as e:
             sys.stderr.write(f"\n\tError: {samples_file} file is not properly formatted. Please fix.\n\n")
             print(e)
-   if build_sra_links:
-       #base_link = "ftp://ftp.sra.ebi.ac.uk/vol1/fastq/"
-       #fq1_end = '_1.fastq.gz'
-       #fq2_end = '_2.fastq.gz'
-       # HOW TO HANDLE PE VS SE????
-## use build_link function, below. ** STILL NEED TO TEST***
-       if "SRR" in samples.columns:
-           samples['fq1'] = samples['SRR'].apply(lambda x : base_link + x[0:6] + '/00' + x[-1] + '/' + x + '/' + x + fq1_end)
-           samples['fq2'] = df.apply(lambda row : build_fq2, axis=1)
-        if "LibraryLayout" in samples:
-            if samples['LibraryLayout'] =="PAIRED":
-                samples['fq2'] = samples['SRR'].apply(lambda x : base_link + x[0:6] + '/00' + x[-1] + '/' + x  '/' + x + fq2_end)
+    if build_sra_links:
+        base_link = "ftp://ftp.sra.ebi.ac.uk/vol1/fastq/"
+        if "SRR" in samples.columns and "LibraryLayout" in samples.columns:
+            samples['fq1'] = samples['SRR'].apply(lambda x : base_link + x[0:6] + '/00' + x[-1] + '/' + x + '/' + x + '_1.fastq.gz')
+            samples['fq2'] = df.apply(lambda row : build_fq2(row), axis=1)
     try:
         validate(samples, schema=os.path.join(elvers_dir,"schemas/samples_v2.schema.yaml"))
     except Exception as e:
@@ -100,17 +93,12 @@ def read_samples(config, build_sra_links = False):
         config['all_replicated'] = False
     return samples, config
 
-
 def build_fq2(row):
     base_link = "ftp://ftp.sra.ebi.ac.uk/vol1/fastq/"
-    #fq1_end = '_1.fastq.gz'
-    fq2_end = '_2.fastq.gz'
-    row['SRR'] = SRR
-    row['fq1'] = base_link + SRR[0:6] + '/00' + SRR[-1] + '/' + SRR + '/' + SRR + fq2_end)
+    SRR = row['SRR']
     if row['LibraryLayout'] == "PAIRED":
-        fq2 = base_link + SRR[0:6] + '/00' + SRR[-1] + '/' + SRR  + '/' + SRR + fq2_end)
+        fq2 = base_link + SRR[0:6] + '/00' + SRR[-1] + '/' + SRR  + '/' + SRR + '_2.fastq.gz'
     return fq2
-
 
 # sample checks
 def is_single_end(sample, unit, end = '', assembly = ''):
