@@ -129,29 +129,37 @@ def find_input_file(filename, name="input file", add_paths=[], add_suffixes = ['
         sys.stderr.write(f'\tFound {name} at {found_file}\n')
     return found_file
 
-def handle_reference_input(config, configfile):
+def handle_reference_input(config, configfile, per_sample_referencefiles=None):
     extensions= {}
     program_params = config['get_reference'].get('program_params')
-    referencefile = program_params.get('reference', None)
-    if not program_params.get('download_ref', False):
-        if referencefile:
-            referencefile = find_input_file(referencefile, name="input reference", add_paths = [os.path.realpath(os.path.dirname(configfile))], add_suffixes = ['.fa', '.fasta'])
-            program_params['reference'] = referencefile
-        else:
-            sys.stderr.write("\n\tError: trying to run `get_reference` workflow, but there's no reference file specified in your configfile. Please fix.\n\n")
-        # handle the gene_trans_map
-        gtmap = program_params.get('gene_trans_map', '')
-        if gtmap:
-            gtmap = find_input_file(gtmap,"input reference gene_trans_map", add_paths = [os.path.realpath(os.path.dirname(configfile))], add_suffixes = [''])
-            program_params['gene_trans_map'] = gtmap
-            extensions = {'base': ['.fasta', '.fasta.gene_trans_map']}
-        else:
-            program_params['gene_trans_map'] = ''
-            config['no_gene_trans_map']= True
-            extensions = {'base': ['.fasta']}
+    if not per_sample_reference_files:
+        reffiles = [program_params.get('reference', None)]
+        input_reference_extension = program_params.get('reference_extension', '')
+        extensions['reference_extensions'] = [input_reference_extension]
+    else:
+        reffiles = per_sample_reference_files # should be list of reference files (or links)
+    for referencefile in reffiles:
+## just a start -- this will not work as-is. Need to be able to access the reference files from the samples csv when we need them, and apply get_reference to each.
+## WORKING HERE
+
+        if not program_params.get('download_ref', False):
+            if referencefile:
+                referencefile = find_input_file(referencefile, name="input reference", add_paths = [os.path.realpath(os.path.dirname(configfile))], add_suffixes = ['.fa', '.fasta'])
+                program_params['reference'] = referencefile
+            else:
+                sys.stderr.write("\n\tError: trying to run `get_reference` workflow, but there's no reference file specified in your configfile. Please fix.\n\n")
+            # handle the gene_trans_map
+            gtmap = program_params.get('gene_trans_map', '')
+            if gtmap:
+                gtmap = find_input_file(gtmap,"input reference gene_trans_map", add_paths = [os.path.realpath(os.path.dirname(configfile))], add_suffixes = [''])
+                program_params['gene_trans_map'] = gtmap
+                extensions = {'base': ['.fasta', '.fasta.gene_trans_map']}
+            else:
+                program_params['gene_trans_map'] = ''
+                config['no_gene_trans_map']= True
+                extensions = {'base': ['.fasta']}
+
     # grab user-input reference extension
-    input_reference_extension = program_params.get('reference_extension', '')
-    extensions['reference_extensions'] = [input_reference_extension]
     config['get_reference'] = {'program_params': program_params, 'elvers_params': {'outputs': {'extensions':extensions}}}
     return config, input_reference_extension
 
