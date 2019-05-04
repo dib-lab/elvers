@@ -1,0 +1,56 @@
+{% set version = "0.1" %}
+{% set sha256 = "ADD_SHA256_HERE" %}
+
+package:
+  name: elvers
+  version: '{{version}}'
+
+source:
+  url: https://github.com/dib-lab/elvers/v{{version}}.tar.gz
+  sha256: '{{sha256}}'
+
+
+build:
+  number: 0
+
+requirements:
+  host:
+    - python >=3.6
+    - snakemake >=5.1.2
+    - yaml
+    - pandas
+    - graphviz
+    - networkx
+    - pygraphviz
+    - psutil
+    - pytest
+    - jinja2
+    
+  run:
+    - python >=3.6
+    - snakemake >=5.1.2
+    - yaml
+    - pandas
+    - graphviz
+    - networkx
+    - pygraphviz
+    - psutil
+    - pytest
+    - jinja2
+
+test:
+  commands:
+    - elvers -h > /dev/null
+
+about:
+  home: http://dib-lab.github.io/elvers/
+  license: BSD
+  license_file: LICENSE
+  summary: an extensible bioinformatics workflow system
+  dev_url: https://github.com/dib-lab/elvers
+  license_family: BSD
+
+
+extra:
+  identifiers:
+    - ADD_JOSS_DOI
