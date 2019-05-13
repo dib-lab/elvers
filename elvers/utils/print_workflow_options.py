@@ -20,8 +20,7 @@ def print_available_workflows_and_tools(paramsD, print_workflows=True, print_rul
         ep_flows = paramsD.get('elvers_workflows')
         for workflow, tools in ep_flows.items():
             sys.stdout.write('\n  ' + workflow + ':\n\t')
-            for t in tools.values():
-                sys.stdout.write('\n\t'.join(t) + '\n\t')
+            sys.stdout.write('\n\t'.join(tools) + '\n\t')
 
     if print_rules:
         # print available rules
