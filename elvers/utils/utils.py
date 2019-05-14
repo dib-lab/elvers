@@ -4,6 +4,7 @@ import yaml
 import collections
 import pandas as pd
 from os.path import join
+import glob
 from snakemake.utils import validate
 
 # general utilities
@@ -212,25 +213,56 @@ def handle_samples_input(config, configfile):
         sys.stderr.write("\n\tError: trying to run `get_data` workflow, but the samples tsv file is not specified in your configfile. Please fix.\n\n")
     return config
 
-def check_workflow(config):
+#def check_workflow(config):
     # This is way too naive. Need to come up with a better version.
     # Maybe we manually check the generated snakemake targs?
     # Or just catch the snakemake error and print better help for which rule needs to be included?.
-    inputs, outputs = [],[]
+#    inputs, outputs = [],[]
+#    for key, val in config.items():
+#        if isinstance(val, dict):
+#            if val.get('elvers_params'):
+#                inputs += val['elvers_params']['inputs'].get('read', [])
+#                inputs += val['elvers_params']['inputs'].get('reference', [])
+#                outputs += val['elvers_params']['outputs'].get('read', [])
+#                outputs += val['elvers_params']['outputs'].get('reference', [])
+                # leaving out "other" inputs/outputs, bc they're never used as inputs (so far)
+#    try:
+#        set(inputs) == set(outputs)
+#    except:
+        #well this is uninformative
+#        sys.stderr.write("chosen workflow is not valid")
+
+
+def select_outputs(config):
+    # Here we go from "output_options" --> outputs. Mostly, we want to map inputs (program_params) directly to outputs
+    # if more than one input, then more than one output. Some of these will have different folders. How do we handle this?
+    # might need to get rid of outdir, and just do os.path.dirname on each output? Not sure yet. Or maybe we just select outputs
+    # so that we can build all required directories and generate the output targets for snakemake, then put outputs: named_output
+    # = same structure as "output_options", just different name, bc it signifies that we're making ALL these outputs.
+    reference_extensions = config.get('reference_extensions', [])
     for key, val in config.items():
         if isinstance(val, dict):
             if val.get('elvers_params'):
-                #import pdb;pdb.set_trace()
-                inputs += val['elvers_params']['inputs'].get('read', [])
-                inputs += val['elvers_params']['inputs'].get('reference', [])
-                outputs += val['elvers_params']['outputs'].get('read', [])
-                outputs += val['elvers_params']['outputs'].get('reference', [])
-                # leaving out "other" inputs/outputs, bc they're never used as inputs (so far)
-    try:
-        set(inputs) == set(outputs)
-    except:
-        #well this is uninformative
-        sys.stderr.write("chosen workflow is not valid")
+                if key not in ['get_data', 'get_reference']:
+                    # this is a program! proceed
+                    inputs = val['program_params']['inputs']
+                    outputs = {}
+                    ref_exts = []
+                    for output_name, output_info in val['elvers_params']['output_options'].items():
+                        input_for_this_output = output_info['input']
+                        if any([input_for_this_output in inputs, input_for_this_output == 'any']): # choose the output that corresponds to the input going in
+                            outputs[output_name] = output_info
+                            ref_exts = output_info['extensions'].get('reference_extensions', [])
+                            reference_extensions+=ref_exts
+                    val['elvers_params']['outputs'] = outputs
+                else:
+                    val['elvers_params']['outputs'] = val['elvers_params']['output_options']
+                del val['elvers_params']['output_options']
+                config[key] = val
+            # maybe we also want to get rid of the output_options, to minimize clutter
+    config['reference_extensions'] = reference_extensions
+    return config
+
 
 def generate_targs(outdir, basename, samples, ref_exts=[''], base_exts = None, read_exts = None, other_exts = None, contrasts = [], ignore_units=False):
     base_targets, read_targets, other_targs = [],[],[]
@@ -284,20 +316,25 @@ def generate_program_targs(configD, samples, basename,ref_exts, contrasts):
     targets = generate_targs(outdir, basename, samples, ref_exts, exts.get('base', None),exts.get('read'), exts.get('other'), contrasts)
     return targets
 
-def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, samples, default_exts, ignore_units):
+def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, samples, all_input_options, ignore_units):
     contrasts = rule_config['program_params'].get('contrasts', [])
-    outdir = rule_config['elvers_params']['outputs']['outdir']
-    out_exts = rule_config['elvers_params']['outputs']['extensions']
+    # handle outputs (sometimes multiple outputs)
+    output_files = []
+    outdir = ""
+    for outname, output_info in rule_config['elvers_params']['outputs'].items():
+        outdir = output_info['outdir']
+        out_exts = output_info['extensions']
+        if out_exts.get('reference_extensions'): # this program is an assembler or only works with specific assemblies
+            out_ref_exts = out_exts.get('reference_extensions', ['']) # override generals with rule-specific reference extensions
+        else:
+            out_ref_exts = ref_exts
 
-    if out_exts.get('reference_extensions'): # this program is an assembler or only works with specific assemblies
-        out_ref_exts = out_exts.get('reference_extensions', ['']) # override generals with rule-specific reference extensions
-    else:
-        out_ref_exts = ref_exts
+        outputs = generate_targs(outdir, basename, samples, out_ref_exts, out_exts.get('base', None),out_exts.get('read'), out_exts.get('other'), contrasts, ignore_units)
+        output_files += outputs
+    rule_config['elvers_params']['outputs']['output_files'] = output_files
+    rule_config['elvers_params']['outputs']['outdir'] = outdir
 
-    outputs = generate_targs(outdir, basename, samples, out_ref_exts, out_exts.get('base', None),out_exts.get('read'), out_exts.get('other'), contrasts, ignore_units)
-    rule_config['elvers_params']['outputs']['output_files'] = outputs
-
-    ## inputs are slightly more complicated - there are options! ##
+    # handle input options!
     if rulename == 'get_data':
         samples_file = rule_config['program_params']['samples'] # should be present (validated) prior to here
         rule_config['elvers_params']['input_options'] = {'get_data': {'indir': os.path.dirname(samples_file), 'input_files': [samples_file]}}
@@ -308,19 +345,27 @@ def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, 
         rule_config['elvers_params']['input_options'] = {'get_ref': {'indir': os.path.dirname(reference), 'input_files': [reference]}}
     else:
         all_input_exts = {}
-        input_options = rule_config['elvers_params']['input_options'] # read, reference, other
+        input_options = rule_config['elvers_params'].get('input_options', None)# read, reference, other
+        not_found = []
         for input_type, options in input_options.items():
             for option in options:
-                info = default_exts['default_extensions'][input_type][option]
-                all_input_exts[option] = info
-                indir = os.path.join(home_outdir, info.get('indir', 'input_data'))
-                in_exts = info['extensions']
-                if in_exts.get('reference_extensions'): # this program is an assembler or only works with specific assemblies
-                    in_ref_exts = in_exts.get('reference_extensions', ['']) # override generals with rule-specific reference extensions
-                else:
-                    in_ref_exts = ref_exts
-                input_files = generate_targs(indir, basename, samples, in_ref_exts, in_exts.get('base', None),in_exts.get('read'), in_exts.get('other'), contrasts)
-                all_input_exts[option]['input_files'] = generate_targs(indir, basename, samples, in_ref_exts, in_exts.get('base', None),in_exts.get('read'), in_exts.get('other'), contrasts)
+                try:
+                    info = all_input_options[input_type].get(option)
+                    all_input_exts[option] = info
+                    indir = os.path.join(home_outdir, info.get('outdir', 'input_data'))
+                    in_exts = info['extensions']
+                    if in_exts.get('reference_extensions'): # this program is an assembler or only works with specific assemblies
+                        in_ref_exts = in_exts.get('reference_extensions', ['']) # override generals with rule-specific reference extensions
+                    else:
+                        in_ref_exts = ref_exts
+                    input_files = generate_targs(indir, basename, samples, in_ref_exts, in_exts.get('base', None),in_exts.get('read'), in_exts.get('other'), contrasts)
+                    all_input_exts[option]['input_files'] = generate_targs(indir, basename, samples, in_ref_exts, in_exts.get('base', None),in_exts.get('read'), in_exts.get('other'), contrasts)
+                except:
+                    not_found.append(option)
+                if not_found == options:
+                    option_list = "\n  " + "\n  ".join(options)
+                    sys.stderr.write(f"cannot find input files for {rulename}. Please add a target that produces any of the following: {option_list}")
+                    sys.exit(-1)
         rule_config['elvers_params']['input_options'] = all_input_exts
     return rule_config
 
@@ -331,12 +376,43 @@ def generate_inputs_outputs(config, samples=None):
     home_outdir = config['elvers_directories']['out_dir']
     ext_defaults = read_yaml(find_input_file("extension_defaults.yaml", name = "extension defaults", add_paths=['utils']))
     ignore_units = config.get('ignore_units', False)
-    for key, val in config.items():
-        if isinstance(val, dict):
-            if val.get('elvers_params', None):
-                rulename = key
-                rule_config = val
-                config[rulename] = generate_rule_targs(home_outdir, base, ref_exts, rule_config, rulename, samples, ext_defaults, ignore_units)
+    # check_inputs
+    all_rules = []
+    all_extensions = {'read':{}, 'base':{}, 'other':{}}
+    ### get all available inputs instead of just the ones in this config file###
+    rules_dir = config['elvers_directories'].get('rules', 'rules')
+    all_rules = glob.glob(os.path.join( rules_dir, '*', '*.rule'))
+    all_params = {}
+    rulenames = []
+    for rule in all_rules:
+        try:
+            rule_name = os.path.basename(rule).split('.rule')[0]
+            rulenames.append(rule_name)
+            all_params[rule_name] = get_params(rule_name, os.path.dirname(rule))
+        except:
+            sys.stderr.write(f"\n\tError: Can't decipher params.yml for elvers rule {rule_name}. Please fix.\n\n")
+    available_exts = {}
+    for rulename, val in all_params.items():
+        output_options = val['elvers_params']['output_options']
+        #exts = val['elvers_params']['output_options']
+        for out_name, val in output_options.items():
+            if val['extensions'].get('read'):
+                all_extensions['read'][out_name] =  val
+            if val['extensions'].get('base'):
+                all_extensions['base'][out_name] = val
+            if val['extensions'].get('other'):
+                all_extensions['other'][out_name] = val
+
+    available_exts['available_extensions'] = all_extensions
+    utils_dir = os.path.dirname(os.path.abspath(__file__))
+    write_yaml(available_exts, os.path.join(utils_dir, 'extension_defaults.yaml'))
+    include_rulenames = [os.path.basename(x).split('.rule')[0] for x in config['include_rules']]
+    for rule in rulenames:
+        if rule in config.keys():
+            if rule not in include_rulenames:
+                del config[rule] # bc we won't have built all the elvers_params.
+            else:
+                config[rule] = generate_rule_targs(home_outdir, base, ref_exts, config[rule], rule, samples, all_extensions, ignore_units)
     return config
 
 

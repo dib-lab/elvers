@@ -44,27 +44,32 @@ properties:
           outputs:
             type: object
             properties:
-              outdir:
-                type: string
-              extensions:
+              __outname__:
                 type: object
                 properties:
-                  read:
+                  outdir:
+                    type: string
+                  extensions:
                     type: object
                     properties:
-                      pe:
+                      read:
+                        type: object
+                        properties:
+                          pe:
+                            type: array
+                          se:
+                            type: array
+                      base:
                         type: array
-                      se:
+                      other:
                         type: array
-                  base:
-                    type: array
-                  other:
-                    type: array
-                  reference_extensions:
-                    type: array
+                      reference_extensions:
+                        type: array
+                required:
+                  - outdir
+                  - extensions
             required:
-              - outdir
-              - extensions
+              - output_files
         required:
           - input_options
           - outputs

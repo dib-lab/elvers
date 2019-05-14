@@ -1,16 +1,20 @@
 dammit:  
   elvers_params:
     input_options:
-      reference:
+      base:
         - fasta
-    outputs:
-      outdir: annotation
-      extensions: 
-        base: 
-          - .dammit.gff3
-          - .dammit.fasta
+    output_options:
+      dammit_annotation:
+        input: fasta
+        outdir: annotation
+        extensions: 
+          base: 
+            - .dammit.gff3
+            - .dammit.fasta
     help: "Dammit is a de novo transcriptome annotation program. Please input a reference to annotate, or generate one via a de novo assembly program"
   program_params:
+    inputs:
+      - fasta
     db_dir: databases
     db_extra: '' 
     db_install_only: False

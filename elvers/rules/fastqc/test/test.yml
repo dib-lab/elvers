@@ -1,5 +1,5 @@
 # additional params to test fastqc
 
 fastqc:
-  input_trimmed: False
-  input_raw: True
+  inputs:
+    - raw

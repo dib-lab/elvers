@@ -46,7 +46,6 @@ def build_default_params(workdir, targets):
     required_rules = []
     for rule_list in workflows_to_run.values():
         required_rules += rule_list
-    ruleParamsFiles = []
     includeRules = []
     reference_extensions = []
     rules_dir = defaultParams['elvers_directories']['rules']
@@ -55,8 +54,10 @@ def build_default_params(workdir, targets):
         try:
             rule = glob.glob(os.path.join(workdir, rules_dir, '*', rule_name + '.rule'))[0]
             defaultParams[rule_name] = get_params(rule_name, os.path.dirname(rule))
-            ref_exts = defaultParams[rule_name]['elvers_params']['outputs']['extensions'].get('reference_extensions', [])
-            reference_extensions+=ref_exts
+            #output_options = defaultParams[rule_name]['elvers_params']['output_options']
+            ## TO DO - need to handle this elsewhere now! Maybe go through once we've determined outputs
+            #ref_exts = defaultParams[rule_name]['elvers_params']['outputs']['extensions'].get('reference_extensions', [])
+            #reference_extensions+=ref_exts
             includeRules += [rule]
         except: # if allows user workflow input, can't do this here (check extra targs later?)
             sys.stderr.write(f"\n\tError: Can't add rules for extra target {rule_name}. Please fix.\n\n")
@@ -107,8 +108,9 @@ def build_dirs(ep_dir, params):
     for rule in included_rules:
         prog = os.path.basename(rule).split('.rule')[0]
         # if no outdir, just use program name
-        prog_dir = params[prog]['elvers_params']['outputs'].get('outdir', prog)
-        params[prog]['elvers_params']['outputs']['outdir'] = os.path.join(outdir, prog_dir)
+        for out_name, out_info in params[prog]['elvers_params']['outputs'].items():
+            prog_dir = out_info.get('outdir', prog)
+            params[prog]['elvers_params']['outputs'][out_name]['outdir'] = os.path.join(outdir, prog_dir)
     return params
 
 def main():
@@ -310,6 +312,10 @@ To build an editable configfile to start work on your own data, run:
             if paramsD.get('deseq2'):
                 paramsD['deseq2']['program_params']['gene_trans_map'] = False
                 sys.stderr.write("\tYou're using `get_reference` without specifying a gene-trans-map. Setting differential expression to transcript-level only. See https://dib-lab.github.io/elvers/deseq2/for details.\n")
+
+        # OUTPUT_OPTIONS --> need to have solid OUTPUTS by here.
+        paramsD = select_outputs(paramsD)
+
         # use params to build directory structure
         paramsD = build_dirs(thisdir, paramsD)
 

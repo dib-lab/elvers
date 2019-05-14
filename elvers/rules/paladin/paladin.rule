@@ -5,32 +5,33 @@ logs_dir  = config['elvers_directories']['logs']
 assembly_dir  = config['elvers_directories']['outdirs']['assemble']
 
 ep_params = config['paladin']['elvers_params']
-paladin_params = config['paladin']['program_params']
-index_params = paladin_params['index_params']
-alignment_params = paladin_params['alignment_params']
+prog_params = config['paladin']['program_params']
+index_params = prog_params['index_params']
+alignment_params = prog_params['alignment_params']
 
 # get outdir
 paladin_dir = ep_params['outputs']['outdir']
-assembly_extension = ep_params['outputs']['extensions']['reference_extensions'][0]
+assembly_extension = ep_params['outputs']['paladin_mapped']['extensions']['reference_extensions'][0]
 
 def get_paladin_input(w):
     readsD = {}
+    inputs = prog_params['inputs']
     if not is_single_end(**w): 
-        if paladin_params.get('input_pear_merged', True):
+        if 'pear_merged' in inputs:
             input_dir = join(config['elvers_directories']['outdirs']['preprocess'], 'pear')
             ext = '.pear_assembled.fq.gz' # requires pear merging of pe reads
-        elif paladin_params.get('input_trimmed', True):
+        elif 'trimmed' in inputs:
             input_dir = config['elvers_directories']['outdirs']['preprocess']
             ext = '_1.trim.fq.gz'
-        else:
+        elif 'raw' in inputs:
             ext = '_1.fq.gz'
             input_dir = config['elvers_directories']['outdirs']['input_data']
         readsD['r'] = join(input_dir, f'{w.sample}_{w.unit}{ext}')
         return readsD
-    elif paladin_params.get('input_trimmed', True):
+    elif 'trimmed' in inputs: 
         input_dir = config['elvers_directories']['outdirs']['preprocess']
         ext = '.trim.fq.gz'
-    else:
+    elif 'raw' in inputs:
         ext = '_1.fq.gz'
         input_dir = config['elvers_directories']['outdirs']['input_data']
     readsD['r'] = join(input_dir, f'{w.sample}_{w.unit}{ext}')
