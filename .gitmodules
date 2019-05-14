@@ -1,0 +1,3 @@
+[submodule "mkdocs-material-dib"]
+	path = mkdocs-material-dib
+	url = https://github.com/dib-lab/mkdocs-material-dib.git
