@@ -305,7 +305,7 @@ To build an editable configfile to start work on your own data, run:
         # add extension to overall reference_extensions info
         if refinput_ext: # note, need to do it here to prevent override with defaults
             ## NOTE: PROBABLY WANT TO DO THIS DIFFERENTLY
-            paramsD['reference_extensions'] = list(set(paramsD.get('reference_extensions', []) + refinput_exts]))
+            paramsD['reference_extensions'] = list(set(paramsD.get('reference_extensions', []) + refinput_exts))
 
         # This is now handled in the deseq2 rule, can remove from here. Do we need the sys.stderr notification?
         if paramsD.get('no_gene_trans_map', False):
