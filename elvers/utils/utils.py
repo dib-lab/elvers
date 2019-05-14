@@ -88,8 +88,10 @@ def read_samples(config, build_sra_links = False):
     # check for single-unit case
     if not (samples['sample'].value_counts() > 1).any():
         config['ignore_units'] = True
-    # column 4 is "condition", but can change name
-    if (samples.iloc[:, 4].value_counts() < 2).any():
+    # column 4 is "condition", but can change name --> not always true if we allow 'reference' column
+    #if (samples.iloc[:, 4].value_counts() < 2).any():
+    #    config['all_replicated'] = False
+    if (samples['condition'].value_counts() < 2).any():
         config['all_replicated'] = False
     return samples, config
 
@@ -129,39 +131,83 @@ def find_input_file(filename, name="input file", add_paths=[], add_suffixes = ['
         sys.stderr.write(f'\tFound {name} at {found_file}\n')
     return found_file
 
-def handle_reference_input(config, configfile, per_sample_referencefiles=None):
+def handle_reference_input(config, configfile, samples = None):
     extensions= {}
     program_params = config['get_reference'].get('program_params')
-    if not per_sample_reference_files:
-        reffiles = [program_params.get('reference', None)]
-        input_reference_extension = program_params.get('reference_extension', '')
-        extensions['reference_extensions'] = [input_reference_extension]
-    else:
-        reffiles = per_sample_reference_files # should be list of reference files (or links)
-    for referencefile in reffiles:
-## just a start -- this will not work as-is. Need to be able to access the reference files from the samples csv when we need them, and apply get_reference to each.
-## WORKING HERE
+    per_sample_ref = program_params.get('per_sample_reference_files')
+    if 'reference' in samples.columns and not per_sample_ref:
+        sys.stderr.write("\n\t I see a 'reference' column in your samples file, do you want to use these as per-sample references? If yes, please add 'per_sample_reference_files: True' to your 'get_reference' directive in your yaml configuration file\n\n")
 
-        if not program_params.get('download_ref', False):
-            if referencefile:
-                referencefile = find_input_file(referencefile, name="input reference", add_paths = [os.path.realpath(os.path.dirname(configfile))], add_suffixes = ['.fa', '.fasta'])
-                program_params['reference'] = referencefile
-            else:
-                sys.stderr.write("\n\tError: trying to run `get_reference` workflow, but there's no reference file specified in your configfile. Please fix.\n\n")
-            # handle the gene_trans_map
-            gtmap = program_params.get('gene_trans_map', '')
-            if gtmap:
-                gtmap = find_input_file(gtmap,"input reference gene_trans_map", add_paths = [os.path.realpath(os.path.dirname(configfile))], add_suffixes = [''])
-                program_params['gene_trans_map'] = gtmap
-                extensions = {'base': ['.fasta', '.fasta.gene_trans_map']}
-            else:
-                program_params['gene_trans_map'] = ''
-                config['no_gene_trans_map']= True
-                extensions = {'base': ['.fasta']}
+    reffiles = []
+    reference_extensions = []
+
+    # ok, first we want to build a full list of all the references we want/need. Allow specification both from the config file and from the tsv. Only one reference may have no reference extension, all others must have extensions. Allowing this many extensions - we want to remove the assembly-specific extension conditions? e.g. _trinity is fine if we're making a single trinity output, but what if we have a couple sample subsets? I think adding _trinity or _plass is the way to go. so
+    # basename_ext_trinity.fasta, etc. First, let's handle the specification, though!
+
+    # handle our current, single ref specification (allows no reference extension)
+    if program_params.get('reference', None):
+        reffile = program_params.get('reference')
+        #if not reffile:
+        #sys.stderr.write("\n\tError: trying to run `get_reference` workflow, but there's no reference file specified in your configfile. Please fix.\n\n")
+        input_reference_extension = program_params.get('reference_extension', '')
+        gene_trans_map = program_params.get('gene_trans_map', None)
+        reference_extensions = [input_reference_extension]
+        # check that we can find the files (if they're not links)
+        ref_info = find_ref_files(reffile, input_reference_extension, gene_trans_map)
+
+    # handle new multiple ref specification (each ref needs an extension)
+    if program_params.get('reference_list', None):
+        reference_list = program_params['reference_list']
+        # should look like: {ref_ext: {reference: file/link, associated_samples: [sample_list], gene_trans_map: gtmap file/link}
+        for ref_ext, ref_info in reference_list.items():
+            ref = ref_info['reference'] # should be file/link
+            reffiles.append(ref)
+            assoc_samples = ref_info['associated_samples'] # should be samples list
+            gtmap = ref_info.get('gene_trans_map', None) # should be file/link, or not present
+
+            reference_extensions.append(ref_ext)
+            # if not associated samples, assume all
+## WORKING HERE
+    if per_sample_ref:
+        # HOW TO ACTUALLY DO THIS PROPERLY?
+        #reffiles += samples['reference'] # should be list of reference files (or links)
+        # extension = sample_name
+        # file /link = contents of samples['reference'] column
+        # associated_samples = [sample_name]
+        # gtmap = contents of samples['gene_trans_map'] column
+    extensions['reference_extensions'] = reference_extensions
+
+## let's actually check for the files as we go, then we can spit out the correct sample name when we have trouble with the file.
 
     # grab user-input reference extension
     config['get_reference'] = {'program_params': program_params, 'elvers_params': {'outputs': {'extensions':extensions}}}
+# handle extensions LATER --> take out of ^
     return config, input_reference_extension
+
+
+## just a start -- this will not work as-is. Need to be able to access the reference files from the samples csv when we need them, and apply get_reference to each.
+
+def check_referencefile(referencefile, ref_extension, gtmap):
+        #if not program_params.get('download_ref', False):
+            # just check if it starts with "http" or "ftp"
+    #if referencefile:
+    reffile = find_input_file(referencefile, name="input reference", add_paths = [os.path.realpath(os.path.dirname(configfile))], add_suffixes = ['.fa', '.fasta'])
+    #program_params['reference'] = referencefile
+    #else:
+        #sys.stderr.write("\n\tError: trying to run `get_reference` workflow, but there's no reference file specified in your configfile. Please fix.\n\n")
+    # handle the gene_trans_map
+    #gtmap = program_params.get('gene_trans_map', '')
+    if gtmap:
+        gtmap = find_input_file(gtmap,"input reference gene_trans_map", add_paths = [os.path.realpath(os.path.dirname(configfile))], add_suffixes = [''])
+        #program_params['gene_trans_map'] = gtmap
+        #extensions = {'base': ['.fasta', '.fasta.gene_trans_map']}
+    #else:
+        #program_params['gene_trans_map'] = ''
+        ### THIS MEANS WE NEED TO CHANGE DESEQ2 GENE-TRANS-MAP  FINDING/IDENTIFICATION
+        #config['no_gene_trans_map']= True
+        #extensions = {'base': ['.fasta']}
+# these extensions are going to need to change based on each file. Handle get_reference as a special case in building targets, don't set the extensions here
+
 
 def handle_samples_input(config, configfile):
     program_params = config['get_data'].get('program_params')
