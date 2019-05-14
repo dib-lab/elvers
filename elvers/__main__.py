@@ -256,34 +256,12 @@ To build an editable configfile to start work on your own data, run:
         if configD.get('get_reference', None):
             targs+=['get_reference']
             try:
-                configD, refinput_ext = handle_reference_input(configD, configfile, samples)
+                configD, refinput_exts = handle_reference_input(configD, configfile, samples)
             except Exception as e:
                 print(e)
                 #sys.stderr.write("\n\tError: trying to get reference via `get_reference` rule, can't find the reference file. Please fix.\n\n")
                 sys.exit(-1)
 
-
-        #refInput = configD.get('get_reference', None)
-        #if refInput:
-        #    targs+=['get_reference']
-## handle reference input
-         #   configD, refinput_ext = handle_reference_input(configD, configfile)
-        #else:
-        #if 'get_reference' in targs and not refInput:
-        #    sys.stderr.write("\n\tError: trying to get reference via `get_reference` rule, but there's no reference file specified in your configfile. Please fix.\n\n")
-        #    sys.exit(-1)
-        # check that samples file exists, targs include get_data, and build fullpath to samples file
-
-## handle sample inputs
-        #if configD.get('get_data', None):
-        #    targs+=['get_data']
-        #    try:
-        #        configD = handle_samples_input(configD, configfile)
-        #        samples, configD = read_samples(configD)
-        #    except Exception as e:
-        #        sys.stderr.write("\n\tError: trying to get input data, but can't find the samples file. Please fix.\n\n")
-        #        print(e)
-        #        sys.exit(-1)
         targs = list(set(targs))
         # next, grab all elvers defaults, including rule-specific default parameters (*_params.yaml files)
         paramsD = build_default_params(thisdir, targs)
@@ -324,7 +302,8 @@ To build an editable configfile to start work on your own data, run:
 
         # add extension to overall reference_extensions info
         if refinput_ext: # note, need to do it here to prevent override with defaults
-            paramsD['reference_extensions'] = list(set(paramsD.get('reference_extensions', []) + [refinput_ext]))
+            ## NOTE: PROBABLY WANT TO DO THIS DIFFERENTLY
+            paramsD['reference_extensions'] = list(set(paramsD.get('reference_extensions', []) + refinput_exts]))
 
         # This is now handled in the deseq2 rule, can remove from here. Do we need the sys.stderr notification?
         if paramsD.get('no_gene_trans_map', False):

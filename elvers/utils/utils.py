@@ -132,74 +132,75 @@ def find_input_file(filename, name="input file", add_paths=[], add_suffixes = ['
     return found_file
 
 def handle_reference_input(config, configfile, samples = None):
-    extensions= {}
     reference_extensions = []
     program_params = config['get_reference'].get('program_params')
-    ## NOW THREE WAYS TO SPECIFY REFERENCES (reduce to just two?)
 
     # current, single ref specification (allows no reference extension)
     if program_params.get('reference', None):
-        reffile = program_params.get('reference')
-        if not reffile:
-            sys.stderr.write("\n\tError: improper reference specification in `get_reference`. Please fix.\n\n")
-        input_reference_extension = program_params.get('reference_extension', '') ### bc we use this later. eliminate the need for naming this one.
-        gene_trans_map = program_params.get('gene_trans_map', None)
-        reference_extensions = [input_reference_extension]
-        # check that we can find the files (if they're not links)
-        # CHANGE CHECK_REF_INPUT
-        reffile, gene_trans_map = check_ref_input(input_reference_extension, reffile, gene_trans_map)
 
-        program_params['reference'] = reffile
-        if gene_trans_map:
-            program_params['gene_trans_map'] = gene_trans_map
-        program_params['reference_extension'] = input_reference_extension
+        initial_ref = {'reference': program_params['reference'],   \
+                       'gene_trans_map': program_params.get('gene_trans_map', None), \
+                       'reference_extension': program_params.get('reference_extension', ""), \
+                       'associated_samples': program_params.get('associated_samples', None)}
+
+        program_params = check_ref_input(initial_ref) #check for file inputs & if yes, return with fullpaths
+        reference_extensions = [program_params.get('reference_extension', "")]
+        #input_reference_extension = program_params.get('reference_extension', '') ### bc we use this later. eliminate the need for naming this one.
+
+
     # new multiple ref specification (each ref needs an extension)
     if program_params.get('reference_list', None):
+
         reference_list = program_params['reference_list']
         # should look like: {ref_ext: {reference: file/link, associated_samples: [sample_list], gene_trans_map: gtmap file/link}
+
         for ref_ext, ref_info in reference_list.items():
             #assoc_samples = ref_info.get('associated_samples', None) # should be samples list --> don't need to change this, leave as-is
             reference_extensions.append(ref_ext)
-            ref, gtmap = check_ref_input(row.sample, ref_info['reference'], ref_info.get('gene_trans_map', None))
-            # do this bit in check_referencefiles? Checking for gtmap all the time is annoying
-            reference_list[ref_ext]['reference'] = ref
-            if gtmap:
-                reference_list[ref_ext]['gene_trans_map'] = gtmap
+            ref_info = check_ref_input(ref_info)
 
-
-            # if not associated samples, assume all
-    # per-sample reference files --> use reference_list style, build from sample table
     per_sample_ref = program_params.get('per_sample_reference_files')
-    if 'reference' in samples.columns and not per_sample_ref:
-        sys.stderr.write("\n\t I see a 'reference' column in your samples file, do you want to use these as per-sample references? If yes, please add 'per_sample_reference_files: True' to your 'get_reference' directive in your yaml configuration file\n\n")
+    #if 'reference' in samples.columns and not per_sample_ref:
+    #    sys.stderr.write("\n\t I see a 'reference' column in your samples file, \
+         # do you want to use these as per-sample references? If yes, please add \
+        # 'per_sample_reference_files: True' to your 'get_reference' directive in your yaml configuration file\n\n")
+
     if per_sample_ref:
-        for row in samples.itertuples(index=False): # or try iteritems
-            # if no value of gtmap, do we return None (desired) or does it throw and error?
-            # does any error in finding file get handled properly in find_input_file?
-            ref, gtmap = check_ref_input(row.sample, row.reference, row.gene_trans_map])
-            reference_list[row.sample] = {'reference': ref, 'gene_trans_map': gtmap, 'associated_samples': [row.sample]}
+        for row in samples.itertuples(index=False):
+            sample_ref = {'reference': row.reference, 'gene_trans_map': row.gene_trans_map, 'associated_samples': [row.sample]}
+            reference_list[row.sample] =  check_ref_input(sample_ref)
             reference_extensions.append(row.sample)
 
-    extensions['reference_extensions'] = reference_extensions
+
+    extensions = { base: ['fasta'], 'reference_extensions': reference_extensions}
     program_params['reference_list'] = reference_list
     config['get_reference'] = {'program_params': program_params, 'elvers_params': {'outputs': {'extensions':extensions}}}
-# handle extensions LATER --> take out of ^
-    return config, input_reference_extension
 
-def check_ref_input(ref_extension, referencefile, gtmap):
-    if not referencefile.startswith('http') and not referencefile.startswith('ftp'):
-        ref = find_input_file(referencefile, name="input reference", add_paths = [os.path.realpath(os.path.dirname(configfile))], add_suffixes = ['.fa', '.fasta'])
-    else:
-        ref = referencefile
-    if gtmap and not gtmap.startswith('http') and not gtmap.startswith('ftp'):
-        gtm = find_input_file(gtmap,"input reference gene_trans_map", add_paths = [os.path.realpath(os.path.dirname(configfile))], add_suffixes = [''])
-    else:
-        gtm = gtmap
+    ## IF WE HAVE NO REFERENCE INFO BY NOW, SOMETHING IS WRONG - WARN USER
+    #if not reffile:
+        #    sys.stderr.write("\n\tError: improper reference specification in `get_reference`. Please fix.\n\n")
+    return config, reference_extensions
+
+def check_ref_input(refDict):
+    # refDict contains at least "reference", and optionally "gene_trans_map" and/or "reference_extension"
+
+    # if file, find ref
+    ref = refDict['reference']
+    if not ref.startswith('http') and not ref.startswith('ftp'):
+        refDict['reference'] = find_input_file(ref, name="input reference", add_paths = [os.path.realpath(os.path.dirname(configfile))], add_suffixes = ['.fa', '.fasta'])
+
+    # if file, find gene_trans_map
+    gtmap = refDict.get("gene_trans_map", None)
+    if gtmap:
+        if not gtmap.startswith('http') and not gtmap.startswith('ftp'):
+            refDict['gene_trans_map'] = find_input_file(gtmap,"input reference gene_trans_map", add_paths = [os.path.realpath(os.path.dirname(configfile))], add_suffixes = [''])
+
+    return refDict
+
+    # extensions are going to need to change based on each file. Handle get_reference as a special case in building targets, don't set the extensions here
+        #extensions = {'base': ['.fasta']}
     ### THIS MEANS WE NEED TO CHANGE DESEQ2 GENE-TRANS-MAP  FINDING/IDENTIFICATION
     #config['no_gene_trans_map']= True
-    return ref, gtm
-# extensions are going to need to change based on each file. Handle get_reference as a special case in building targets, don't set the extensions here
-        #extensions = {'base': ['.fasta']}
 
 def handle_samples_input(config, configfile):
     program_params = config['get_data'].get('program_params')
@@ -300,7 +301,9 @@ def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, 
     if rulename == 'get_data':
         samples_file = rule_config['program_params']['samples'] # should be present (validated) prior to here
         rule_config['elvers_params']['input_options'] = {'get_data': {'indir': os.path.dirname(samples_file), 'input_files': [samples_file]}}
+
     elif rulename == 'get_reference':
+        # THIS NEEDS TO CHANGE
         reference = rule_config['program_params']['reference'] # should be present (validated) prior to here
         rule_config['elvers_params']['input_options'] = {'get_ref': {'indir': os.path.dirname(reference), 'input_files': [reference]}}
     else:
@@ -336,6 +339,8 @@ def generate_inputs_outputs(config, samples=None):
                 config[rulename] = generate_rule_targs(home_outdir, base, ref_exts, rule_config, rulename, samples, ext_defaults, ignore_units)
     return config
 
+
+## Superseded by generate_inputs_outputs
 def generate_all_targs(configD, samples=None):
     # pass full config, program names. Call generate_program_targs to build each
     workflows = configD['elvers_workflows']
