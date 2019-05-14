@@ -172,7 +172,6 @@ def handle_reference_input(config, configfile, samples = None):
             reference_list[row.sample] =  check_ref_input(sample_ref, configfile)
             reference_extensions.append(row.sample)
 
-
     extensions = {'base': ['fasta'], 'reference_extensions': reference_extensions}
     program_params['reference_list'] = reference_list
     config['get_reference'] = {'program_params': program_params, 'elvers_params': {'outputs': {'extensions':extensions}}}
@@ -197,7 +196,6 @@ def check_ref_input(refDict, configfile):
             refDict['gene_trans_map'] = find_input_file(gtmap,"input reference gene_trans_map", add_paths = [os.path.realpath(os.path.dirname(configfile))], add_suffixes = [''])
     else:
         del refDict['gene_trans_map']
-
     return refDict
 
     # extensions are going to need to change based on each file. Handle get_reference as a special case in building targets, don't set the extensions here
@@ -214,26 +212,6 @@ def handle_samples_input(config, configfile):
     else:
         sys.stderr.write("\n\tError: trying to run `get_data` workflow, but the samples tsv file is not specified in your configfile. Please fix.\n\n")
     return config
-
-#def check_workflow(config):
-    # This is way too naive. Need to come up with a better version.
-    # Maybe we manually check the generated snakemake targs?
-    # Or just catch the snakemake error and print better help for which rule needs to be included?.
-#    inputs, outputs = [],[]
-#    for key, val in config.items():
-#        if isinstance(val, dict):
-#            if val.get('elvers_params'):
-#                inputs += val['elvers_params']['inputs'].get('read', [])
-#                inputs += val['elvers_params']['inputs'].get('reference', [])
-#                outputs += val['elvers_params']['outputs'].get('read', [])
-#                outputs += val['elvers_params']['outputs'].get('reference', [])
-                # leaving out "other" inputs/outputs, bc they're never used as inputs (so far)
-#    try:
-#        set(inputs) == set(outputs)
-#    except:
-        #well this is uninformative
-#        sys.stderr.write("chosen workflow is not valid")
-
 
 def select_outputs(config):
     # Here we go from "output_options" --> outputs. Mostly, we want to map inputs (program_params) directly to outputs
@@ -320,21 +298,6 @@ def generate_program_targs(configD, samples, basename,ref_exts, contrasts):
 
 def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, samples, all_input_options, ignore_units):
     contrasts = rule_config['program_params'].get('contrasts', [])
-    # handle outputs (sometimes multiple outputs)
-    output_files = []
-    outdir = ""
-    for outname, output_info in rule_config['elvers_params']['outputs'].items():
-        outdir = output_info['outdir']
-        out_exts = output_info['extensions']
-        if out_exts.get('reference_extensions'): # this program is an assembler or only works with specific assemblies
-            out_ref_exts = out_exts.get('reference_extensions', ['']) # override generals with rule-specific reference extensions
-        else:
-            out_ref_exts = ref_exts
-
-        outputs = generate_targs(outdir, basename, samples, out_ref_exts, out_exts.get('base', None),out_exts.get('read'), out_exts.get('other'), contrasts, ignore_units)
-        output_files += outputs
-    rule_config['elvers_params']['outputs']['output_files'] = output_files
-    rule_config['elvers_params']['outputs']['outdir'] = outdir
 
     # handle input options!
     if rulename == 'get_data':
@@ -342,9 +305,40 @@ def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, 
         rule_config['elvers_params']['input_options'] = {'get_data': {'indir': os.path.dirname(samples_file), 'input_files': [samples_file]}}
 
     elif rulename == 'get_reference':
-        # THIS NEEDS TO CHANGE
-        reference = rule_config['program_params']['reference'] # should be present (validated) prior to here
-        rule_config['elvers_params']['input_options'] = {'get_ref': {'indir': os.path.dirname(reference), 'input_files': [reference]}}
+        ## Jointly do inputs/outputs here
+        outdir = rule_config['elvers_params']['outputs']['fasta']['outdir']
+        #outdir = output_info['outdir']
+        ref_output_files = []
+        ref_input_files = []
+        #out_exts = output_info['extensions']
+        # I don't think we need "reference_extensions" for this one
+        #out_ref_exts = out_exts.get('reference_extensions', [''])
+
+        # handle single reference input
+        thisref_exts = ['.fasta']
+        if rule_config['program_params'].get('reference'):
+            ref_input_files.append(rule_config['program_params']['reference'])
+            if rule_config['program_params'].get('gene_trans_map'):
+                ref_input_files.append(rule_config['program_params']['gene_trans_map'])
+                thisref_exts.append('.fasta.gene_trans_map')
+            ref_output_files += generate_targs(outdir, basename, samples, base_exts= thisref_exts)
+
+        # multiple reference input
+        ## NEED TO RECORD/KEEP REFERENCE EXTENSION WITH EACH SET OF OUTPUTS? keep link btwn input file and output file
+        if rule_config['program_params'].get('reference_list'):
+            for ref_ext, ref_info in rule_config['program_params']['reference_list']:
+                thisref_exts = ['fasta']
+                ref_input_files.append(ref_info['reference'])
+                if ref_info.get('gene_trans_map'):
+                    ref_input_files.append(ref_info['gene_trans_map'])
+                    thisref_exts.append('.fasta.gene_trans_map')
+                ref_output_files += generate_targs(outdir, basename, samples, base_exts= thisref_exts)
+
+        rule_config['elvers_params']['input_options'] = {'get_ref': {'indir': "", 'input_files': ref_input_files}}
+        rule_config['elvers_params']['outputs']['output_files'] = ref_output_files
+        rule_config['elvers_params']['outputs']['outdir'] = outdir
+        return rule_config
+
     else:
         all_input_exts = {}
         input_options = rule_config['elvers_params'].get('input_options', None)# read, reference, other
@@ -369,6 +363,23 @@ def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, 
                     sys.stderr.write(f"cannot find input files for {rulename}. Please add a target that produces any of the following: {option_list}")
                     sys.exit(-1)
         rule_config['elvers_params']['input_options'] = all_input_exts
+
+    # handle outputs (sometimes multiple outputs)
+    output_files = []
+    outdir = ""
+
+    for outname, output_info in rule_config['elvers_params']['outputs'].items():
+        outdir = output_info['outdir']
+        out_exts = output_info['extensions']
+        if out_exts.get('reference_extensions'): # this program is an assembler or only works with specific assemblies
+            out_ref_exts = out_exts.get('reference_extensions', ['']) # override generals with rule-specific reference extensions
+        else:
+            out_ref_exts = ref_exts
+
+        outputs = generate_targs(outdir, basename, samples, out_ref_exts, out_exts.get('base', None),out_exts.get('read'), out_exts.get('other'), contrasts, ignore_units)
+        output_files += outputs
+    rule_config['elvers_params']['outputs']['output_files'] = output_files
+    rule_config['elvers_params']['outputs']['outdir'] = outdir
     return rule_config
 
 def generate_inputs_outputs(config, samples=None):
