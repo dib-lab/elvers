@@ -172,7 +172,7 @@ def handle_reference_input(config, configfile, samples = None):
             reference_list[row.sample] =  check_ref_input(sample_ref, configfile)
             reference_extensions.append(row.sample)
 
-    extensions = {'base': ['fasta'], 'reference_extensions': reference_extensions}
+    extensions = {'base': ['.fasta'], 'reference_extensions': reference_extensions}
     program_params['reference_list'] = reference_list
     config['get_reference'] = {'program_params': program_params, 'elvers_params': {'outputs': {'extensions':extensions}}}
 
