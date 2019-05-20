@@ -167,6 +167,7 @@ To build an editable configfile to start work on your own data, run:
     parser.add_argument('--nolock', action='store_true')
     parser.add_argument('--unlock', action='store_true')
     parser.add_argument('--cleanup_conda', action='store_true')
+    parser.add_argument('--force_incomplete', action='store_true')
     parser.add_argument('--forcetargets', action='store_true', help='force given targets to be re-created (default False)')
     parser.add_argument('--forceall', action='store_true', help='force all output files to be re-created (default False)')
     parser.add_argument('--restart_times',type=int, default=0, help='let snakemake try rerunning any failed tools (input number of times to try rerunning). default = 0')
@@ -382,6 +383,7 @@ To build an editable configfile to start work on your own data, run:
                                      cluster=args.cluster_cmd,
                                      create_envs_only=args.create_envs_only,
                                      restart_times=args.restart_times,
+                                     force_incomplete=args.force_incomplete,
                                      printdag=building_dag, keepgoing=args.keep_going,
                                      forcetargets=args.forcetargets,forceall=args.forceall)
 
