@@ -5,6 +5,8 @@ prog_params = config['salmon']['program_params']
 ep_params = config['salmon']['elvers_params']
 logs_dir  = config['elvers_directories']['logs']
 
+basename = config['basename']
+
 # get inputs
 assembly_dir  = config['elvers_directories']['outdirs']['assemble']
 combine_units = ep_params['outputs']['salmon_quant']['extensions']['read']['combine_units']
@@ -17,6 +19,22 @@ if config.get('ignore_units'):
 # get outdir
 quant_dir     = ep_params['outputs']['outdir']
 
+# handle "associated_samples"
+associated_samples = {}
+if config.get('per_sample_reference_files', False):
+    for row in samples.itertuples(index=False):
+        refname = basename + '_' + row.sample
+        associated_samples[refname] = [row.sample]
+if config.get('reference_list'):
+    for ref_ext, ref_info in config['reference_list'].items():
+        if ref_info.get('associated_samples'):
+            sample_list = ref_info['associated_samples']
+            if not ref_ext.startswith('_'):
+                ref_ext = '_' + ref_ext
+            refname = basename + ref_ext
+            associated_samples[refname] = sample_list
+
+print(associated_samples)
 # use if you don't want to collapse technical replicates ("units" column; deseq2 not supported)
 def get_sample_no_combine(w):
     readsD = {}
@@ -28,11 +46,18 @@ def get_sample_no_combine(w):
         input_dir = config['elvers_directories']['outdirs']['input_data']
         ext = '.fq.gz'
         se_ext = '1'
-    if not is_single_end(**w): # note, this requires unit to be in outputs!
-        readsD['r1'] = join(input_dir, f'{w.sample}_{w.unit}_1{ext}')
-        readsD['r2'] = join(input_dir, f'{w.sample}_{w.unit}_2{ext}')
-        return readsD
-    readsD['r'] = join(input_dir, f'{w.sample}_{w.unit}_{se_ext}{ext}')
+
+    if w.assembly in associated_samples.keys():
+        # this assembly has some associated samples
+        sample_list = associated_samples[w.assembly]
+    else: # assume we want to map all samples to this assembly
+        sample_list = samples['sample'].tolist()
+    if w.sample in sample_list:
+        if not is_single_end(**w): # note, this requires unit to be in outputs!
+            readsD['r1'] = join(input_dir, f'{w.sample}_{w.unit}_1{ext}')
+            readsD['r2'] = join(input_dir, f'{w.sample}_{w.unit}_2{ext}')
+            return readsD
+        readsD['r'] = join(input_dir, f'{w.sample}_{w.unit}_{se_ext}{ext}')
     return readsD
 
 def get_sample_combine_units(w):
@@ -46,19 +71,25 @@ def get_sample_combine_units(w):
         input_dir = config['elvers_directories']['outdirs']['input_data']
         ext = '.fq.gz'
         se_ext = '1'
-    unit_list = samples.groupby(level=0).get_group(w.sample)['unit'].tolist()
-    for unit in unit_list:
-        if not is_single_end(w.sample, unit):
-            r1+= [join(input_dir, f"{w.sample}_{unit}_1{ext}")]
-            r2+= [join(input_dir, f"{w.sample}_{unit}_2{ext}")]
-        else:
-            r+= [join(input_dir, f"{w.sample}_{unit}_{se_ext}{ext}")]
-    if r1:
-        readsD['r1'] = r1
-        readsD['r2'] = r2
-    elif r:
-        # salmon can't handle mixed pe/se samples, so if there are samples with some se, some pe, this will only do quant for pe
-        readsD['r'] = r
+    if w.assembly in associated_samples.keys():
+        # this assembly has some associated samples
+        sample_list = associated_samples[w.assembly]
+    else: # assume we want to map all samples to this assembly
+        sample_list = samples['sample'].tolist()
+    if w.sample in sample_list:
+        unit_list = samples.groupby(level=0).get_group(w.sample)['unit'].tolist()
+        for unit in unit_list:
+            if not is_single_end(w.sample, unit):
+                r1+= [join(input_dir, f"{w.sample}_{unit}_1{ext}")]
+                r2+= [join(input_dir, f"{w.sample}_{unit}_2{ext}")]
+            else:
+                r+= [join(input_dir, f"{w.sample}_{unit}_{se_ext}{ext}")]
+        if r1:
+            readsD['r1'] = r1
+            readsD['r2'] = r2
+        elif r:
+            # salmon can't handle mixed pe/se samples, so if there are samples with some se, some pe, this will only do quant for pe
+            readsD['r'] = r
     return readsD
 
 ############

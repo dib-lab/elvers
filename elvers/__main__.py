@@ -305,7 +305,7 @@ To build an editable configfile to start work on your own data, run:
         update_nested_dict(paramsD,configD) # configD takes priority over default params
 
         # add extension to overall reference_extensions info
-        if refinput_ext: # note, need to do it here to prevent override with defaults
+        if refinput_exts: # note, need to do it here to prevent override with defaults
             ## NOTE: PROBABLY WANT TO DO THIS DIFFERENTLY
             paramsD['reference_extensions'] = list(set(paramsD.get('reference_extensions', []) + refinput_exts))
 

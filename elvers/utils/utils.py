@@ -150,9 +150,10 @@ def handle_reference_input(config, configfile, samples = None):
                        'associated_samples': program_params.get('associated_samples', None)}
 
         program_params = check_ref_input(initial_ref, configfile) #check for file inputs & if yes, return with fullpaths
-        reference_extensions = [program_params.get('reference_extension', "")]
-        #input_reference_extension = program_params.get('reference_extension', '') ### bc we use this later. eliminate the need for naming this one.
-
+        ref_ext = program_params.get('reference_extension', "")
+        if ref_ext and not reference_extension.startswith('_'):
+            ref_ext = '_' + ref_ext
+            reference_extensions = [ref_ext]
 
     # MULTIPLE REFS (not per-sample refs) IS NOT TESTED YET
     # multiple ref specification (each ref needs an extension)
@@ -164,6 +165,8 @@ def handle_reference_input(config, configfile, samples = None):
 
         for ref_ext, ref_info in reference_list.items():
             #assoc_samples = ref_info.get('associated_samples', None) # should be samples list --> don't need to change this, leave as-is
+            if not ref_ext.startswith('_'):
+                ref_ext = '_' + ref_ext
             reference_extensions.append(ref_ext)
             ref_info = check_ref_input(ref_info, configfile)
 
@@ -182,7 +185,10 @@ def handle_reference_input(config, configfile, samples = None):
             else:
                 sample_ref = {'reference': row.reference, 'gene_trans_map': None, 'associated_samples': [row.sample]}
             sample_ref =  check_ref_input(sample_ref, configfile)
-            reference_extensions.append(row.sample)
+            if not row.sample.startswith('_'):
+                reference_extensions.append('_' + row.sample)
+            else:
+                reference_extensions.append(row.sample)
     extensions = {'base': ['.fasta'], 'reference_extensions': reference_extensions}
     program_params['reference_list'] = reference_list
     config['get_reference'] = {'program_params': program_params, 'elvers_params': {'outputs': {'extensions':extensions}}}
@@ -329,7 +335,10 @@ def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, 
             if rule_config['program_params'].get('gene_trans_map'):
                 ref_input_files.append(rule_config['program_params']['gene_trans_map'])
                 thisref_exts.append('.fasta.gene_trans_map')
-            thisref = [rule_config['program_params'].get('reference_extension', "")]
+            ref_ext = rule_config['program_params'].get('reference_extension', "")
+            if ref_ext and not ref_ext.startswith('_'):
+                ref_ext = '_' + ref_ext
+            thisref = [ref_ext]
             ref_output_files += generate_targs(outdir, basename, samples, ref_exts = thisref, base_exts= thisref_exts)
 
         # multiple reference input (not yet tested 5/20/19))
@@ -340,6 +349,8 @@ def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, 
                 if ref_info.get('gene_trans_map'):
                     ref_input_files.append(ref_info['gene_trans_map'])
                     thisref_exts.append('.fasta.gene_trans_map')
+                if not ref_ext.startswith('_'):
+                    ref_ext = '_' + ref_ext
                 thisref = [ref_ext]
                 ref_output_files += generate_targs(outdir, basename, samples, ref_exts= thisref, base_exts= thisref_exts)
 
@@ -350,7 +361,10 @@ def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, 
                 if 'gene_trans_map' in samples.columns:
                     ref_input_files.append(row.gene_trans_map)
                     thisref_exts.append('.fasta.gene_trans_map')
-                thisref = ["_" + row.sample]
+                if not row.sample.startswith('_'):
+                    thisref = ["_" + row.sample]
+                else:
+                    thisref = [row.sample]
                 ref_output_files += generate_targs(outdir, basename, samples, ref_exts= thisref, base_exts= thisref_exts)
 
         rule_config['elvers_params']['input_options'] = {'get_ref': {'indir': "", 'input_files': ref_input_files}}
