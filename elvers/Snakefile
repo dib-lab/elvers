@@ -57,7 +57,7 @@ for r in includeRules:
 # Reasoning: elvers just manages other jobs, and ftp/http actually download first, then submit a "job" that 
 # is the "mv downloaded_file output_location" command. Thus the job submission wouldn't capture the longest
 # part of the job.
-localrules: elvers, ftp_get_fq1, ftp_get_fq2, http_get_fq1, http_get_fq2
+localrules: elvers 
 
 onstart: 
     shell('cat {octopus}')

@@ -93,9 +93,7 @@ def read_samples(config, build_sra_links = False):
     # check for single-unit case
     if not (samples['sample'].value_counts() > 1).any():
         config['ignore_units'] = True
-    # column 4 is "condition", but can change name --> not always true if we allow 'reference' column
-    #if (samples.iloc[:, 4].value_counts() < 2).any():
-    #    config['all_replicated'] = False
+    ## now, we restrict replicate checking to "condition" name. Make a note in docs
     if 'condition' in samples.columns:
         if (samples['condition'].value_counts() < 2).any():
             config['all_replicated'] = False
@@ -156,7 +154,8 @@ def handle_reference_input(config, configfile, samples = None):
         #input_reference_extension = program_params.get('reference_extension', '') ### bc we use this later. eliminate the need for naming this one.
 
 
-    # new multiple ref specification (each ref needs an extension)
+    # MULTIPLE REFS (not per-sample refs) IS NOT TESTED YET
+    # multiple ref specification (each ref needs an extension)
     reference_list = {}
     if program_params.get('reference_list', None):
 
@@ -168,24 +167,22 @@ def handle_reference_input(config, configfile, samples = None):
             reference_extensions.append(ref_ext)
             ref_info = check_ref_input(ref_info, configfile)
 
-    per_sample_ref = program_params.get('per_sample_reference_files')
-    if 'reference' not in samples.columns:
-        sys.stderr.write("\n\t You have 'per_sample_reference_files' set in your config file, but no 'reference' column in your samples file. Please fix.\n\n")
-        sys.exit(-1)
-
+    per_sample_ref = program_params.get('per_sample_reference_files', False)
     #if 'reference' in samples.columns and not per_sample_ref:
     #    sys.stderr.write("\n\t I see a 'reference' column in your samples file, \
          # do you want to use these as per-sample references? If yes, please add \
         # 'per_sample_reference_files: True' to your 'get_reference' directive in your yaml configuration file\n\n")
     if per_sample_ref:
+        if 'reference' not in samples.columns:
+            sys.stderr.write("\n\t You have 'per_sample_reference_files' set in your config file, but no 'reference' column in your samples file. Please fix.\n\n")
+            sys.exit(-1)
         for row in samples.itertuples(index=False):
-            #if 'gene_trans_map' in samples.columns:
-            #    sample_ref = {'reference': row.reference, 'gene_trans_map': row.gene_trans_map, 'associated_samples': [row.sample]}
-            #else:
-            #    sample_ref = {'reference': row.reference, 'gene_trans_map': None, 'associated_samples': [row.sample]}
-            #reference_list[row.sample] =  check_ref_input(sample_ref, configfile)
+            if 'gene_trans_map' in samples.columns:
+                sample_ref = {'reference': row.reference, 'gene_trans_map': row.gene_trans_map, 'associated_samples': [row.sample]}
+            else:
+                sample_ref = {'reference': row.reference, 'gene_trans_map': None, 'associated_samples': [row.sample]}
+            sample_ref =  check_ref_input(sample_ref, configfile)
             reference_extensions.append(row.sample)
-
     extensions = {'base': ['.fasta'], 'reference_extensions': reference_extensions}
     program_params['reference_list'] = reference_list
     config['get_reference'] = {'program_params': program_params, 'elvers_params': {'outputs': {'extensions':extensions}}}
@@ -211,9 +208,9 @@ def check_ref_input(refDict, configfile):
     else:
         del refDict['gene_trans_map']
     return refDict
-
     # extensions are going to need to change based on each file. Handle get_reference as a special case in building targets, don't set the extensions here
         #extensions = {'base': ['.fasta']}
+
     ### THIS MEANS WE NEED TO CHANGE DESEQ2 GENE-TRANS-MAP  FINDING/IDENTIFICATION
     #config['no_gene_trans_map']= True
 
@@ -253,7 +250,7 @@ def select_outputs(config):
                     val['elvers_params']['outputs'] = val['elvers_params']['output_options']
                 del val['elvers_params']['output_options']
                 config[key] = val
-            # maybe we also want to get rid of the output_options, to minimize clutter
+            # we also get rid of the output_options, to minimize clutter
     config['reference_extensions'] = reference_extensions
     return config
 
@@ -319,13 +316,11 @@ def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, 
         rule_config['elvers_params']['input_options'] = {'get_data': {'indir': os.path.dirname(samples_file), 'input_files': [samples_file]}}
 
     elif rulename == 'get_reference':
-        ## Jointly do inputs/outputs here
+        ## Jointly do inputs/outputs for get_reference
         outdir = rule_config['elvers_params']['outputs']['fasta']['outdir']
         #outdir = output_info['outdir']
         ref_output_files = []
         ref_input_files = []
-        #out_exts = output_info['extensions']
-        # I don't think we need "reference_extensions" for this one
 
         # handle single reference input
         thisref_exts = ['.fasta']
@@ -337,8 +332,7 @@ def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, 
             thisref = [rule_config['program_params'].get('reference_extension', "")]
             ref_output_files += generate_targs(outdir, basename, samples, ref_exts = thisref, base_exts= thisref_exts)
 
-        # multiple reference input
-        ## NEED TO RECORD/KEEP REFERENCE EXTENSION WITH EACH SET OF OUTPUTS? keep link btwn input file and output file
+        # multiple reference input (not yet tested 5/20/19))
         if rule_config['program_params'].get('reference_list'):
             for ref_ext, ref_info in rule_config['program_params']['reference_list']:
                 thisref_exts = ['.fasta']
@@ -349,8 +343,7 @@ def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, 
                 thisref = [ref_ext]
                 ref_output_files += generate_targs(outdir, basename, samples, ref_exts= thisref, base_exts= thisref_exts)
 
-        if rule_config['program_params']['per_sample_reference_files']:
-            #import pdb;pdb.set_trace()
+        if rule_config['program_params'].get('per_sample_reference_files', False):
             for row in samples.itertuples(index=False):
                 thisref_exts = ['.fasta']
                 ref_input_files.append(row.reference)
@@ -360,13 +353,13 @@ def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, 
                 thisref = ["_" + row.sample]
                 ref_output_files += generate_targs(outdir, basename, samples, ref_exts= thisref, base_exts= thisref_exts)
 
-
         rule_config['elvers_params']['input_options'] = {'get_ref': {'indir': "", 'input_files': ref_input_files}}
         rule_config['elvers_params']['outputs']['output_files'] = ref_output_files
         rule_config['elvers_params']['outputs']['outdir'] = outdir
         return rule_config
 
     else:
+        # handle inputs for all other rules
         all_input_exts = {}
         input_options = rule_config['elvers_params'].get('input_options', None)# read, reference, other
         not_found = []
@@ -391,7 +384,7 @@ def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, 
                     sys.exit(-1)
         rule_config['elvers_params']['input_options'] = all_input_exts
 
-    # handle outputs (sometimes multiple outputs)
+    # now handle outputs (sometimes multiple outputs)
     output_files = []
     outdir = ""
 
@@ -454,28 +447,6 @@ def generate_inputs_outputs(config, samples=None):
             else:
                 config[rule] = generate_rule_targs(home_outdir, base, ref_exts, config[rule], rule, samples, all_extensions, ignore_units)
     return config
-
-
-## Superseded by generate_inputs_outputs
-def generate_all_targs(configD, samples=None):
-    # pass full config, program names. Call generate_program_targs to build each
-    workflows = configD['elvers_workflows']
-    targs = []
-    base = configD['basename']
-    ref_exts = configD.get('reference_extensions', [""])
-    # add assertion to make sure workflow exists in config!
-    #if workflows.get(workflow, None):
-    target_rules = []
-    for flow,info in workflows.items():
-        if info.get('targets', None): # this is a workflow, not a single rule
-            target_rules += list(info.get('targets'))
-        else:
-            target_rules += [flow]
-    for r in set(target_rules):
-        contrasts = configD[r]['program_params'].get('contrasts', [])
-        targs += generate_program_targs(configD[r]['elvers_params'], samples, base, ref_exts, contrasts)
-    targs = list(set(targs))
-    return targs
 
 def get_params(rule_name, rule_dir='rules'):
     # pass in a rule name & the directory that contains its paramsfile.

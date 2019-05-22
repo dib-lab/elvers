@@ -8,7 +8,8 @@ ep_params = config['get_reference']['elvers_params']
 ref_dir = ep_params['outputs']['outdir']
 basename = config['basename']
 reference_extension = prog_params.get('reference_extension', '')
-    
+
+
 # build per-sample reference dictionaries:
 ftp_fa,ftp_gtm,http_fa,http_gtm,link_fa,link_gtm = {},{},{},{},{},{}
 
@@ -48,6 +49,7 @@ if prog_params.get('reference'):
         gtmap_out  =  os.path.join(ref_dir, basename + reference_extension + '.fasta.gene_trans_map') 
 
     if prog_params.get('download_ref'):
+        localrules: ftp_get_fasta, ftp_get_gene_trans_map, http_get_fasta, http_get_gene_trans_map
         if prog_params.get('use_ftp'):
             rule ftp_get_fasta:
                 input: FTP.remote(f"{ref_in}", static=True, keep_local=True, immediate_close=True)
@@ -108,6 +110,7 @@ if prog_params.get('reference'):
                 """
                 gunzip -c {input} > {output} 2> {log}
                 """
+localrules: per_sample_ftp_get_fasta, per_sample_ftp_get_gene_trans_map, per_sample_http_get_fasta, per_sample_http_get_gene_trans_map
 
 rule per_sample_ftp_get_fasta:
     input: lambda wildcards: FTP.remote(f"{ftp_fa[wildcards.sample]}", static=True, keep_local=True, immediate_close=True)
@@ -134,7 +137,7 @@ rule per_sample_http_get_gene_trans_map:
     shell: "mv {input} {output} 2> {log}"
 
 rule per_sample_link_input_reference:
-    input: lambda wildcards:"{link_fa[wildcards.sample]}"
+    input: lambda wildcards:f"{link_fa[wildcards.sample]}"
     output: os.path.join(ref_dir, basename + "_{sample}.fasta")
     log: os.path.join(logs_dir, 'get_reference/link_ref_{sample}.log')
     params: ref_dir = ref_dir
@@ -144,7 +147,7 @@ rule per_sample_link_input_reference:
         ln -s {input} {output} 2> {log}
         """
 rule per_sample_link_input_gene_trans_map:
-    input: lambda wildcards:"{link_fa[wildcards.sample]}"
+    input: lambda wildcards:"f{link_fa[wildcards.sample]}"
     output: os.path.join(ref_dir, basename + "_{sample}.gene_trans_map")
     log: os.path.join(logs_dir, 'get_reference/link_gtmap_{sample}.log')
     params: ref_dir = ref_dir
