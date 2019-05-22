@@ -55,11 +55,13 @@ def update_nested_dict(d, other):
 
 def read_samples(config, build_sra_links = False):
     elvers_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    # find samples file
     try:
         samples_file = config["get_data"]["program_params"]["samples"]
     except KeyError:
         print("cannot find 'samples' entry in config file! Please provide a samples file for the `get_data` utility", file=sys.stderr)
         sys.exit(-1)
+    # read samples file
     if '.tsv' in samples_file or '.csv' in samples_file:
         separator = '\t'
         if '.csv' in samples_file:
@@ -75,11 +77,13 @@ def read_samples(config, build_sra_links = False):
         except Exception as e:
             sys.stderr.write(f"\n\tError: {samples_file} file is not properly formatted. Please fix.\n\n")
             print(e)
+    # build sra links if necessary (reads)
     if build_sra_links:
         base_link = "ftp://ftp.sra.ebi.ac.uk/vol1/fastq/"
         if "SRR" in samples.columns and "LibraryLayout" in samples.columns:
             samples['fq1'] = samples['SRR'].apply(lambda x : base_link + x[0:6] + '/00' + x[-1] + '/' + x + '/' + x + '_1.fastq.gz')
             samples['fq2'] = df.apply(lambda row : build_fq2(row), axis=1)
+    # check ("validate") that the required columns are present
     try:
         validate(samples, schema=os.path.join(elvers_dir,"schemas/samples_v2.schema.yaml"))
     except Exception as e:
@@ -92,7 +96,10 @@ def read_samples(config, build_sra_links = False):
     # column 4 is "condition", but can change name --> not always true if we allow 'reference' column
     #if (samples.iloc[:, 4].value_counts() < 2).any():
     #    config['all_replicated'] = False
-    if (samples['condition'].value_counts() < 2).any():
+    if 'condition' in samples.columns:
+        if (samples['condition'].value_counts() < 2).any():
+            config['all_replicated'] = False
+    else:
         config['all_replicated'] = False
     return samples, config
 
@@ -162,14 +169,21 @@ def handle_reference_input(config, configfile, samples = None):
             ref_info = check_ref_input(ref_info, configfile)
 
     per_sample_ref = program_params.get('per_sample_reference_files')
+    if 'reference' not in samples.columns:
+        sys.stderr.write("\n\t You have 'per_sample_reference_files' set in your config file, but no 'reference' column in your samples file. Please fix.\n\n")
+        sys.exit(-1)
+
     #if 'reference' in samples.columns and not per_sample_ref:
     #    sys.stderr.write("\n\t I see a 'reference' column in your samples file, \
          # do you want to use these as per-sample references? If yes, please add \
         # 'per_sample_reference_files: True' to your 'get_reference' directive in your yaml configuration file\n\n")
     if per_sample_ref:
         for row in samples.itertuples(index=False):
-            sample_ref = {'reference': row.reference, 'gene_trans_map': row.gene_trans_map, 'associated_samples': [row.sample]}
-            reference_list[row.sample] =  check_ref_input(sample_ref, configfile)
+            #if 'gene_trans_map' in samples.columns:
+            #    sample_ref = {'reference': row.reference, 'gene_trans_map': row.gene_trans_map, 'associated_samples': [row.sample]}
+            #else:
+            #    sample_ref = {'reference': row.reference, 'gene_trans_map': None, 'associated_samples': [row.sample]}
+            #reference_list[row.sample] =  check_ref_input(sample_ref, configfile)
             reference_extensions.append(row.sample)
 
     extensions = {'base': ['.fasta'], 'reference_extensions': reference_extensions}
@@ -312,7 +326,6 @@ def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, 
         ref_input_files = []
         #out_exts = output_info['extensions']
         # I don't think we need "reference_extensions" for this one
-        #out_ref_exts = out_exts.get('reference_extensions', [''])
 
         # handle single reference input
         thisref_exts = ['.fasta']
@@ -321,18 +334,32 @@ def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, 
             if rule_config['program_params'].get('gene_trans_map'):
                 ref_input_files.append(rule_config['program_params']['gene_trans_map'])
                 thisref_exts.append('.fasta.gene_trans_map')
-            ref_output_files += generate_targs(outdir, basename, samples, base_exts= thisref_exts)
+            thisref = [rule_config['program_params'].get('reference_extension', "")]
+            ref_output_files += generate_targs(outdir, basename, samples, ref_exts = thisref, base_exts= thisref_exts)
 
         # multiple reference input
         ## NEED TO RECORD/KEEP REFERENCE EXTENSION WITH EACH SET OF OUTPUTS? keep link btwn input file and output file
         if rule_config['program_params'].get('reference_list'):
             for ref_ext, ref_info in rule_config['program_params']['reference_list']:
-                thisref_exts = ['fasta']
+                thisref_exts = ['.fasta']
                 ref_input_files.append(ref_info['reference'])
                 if ref_info.get('gene_trans_map'):
                     ref_input_files.append(ref_info['gene_trans_map'])
                     thisref_exts.append('.fasta.gene_trans_map')
-                ref_output_files += generate_targs(outdir, basename, samples, base_exts= thisref_exts)
+                thisref = [ref_ext]
+                ref_output_files += generate_targs(outdir, basename, samples, ref_exts= thisref, base_exts= thisref_exts)
+
+        if rule_config['program_params']['per_sample_reference_files']:
+            #import pdb;pdb.set_trace()
+            for row in samples.itertuples(index=False):
+                thisref_exts = ['.fasta']
+                ref_input_files.append(row.reference)
+                if 'gene_trans_map' in samples.columns:
+                    ref_input_files.append(row.gene_trans_map)
+                    thisref_exts.append('.fasta.gene_trans_map')
+                thisref = ["_" + row.sample]
+                ref_output_files += generate_targs(outdir, basename, samples, ref_exts= thisref, base_exts= thisref_exts)
+
 
         rule_config['elvers_params']['input_options'] = {'get_ref': {'indir': "", 'input_files': ref_input_files}}
         rule_config['elvers_params']['outputs']['output_files'] = ref_output_files

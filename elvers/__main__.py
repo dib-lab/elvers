@@ -296,7 +296,8 @@ To build an editable configfile to start work on your own data, run:
             if configD.get('deseq2'):
                 if configD['deseq2']['program_params'].get('contrasts'):
                     paramsD['deseq2']['program_params']['contrasts'] = {} # get rid of default contrasts
-
+        if configD.get('get_reference'):
+            paramsD['get_reference']['program_params'] = {} # get rid of default test assembly
         # first update with extra configs, then with main configfile
         update_nested_dict(paramsD,extra_configs)
 
