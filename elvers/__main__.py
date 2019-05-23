@@ -253,7 +253,7 @@ To build an editable configfile to start work on your own data, run:
                 print(e)
                 sys.exit(-1)
         # HANDLE REFERENCE INPUT(S)
-        refinput_ext = None
+        refinput_exts = None
         #if any([configD.get('get_reference', None), 'reference' in samples.columns]):
         # only run get_reference in user has that in their config?
         if configD.get('get_reference', None):

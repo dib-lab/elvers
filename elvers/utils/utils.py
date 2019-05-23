@@ -140,24 +140,26 @@ def find_input_file(filename, name="input file", add_paths=[], add_suffixes = ['
 def handle_reference_input(config, configfile, samples = None):
     reference_extensions = []
     program_params = config['get_reference'].get('program_params')
+    reference_list = {}
 
     # current, single ref specification (allows no reference extension)
     if program_params.get('reference', None):
-
         initial_ref = {'reference': program_params['reference'],   \
                        'gene_trans_map': program_params.get('gene_trans_map', None), \
                        'reference_extension': program_params.get('reference_extension', ""), \
                        'associated_samples': program_params.get('associated_samples', None)}
 
         program_params = check_ref_input(initial_ref, configfile) #check for file inputs & if yes, return with fullpaths
-        ref_ext = program_params.get('reference_extension', "")
-        if ref_ext and not reference_extension.startswith('_'):
+        ref_ext = initial_ref['reference_extension'] #program_params.get('reference_extension', "")
+        if ref_ext and not ref_ext.startswith('_'):
             ref_ext = '_' + ref_ext
             reference_extensions = [ref_ext]
+            reference_list[ref_ext] = initial_ref
+        # just trying this out -- would mean we only have to deal with a single ref specification
+        else:
+            reference_list["no_extension"] = initial_ref
 
-    # MULTIPLE REFS (not per-sample refs) IS NOT TESTED YET
     # multiple ref specification (each ref needs an extension)
-    reference_list = {}
     if program_params.get('reference_list', None):
 
         reference_list = program_params['reference_list']
@@ -189,8 +191,11 @@ def handle_reference_input(config, configfile, samples = None):
                 reference_extensions.append('_' + row.sample)
             else:
                 reference_extensions.append(row.sample)
+            # REFERENCE_LIST
+            reference_list[row.sample] = sample_ref
     extensions = {'base': ['.fasta'], 'reference_extensions': reference_extensions}
     program_params['reference_list'] = reference_list
+    config['reference_info'] = reference_list
     config['get_reference'] = {'program_params': program_params, 'elvers_params': {'outputs': {'extensions':extensions}}}
 
     ## IF WE HAVE NO REFERENCE INFO BY NOW, SOMETHING IS WRONG - WARN USER
@@ -261,12 +266,10 @@ def select_outputs(config):
     return config
 
 
-def generate_targs(outdir, basename, samples, ref_exts=[''], base_exts = None, read_exts = None, other_exts = None, contrasts = [], ignore_units=False):
-    base_targets, read_targets, other_targs = [],[],[]
-    # handle read targets
+def generate_targs(outdir, basename, samples, ref_exts=[''], base_exts = None, read_exts = None, other_exts = None, contrasts = [], ignore_units=False, ref_info = None):
+    base_targets, read_targs, other_targs = [],[],[]
+    ref_pe_ext, ref_se_ext = [],[]
     if read_exts:
-        pe_ext = read_exts.get('pe', None)
-        se_ext = read_exts.get('se', None)
         combine_units = read_exts.get('combine_units', False)
         if combine_units and not ignore_units:
             se_names = samples.loc[samples["fq2"].isnull(), 'sample'].tolist()
@@ -274,28 +277,73 @@ def generate_targs(outdir, basename, samples, ref_exts=[''], base_exts = None, r
         else:
             se_names = samples.loc[samples["fq2"].isnull(), 'name'].tolist()
             pe_names = samples.loc[samples["fq2"].notnull(), 'name'].tolist()
-        if se_ext and len(se_names)>0:
-            read_targets+=[join(outdir, name + e) for e in se_ext for name in se_names]
-        if pe_ext and len(pe_names) > 0:
-            read_targets+=[join(outdir, name + e) for e in pe_ext for name in pe_names]
+        # grab extensions
+        pe_ext = read_exts.get('pe', None)
+        ref_pe_ext = [x for x in pe_ext if '__reference__' in x ]
+        read_only_pe_ext = [x for x in pe_ext if '__reference__' not in x ]
+        # se
+        se_ext = read_exts.get('se', None)
+        ref_se_ext = [x for x in se_ext if '__reference__' in x ]
+        read_only_se_ext = [x for x in se_ext if '__reference__' not in x ]
+        # build read targets (if don't use reference info)
+        if read_only_se_ext and len(se_names)>0:
+            read_targs+=[join(outdir, name + e) for e in read_only_se_ext for name in se_names]
+        if read_only_pe_ext and len(pe_names) > 0:
+            read_targs+=[join(outdir, name + e) for e in read_only_pe_ext for name in pe_names]
     # handle base targets, e.g. refname_ext.fasta or refname_ext.stats
-    read_targs = []
-    base_targs = []
     # build base targets (using reference extensions)
-    if ref_exts:
-        references = [basename + e for e in ref_exts]
-    else:
-        references = [basename]
-    for refname in references:
-        if base_exts:
-            base_targets += [join(outdir, refname + e) for e in base_exts]
-        if read_targets:
-            # handle read targets that contain reference info
-            read_targs+= [t.replace("__reference__", refname) for t in read_targets] #should return read_targets if nothing to replace
+    #if base_exts:
+    #if ref_exts:
+        #references = [basename + e for e in ref_exts]
+    #else:
+    #    references = [basename]
+    #for refname in references:
+    if ref_exts: # if we have any references at all
+        for refx in ref_exts:
+            thisref_read_targs = []
+            if refx == "no_extension":
+                refname = basename
+            else:
+                refname = basename + refx
+            #references.append(refname)
+            if base_exts:
+                base_targets += [join(outdir, refname + e) for e in base_exts]
+            # if the read targets use reference_info
+            if ref_pe_ext or ref_se_ext:
+                # HERE, handle associated samples
+                #import pdb; pdb.set_trace()
+                if refx.startswith('_'):
+                    refx = refx.split('_')[1]
+                assoc_samples = ref_info[refx].get('associated_samples', None)
+                if assoc_samples:
+                    # use subset of samples DF to generate sample names
+                    assoc_subset = samples[samples['sample'].isin(assoc_samples)]
+                    if combine_units and not ignore_units:
+                        se_assoc = assoc_subset.loc[assoc_subset["fq2"].isnull(), 'sample'].tolist()
+                        pe_assoc = assoc_subset.loc[assoc_subset["fq2"].notnull(), 'sample'].tolist()
+                    else:
+                        se_assoc = assoc_subset.loc[assoc_subset["fq2"].isnull(), 'name'].tolist()
+                        pe_assoc = assoc_subset.loc[assoc_subset["fq2"].notnull(), 'name'].tolist()
+                # handle read targets that contain reference info
+                    if ref_se_ext and len(se_assoc)>0:
+                        thisref_read_targs+=[join(outdir, name + e) for e in ref_se_ext for name in se_assoc]
+                    if pe_ext and len(pe_assoc) > 0:
+                        thisref_read_targs+=[join(outdir, name + e) for e in ref_pe_ext for name in pe_assoc]
+                else: # if no associated samples, assume ALL, and add all as targs.
+                    if ref_se_ext and len(se_names)>0:
+                        thisref_read_targs+=[join(outdir, name + e) for e in ref_se_ext for name in se_names]
+                    if pe_ext and len(pe_names) > 0:
+                        thisref_read_targs+=[join(outdir, name + e) for e in ref_pe_ext for name in pe_names]
+                # now replace all instances of "__reference__" for this ref
+                thisref_read_targs = [t.replace("__reference__", refname) for t in thisref_read_targs]
+                # now add these targs to the overall read targets
+                read_targs+= thisref_read_targs #[t.replace("__reference__", refname) for t in read_targets] #should return read_targets if nothing to replace
+
     #handle contrasts within the base targets
+    base_targs = []
     if contrasts and base_targets:
         for c in contrasts:
-            base_targs = [t.replace("__contrast__", c) for t in base_targets]
+            base_targs += [t.replace("__contrast__", c) for t in base_targets]
     else:
         base_targs = base_targets
     # handle outputs with no name into (e.g. multiqc)
@@ -304,16 +352,17 @@ def generate_targs(outdir, basename, samples, ref_exts=[''], base_exts = None, r
         other_targs = [join(outdir, e) for e in other_exts]
     return base_targs + read_targs + other_targs
 
-def generate_program_targs(configD, samples, basename,ref_exts, contrasts):
+# not in use anymore
+#def generate_program_targs(configD, samples, basename,ref_exts, contrasts):
     # given configD from each program, build targets
-    outdir = configD['outdir']
-    exts = configD['extensions']
-    if exts.get('reference_extensions'): # this program is an assembler or only works with specific assemblies
-        ref_exts = exts.get('reference_extensions', ['']) # override generals with rule-specific reference extensions
-    targets = generate_targs(outdir, basename, samples, ref_exts, exts.get('base', None),exts.get('read'), exts.get('other'), contrasts)
-    return targets
+#    outdir = configD['outdir']
+#    exts = configD['extensions']
+#    if exts.get('reference_extensions'): # this program is an assembler or only works with specific assemblies
+#        ref_exts = exts.get('reference_extensions', ['']) # override generals with rule-specific reference extensions
+#    targets = generate_targs(outdir, basename, samples, ref_exts, exts.get('base', None),exts.get('read'), exts.get('other'), contrasts)
+#    return targets
 
-def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, samples, all_input_options, ignore_units):
+def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, samples, all_input_options, ignore_units, reference_list):
     contrasts = rule_config['program_params'].get('contrasts', [])
 
     # handle input options!
@@ -328,44 +377,19 @@ def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, 
         ref_output_files = []
         ref_input_files = []
 
-        # handle single reference input
-        thisref_exts = ['.fasta']
-        if rule_config['program_params'].get('reference'):
-            ref_input_files.append(rule_config['program_params']['reference'])
-            if rule_config['program_params'].get('gene_trans_map'):
-                ref_input_files.append(rule_config['program_params']['gene_trans_map'])
+        # multiple reference input
+        # NOW WE SHOULD ALWAYS HAVE A REFERENCE_LIST
+        #if rule_config['program_params'].get('reference_list'):
+        for ref_ext, ref_info in reference_list.items(): #rule_config['program_params']['reference_list'].items():
+            thisref_exts = ['.fasta']
+            ref_input_files.append(ref_info['reference'])
+            if ref_info.get('gene_trans_map'):
+                ref_input_files.append(ref_info['gene_trans_map'])
                 thisref_exts.append('.fasta.gene_trans_map')
-            ref_ext = rule_config['program_params'].get('reference_extension', "")
-            if ref_ext and not ref_ext.startswith('_'):
+            if not ref_ext.startswith('_'):
                 ref_ext = '_' + ref_ext
             thisref = [ref_ext]
-            ref_output_files += generate_targs(outdir, basename, samples, ref_exts = thisref, base_exts= thisref_exts)
-
-        # multiple reference input (not yet tested 5/20/19))
-        if rule_config['program_params'].get('reference_list'):
-            for ref_ext, ref_info in rule_config['program_params']['reference_list']:
-                thisref_exts = ['.fasta']
-                ref_input_files.append(ref_info['reference'])
-                if ref_info.get('gene_trans_map'):
-                    ref_input_files.append(ref_info['gene_trans_map'])
-                    thisref_exts.append('.fasta.gene_trans_map')
-                if not ref_ext.startswith('_'):
-                    ref_ext = '_' + ref_ext
-                thisref = [ref_ext]
-                ref_output_files += generate_targs(outdir, basename, samples, ref_exts= thisref, base_exts= thisref_exts)
-
-        if rule_config['program_params'].get('per_sample_reference_files', False):
-            for row in samples.itertuples(index=False):
-                thisref_exts = ['.fasta']
-                ref_input_files.append(row.reference)
-                if 'gene_trans_map' in samples.columns:
-                    ref_input_files.append(row.gene_trans_map)
-                    thisref_exts.append('.fasta.gene_trans_map')
-                if not row.sample.startswith('_'):
-                    thisref = ["_" + row.sample]
-                else:
-                    thisref = [row.sample]
-                ref_output_files += generate_targs(outdir, basename, samples, ref_exts= thisref, base_exts= thisref_exts)
+            ref_output_files += generate_targs(outdir, basename, samples, ref_exts= thisref, base_exts= thisref_exts, ref_info = reference_list)
 
         rule_config['elvers_params']['input_options'] = {'get_ref': {'indir': "", 'input_files': ref_input_files}}
         rule_config['elvers_params']['outputs']['output_files'] = ref_output_files
@@ -385,14 +409,14 @@ def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, 
                     indir = os.path.join(home_outdir, info.get('outdir', 'input_data'))
                     in_exts = info['extensions']
                     if in_exts.get('reference_extensions'): # this program is an assembler or only works with specific assemblies
+                        # NEED TO MODIFY FOR MULTIPLE ASSEMBLIES
                         in_ref_exts = in_exts.get('reference_extensions', ['']) # override generals with rule-specific reference extensions
                     else:
                         in_ref_exts = ref_exts
-                    input_files = generate_targs(indir, basename, samples, in_ref_exts, in_exts.get('base', None),in_exts.get('read'), in_exts.get('other'), contrasts)
-                    all_input_exts[option]['input_files'] = generate_targs(indir, basename, samples, in_ref_exts, in_exts.get('base', None),in_exts.get('read'), in_exts.get('other'), contrasts)
+                    input_files = generate_targs(indir, basename, samples, ref_exts =in_ref_exts, base_exts=in_exts.get('base', None),read_exts =in_exts.get('read'), other_exts=in_exts.get('other'), ignore_units=ignore_units, contrasts = contrasts, ref_info = reference_list)
+                    all_input_exts[option]['input_files'] = input_files #generate_targs(indir, basename, samples, in_ref_exts, in_exts.get('base', None),in_exts.get('read'), in_exts.get('other'), contrasts)
                 except:
                     not_found.append(option)
-                if not_found == options:
                     option_list = "\n  " + "\n  ".join(options)
                     sys.stderr.write(f"cannot find input files for {rulename}. Please add a target that produces any of the following: {option_list}")
                     sys.exit(-1)
@@ -405,12 +429,13 @@ def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, 
     for outname, output_info in rule_config['elvers_params']['outputs'].items():
         outdir = output_info['outdir']
         out_exts = output_info['extensions']
+        # NEED TO HANDLE THIS DIFFERENTLY FOR PER-SAMPLE REF ASSEMBLY
         if out_exts.get('reference_extensions'): # this program is an assembler or only works with specific assemblies
             out_ref_exts = out_exts.get('reference_extensions', ['']) # override generals with rule-specific reference extensions
         else:
             out_ref_exts = ref_exts
 
-        outputs = generate_targs(outdir, basename, samples, out_ref_exts, out_exts.get('base', None),out_exts.get('read'), out_exts.get('other'), contrasts, ignore_units)
+        outputs = generate_targs(outdir, basename, samples, out_ref_exts, out_exts.get('base', None),out_exts.get('read'), out_exts.get('other'), ignore_units=ignore_units, contrasts=contrasts, ref_info=reference_list)
         output_files += outputs
     rule_config['elvers_params']['outputs']['output_files'] = output_files
     rule_config['elvers_params']['outputs']['outdir'] = outdir
@@ -454,12 +479,16 @@ def generate_inputs_outputs(config, samples=None):
     utils_dir = os.path.dirname(os.path.abspath(__file__))
     write_yaml(available_exts, os.path.join(utils_dir, 'extension_defaults.yaml'))
     include_rulenames = [os.path.basename(x).split('.rule')[0] for x in config['include_rules']]
+    # grab info for all references
+    reference_info = {}
+    if config.get('get_reference'):
+        reference_info = config['get_reference']['program_params']['reference_list']
     for rule in rulenames:
         if rule in config.keys():
             if rule not in include_rulenames:
                 del config[rule] # bc we won't have built all the elvers_params.
             else:
-                config[rule] = generate_rule_targs(home_outdir, base, ref_exts, config[rule], rule, samples, all_extensions, ignore_units)
+                config[rule] = generate_rule_targs(home_outdir, base, ref_exts, config[rule], rule, samples, all_extensions, ignore_units, reference_info)
     return config
 
 def get_params(rule_name, rule_dir='rules'):

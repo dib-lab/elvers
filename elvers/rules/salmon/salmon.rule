@@ -21,20 +21,15 @@ quant_dir     = ep_params['outputs']['outdir']
 
 # handle "associated_samples"
 associated_samples = {}
-if config.get('per_sample_reference_files', False):
-    for row in samples.itertuples(index=False):
-        refname = basename + '_' + row.sample
-        associated_samples[refname] = [row.sample]
-if config.get('reference_list'):
-    for ref_ext, ref_info in config['reference_list'].items():
-        if ref_info.get('associated_samples'):
-            sample_list = ref_info['associated_samples']
-            if not ref_ext.startswith('_'):
-                ref_ext = '_' + ref_ext
-            refname = basename + ref_ext
-            associated_samples[refname] = sample_list
+for ref_ext, ref_info in config['get_reference']['program_params']['reference_list'].items():#config['reference_info'].items():
+#for ref_ext, ref_info in config['reference_info'].items():
+    if ref_info.get('associated_samples'):
+        sample_list = ref_info['associated_samples']
+        if not ref_ext.startswith('_'):
+            ref_ext = '_' + ref_ext
+        refname = basename + ref_ext
+        associated_samples[refname] = sample_list
 
-print(associated_samples)
 # use if you don't want to collapse technical replicates ("units" column; deseq2 not supported)
 def get_sample_no_combine(w):
     readsD = {}
