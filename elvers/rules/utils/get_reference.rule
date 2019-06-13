@@ -65,6 +65,7 @@ if prog_params.get('reference'):
                     shell: "mv {input} {output} 2> {log}"
         
         else:
+            localrules: http_get_fasta
             rule http_get_fasta:
                 input: HTTP.remote(f"{ref_in}", static=True, keep_local=True, allow_redirects=True)
                 output: ref_out 
@@ -72,6 +73,7 @@ if prog_params.get('reference'):
                 shell: "mv {input} {output} 2> {log}"
 
             if prog_params.get('gene_trans_map', None): 
+                localrules: http_get_gene_trans_map
                 rule http_get_gene_trans_map:
                     input: HTTP.remote(f"{gtmap_in}", static=True, keep_local=True, allow_redirects=True)
                     output: gtmap_out
@@ -79,6 +81,7 @@ if prog_params.get('reference'):
                     shell: "mv {input} {output} 2> {log}"
 
     else:
+        localrules: link_input_reference
         rule link_input_reference:
             input: ref_in 
             output: ref_out 
@@ -90,6 +93,7 @@ if prog_params.get('reference'):
                 ln -s {input} {output} 2> {log}
                 """
         if prog_params.get('gene_trans_map', None):
+            localrules: link_input_gene_trans_map
             rule link_input_gene_trans_map:
                 input: gtmap_in 
                 output: gtmap_out 
@@ -111,6 +115,8 @@ if prog_params.get('reference'):
                 gunzip -c {input} > {output} 2> {log}
                 """
 localrules: per_sample_ftp_get_fasta, per_sample_ftp_get_gene_trans_map, per_sample_http_get_fasta, per_sample_http_get_gene_trans_map
+
+localrules: per_sample_link_input_reference, per_sample_link_input_gene_trans_map
 
 rule per_sample_ftp_get_fasta:
     input: lambda wildcards: FTP.remote(f"{ftp_fa[wildcards.sample]}", static=True, keep_local=True, immediate_close=True)

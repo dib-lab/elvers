@@ -1,0 +1,62 @@
+from os.path import join
+
+logs_dir  = config['elvers_directories']['logs']
+assembly_dir= config['elvers_directories']['outdirs']['assemble']
+quant_dir= config['elvers_directories']['outdirs']['quantify']
+
+deseq_params = config['tximport']['program_params']
+ep_params = config['tximport']['elvers_params']
+tximport_dir = config['tximport']['elvers_params']['outputs']['outdir']
+
+# this is handled in elvers main, but redundancy doesn't hurt
+if config.get('no_gene_trans_map', False):
+    deseq_params['gene_trans_map'] = False
+
+combine_units = ep_params['outputs'].get('combine_units')
+ignore_units =  config.get('ignore_units', False)
+
+def get_quant(w):
+    quant =[]
+    inputD = {}
+    if combine_units and not ignore_units:
+        sample_list = set(samples.index.get_level_values('sample'))
+        quant = expand(join(quant_dir, "{sample}_x_{assembly}.salmon/quant.sf"), sample = sample_list, **w)
+    else:
+        # didn't combine units at the salmon level
+        for s, u in samples.iterrows():
+            sample, unit = u['sample'],u['unit']
+            quant+=[join(quant_dir, f"{sample}_{unit}_x_{w.assembly}.salmon/quant.sf")]
+    inputD['quant'] = quant
+    if deseq_params.get('gene_trans_map'):
+        inputD['gene_trans_map'] = join(assembly_dir, f"{w.assembly}.fasta.gene_trans_map")
+    return inputD
+
+
+if deseq_params.get('gene_trans_map'):
+    rule tximport_tx2gene:
+        input:
+            unpack(get_quant),
+        output:
+            counts =join(tximport_dir, "{assembly}.geneCounts.tsv") #r data object
+        conda:
+            "environment.yml"
+        log:
+            join(logs_dir,  'tximport', "{assembly}.tx2gene.log")
+        benchmark:
+            join(logs_dir,  'tximport', "{assembly}.tx2gene.benchmark")
+        script:
+            "tximport_tx2gene.R"
+else:
+    rule tximport_txOut:
+        input:
+            unpack(get_quant),
+        output:
+            counts =join(tximport_dir, "{assembly}.txCounts.tsv") #r data object
+        conda:
+            "environment.yml" 
+        log:
+            join(logs_dir,  'tximport', "{assembly}.txOut.log")
+        benchmark:
+            join(logs_dir,  'tximport', "{assembly}.txOut.benchmark")
+        script:
+            "tximport_txOut.R"
