@@ -146,13 +146,14 @@ rule per_sample_link_input_reference:
         mkdir -p {params.ref_dir}
         ln -s {input} {output} 2> {log}
         """
-rule per_sample_link_input_gene_trans_map:
-    input: lambda wildcards:"f{link_fa[wildcards.sample]}"
-    output: os.path.join(ref_dir, basename + "_{sample}.gene_trans_map")
-    log: os.path.join(logs_dir, 'get_reference/link_gtmap_{sample}.log')
-    params: ref_dir = ref_dir
-    shell:
-        """
-        mkdir -p {params.ref_dir}
-        ln -s {input} {output} 2> {log}
-        """
+if 'gene_trans_map' in samples.columns:
+    rule per_sample_link_input_gene_trans_map:
+        input: lambda wildcards:"f{link_fa[wildcards.sample]}"
+        output: os.path.join(ref_dir, basename + "_{sample}.gene_trans_map")
+        log: os.path.join(logs_dir, 'get_reference/link_gtmap_{sample}.log')
+        params: ref_dir = ref_dir
+        shell:
+            """
+            mkdir -p {params.ref_dir}
+            ln -s {input} {output} 2> {log}
+            """
