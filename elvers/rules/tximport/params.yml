@@ -6,14 +6,14 @@ tximport:
     output_options:
       transcript_counts:
         input: salmon_quant
-        outdir: tximport_counts
+        outdir: quant
         combine_units: True # needs to match with salmon's combine_units
         extensions:
           base:
             - .txCounts.tsv
       gene_counts:
         input: salmon_quant
-        outdir: tximport_counts
+        outdir: quant
         combine_units: True # needs to match with salmon's combine_units
         extensions:
           base:
@@ -27,3 +27,4 @@ tximport:
     outputs:
       - gene_counts
     gene_trans_map: True
+    count_type: counts # countsFromAbundance, scaledTPM, lengthScaledTPM
