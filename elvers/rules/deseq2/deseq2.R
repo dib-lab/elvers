@@ -39,4 +39,4 @@ plotMA(res, ylim=c(-2,2))
 dev.off()
 
 write.table(as.data.frame(res), file=snakemake@output[["table"]])
-write.table(as.data.frame(res), file=snakemake@output[["sigTable"]])
+write.table(as.data.frame(sigRes), file=snakemake@output[["sigTable"]])
