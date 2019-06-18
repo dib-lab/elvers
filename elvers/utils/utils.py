@@ -311,9 +311,10 @@ def generate_targs(outdir, basename, samples, ref_exts=[''], base_exts = None, r
             # if the read targets use reference_info
             if ref_pe_ext or ref_se_ext:
                 # HERE, handle associated samples
-                #import pdb; pdb.set_trace()
                 if refx.startswith('_'):
                     refx = refx.split('_')[1]
+                #import pdb; pdb.set_trace()
+                ## HERE WE NOW HAVE AN ISSUE FOR ASSEMBLERS. --> build ref_list for assemblies first?
                 assoc_samples = ref_info[refx].get('associated_samples', None)
                 if assoc_samples:
                     # use subset of samples DF to generate sample names
@@ -379,6 +380,9 @@ def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, 
 
         # multiple reference input
         # NOW WE SHOULD ALWAYS HAVE A REFERENCE_LIST
+
+        ## NEED TO GENERATE IT FOR ASSEMBLIES!?
+
         #if rule_config['program_params'].get('reference_list'):
         for ref_ext, ref_info in reference_list.items(): #rule_config['program_params']['reference_list'].items():
             thisref_exts = ['.fasta']
