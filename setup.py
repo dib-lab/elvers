@@ -29,7 +29,7 @@ setup(
     test_suite='pytest.collector',
     tests_require=['pytest'],
     description="snakemake automated workflow system",
-    url="https://github.com/dib-lab/eelpond",
+    url="https://github.com/dib-lab/elvers",
     author="N.T. Pierce and C. Titus Brown",
     author_email="ntpierce@ucdavis.edu",
     license="BSD 3-clause",
