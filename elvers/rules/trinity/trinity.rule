@@ -60,7 +60,7 @@ rule trinity:
         max_memory=prog_params.get('max_memory', '10G'),
         seqtype=prog_params.get('seqtype', 'fq'),
         extra=prog_params.get('extra', '')
-    threads: 4
+    threads: 32
     log: join(logs_dir, 'trinity', 'trinity.log')
     benchmark: join(logs_dir, 'trinity', 'trinity.benchmark')
     conda: "environment.yml"
