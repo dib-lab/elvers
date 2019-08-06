@@ -9,6 +9,7 @@ dependencies:
   - pandas
   - graphviz
   - networkx
+  - pygments
   - pygraphviz
   - psutil
   - pytest

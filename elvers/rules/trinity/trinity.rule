@@ -66,6 +66,8 @@ rule trinity:
     conda: "environment.yml"
 	script: "trinity-wrapper.py"
 
+localrules: rename_trinity_fasta,rename_trinity_gene_trans_map
+
 rule rename_trinity_fasta:
     input: rules.trinity.output.fasta
     output: join(assembly_dir, BASE + assembly_extension + '.fasta')
