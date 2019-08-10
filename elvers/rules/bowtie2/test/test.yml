@@ -1,0 +1,4 @@
+# Additional parameters required for testing the salmon rule
+
+bowtie2:
+  input_trimmed: False
