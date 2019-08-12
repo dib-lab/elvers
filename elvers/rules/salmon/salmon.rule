@@ -23,7 +23,8 @@ quant_dir     = ep_params['outputs']['outdir']
 associated_samples = {}
 refs = {}
 if 'get_reference' in config.keys():
-    refs = config['get_reference']['program_params'].get('reference_list', {})
+    refs = config.get('reference_info', {})
+#    refs = config['get_reference']['program_params'].get('reference_list', {})
 if 'assembly_info' in config.keys():
     assemb_info = config['assembly_info']
     refs.update(assemb_info)

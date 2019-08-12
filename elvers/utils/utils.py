@@ -366,7 +366,7 @@ def select_outputs(config):
                 del val['elvers_params']['output_options']
                 config[key] = val
             # we also get rid of the output_options, to minimize clutter
-    config['reference_extensions'] = reference_extensions
+    #config['reference_extensions'] = reference_extensions
     return config
 
 

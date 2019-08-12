@@ -9,6 +9,20 @@ assembly_extension = ep_params['outputs']['plass_fasta']['extensions']['referenc
 
 BASE = config['basename']
 
+# handle "associated_samples"
+associated_samples = {}
+if 'assembly_info' in config.keys():
+    assemb_info = config['assembly_info']
+
+for ref_ext, ref_info in assemb_info.items():
+    if assembly_extension in ref_ext: # check that "_plass" is in the extension
+        if ref_info.get('associated_samples'):
+            sample_list = ref_info['associated_samples']
+            if not ref_ext.startswith('_'):
+                ref_ext = '_' + ref_ext
+            refname = BASE + ref_ext
+            associated_samples[refname] = sample_list
+
 def get_assembly_input(w):
     r1,r2,single =[],[],[]
     readsD = {}
@@ -22,10 +36,18 @@ def get_assembly_input(w):
     elif 'raw' in inputs:
         ext = '.fq.gz'
         input_dir = config['elvers_directories']['outdirs']['input_data']
+    if w.assembly in associated_samples.keys():
+        # this assembly has some associated samples
+        assembly_subset = associated_samples[w.assembly]
+    else: # assume we want to use all samples for this assembly
+        assembly_subset = samples['sample'].tolist()
     for s, u in samples.iterrows():
         sample, unit = u['sample'],u['unit']
+        if assembly_subset:
+            if sample not in assembly_subset:
+                continue
         if is_single_end(sample, unit):
-            single+=[join(input_dir, f"{sample}_{unit}{ext}")]
+            single+=[join(input_dir, f"{sample}_{unit}_se{ext}")]
         else:
             r1+= [join(input_dir, f"{sample}_{unit}_1{ext}")]
             r2+= [join(input_dir, f"{sample}_{unit}_2{ext}")]
@@ -36,21 +58,25 @@ def get_assembly_input(w):
         readsD['left'] = r1
         readsD['right'] = r2
     else:
-        readsD['left'] = single
+        if len(single) > 0:
+            readsD['left'] = single
+        else:
+           sys.stderr.write("\t No samples to assemble. If subsetting, please check that the values of `assembly_subset` match your sample names. See https://dib-lab.github.io/elvers/trinity for details.\n")
+           sys.exit(-1)
     return readsD
 
 rule plass:
     input:
         unpack(get_assembly_input)
     output:
-        fasta = join(assembly_dir, BASE + assembly_extension + '.fasta') 
+        fasta = join(assembly_dir,'{assembly}.fasta')
     message:
         """--- Assembling read data with PLASS --- """
     params:
         # optional parameters
         extra=prog_params.get('extra', '')
-    log: join(logs_dir, 'plass','plass.log')
-    benchmark: join(logs_dir, 'plass','plass.benchmark')
+    log: join(logs_dir, 'plass','{assembly}.log')
+    benchmark: join(logs_dir, 'plass','{assembly}.benchmark')
     threads: 32
     conda: "environment.yml"
 	script: "plass-wrapper.py"
