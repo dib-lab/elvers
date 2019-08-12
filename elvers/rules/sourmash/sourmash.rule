@@ -21,7 +21,7 @@ rule sourmash_compute_assembly:
     input:
         join(assembly_dir, "{assembly}.fasta")
     output:
-        join(sourmash_dir, "{assembly}.sig")
+        join(sourmash_dir, "{assembly}.fasta.sig")
     message:
         """--- Computing a MinHash signature of the transcriptome with Sourmash ---"""
     threads: 2

@@ -67,7 +67,7 @@ available_extensions:
     sourmash_signature: &id003
       extensions:
         base:
-        - .sig
+        - .fasta.sig
         read:
           pe:
           - .paired.khmer.fq.sig

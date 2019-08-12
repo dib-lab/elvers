@@ -21,7 +21,14 @@ quant_dir     = ep_params['outputs']['outdir']
 
 # handle "associated_samples"
 associated_samples = {}
-for ref_ext, ref_info in config['get_reference']['program_params']['reference_list'].items():#config['reference_info'].items():
+refs = {}
+if 'get_reference' in config.keys():
+    refs = config['get_reference']['program_params'].get('reference_list', {})
+if 'assembly_info' in config.keys():
+    assemb_info = config['assembly_info']
+    refs.update(assemb_info)
+
+for ref_ext, ref_info in refs.items(): #in #config['get_reference']['program_params']['reference_list'].items():#config['reference_info'].items():
 #for ref_ext, ref_info in config['reference_info'].items():
     if ref_info.get('associated_samples'):
         sample_list = ref_info['associated_samples']

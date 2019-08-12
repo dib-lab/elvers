@@ -63,7 +63,7 @@ def build_default_params(workdir, targets):
             sys.stderr.write(f"\n\tError: Can't add rules for extra target {rule_name}. Please fix.\n\n")
             sys.exit(-1)
     defaultParams['include_rules'] = list(set(includeRules))
-    defaultParams['reference_extensions'] = list(set(reference_extensions))
+    #defaultParams['reference_extensions'] = list(set(reference_extensions))
     return defaultParams
 
 
@@ -306,7 +306,7 @@ To build an editable configfile to start work on your own data, run:
 
         # add extension to overall reference_extensions info
         if refinput_exts: # note, need to do it here to prevent override with defaults
-            ## NOTE: PROBABLY WANT TO DO THIS DIFFERENTLY
+            ## NOTE: MIGHT WANT TO DO THIS DIFFERENTLY
             paramsD['reference_extensions'] = list(set(paramsD.get('reference_extensions', []) + refinput_exts))
 
         # This is now handled in the deseq2 rule, can remove from here. Do we need the sys.stderr notification?
@@ -314,6 +314,9 @@ To build an editable configfile to start work on your own data, run:
             if paramsD.get('deseq2'):
                 paramsD['deseq2']['program_params']['gene_trans_map'] = False
                 sys.stderr.write("\tYou're using `get_reference` without specifying a gene-trans-map. Setting differential expression to transcript-level only. See https://dib-lab.github.io/elvers/deseq2/for details.\n")
+
+        ## HANDLE ASSEMBLIES
+        paramsD = handle_assemblies(paramsD, samples)
 
         # OUTPUT_OPTIONS --> need to have solid OUTPUTS by here.
         paramsD = select_outputs(paramsD)

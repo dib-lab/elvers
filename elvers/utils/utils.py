@@ -140,6 +140,7 @@ def find_input_file(filename, name="input file", add_paths=[], add_suffixes = ['
 def handle_reference_input(config, configfile, samples = None):
     reference_extensions = []
     program_params = config['get_reference'].get('program_params')
+    firstref = {}
     reference_list = {}
 
     # current, single ref specification (allows no reference extension)
@@ -154,14 +155,14 @@ def handle_reference_input(config, configfile, samples = None):
         if ref_ext and not ref_ext.startswith('_'):
             ref_ext = '_' + ref_ext
             reference_extensions = [ref_ext]
-            reference_list[ref_ext] = initial_ref
+            firstref[ref_ext] = initial_ref
         # just trying this out -- would mean we only have to deal with a single ref specification
         else:
-            reference_list["no_extension"] = initial_ref
+            firstref["no_extension"] = initial_ref
+            reference_extensions = ["no_extension"]
 
     # multiple ref specification (each ref needs an extension)
     if program_params.get('reference_list', None):
-
         reference_list = program_params['reference_list']
         # should look like: {ref_ext: {reference: file/link, associated_samples: [sample_list], gene_trans_map: gtmap file/link}
 
@@ -194,7 +195,8 @@ def handle_reference_input(config, configfile, samples = None):
             # REFERENCE_LIST
             reference_list[row.sample] = sample_ref
     extensions = {'base': ['.fasta'], 'reference_extensions': reference_extensions}
-    program_params['reference_list'] = reference_list
+    reference_list.update(firstref)
+    #program_params['reference_list'] = reference_list
     config['reference_info'] = reference_list
     config['get_reference'] = {'program_params': program_params, 'elvers_params': {'outputs': {'extensions':extensions}}}
 
@@ -202,6 +204,98 @@ def handle_reference_input(config, configfile, samples = None):
     #if not reffile:
         #    sys.stderr.write("\n\tError: improper reference specification in `get_reference`. Please fix.\n\n")
     return config, reference_extensions
+
+
+def handle_assemblies(config, samples = None, assembly_programs = ['trinity', 'plass']):
+    ref_exts = []
+    assembly_info = {}
+    # handle per-sample assemblies: use _sample_assembler as the reference extension
+    per_sample_assemb = config.get('per_sample_assemblies', [])
+    for asmb_prog in per_sample_assemb:
+        if not config.get(asmb_prog, None):
+            sys.stderr.write(f'Error: per_sample_assemblies specifies the {asmb_prog} assembly program for assemblies, but the program is not included in the workflow config. Did you specify a valid assembler?')
+            sys.exit(-1)
+        for row in samples.itertuples(index=False):
+            if not row.sample.startswith('_'):
+                ref_ext = '_' + row.sample + '_' + asmb_prog
+            else:
+                ref_ext = row.sample + '_' + asmb_prog
+            assembly_info[ref_ext] = {'associated_samples': [row.sample]}
+            ref_exts.append(ref_ext)
+    ref_exts = list(set(ref_exts))
+    # process the assembly list from main config file
+    assembly_list = config.get('assembly_list', None)
+    if assembly_list:
+        for assemb_name, info in assembly_list.items():
+            assemblers = info.get('assemblers', None)
+            if 'associated_samples' in info.keys():
+                assoc_samples = info.get('associated_samples')
+            else:
+                assoc_samples = None
+            for assembler in assemblers:
+                ref_ext = '_'.join(assemb_name, assembler)
+                if not ref_ext.startswith('_'):
+                    ref_ext = '_' + ref_ext
+                if not config.get(assembler, None):
+                    sys.stderr.write(f'Error: The config assembly list specifies the {assembler} assembly program for the {ref_ext} assembly, but the program is not included in the workflow config. Did you specify a valid assembler?')
+                    sys.exit(-1)
+                if ref_ext in assembly_info.keys():
+                    sys.stderr.write(f'Error. The reference extension {ref_ext} in being used for more than one assembly, cannot process this entry in the assembly_list config info')
+                    sys.exit(-1)
+                elif ref_ext in reference_extensions:
+                    sys.stderr.write(f'Error. The reference extension {ref_ext} is being used for both a reference and an assembly, cannot process this entry in the assembly_list config info')
+                    sys.exit(-1)
+                else:
+                    if not assoc_samples:
+                        assembly_info[ref_ext] = {'assembler': assembler}
+                    else:
+                        assembly_info[ref_ext] = {'assembler': assembler, 'associated_samples': assoc_samples}
+                ref_exts.append(ref_ext)
+    # now, grab assembly info from assembler configs
+    for assembler in assembly_programs:
+        prog_info = config.get(assembler, None)
+        if prog_info:
+            prog_params = prog_info.get('program_params')
+            try:
+                ref_ext = prog_info['elvers_params']['output_options']['extensions']['reference_extensions']
+            except:
+                ref_ext = '_' + assembler
+            if 'associated_samples' in prog_params.keys():
+                assoc_samples = prog_params.get('associated_samples', None)
+            else:
+                assoc_samples = None
+            # how to handle duplicate, single assembly. Aka user just wants ONE trinity assembly, but specifies it within assembly_list and now we're checking the trinity info.
+            if ref_ext in assembly_info.keys():
+                prev_info = assembly_info[ref_ext]
+                prev_samples = None
+                if prev_info.get('associated_samples', None):
+                    prev_samples = set(prev_info['associated_samples'])
+                if assoc_samples:
+                    assoc_samples = set(assoc_samples)
+                if not prev_samples == assoc_samples:
+                    p_s = '\n\t' + '\n'.join(prev_samples)
+                    a_s = '\n\t' + '\n'.join(assoc_samples)
+                    sys.stderr.write(f'Error. The reference extension {ref_ext} is already in use for the samples {p_s}, cannot add associated samples {a_s} from the assembler {assembler} config info')
+                    sys.exit(-1)
+            else:
+                if not assoc_samples:
+                    # don't want to automatically assume we want a full assembly, if other assemblies are being generated.
+                    all_assemblies = assembly_info.keys()
+                    if not any (ref_ext in x for x in all_assemblies):
+                        assembly_info[ref_ext] = {'assembler': assembler}
+                        ref_exts.append(ref_ext)
+                else:
+                    assembly_info[ref_ext] = {'assembler': assembler, 'associated_samples': assoc_samples}
+                    ref_exts.append(ref_ext)
+
+    reference_extensions = config.get('reference_extensions', [])
+    ref_exts = list(set(reference_extensions + ref_exts))
+    if assembly_info:
+        config['assembly_info'] = assembly_info
+    if ref_exts:
+        config['reference_extensions'] = ref_exts
+    return config
+
 
 def check_ref_input(refDict, configfile):
     # refDict contains at least "reference", and optionally "gene_trans_map" and/or "reference_extension"
@@ -218,6 +312,11 @@ def check_ref_input(refDict, configfile):
             refDict['gene_trans_map'] = find_input_file(gtmap,"input reference gene_trans_map", add_paths = [os.path.realpath(os.path.dirname(configfile))], add_suffixes = [''])
     else:
         del refDict['gene_trans_map']
+
+    # check that we actually have associated samples
+    assoc_samples = refDict.get("associated_samples", None)
+    if not assoc_samples:
+        del refDict['associated_samples']
     return refDict
     # extensions are going to need to change based on each file. Handle get_reference as a special case in building targets, don't set the extensions here
         #extensions = {'base': ['.fasta']}
@@ -255,7 +354,12 @@ def select_outputs(config):
                         if any([input_for_this_output in inputs, input_for_this_output == 'any']): # choose the output that corresponds to the input going in
                             outputs[output_name] = output_info
                             ref_exts = output_info['extensions'].get('reference_extensions', [])
-                            reference_extensions+=ref_exts
+                       #     reference_extensions+=ref_exts
+                            ## HERE IS WHERE WE ADD REFERENCE EXTENSIONS FOR ASSEMBLIES
+#--> not doing this anymore. it will be done in the "handle_assemblies" section
+                            #for ref_ext in ref_exts:
+                            #    if ref_ext not in reference_extensions:
+                            #        reference_extensions.append(ref_ext) # first, append
                     val['elvers_params']['outputs'] = outputs
                 else:
                     val['elvers_params']['outputs'] = val['elvers_params']['output_options']
@@ -266,7 +370,7 @@ def select_outputs(config):
     return config
 
 
-def generate_targs(outdir, basename, samples, ref_exts=[''], base_exts = None, read_exts = None, other_exts = None, contrasts = [], ignore_units=False, ref_info = None):
+def generate_targs(outdir, basename, samples, ref_exts=[''], base_exts = None, read_exts = None, other_exts = None, contrasts = [], ignore_units=False, ref_info = None, assemb_info = None):
     base_targets, read_targs, other_targs = [],[],[]
     ref_pe_ext, ref_se_ext = [],[]
     if read_exts:
@@ -301,7 +405,7 @@ def generate_targs(outdir, basename, samples, ref_exts=[''], base_exts = None, r
     if ref_exts: # if we have any references at all
         for refx in ref_exts:
             thisref_read_targs = []
-            if refx == "no_extension":
+            if "no_extension" in refx:
                 refname = basename
             else:
                 refname = basename + refx
@@ -313,9 +417,14 @@ def generate_targs(outdir, basename, samples, ref_exts=[''], base_exts = None, r
                 # HERE, handle associated samples
                 if refx.startswith('_'):
                     refx = refx.split('_')[1]
-                #import pdb; pdb.set_trace()
                 ## HERE WE NOW HAVE AN ISSUE FOR ASSEMBLERS. --> build ref_list for assemblies first?
-                assoc_samples = ref_info[refx].get('associated_samples', None)
+                if refx in ref_info.keys():
+                    assoc_samples = ref_info[refx].get('associated_samples', None)
+                elif refx in assemb_info.keys():
+                    assoc_samples = assemb_info[refx].get('associated_samples', None)
+                else:
+                    assoc_samples = None
+
                 if assoc_samples:
                     # use subset of samples DF to generate sample names
                     assoc_subset = samples[samples['sample'].isin(assoc_samples)]
@@ -363,7 +472,7 @@ def generate_targs(outdir, basename, samples, ref_exts=[''], base_exts = None, r
 #    targets = generate_targs(outdir, basename, samples, ref_exts, exts.get('base', None),exts.get('read'), exts.get('other'), contrasts)
 #    return targets
 
-def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, samples, all_input_options, ignore_units, reference_list):
+def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, samples, all_input_options, ignore_units, reference_info, assembly_info):
     contrasts = rule_config['program_params'].get('contrasts', [])
 
     # handle input options!
@@ -380,11 +489,10 @@ def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, 
 
         # multiple reference input
         # NOW WE SHOULD ALWAYS HAVE A REFERENCE_LIST
-
-        ## NEED TO GENERATE IT FOR ASSEMBLIES!?
+        ## NEED TO GENERATE IT FOR ASSEMBLIES!? --> ASSEMBLY_INFO
 
         #if rule_config['program_params'].get('reference_list'):
-        for ref_ext, ref_info in reference_list.items(): #rule_config['program_params']['reference_list'].items():
+        for ref_ext, ref_info in reference_info.items(): #rule_config['program_params']['reference_list'].items():
             thisref_exts = ['.fasta']
             ref_input_files.append(ref_info['reference'])
             if ref_info.get('gene_trans_map'):
@@ -393,7 +501,7 @@ def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, 
             if not ref_ext.startswith('_'):
                 ref_ext = '_' + ref_ext
             thisref = [ref_ext]
-            ref_output_files += generate_targs(outdir, basename, samples, ref_exts= thisref, base_exts= thisref_exts, ref_info = reference_list)
+            ref_output_files += generate_targs(outdir, basename, samples, ref_exts= thisref, base_exts= thisref_exts, ref_info = reference_info, assemb_info = assembly_info)
 
         rule_config['elvers_params']['input_options'] = {'get_ref': {'indir': "", 'input_files': ref_input_files}}
         rule_config['elvers_params']['outputs']['output_files'] = ref_output_files
@@ -413,11 +521,12 @@ def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, 
                     indir = os.path.join(home_outdir, info.get('outdir', 'input_data'))
                     in_exts = info['extensions']
                     if in_exts.get('reference_extensions'): # this program is an assembler or only works with specific assemblies
-                        # NEED TO MODIFY FOR MULTIPLE ASSEMBLIES
+                        ### REFERENCE EXTENSIONS
+                        # NEED TO MODIFY FOR MULTIPLE ASSEMBLIES --> contains rather than =?don't replace but subset the reference_exts?
                         in_ref_exts = in_exts.get('reference_extensions', ['']) # override generals with rule-specific reference extensions
                     else:
                         in_ref_exts = ref_exts
-                    input_files = generate_targs(indir, basename, samples, ref_exts =in_ref_exts, base_exts=in_exts.get('base', None),read_exts =in_exts.get('read'), other_exts=in_exts.get('other'), ignore_units=ignore_units, contrasts = contrasts, ref_info = reference_list)
+                    input_files = generate_targs(indir, basename, samples, ref_exts =in_ref_exts, base_exts=in_exts.get('base', None),read_exts =in_exts.get('read'), other_exts=in_exts.get('other'), ignore_units=ignore_units, contrasts = contrasts, ref_info = reference_info, assemb_info = assembly_info)
                     all_input_exts[option]['input_files'] = input_files #generate_targs(indir, basename, samples, in_ref_exts, in_exts.get('base', None),in_exts.get('read'), in_exts.get('other'), contrasts)
                 except:
                     not_found.append(option)
@@ -439,7 +548,7 @@ def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, 
         else:
             out_ref_exts = ref_exts
 
-        outputs = generate_targs(outdir, basename, samples, out_ref_exts, out_exts.get('base', None),out_exts.get('read'), out_exts.get('other'), ignore_units=ignore_units, contrasts=contrasts, ref_info=reference_list)
+        outputs = generate_targs(outdir, basename, samples, out_ref_exts, out_exts.get('base', None),out_exts.get('read'), out_exts.get('other'), ignore_units=ignore_units, contrasts=contrasts, ref_info=reference_info, assemb_info = assembly_info)
         output_files += outputs
     rule_config['elvers_params']['outputs']['output_files'] = output_files
     rule_config['elvers_params']['outputs']['outdir'] = outdir
@@ -486,13 +595,22 @@ def generate_inputs_outputs(config, samples=None):
     # grab info for all references
     reference_info = {}
     if config.get('get_reference'):
-        reference_info = config['get_reference']['program_params']['reference_list']
+        #reference_info = config['get_reference']['program_params']['reference_list']
+        reference_info = config['reference_info'] #config['get_reference']['program_params']['reference_list']
+    assembly_info = config.get('assembly_info', {})
+
+     # if we have reference extensions, add them to the reference_info dictionary.
+    #if ref_exts:
+    #    for ref_ext in ref_exts:
+    #        if ref_ext not in assembly_info.keys():
+    #            reference_info[ref_ext] = {}
+
     for rule in rulenames:
         if rule in config.keys():
             if rule not in include_rulenames:
                 del config[rule] # bc we won't have built all the elvers_params.
             else:
-                config[rule] = generate_rule_targs(home_outdir, base, ref_exts, config[rule], rule, samples, all_extensions, ignore_units, reference_info)
+                config[rule] = generate_rule_targs(home_outdir, base, ref_exts, config[rule], rule, samples, all_extensions, ignore_units, reference_info, assembly_info)
     return config
 
 def get_params(rule_name, rule_dir='rules'):

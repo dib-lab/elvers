@@ -12,7 +12,7 @@ sourmash:
         outdir: sourmash 
         extensions: 
           base:
-            - .sig
+            - .fasta.sig
           read:
             pe:
               - .paired.khmer.fq.sig
