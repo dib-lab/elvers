@@ -5,8 +5,7 @@
 basename: 'prottest'
 
 get_data:
-  download_data: True
-  samples: "nema.samples.tsv"
+  samples: "reads/test.samples.tsv"
 
 get_reference:
   download_ref: False

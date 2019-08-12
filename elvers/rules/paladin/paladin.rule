@@ -13,10 +13,37 @@ alignment_params = prog_params['alignment_params']
 paladin_dir = ep_params['outputs']['outdir']
 assembly_extension = ep_params['outputs']['paladin_mapped']['extensions']['reference_extensions'][0]
 
+# handle "associated_samples"
+associated_samples = {}
+refs = {}
+if 'get_reference' in config.keys():
+    refs = config.get('reference_info', {})
+if 'assembly_info' in config.keys():
+    assemb_info = config['assembly_info']
+    refs.update(assemb_info)
+
+for ref_ext, ref_info in refs.items(): #in #config['get_reference']['program_params']['reference_list'].items():#config['reference_info'].items():
+#for ref_ext, ref_info in config['reference_info'].items():
+    if ref_info.get('associated_samples'):
+        sample_list = ref_info['associated_samples']
+        if not ref_ext.startswith('_'):
+            ref_ext = '_' + ref_ext
+        refname = basename + ref_ext
+        associated_samples[refname] = sample_list
+
+
 def get_paladin_input(w):
     readsD = {}
     inputs = prog_params['inputs']
+    # grab list of only the associated samples
+    if w.assembly in associated_samples.keys():
+        # this assembly has some associated samples
+        sample_list = associated_samples[w.assembly]
+    else: # assume we want to map all samples to this assembly
+        sample_list = samples['sample'].tolist()
+    # if paired end:
     if not is_single_end(**w): 
+        # figure out directories and extensions
         if 'pear_merged' in inputs:
             input_dir = join(config['elvers_directories']['outdirs']['preprocess'], 'pear')
             ext = '.pear_assembled.fq.gz' # requires pear merging of pe reads
@@ -26,15 +53,18 @@ def get_paladin_input(w):
         elif 'raw' in inputs:
             ext = '_1.fq.gz'
             input_dir = config['elvers_directories']['outdirs']['input_data']
-        readsD['r'] = join(input_dir, f'{w.sample}_{w.unit}{ext}')
+        if w.sample in sample_list:
+            readsD['r'] = join(input_dir, f'{w.sample}_{w.unit}{ext}')
         return readsD
+    # if single end:
     elif 'trimmed' in inputs: 
         input_dir = config['elvers_directories']['outdirs']['preprocess']
         ext = '.trim.fq.gz'
     elif 'raw' in inputs:
         ext = '_1.fq.gz'
         input_dir = config['elvers_directories']['outdirs']['input_data']
-    readsD['r'] = join(input_dir, f'{w.sample}_{w.unit}{ext}')
+    if w.sample in sample_list:
+        readsD['r'] = join(input_dir, f'{w.sample}_{w.unit}{ext}')
     return readsD
 
 rule paladin_index:
