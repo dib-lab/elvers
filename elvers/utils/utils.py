@@ -152,8 +152,9 @@ def handle_reference_input(config, configfile, samples = None):
 
         program_params = check_ref_input(initial_ref, configfile) #check for file inputs & if yes, return with fullpaths
         ref_ext = initial_ref['reference_extension'] #program_params.get('reference_extension', "")
-        if ref_ext and not ref_ext.startswith('_'):
-            ref_ext = '_' + ref_ext
+        if ref_ext:
+            if not ref_ext.startswith('_'):
+                ref_ext = '_' + ref_ext
             reference_extensions = [ref_ext]
             firstref[ref_ext] = initial_ref
         # just trying this out -- would mean we only have to deal with a single ref specification
@@ -530,9 +531,10 @@ def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, 
                     all_input_exts[option]['input_files'] = input_files #generate_targs(indir, basename, samples, in_ref_exts, in_exts.get('base', None),in_exts.get('read'), in_exts.get('other'), contrasts)
                 except:
                     not_found.append(option)
-                    option_list = "\n  " + "\n  ".join(options)
-                    sys.stderr.write(f"cannot find input files for {rulename}. Please add a target that produces any of the following: {option_list}")
-                    sys.exit(-1)
+        if not input_files:
+            option_list = "\n  " + "\n  ".join(options)
+            sys.stderr.write(f"cannot find input files for {rulename}. Please add a target that produces any of the following: {option_list}")
+            sys.exit(-1)
         rule_config['elvers_params']['input_options'] = all_input_exts
 
     # now handle outputs (sometimes multiple outputs)
