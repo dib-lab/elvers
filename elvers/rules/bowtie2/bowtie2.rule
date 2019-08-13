@@ -46,7 +46,6 @@ def get_sample_combine_units(w):
         else:
             r+= [join(input_dir, f"{w.sample}_{unit}{ext}")]
     if r1:
-       #readsD['sample'] = r1 + r2
         readsD['r1'] = r1
         readsD['r2'] = r2
     elif r:
@@ -60,11 +59,14 @@ rule bowtie2_index:
     input:
         join(assembly_dir, "{assembly}.fasta")
     output:
-        join(bt2_dir, "{assembly}.bowtie2index.1.bt2")
+        donefile = join(bt2_dir, "{assembly}.bowtie2index.done")
+        # touching flag file should work, but doesn't. snakemake issue?
+        #touch(join(bt2_dir, "{assembly}.bowtie2index.done")
     message:
         """--- Indexing the transcriptome with Bowtie2 ---"""
     threads: 10
     params:
+        index = join(bt2_dir,"{assembly}.bowtie2index"),
         extra = prog_params['index_params'].get('extra', '')
     log:
         join(logs_dir, 'bowtie2/{assembly}_index.log')
@@ -80,7 +82,7 @@ if combine_units:
         """
         input:
             unpack(get_sample_combine_units),
-            index = join(bt2_dir, "{assembly}.bowtie2index.1.bt2")
+            index_donefile = join(bt2_dir, "{assembly}.bowtie2index.done"),
         output:
             join(bt2_dir,"{sample}_x_{assembly}.bt2.bam"),
         message:
