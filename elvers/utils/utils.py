@@ -200,7 +200,7 @@ def handle_reference_input(config, configfile, samples = None):
     #program_params['reference_list'] = reference_list
     config['reference_info'] = reference_list
     config['get_reference'] = {'program_params': program_params, 'elvers_params': {'outputs': {'extensions':extensions}}}
-
+    config['reference_extensions'] = reference_extensions
     ## IF WE HAVE NO REFERENCE INFO BY NOW, SOMETHING IS WRONG - WARN USER
     #if not reffile:
         #    sys.stderr.write("\n\tError: improper reference specification in `get_reference`. Please fix.\n\n")
@@ -352,6 +352,7 @@ def select_outputs(config):
                     ref_exts = []
                     for output_name, output_info in val['elvers_params']['output_options'].items():
                         input_for_this_output = output_info['input']
+                        import pdb;pdb.set_trace()
                         if any([input_for_this_output in inputs, input_for_this_output == 'any']): # choose the output that corresponds to the input going in
                             outputs[output_name] = output_info
                             ref_exts = output_info['extensions'].get('reference_extensions', [])
@@ -361,6 +362,9 @@ def select_outputs(config):
                             #for ref_ext in ref_exts:
                             #    if ref_ext not in reference_extensions:
                             #        reference_extensions.append(ref_ext) # first, append
+                        else:
+                            sys.stderr.write(f"Error: cannot find corresponding outputs for inputs {inputs} for rule {key}")
+                            sys.exit(-1)
                     val['elvers_params']['outputs'] = outputs
                 else:
                     val['elvers_params']['outputs'] = val['elvers_params']['output_options']
@@ -514,6 +518,7 @@ def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, 
         all_input_exts = {}
         input_options = rule_config['elvers_params'].get('input_options', None)# read, reference, other
         not_found = []
+        input_files = None
         for input_type, options in input_options.items():
             for option in options:
                 try:
@@ -531,10 +536,11 @@ def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, 
                     all_input_exts[option]['input_files'] = input_files #generate_targs(indir, basename, samples, in_ref_exts, in_exts.get('base', None),in_exts.get('read'), in_exts.get('other'), contrasts)
                 except:
                     not_found.append(option)
-        if not input_files:
-            option_list = "\n  " + "\n  ".join(options)
-            sys.stderr.write(f"cannot find input files for {rulename}. Please add a target that produces any of the following: {option_list}")
-            sys.exit(-1)
+            ## THIS ISN'T QUITE WORKING YET
+            if len(not_found) == len(options):
+                option_list = "\n  " + "\n  ".join(options)
+                sys.stderr.write(f"cannot find input files for {rulename}. Please add a target that produces any of the following: {option_list}")
+                sys.exit(-1)
         rule_config['elvers_params']['input_options'] = all_input_exts
 
     # now handle outputs (sometimes multiple outputs)

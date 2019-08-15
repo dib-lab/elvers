@@ -24,4 +24,10 @@ class TestInputs(TestCase):
         p_out, p_err = capture_stdouterr(command,here)
         assert f"{samples_tsv} file is not properly formatted. Please fix." in p_err
 
+    def test_bad_inputs_entry(self):
+        """Test a configfile with a typo in the inputs section for a program"""
+        configfile = os.path.realpath(os.path.join(here,'test_files/bad-inputs-entry.yaml'))
+        command = [elvers_cmd, configfile, '-n']
+        p_out, p_err = capture_stdouterr(command,here)
+        assert f"cannot find input files for trinity. Please add a target that produces any of the following" in p_err
 
