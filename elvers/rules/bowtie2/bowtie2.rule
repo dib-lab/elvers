@@ -102,7 +102,7 @@ else:
         """
         input:
             unpack(get_sample_no_combine),
-            index = join(bt2_dir, "{assembly}.bowtie2index.1.bt2")
+            index_donefile = join(bt2_dir, "{assembly}.bowtie2index.done"),
         output:
             join(bt2_dir,"{sample}_{unit}_x_{assembly}.bt2.bam"),
         message:

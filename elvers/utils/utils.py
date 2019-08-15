@@ -175,6 +175,9 @@ def generate_targs(outdir, basename, samples, ref_exts=[''], base_exts = None, r
     base_targets, read_targets, other_targs = [],[],[]
     # handle read targets
     if read_exts:
+        if samples is None:
+            sys.stderr.write(f"Error: attempting to run a read-based workflow without a samples table. Please specify your samples file in the get_samples secton of your config.")
+            sys.exit(-1)
         pe_ext = read_exts.get('pe', None)
         se_ext = read_exts.get('se', None)
         combine_units = read_exts.get('combine_units', False)
