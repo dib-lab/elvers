@@ -352,7 +352,6 @@ def select_outputs(config):
                     ref_exts = []
                     for output_name, output_info in val['elvers_params']['output_options'].items():
                         input_for_this_output = output_info['input']
-                        import pdb;pdb.set_trace()
                         if any([input_for_this_output in inputs, input_for_this_output == 'any']): # choose the output that corresponds to the input going in
                             outputs[output_name] = output_info
                             ref_exts = output_info['extensions'].get('reference_extensions', [])
@@ -362,7 +361,8 @@ def select_outputs(config):
                             #for ref_ext in ref_exts:
                             #    if ref_ext not in reference_extensions:
                             #        reference_extensions.append(ref_ext) # first, append
-                        else:
+        ### MAYBE THIS NEEDS TO NOT BE AN ELSE?
+                        elif not val['elvers_params'].get('outputs', None):
                             sys.stderr.write(f"Error: cannot find corresponding outputs for inputs {inputs} for rule {key}")
                             sys.exit(-1)
                     val['elvers_params']['outputs'] = outputs
@@ -603,8 +603,12 @@ def generate_inputs_outputs(config, samples=None):
     # grab info for all references
     reference_info = {}
     if config.get('get_reference'):
+        if config.get('reference_info'):
+            reference_info = config['reference_info'] #config['get_reference']['program_params']['reference_list']
+        else:
+            sys.stderr.write(f"\nError: Trying to run the get_reference utility without specifying reference information. Please fix. \n\n")
+            sys.exit(-1)
         #reference_info = config['get_reference']['program_params']['reference_list']
-        reference_info = config['reference_info'] #config['get_reference']['program_params']['reference_list']
     assembly_info = config.get('assembly_info', {})
 
      # if we have reference extensions, add them to the reference_info dictionary.

@@ -6,7 +6,7 @@
 basename: 'nema'
 
 get_data:
-  samples: "examples/nema.samples.tsv"
+  samples: "nema.samples.tsv"
 
 trimmomatic:
   # BROKEN: unknown inputs

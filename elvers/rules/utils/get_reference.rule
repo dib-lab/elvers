@@ -1,4 +1,5 @@
 import os
+import shutil
 
 logs_dir = config['elvers_directories']['logs']
 
@@ -11,149 +12,295 @@ reference_extension = prog_params.get('reference_extension', '')
 
 
 # build per-sample reference dictionaries:
-ftp_fa,ftp_gtm,http_fa,http_gtm,link_fa,link_gtm = {},{},{},{},{},{}
+#ftp_fa,ftp_gtm,http_fa,http_gtm,link_fa,link_gtm = {},{},{},{},{},{}
 
-if 'reference' in samples.columns:
-    for row in samples.itertuples(index=False):
-        if row.reference.startswith('ftp'):
-            ftp_fa[row.sample] = row.reference
-        elif row.reference.startswith('http'):
-            http_fa[row.sample] = row.reference
+#if 'reference' in samples.columns:
+#if prog_params.get('per_sample_reference_files') and 'reference' in samples.columns:
+#    for row in samples.itertuples(index=False):
+#        if row.reference.startswith('ftp'):
+#            ftp_fa[row.sample] = row.reference
+#        elif row.reference.startswith('http'):
+#            http_fa[row.sample] = row.reference
+#        else:
+#            link_fa[row.sample] = row.reference
+#        if 'gene_trans_map' in samples.columns:
+#            if row.gene_trans_map:
+#                if row.gene_trans_map.startswith('ftp'):
+#                    ftp_gtm[row.sample] = row.gene_trans_map
+#                elif row.gene_trans_map.startswith('http'):
+#                    http_gtm[row.sample] = row.gene_trans_map
+#                else:
+#                    link_gtm[row.sample] = row.gene_trans_map
+
+# this is currently set up for single reference. To do multi reference, let's use "reference_info" param
+
+## are the per_sample reference files in here? If yes, need to keep them separate somehow.
+## ORRR, don't need to keep them separate at all. Just use reference info. Don't need to use the samples
+# file, bc we've already checked all the reference info in the utils file!
+
+# build reference dictionaries
+if config.get('reference_info'):
+    ftp_fa,ftp_gtm,http_fa,http_gtm,link_fa,link_gtm = {},{},{},{},{},{}
+    ref_info = config['reference_info']
+    for extension, info in ref_info.items():
+        if extension == "no_extension":
+            extension = ""
+        name = basename + extension # + '.fasta'
+        ref = info['reference']
+        if ref.startswith("http"):
+            http_fa[name] = ref
+        elif ref.startswith("ftp"):
+            ftp_fa[name] = ref
         else:
-            link_fa[row.sample] = row.reference
-        if 'gene_trans_map' in samples.columns:
-            if row.gene_trans_map:
-                if row.gene_trans_map.startswith('ftp'):
-                    ftp_gtm[row.sample] = row.gene_trans_map
-                elif row.gene_trans_map.startswith('http'):
-                    http_gtm[row.sample] = row.gene_trans_map
-                else:
-                    link_gtm[row.sample] = row.gene_trans_map
+            link_fa[name] = ref
+        if ref_info.get("gene_trans_map"):
+            gtm = ref_info["gene_trans_map"]
+            if gtm.startswith("http"):
+                http_gtm[name] = gtm
+            elif gtm.startswith("ftp"):
+                ftp_gtm[name] = gtm
+            else:
+                link_gtm[name] = gtm
 
-# set up the vars we use in each of these options
-if prog_params.get('reference'):
-    if prog_params.get('download_ref'):
-        ref_in =prog_params['reference']
-    else:
-        ref_in = os.path.realpath(prog_params['reference'])
+GZIP_MAGIC_NUMBER = "1f8b"
 
-    gunzip_ref = False
-    ref_out    =  os.path.join(ref_dir, basename + reference_extension + '.fasta')
-    if ref_in.endswith('.gz'):
-        gunzip_ref = True
-        ref_out_gunzip = ref_out
-        ref_out = ref_out + '.gz'
+localrules: ftp_get_fasta, ftp_get_gene_trans_map, http_get_fasta, http_get_gene_trans_map, link_input_reference, link_input_gene_trans_map
 
-    if prog_params.get('gene_trans_map', None):
-        gtmap_in   =  os.path.realpath(prog_params['gene_trans_map'])
-        gtmap_out  =  os.path.join(ref_dir, basename + reference_extension + '.fasta.gene_trans_map') 
-
-    if prog_params.get('download_ref'):
-        localrules: ftp_get_fasta, ftp_get_gene_trans_map, http_get_fasta, http_get_gene_trans_map
-        if prog_params.get('use_ftp'):
-            rule ftp_get_fasta:
-                input: FTP.remote(f"{ref_in}", static=True, keep_local=True, immediate_close=True)
-                output: ref_out 
-                log: os.path.join(logs_dir, 'get_reference/ftpget_reference.log')
-                shell: "mv {input} {output} 2> {log}"
-            
-            if prog_params.get('gene_trans_map', None): 
-                rule ftp_get_gene_trans_map:
-                    input: FTP.remote(f"{gtmap_in}", static=True, keep_local=True, immediate_close=True)
-                    output: gtmap_out
-                    log: os.path.join(logs_dir, 'get_reference/ftpget_gtmap.log')
-                    shell: "mv {input} {output} 2> {log}"
-        
-        else:
-            rule http_get_fasta:
-                input: HTTP.remote(f"{ref_in}", static=True, keep_local=True, allow_redirects=True)
-                output: ref_out 
-                log: os.path.join(logs_dir, 'get_reference/httpget_reference.log')
-                shell: "mv {input} {output} 2> {log}"
-
-            if prog_params.get('gene_trans_map', None): 
-                rule http_get_gene_trans_map:
-                    input: HTTP.remote(f"{gtmap_in}", static=True, keep_local=True, allow_redirects=True)
-                    output: gtmap_out
-                    log: os.path.join(logs_dir, 'get_reference/httpget_gtmap.log')
-                    shell: "mv {input} {output} 2> {log}"
-
-    else:
-        rule link_input_reference:
-            input: ref_in 
-            output: ref_out 
-            log: os.path.join(logs_dir, 'get_reference/link_reference.log')
-            params: ref_dir = ref_dir
-            shell:
-                """
-                mkdir -p {params.ref_dir}
-                ln -s {input} {output} 2> {log}
-                """
-        if prog_params.get('gene_trans_map', None):
-            rule link_input_gene_trans_map:
-                input: gtmap_in 
-                output: gtmap_out 
-                log: os.path.join(logs_dir, 'get_reference/link_gtmap.log')
-                params: ref_dir = ref_dir
-                shell:
-                    """
-                    mkdir -p {params.ref_dir}
-                    ln -s {input} {output} 2> {log}
-                    """
-
-    if gunzip_ref:
-        rule gunzip_input_reference:
-            input: ref_out
-            output: ref_out_gunzip
-            log: os.path.join(logs_dir, 'get_reference/gunzip_reference.log')
-            shell:
-                """
-                gunzip -c {input} > {output} 2> {log}
-                """
-localrules: per_sample_ftp_get_fasta, per_sample_ftp_get_gene_trans_map, per_sample_http_get_fasta, per_sample_http_get_gene_trans_map
-
-rule per_sample_ftp_get_fasta:
-    input: lambda wildcards: FTP.remote(f"{ftp_fa[wildcards.sample]}", static=True, keep_local=True, immediate_close=True)
-    output: os.path.join(ref_dir, basename + "_{sample}.fasta")
-    log: os.path.join(logs_dir, 'get_reference/ftpget_ref_{sample}.log')
-    shell: "mv {input} {output} 2> {log}"
-
-rule per_sample_ftp_get_gene_trans_map:
-    input: lambda wildcards: FTP.remote(f"{ftp_gtm[wildcards.sample]}", static=True, keep_local=True, immediate_close=True)
-    output: os.path.join(ref_dir, basename + "_{sample}.gene_trans_map")
-    log: os.path.join(logs_dir, 'get_reference/ftpget_gtmap_{sample}.log')
-    shell: "mv {input} {output} 2> {log}"
-
-rule per_sample_http_get_fasta:
-    input: lambda wildcards: HTTP.remote(f"{http_fa[wildcards.sample]}", static=True, keep_local=True, allow_redirects=True)
-    output: os.path.join(ref_dir, basename + "_{sample}.fasta")
-    log: os.path.join(logs_dir, 'get_reference/httpget_ref_{sample}.log')
-    shell: "mv {input} {output} 2> {log}"
-    
-rule per_sample_http_get_gene_trans_map:
-    input: lambda wildcards: HTTP.remote(f"{http_gtm[wildcards.sample]}", static=True, keep_local=True, allow_redirects=True)
-    output: os.path.join(ref_dir, basename + "_{sample}.gene_trans_map")
-    log: os.path.join(logs_dir, 'get_reference/httpget_gtmap_{sample}.log')
-    shell: "mv {input} {output} 2> {log}"
-
-rule per_sample_link_input_reference:
-    input: lambda wildcards:f"{link_fa[wildcards.sample]}"
-    output: os.path.join(ref_dir, basename + "_{sample}.fasta")
-    log: os.path.join(logs_dir, 'get_reference/link_ref_{sample}.log')
+rule ftp_get_fasta:
+    input: lambda wildcards: FTP.remote(f"{ftp_fa[wildcards.name]}", static=True, keep_local=True, immediate_close=True)
+    output: os.path.join(ref_dir, "{name}.fasta")
+    log: os.path.join(logs_dir, 'get_reference/ftpget_ref_{name}.log')
     params: ref_dir = ref_dir
-    shell:
-        """
-        mkdir -p {params.ref_dir}
-        ln -s {input} {output} 2> {log}
-        """
-if 'gene_trans_map' in samples.columns:
-    rule per_sample_link_input_gene_trans_map:
-        input: lambda wildcards:"f{link_fa[wildcards.sample]}"
-        output: os.path.join(ref_dir, basename + "_{sample}.gene_trans_map")
-        log: os.path.join(logs_dir, 'get_reference/link_gtmap_{sample}.log')
-        params: ref_dir = ref_dir
-        shell:
-            """
-            mkdir -p {params.ref_dir}
-            ln -s {input} {output} 2> {log}
-            """
+    run: 
+        shell("mkdir -p {params.ref_dir}")
+        with open({input}) as f:
+            if f.read(2).encode("hex") == GZIP_MAGIC_NUMBER:
+                shell("gunzip -c {input} > {output} 2> {log}")
+            else:
+                #shutil.move({input} {output})
+                #shutil.copyfile({input} {output})
+                os.rename({input}, {output})
+
+   # shell: "mv {input} {output} 2> {log}"
+
+rule ftp_get_gene_trans_map:
+    input: lambda wildcards: FTP.remote(f"{ftp_gtm[wildcards.name]}", static=True, keep_local=True, immediate_close=True)
+    output: os.path.join(ref_dir, "{name}.gene_trans_map")
+    log: os.path.join(logs_dir, 'get_reference/ftpget_gtmap_{name}.log')
+    #shell: "mv {input} {output} 2> {log}"
+    params: ref_dir = ref_dir
+    run: 
+        shell("mkdir -p {params.ref_dir}")
+        with open({input}) as f:
+            if f.read(2).encode("hex") == GZIP_MAGIC_NUMBER:
+                shell("gunzip -c {input} > {output} 2> {log}")
+            else:
+                os.rename({input}, {output})
+                #shutil.move({input} {output})
+
+rule http_get_fasta:
+    input: lambda wildcards: HTTP.remote(f"{http_fa[wildcards.name]}", static=True, keep_local=True, allow_redirects=True)
+    output: os.path.join(ref_dir, "{name}.fasta")
+    log: os.path.join(logs_dir, 'get_reference/httpget_ref_{name}.log')
+    #shell: "mv {input} {output} 2> {log}"
+    params: ref_dir = ref_dir
+    run: 
+        shell("mkdir -p {params.ref_dir}")
+        with open({input}) as f:
+            if f.read(2).encode("hex") == GZIP_MAGIC_NUMBER:
+                shell("gunzip -c {input} > {output} 2> {log}")
+            else:
+                #shutil.move({input} {output})
+                os.rename({input}, {output})
+    
+rule http_get_gene_trans_map:
+    input: lambda wildcards: HTTP.remote(f"{http_gtm[wildcards.name]}", static=True, keep_local=True, allow_redirects=True)
+    output: os.path.join(ref_dir, "{name}.gene_trans_map")
+    log: os.path.join(logs_dir, 'get_reference/httpget_gtmap_{name}.log')
+    #shell: "mv {input} {output} 2> {log}"
+    params: ref_dir = ref_dir
+    run: 
+        shell("mkdir -p {params.ref_dir}")
+        with open({input}) as f:
+            if f.read(2).encode("hex") == GZIP_MAGIC_NUMBER:
+                shell("gunzip -c {input} > {output} 2> {log}")
+            else:
+                #shutil.move({input} {output})
+                os.rename({input}, {output})
+
+rule link_input_reference:
+    input: lambda wildcards:f"{link_fa[wildcards.name]}"
+    output: os.path.join(ref_dir, "{name}.fasta")
+    log: os.path.join(logs_dir, 'get_reference/link_ref_{name}.log')
+    params: ref_dir = ref_dir
+    #shell:
+    #    """
+    #    mkdir -p {params.ref_dir}
+    #    ln -s {input} {output} 2> {log}
+    #    """
+    run: 
+        shell("mkdir -p {params.ref_dir}")
+        with open({input}) as f:
+            if f.read(2).encode("hex") == GZIP_MAGIC_NUMBER:
+                shell("gunzip -c {input} > {output} 2> {log}")
+            else:
+                #shutil.move({input} {output})
+                os.rename({input}, {output})
+    
+#if 'gene_trans_map' in samples.columns:
+rule link_input_gene_trans_map:
+    input: lambda wildcards:"f{link_gtm[wildcards.name]}"
+    output: os.path.join(ref_dir,"{name}.gene_trans_map")
+    log: os.path.join(logs_dir, 'get_reference/link_gtmap_{name}.log')
+    params: ref_dir = ref_dir
+    run:
+        shell("mkdir -p {params.ref_dir}")
+        with open({input}) as f:
+            if f.read(2).encode("hex") == GZIP_MAGIC_NUMBER:
+                shell("gunzip -c {input} > {output} 2> {log}")
+            else:
+                #shutil.move({input} {output})
+                os.rename({input}, {output})
+
+    #shell:
+    #    """
+    #    mkdir -p {params.ref_dir}
+    #    ln -s {input} {output} 2> {log}
+    #    """
+## check if gzipped:
+# https://kite.com/python/examples/4945/gzip-check-if-a-file-is-gzip-compressed
+
+
+
+
+
+
+
+## SINGLE REFERENCE WAY.
+# set up the vars we use in each of these options
+#if prog_params.get('reference'):
+#    if prog_params.get('download_ref'):
+#        ref_in =prog_params['reference']
+#    else:
+#        ref_in = os.path.realpath(prog_params['reference'])
+
+#    gunzip_ref = False
+#    ref_out    =  os.path.join(ref_dir, basename + reference_extension + '.fasta')
+#    if ref_in.endswith('.gz'):
+#        gunzip_ref = True
+#        ref_out_gunzip = ref_out
+#        ref_out = ref_out + '.gz'
+
+#    if prog_params.get('gene_trans_map', None):
+#        gtmap_in   =  os.path.realpath(prog_params['gene_trans_map'])
+#        gtmap_out  =  os.path.join(ref_dir, basename + reference_extension + '.fasta.gene_trans_map') 
+
+#    if prog_params.get('download_ref'):
+#        localrules: ftp_get_fasta, ftp_get_gene_trans_map, http_get_fasta, http_get_gene_trans_map
+#        if prog_params.get('use_ftp'):
+#            rule ftp_get_fasta:
+#                input: FTP.remote(f"{ref_in}", static=True, keep_local=True, immediate_close=True)
+#                output: ref_out 
+#                log: os.path.join(logs_dir, 'get_reference/ftpget_reference.log')
+#                shell: "mv {input} {output} 2> {log}"
+            
+ #           if prog_params.get('gene_trans_map', None): 
+ #               rule ftp_get_gene_trans_map:
+ #                   input: FTP.remote(f"{gtmap_in}", static=True, keep_local=True, immediate_close=True)
+ #                   output: gtmap_out
+ #                   log: os.path.join(logs_dir, 'get_reference/ftpget_gtmap.log')
+ #                   shell: "mv {input} {output} 2> {log}"
+        
+ #       else:
+ #           rule http_get_fasta:
+ #               input: HTTP.remote(f"{ref_in}", static=True, keep_local=True, allow_redirects=True)
+ #               output: ref_out 
+ #               log: os.path.join(logs_dir, 'get_reference/httpget_reference.log')
+ #               shell: "mv {input} {output} 2> {log}"
+
+ #           if prog_params.get('gene_trans_map', None): 
+ #               rule http_get_gene_trans_map:
+ #                   input: HTTP.remote(f"{gtmap_in}", static=True, keep_local=True, allow_redirects=True)
+ #                   output: gtmap_out
+ #                   log: os.path.join(logs_dir, 'get_reference/httpget_gtmap.log')
+ #                   shell: "mv {input} {output} 2> {log}"
+
+ #   else:
+ #       rule link_input_reference:
+ #           input: ref_in 
+ #           output: ref_out 
+ #           log: os.path.join(logs_dir, 'get_reference/link_reference.log')
+ #           params: ref_dir = ref_dir
+ #           shell:
+ #               """
+ #               mkdir -p {params.ref_dir}
+ #               ln -s {input} {output} 2> {log}
+ #               """
+ #       if prog_params.get('gene_trans_map', None):
+ #           rule link_input_gene_trans_map:
+ #               input: gtmap_in 
+ #               output: gtmap_out 
+ #               log: os.path.join(logs_dir, 'get_reference/link_gtmap.log')
+ #               params: ref_dir = ref_dir
+ #               shell:
+ #                   """
+ #                   mkdir -p {params.ref_dir}
+ #                   ln -s {input} {output} 2> {log}
+ #                   """
+
+ #   if gunzip_ref:
+ #       rule gunzip_input_reference:
+ #           input: ref_out
+ #           output: ref_out_gunzip
+ #           log: os.path.join(logs_dir, 'get_reference/gunzip_reference.log')
+ #           shell:
+ #               """
+ #               gunzip -c {input} > {output} 2> {log}
+ #               """
+#localrules: per_sample_ftp_get_fasta, per_sample_ftp_get_gene_trans_map, per_sample_http_get_fasta, per_sample_http_get_gene_trans_map
+
+#rule per_sample_ftp_get_fasta:
+#    input: lambda wildcards: FTP.remote(f"{ftp_fa[wildcards.sample]}", static=True, keep_local=True, immediate_close=True)
+#    output: os.path.join(ref_dir, basename + "_{sample}.fasta")
+#    log: os.path.join(logs_dir, 'get_reference/ftpget_ref_{sample}.log')
+#    shell: "mv {input} {output} 2> {log}"
+
+#rule per_sample_ftp_get_gene_trans_map:
+#    input: lambda wildcards: FTP.remote(f"{ftp_gtm[wildcards.sample]}", static=True, keep_local=True, immediate_close=True)
+#    output: os.path.join(ref_dir, basename + "_{sample}.gene_trans_map")
+#    log: os.path.join(logs_dir, 'get_reference/ftpget_gtmap_{sample}.log')
+#    shell: "mv {input} {output} 2> {log}"
+
+#rule per_sample_http_get_fasta:
+#    input: lambda wildcards: HTTP.remote(f"{http_fa[wildcards.sample]}", static=True, keep_local=True, allow_redirects=True)
+#    output: os.path.join(ref_dir, basename + "_{sample}.fasta")
+#    log: os.path.join(logs_dir, 'get_reference/httpget_ref_{sample}.log')
+#    shell: "mv {input} {output} 2> {log}"
+    
+#rule per_sample_http_get_gene_trans_map:
+#    input: lambda wildcards: HTTP.remote(f"{http_gtm[wildcards.sample]}", static=True, keep_local=True, allow_redirects=True)
+#    output: os.path.join(ref_dir, basename + "_{sample}.gene_trans_map")
+#    log: os.path.join(logs_dir, 'get_reference/httpget_gtmap_{sample}.log')
+#    shell: "mv {input} {output} 2> {log}"
+
+#rule per_sample_link_input_reference:
+#    input: lambda wildcards:f"{link_fa[wildcards.sample]}"
+#    output: os.path.join(ref_dir, basename + "_{sample}.fasta")
+#    log: os.path.join(logs_dir, 'get_reference/link_ref_{sample}.log')
+#    params: ref_dir = ref_dir
+#    shell:
+#        """
+#        mkdir -p {params.ref_dir}
+#        ln -s {input} {output} 2> {log}
+#        """
+#if 'gene_trans_map' in samples.columns:
+#    rule per_sample_link_input_gene_trans_map:
+#        input: lambda wildcards:"f{link_fa[wildcards.sample]}"
+#        output: os.path.join(ref_dir, basename + "_{sample}.gene_trans_map")
+#        log: os.path.join(logs_dir, 'get_reference/link_gtmap_{sample}.log')
+#        params: ref_dir = ref_dir
+#        shell:
+#            """
+#            mkdir -p {params.ref_dir}
+#            ln -s {input} {output} 2> {log}
+#            """

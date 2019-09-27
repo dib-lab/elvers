@@ -29,5 +29,5 @@ class TestInputs(TestCase):
         configfile = os.path.realpath(os.path.join(here,'test_files/bad-inputs-entry.yaml'))
         command = [elvers_cmd, configfile, '-n']
         p_out, p_err = capture_stdouterr(command,here)
-        assert f"cannot find input files for trinity. Please add a target that produces any of the following" in p_err
+        assert f"cannot find corresponding outputs for inputs" in p_err
 
