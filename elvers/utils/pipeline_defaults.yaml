@@ -30,7 +30,6 @@ elvers_workflows:
   protein_assembly:
     - trimmomatic
     - fastqc
-    - multiqc
     - khmer
     - plass
     - pear
