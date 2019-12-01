@@ -4,8 +4,8 @@ get_data:
       raw:
         outdir: input_data
         extensions:
-          common_ext: ".fq.gz"
           read:
+            common_ext: ".fq.gz"
             pe:
               - "_1.fq.gz"
               - "_2.fq.gz"

@@ -355,13 +355,15 @@ def select_outputs(config):
                         if any([input_for_this_output in inputs, input_for_this_output == 'any']): # choose the output that corresponds to the input going in
                             outputs[output_name] = output_info
                             ref_exts = output_info['extensions'].get('reference_extensions', [])
-                       #     reference_extensions+=ref_exts
+                            break
+                            # reference_extensions+=ref_exts
                             ## HERE IS WHERE WE ADD REFERENCE EXTENSIONS FOR ASSEMBLIES
-#--> not doing this anymore. it will be done in the "handle_assemblies" section
+                            #--> not doing this anymore. it will be done in the "handle_assemblies" section
                             #for ref_ext in ref_exts:
                             #    if ref_ext not in reference_extensions:
                             #        reference_extensions.append(ref_ext) # first, append
-        ### MAYBE THIS NEEDS TO NOT BE AN ELSE?
+
+                        ### MAYBE THIS NEEDS TO NOT BE AN ELSE?
                         elif not val['elvers_params'].get('outputs', None):
                             sys.stderr.write(f"Error: cannot find corresponding outputs for inputs {inputs} for rule {key}")
                             sys.exit(-1)
@@ -541,6 +543,7 @@ def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, 
                         in_ref_exts = ref_exts
                     input_files = generate_targs(indir, basename, samples, ref_exts =in_ref_exts, base_exts=in_exts.get('base', None),read_exts =in_exts.get('read'), other_exts=in_exts.get('other'), ignore_units=ignore_units, contrasts = contrasts, ref_info = reference_info, assemb_info = assembly_info)
                     all_input_exts[option]['input_files'] = input_files #generate_targs(indir, basename, samples, in_ref_exts, in_exts.get('base', None),in_exts.get('read'), in_exts.get('other'), contrasts)
+                    all_input_exts[option]['indir'] = indir
                 except:
                     not_found.append(option)
             ## THIS ISN'T QUITE WORKING YET

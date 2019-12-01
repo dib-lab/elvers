@@ -6,7 +6,7 @@ rcorrector:
         - raw
     output_options:
       rcorrector_raw:
-        input: trimmed
+        input: raw
         outdir: 'preprocess/rcorrector'
         extensions:
           read:

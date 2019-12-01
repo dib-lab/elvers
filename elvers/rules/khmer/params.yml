@@ -6,6 +6,20 @@ khmer:
         - rcorrector_trimmed
         - raw
     output_options:
+      kmer_raw:
+        input: raw
+        outdir: preprocess
+        extensions:
+          read:
+            common_ext: 
+              - ".khmer.fq.gz"
+            pe:
+              - '_1.khmer.fq.gz'
+              - '_2.khmer.fq.gz'
+              - '.paired.khmer.fq.gz'
+              - '.single.khmer.fq.gz'
+            se:
+              - '.se.khmer.fq.gz'
       kmer_trimmed:
         input: trimmed
         outdir: preprocess

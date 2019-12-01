@@ -12,11 +12,10 @@ output_dir = elvers_params['outputs']['outdir']
 input_dir = config['elvers_directories']['outdirs']['preprocess']
 ext = '.trim.fq.gz'
 # get input we're using in this case
-input_name = prog_params.get('input', 'trimmed').lower()
+input_name = prog_params.get('inputs', ['trimmed'])[0]
 # update input_dir, ext
 input_dir = elvers_params['input_options'][input_name].get('indir', input_dir )
 ext = elvers_params['input_options'][input_name]['extensions']['read'].get('common_ext', ext)
-
 diginorm = prog_params.get('diginorm', True)
 
 def get_trimmed(w):
