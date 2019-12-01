@@ -27,8 +27,8 @@ if config.get('reference_info'):
             ftp_fa[name] = ref
         else:
             link_fa[name] = ref
-        if ref_info.get("gene_trans_map"):
-            gtm = ref_info["gene_trans_map"]
+        if info.get("gene_trans_map"):
+            gtm = info["gene_trans_map"]
             if gtm.startswith("http"):
                 http_gtm[name] = gtm
             elif gtm.startswith("ftp"):
