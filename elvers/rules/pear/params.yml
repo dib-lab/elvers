@@ -6,7 +6,7 @@ pear:
         - raw
     output_options:
       pear_merged:
-        input: trimmed
+        input: any
         outdir: preprocess/pear
         extensions: 
           read:

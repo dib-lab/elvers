@@ -389,13 +389,16 @@ def generate_targs(outdir, basename, samples, ref_exts=[''], base_exts = None, r
             se_names = samples.loc[samples["fq2"].isnull(), 'name'].tolist()
             pe_names = samples.loc[samples["fq2"].notnull(), 'name'].tolist()
         # grab extensions
+        ref_se_ext,read_only_se_ext, read_only_pe_ext = [],[],[]
         pe_ext = read_exts.get('pe', None)
-        ref_pe_ext = [x for x in pe_ext if '__reference__' in x ]
-        read_only_pe_ext = [x for x in pe_ext if '__reference__' not in x ]
+        if pe_ext:
+            ref_pe_ext = [x for x in pe_ext if '__reference__' in x ]
+            read_only_pe_ext = [x for x in pe_ext if '__reference__' not in x ]
         # se
         se_ext = read_exts.get('se', None)
-        ref_se_ext = [x for x in se_ext if '__reference__' in x ]
-        read_only_se_ext = [x for x in se_ext if '__reference__' not in x ]
+        if se_ext:
+            ref_se_ext = [x for x in se_ext if '__reference__' in x ]
+            read_only_se_ext = [x for x in se_ext if '__reference__' not in x ]
         # build read targets (if don't use reference info)
         if read_only_se_ext and len(se_names)>0:
             read_targs+=[join(outdir, name + e) for e in read_only_se_ext for name in se_names]
