@@ -33,7 +33,7 @@ paladin:
   program_params:
     inputs:
       - pear_merged
-      - fasta
+      - plass_fasta
     index_params:
       reference_type: '3'
     alignment_params:

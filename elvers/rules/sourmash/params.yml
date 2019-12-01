@@ -2,6 +2,7 @@ sourmash:
   elvers_params:
     input_options:
       read:
+        - kmer_trimmed
         - trimmed
         - raw
       base:

@@ -141,3 +141,10 @@ def test_rcorrector_short():
 def test_rcorrector_long():
     run_ruletest('rcorrector', short = False)
 
+#def test_sourmash_short():
+#    run_ruletest('sourmash')
+
+#@pytest.mark.long
+#def test_sourmash_long():
+#    run_ruletest('sourmash', short = False)
+

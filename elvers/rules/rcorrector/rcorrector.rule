@@ -11,13 +11,13 @@ ep_params = config['rcorrector']['elvers_params']
 rcorr_dir     = ep_params['outputs']['outdir']
 # set default input dir, extensions
 input_dir = config['elvers_directories']['outdirs']['preprocess']
-ext = '.trim.fq.gz'
+ext = ['.trim.fq.gz']
 
 # get input we're using in this case
 input_name = rcorr_params.get('inputs', ['trimmed'])[0]
 # update input_dir, ext
 input_dir = ep_params['input_options'][input_name].get('indir', input_dir )
-ext = ep_params['input_options'][input_name]['extensions']['read'].get('common_ext', ext)
+ext = ep_params['input_options'][input_name]['extensions']['read'].get('common_ext', ext)[0]
 
 # use if you don't want to collapse technical replicates ("units" column)
 def get_sample_no_combine(w):

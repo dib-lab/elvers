@@ -3,4 +3,4 @@
 paladin:
   inputs:
     - raw
-    - fasta
+    - plass_fasta

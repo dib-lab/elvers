@@ -7,6 +7,7 @@ from os.path import join
 import glob
 from snakemake.utils import validate
 
+
 # general utilities
 def find_Snakefile(workdir):
     snakefile = os.path.join(workdir, 'Snakefile')
@@ -22,6 +23,7 @@ def read_yaml(filename):
     return yamlD
 
 def write_yaml(yamlD, paramsfile):
+    yaml.Dumper.ignore_aliases = lambda *args : True
     with open(paramsfile, 'w') as params:
         yaml.dump(yamlD, stream=params, indent=2,  default_flow_style=False)
 
@@ -355,7 +357,6 @@ def select_outputs(config):
                         if any([input_for_this_output in inputs, input_for_this_output == 'any']): # choose the output that corresponds to the input going in
                             outputs[output_name] = output_info
                             ref_exts = output_info['extensions'].get('reference_extensions', [])
-                            break
                             # reference_extensions+=ref_exts
                             ## HERE IS WHERE WE ADD REFERENCE EXTENSIONS FOR ASSEMBLIES
                             #--> not doing this anymore. it will be done in the "handle_assemblies" section
@@ -363,11 +364,11 @@ def select_outputs(config):
                             #    if ref_ext not in reference_extensions:
                             #        reference_extensions.append(ref_ext) # first, append
 
-                        ### MAYBE THIS NEEDS TO NOT BE AN ELSE?
-                        elif not val['elvers_params'].get('outputs', None):
-                            sys.stderr.write(f"Error: cannot find corresponding outputs for inputs {inputs} for rule {key}")
-                            sys.exit(-1)
+                    if not outputs:
+                        sys.stderr.write(f"Error: cannot find corresponding outputs for inputs {inputs} for rule {key}")
+                        sys.exit(-1)
                     val['elvers_params']['outputs'] = outputs
+                        #elif not val['elvers_params'].get('outputs', None):
                 else:
                     val['elvers_params']['outputs'] = val['elvers_params']['output_options']
                 del val['elvers_params']['output_options']

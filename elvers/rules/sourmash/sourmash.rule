@@ -1,17 +1,27 @@
 from os.path import join
 
+prog = "sourmash"
+
 logs_dir  = config['elvers_directories']['logs']
+elvers_params = config[prog]['elvers_params']
+prog_params = config[prog]['program_params']
+
+# set output dir
+output_dir = elvers_params['outputs']['outdir']
+# set default input dir, extensions
+input_dir = config['elvers_directories']['outdirs']['preprocess']
+ext = ['.trim.fq.gz']
+# get input we're using in this case
+input_name = prog_params.get('inputs', ['kmer_trimmed'])[0]
+# update input_dir, ext
+reads_dir = elvers_params['input_options'][input_name].get('indir', input_dir)
 assembly_dir= config['elvers_directories']['outdirs']['assemble']
-preprocess_dir= config['elvers_directories']['outdirs']['preprocess']
-
-sourmash_params = config['sourmash']['program_params']
-sourmash_dir = config['sourmash']['elvers_params']['outputs']['outdir']
-
+ext = elvers_params['input_options'][input_name]['extensions']['read'].get('common_ext', ext)[0]
 
 def get_reads(wildcards):
     if not is_single_end(**wildcards):
-        return expand(join(preprocess_dir, '{sample}_{unit}.paired.khmer.fq.gz'), **wildcards)
-    return expand(join(preprocess_dir, '{sample}_{unit}.se.khmer.fq.gz'), **wildcards)
+        return expand(join(reads_dir, '{sample}_{unit}.paired.khmer.fq.gz'), **wildcards)
+    return expand(join(reads_dir, '{sample}_{unit}.se.khmer.fq.gz'), **wildcards)
 
 
 rule sourmash_compute_assembly:
@@ -21,14 +31,14 @@ rule sourmash_compute_assembly:
     input:
         join(assembly_dir, "{assembly}.fasta")
     output:
-        join(sourmash_dir, "{assembly}.fasta.sig")
+        join(output_dir, "{assembly}.fasta.sig")
     message:
         """--- Computing a MinHash signature of the transcriptome with Sourmash ---"""
     threads: 2
     params:
-        k_size = sourmash_params.get('k_size', 31),
-        scaled  = sourmash_params.get('scaled', 1000),
-        extra = sourmash_params.get('extra', '')
+        k_size = prog_params.get('k_size', 31),
+        scaled  = prog_params.get('scaled', 1000),
+        extra = prog_params.get('extra', '')
     log: join(logs_dir, 'sourmash', '{assembly}.log')
     benchmark: join(logs_dir, 'sourmash', '{assembly}.benchmark')
     conda: 
@@ -41,14 +51,14 @@ rule sourmash_compute_pe_interleaved:
     Computing a MinHash signature of the kmer-trimmed with Sourmash
     """
     input: get_reads 
-    output: join(sourmash_dir, "{sample}_{unit}.paired.khmer.fq.sig")
+    output: join(output_dir, "{sample}_{unit}.paired.khmer.fq.sig")
     message:
         """--- Computing a MinHash signature of the kmer-trimmed reads with Sourmash ---"""
     threads: 6
     params:
-        k_size = sourmash_params.get('k_size', 31),
-        scaled  = sourmash_params.get('scaled', 1000),
-        extra = sourmash_params.get('extra', '')
+        k_size = prog_params.get('k_size', 31),
+        scaled  = prog_params.get('scaled', 1000),
+        extra = prog_params.get('extra', '')
     log: join(logs_dir, 'sourmash', '{sample}_{unit}.log')
     benchmark: join(logs_dir, 'sourmash', '{sample}_{unit}_pe.benchmark')
     conda: 
@@ -61,14 +71,14 @@ rule sourmash_compute_se:
     Computing a MinHash signature of the kmer-trimmed reads with Sourmash
     """
     input: get_reads 
-    output: join(sourmash_dir, "{sample}_{unit}.se.khmer.fq.sig")
+    output: join(output_dir, "{sample}_{unit}.se.khmer.fq.sig")
     message:
         """--- Computing a MinHash signature of the kmer-trimmed reads with Sourmash ---"""
     threads: 6
     params:
-        k_size = sourmash_params.get('k_size', 31),
-        scaled  = sourmash_params.get('scaled', 1000),
-        extra = sourmash_params.get('extra', '')
+        k_size = prog_params.get('k_size', 31),
+        scaled  = prog_params.get('scaled', 1000),
+        extra = prog_params.get('extra', '')
     log: join(logs_dir, 'sourmash', '{sample}_{unit}.log')
     benchmark: join(logs_dir, 'sourmash', '{sample}_{unit}_se.benchmark')
     conda: 

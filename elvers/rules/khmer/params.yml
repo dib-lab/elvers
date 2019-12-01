@@ -8,7 +8,7 @@ khmer:
     output_options:
       kmer_raw:
         input: raw
-        outdir: preprocess
+        outdir: preprocess/khmer
         extensions:
           read:
             common_ext: 
@@ -22,7 +22,7 @@ khmer:
               - '.se.khmer.fq.gz'
       kmer_trimmed:
         input: trimmed
-        outdir: preprocess
+        outdir: preprocess/khmer
         extensions:
           read:
             common_ext: 

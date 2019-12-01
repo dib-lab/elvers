@@ -1,17 +1,25 @@
 import os
 from os.path import join
 
+prog = 'paladin'
+
 logs_dir  = config['elvers_directories']['logs']
 assembly_dir  = config['elvers_directories']['outdirs']['assemble']
 
-ep_params = config['paladin']['elvers_params']
-prog_params = config['paladin']['program_params']
+elvers_params = config[prog]['elvers_params']
+prog_params = config[prog]['program_params']
 index_params = prog_params['index_params']
 alignment_params = prog_params['alignment_params']
 
-# get outdir
-paladin_dir = ep_params['outputs']['outdir']
-assembly_extension = ep_params['outputs']['paladin_mapped']['extensions']['reference_extensions'][0]
+# set output dir
+output_dir = elvers_params['outputs']['outdir']
+# set default input dir, extensions
+#input_dir = config['elvers_directories']['outdirs']['preprocess']
+#ext = '.trim.fq.gz'
+# get input we're using in this case
+# update input_dir, ext
+#assembly_extension = elvers_params['outputs']['paladin_mapped']['extensions']['reference_extensions'][0]
+inputs = prog_params.get('inputs')
 
 # handle "associated_samples"
 associated_samples = {}
@@ -22,8 +30,7 @@ if 'assembly_info' in config.keys():
     assemb_info = config['assembly_info']
     refs.update(assemb_info)
 
-for ref_ext, ref_info in refs.items(): #in #config['get_reference']['program_params']['reference_list'].items():#config['reference_info'].items():
-#for ref_ext, ref_info in config['reference_info'].items():
+for ref_ext, ref_info in refs.items(): 
     if ref_info.get('associated_samples'):
         sample_list = ref_info['associated_samples']
         if not ref_ext.startswith('_'):
@@ -31,10 +38,8 @@ for ref_ext, ref_info in refs.items(): #in #config['get_reference']['program_par
         refname = basename + ref_ext
         associated_samples[refname] = sample_list
 
-
 def get_paladin_input(w):
     readsD = {}
-    inputs = prog_params['inputs']
     # grab list of only the associated samples
     if w.assembly in associated_samples.keys():
         # this assembly has some associated samples
@@ -53,23 +58,26 @@ def get_paladin_input(w):
         elif 'raw' in inputs:
             ext = '_1.fq.gz'
             input_dir = config['elvers_directories']['outdirs']['input_data']
+        #input_dir = elvers_params['input_options'][input_name].get('indir', input_dir )
+        #ext = elvers_params['input_options'][input_name]['extensions']['read'].get('common_ext', ext)
         if w.sample in sample_list:
             readsD['r'] = join(input_dir, f'{w.sample}_{w.unit}{ext}')
         return readsD
     # if single end:
-    elif 'trimmed' in inputs: 
-        input_dir = config['elvers_directories']['outdirs']['preprocess']
-        ext = '.trim.fq.gz'
-    elif 'raw' in inputs:
-        ext = '_1.fq.gz'
-        input_dir = config['elvers_directories']['outdirs']['input_data']
+    else:
+        if 'trimmed' in inputs: 
+            input_dir = config['elvers_directories']['outdirs']['preprocess']
+            ext = '_se.trim.fq.gz'
+        elif 'raw' in inputs:
+            ext = '_1.fq.gz'
+            input_dir = config['elvers_directories']['outdirs']['input_data']
     if w.sample in sample_list:
         readsD['r'] = join(input_dir, f'{w.sample}_{w.unit}{ext}')
     return readsD
 
 rule paladin_index:
     input: join(assembly_dir, "{assembly}.fasta")
-    output: join(paladin_dir, "{assembly}.fasta.bwt"),
+    output: join(output_dir, "{assembly}.fasta.bwt"),
     params: 
         reference_type= index_params.get('reference_type', '3'),
         gff = index_params.get('gff_file', '')
@@ -81,9 +89,9 @@ rule paladin_index:
 rule paladin_align:
     input:  
         unpack(get_paladin_input),
-        index = join(paladin_dir, "{assembly}.fasta.bwt"), 
+        index = join(output_dir, "{assembly}.fasta.bwt"), 
     output: 
-        join(paladin_dir,"{sample}_{unit}_x_{assembly}.paladin.bam"),
+        join(output_dir,"{sample}_{unit}_x_{assembly}.paladin.bam"),
     threads: 20
     params:
         f = alignment_params.get('f','125'),
@@ -94,8 +102,8 @@ rule paladin_align:
     script: 'paladin-align.py'
     
 rule samtools_sort_paladin:
-    input: join(paladin_dir,"{sample}_{unit}_x_{assembly}.paladin.bam")
-    output: join(paladin_dir,"{sample}_{unit}_x_{assembly}.paladin.sort.bam") 
+    input: join(output_dir,"{sample}_{unit}_x_{assembly}.paladin.bam")
+    output: join(output_dir,"{sample}_{unit}_x_{assembly}.paladin.sort.bam") 
     conda: "environment.yml"
     log: join(logs_dir, 'paladin',"{sample}_{unit}_x_{assembly}.paladin.sort.bam.log")
     benchmark: join(logs_dir, 'paladin',"{sample}_{unit}_x_{assembly}.paladin.sort.bam.benchmark")
@@ -105,8 +113,8 @@ rule samtools_sort_paladin:
     """
 
 rule samtools_flagstat_paladin:
-    input: join(paladin_dir,"{sample}_{unit}_x_{assembly}.paladin.sort.bam") 
-    output: join(paladin_dir,"{sample}_{unit}_x_{assembly}.paladin.sort.bam.flagstat")
+    input: join(output_dir,"{sample}_{unit}_x_{assembly}.paladin.sort.bam") 
+    output: join(output_dir,"{sample}_{unit}_x_{assembly}.paladin.sort.bam.flagstat")
     log: join(logs_dir, 'paladin',"{sample}_{unit}_x_{assembly}.paladin.sort.bam.flagstat.log")
     benchmark: join(logs_dir, 'paladin',"{sample}_{unit}_x_{assembly}.paladin.sort.bam.flagstat.benchmark")
     conda: "environment.yml"
@@ -115,8 +123,8 @@ rule samtools_flagstat_paladin:
     """
     
 rule samtools_index_paladin:
-    input: join(paladin_dir,"{sample}_{unit}_x_{assembly}.paladin.sort.bam") 
-    output: join(paladin_dir,"{sample}_{unit}_x_{assembly}.paladin.sort.bam.bai")
+    input: join(output_dir,"{sample}_{unit}_x_{assembly}.paladin.sort.bam") 
+    output: join(output_dir,"{sample}_{unit}_x_{assembly}.paladin.sort.bam.bai")
     conda: "environment.yml"
     log: join(logs_dir, 'paladin',"{sample}_{unit}_x_{assembly}.paladin.sort.bam.index.log")
     benchmark: join(logs_dir, 'paladin',"{sample}_{unit}_x_{assembly}.paladin.sort.bam.index.benchmark")

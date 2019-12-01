@@ -11,12 +11,12 @@ prog_params = config[prog]['program_params']
 output_dir = os.path.dirname(elvers_params['outputs']['output_files'][0])
 # set default input dir, extensions
 input_dir = config['elvers_directories']['outdirs']['input_data']
-ext = '.fq.gz'
+ext = ['.fq.gz']
 # get input we're using in this case
-input_name = prog_params.get('input', 'raw').lower()
+input_name = prog_params.get('inputs', ['raw'])[0]
 # update input_dir, ext
 input_dir = elvers_params['input_options'][input_name].get('indir', input_dir)
-ext = elvers_params['input_options'][input_name]['extensions']['read'].get('common_ext', ext)
+ext = elvers_params['input_options'][input_name]['extensions']['read'].get('common_ext', ext)[0]
 
 # find adapters --> use utils/find_input_file for this?
 base_dir = config['elvers_directories']['base_dir']
