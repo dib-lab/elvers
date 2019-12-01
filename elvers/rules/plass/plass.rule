@@ -75,6 +75,8 @@ rule plass:
     params:
         # optional parameters
         extra=prog_params.get('extra', '')
+    wildcard_constraints:
+        assembly="\S*_plass"
     log: join(logs_dir, 'plass','{assembly}.log')
     benchmark: join(logs_dir, 'plass','{assembly}.benchmark')
     threads: 32

@@ -1,7 +1,7 @@
 from os import path
 
-ep_params = config['trinity']['elvers_params']
 logs_dir  = config['elvers_directories']['logs']
+ep_params = config['trinity']['elvers_params']
 prog_params = config['trinity']['program_params']
 
 assembly_dir = ep_params['outputs']['outdir']
@@ -14,8 +14,10 @@ associated_samples = {}
 if 'assembly_info' in config.keys():
     assemb_info = config['assembly_info']
 
-for ref_ext, ref_info in assemb_info.items(): #in #config['get_reference']['program_params']['reference_list'].items():#config['reference_info'].items():
-    if assembly_extension in ref_ext: # check that "_trinity" is in the extension
+#in #config['get_reference']['program_params']['reference_list'].items():#config['reference_info'].items()
+
+for ref_ext, ref_info in assemb_info.items(): 
+    if assembly_extension in ref_ext:
         if ref_info.get('associated_samples'):
             sample_list = ref_info['associated_samples']
             if not ref_ext.startswith('_'):
@@ -82,6 +84,8 @@ rule trinity:
         max_memory=prog_params.get('max_memory', '10G'),
         seqtype=prog_params.get('seqtype', 'fq'),
         extra=prog_params.get('extra', '')
+    wildcard_constraints:
+        assembly="\S*_trinity"
     threads: 4
     log: join(logs_dir, 'trinity', '{assembly}.log')
     benchmark: join(logs_dir, 'trinity', '{assembly}.benchmark')

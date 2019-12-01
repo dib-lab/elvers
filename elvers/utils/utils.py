@@ -143,7 +143,7 @@ def handle_reference_input(config, configfile, samples = None):
     firstref = {}
     reference_list = {}
 
-    # current, single ref specification (allows no reference extension)
+    # current, single ref specification allows no reference extension
     if program_params.get('reference', None):
         initial_ref = {'reference': program_params['reference'],   \
                        'gene_trans_map': program_params.get('gene_trans_map', None), \
@@ -416,7 +416,13 @@ def generate_targs(outdir, basename, samples, ref_exts=[''], base_exts = None, r
                 refname = basename + refx
             #references.append(refname)
             if base_exts:
-                base_targets += [join(outdir, refname + e) for e in base_exts]
+                if assemb_info:
+                    # handle additional assemblies
+                    rxs = [basename + k for k in assemb_info.keys() if refx in k]
+                    base_targets += [join(outdir, rn + e) for e in base_exts for rn in rxs]
+                else:
+                    # single assemblies
+                    base_targets += [join(outdir, refname + e) for e in base_exts]
             # if the read targets use reference_info
             if ref_pe_ext or ref_se_ext:
                 # HERE, handle associated samples
@@ -425,6 +431,7 @@ def generate_targs(outdir, basename, samples, ref_exts=[''], base_exts = None, r
                 ## HERE WE NOW HAVE AN ISSUE FOR ASSEMBLERS. --> build ref_list for assemblies first?
                 if refx in ref_info.keys():
                     assoc_samples = ref_info[refx].get('associated_samples', None)
+
                 elif refx in assemb_info.keys():
                     assoc_samples = assemb_info[refx].get('associated_samples', None)
                 else:
@@ -555,7 +562,6 @@ def generate_rule_targs(home_outdir, basename, ref_exts, rule_config, rulename, 
             out_ref_exts = out_exts.get('reference_extensions', ['']) # override generals with rule-specific reference extensions
         else:
             out_ref_exts = ref_exts
-
         outputs = generate_targs(outdir, basename, samples, out_ref_exts, out_exts.get('base', None),out_exts.get('read'), out_exts.get('other'), ignore_units=ignore_units, contrasts=contrasts, ref_info=reference_info, assemb_info = assembly_info)
         output_files += outputs
     rule_config['elvers_params']['outputs']['output_files'] = output_files
