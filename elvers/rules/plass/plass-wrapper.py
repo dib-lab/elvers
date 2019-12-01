@@ -28,10 +28,12 @@ else:
 
 
 outdir = path.dirname(snakemake.output[0])
-tmpdir = path.join(outdir,'tmp')
 
+tmpdir = snakemake.params.get("tmp")
+if not tmpdir:
+    tmpdir = path.join(outdir,"tmp")
 
-log = snakemake.log_fmt_shell(stdout=False, stderr=True)
+log = snakemake.log_fmt_shell(stdout=True, stderr=True)
 
 
 shell("plass assemble {input_cmd} {snakemake.output} {tmpdir} --threads {snakemake.threads} {snakemake.params.extra} {log}")

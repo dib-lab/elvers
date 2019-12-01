@@ -1,33 +1,32 @@
 from os.path import join
 
-prog = "khmer"
-
 logs_dir  = config['elvers_directories']['logs']
-elvers_params = config[prog]['elvers_params']
-prog_params = config[prog]['program_params']
+khmer_elvers_params = config["khmer"]['elvers_params']
+khmer_prog_params = config["khmer"]['program_params']
 
 # set output dir
-output_dir = elvers_params['outputs']['outdir']
+khmer_output_dir = khmer_elvers_params['outputs']['outdir']
 # set default input dir, extensions
-input_dir = config['elvers_directories']['outdirs']['preprocess']
-ext = ['.trim.fq.gz']
+khmer_input_dir = config['elvers_directories']['outdirs']['preprocess']
+khmer_ext = ['.trim.fq.gz']
 # get input we're using in this case
-input_name = prog_params.get('inputs', ['trimmed'])[0]
+khmer_input_name = khmer_prog_params.get('inputs', ['trimmed'])[0]
 # update input_dir, ext
-input_dir = elvers_params['input_options'][input_name].get('indir', input_dir )
-ext = elvers_params['input_options'][input_name]['extensions']['read'].get('common_ext', ext)[0]
-diginorm = prog_params.get('diginorm', True)
+khmer_input_dir = khmer_elvers_params['input_options'][khmer_input_name].get('indir', khmer_input_dir )
+khmer_ext = khmer_elvers_params['input_options'][khmer_input_name]['extensions']['read'].get('common_ext', khmer_ext)[0]
+
+diginorm = khmer_prog_params.get('diginorm', True)
 
 def get_reads(w):
     readsD = {}
     if not is_single_end(**w):
-        readsD['r1'] = expand(join(input_dir, '{sample}_{unit}_1{ext}'),**w, ext=ext)
-        readsD['r2'] = expand(join(input_dir, '{sample}_{unit}_2{ext}'),**w, ext=ext)
+        readsD['r1'] = expand(join(khmer_input_dir, '{sample}_{unit}_1{ext}'),**w, ext=khmer_ext)
+        readsD['r2'] = expand(join(khmer_input_dir, '{sample}_{unit}_2{ext}'),**w, ext=khmer_ext)
         # conflict with se pattern matching. Also just take extra time for little benefit
-        #readsD['r1_unpaired'] = expand(join(input_dir, "{sample}_{unit}_1.se.trim.fq.gz"),**w)
-        #readsD['r2_unpaired'] = expand(join(input_dir, "{sample}_{unit}_2.se.trim.fq.gz") **w)
+        #readsD['r1_unpaired'] = expand(join(khmer_input_dir, "{sample}_{unit}_1.se.trim.fq.gz"),**w)
+        #readsD['r2_unpaired'] = expand(join(khmer_input_dir, "{sample}_{unit}_2.se.trim.fq.gz") **w)
         return readsD
-    return expand(join(input_dir, '{sample}_{unit}.se{ext}'), **w, ext=ext)
+    return expand(join(khmer_input_dir, '{sample}_{unit}.se{ext}'), **w, ext=khmer_ext)
 
 
 if diginorm:
@@ -37,17 +36,17 @@ if diginorm:
         """
         input: unpack(get_reads)
         output: 
-            paired=join(output_dir,'{sample}_{unit}.paired.khmer.fq.gz'),
-            single=join(output_dir,'{sample}_{unit}.single.khmer.fq.gz'),
+            paired=join(khmer_output_dir,'{sample}_{unit}.paired.khmer.fq.gz'),
+            single=join(khmer_output_dir,'{sample}_{unit}.single.khmer.fq.gz'),
         message:
             """--- khmer trimming of low-abundance kmers and digital normalization ---"""
         params:
-            k = prog_params.get('ksize', 20),
-            Z = prog_params.get('Z', 18), 
-            C = prog_params.get('C', 3), 
-            memory = prog_params.get('memory', 4e9),
-            cov = prog_params.get('coverage', 20),
-            extra = prog_params.get('extra', '')
+            k = khmer_prog_params.get('ksize', 20),
+            Z = khmer_prog_params.get('Z', 18), 
+            C = khmer_prog_params.get('C', 3), 
+            memory = khmer_prog_params.get('memory', 4e9),
+            cov = khmer_prog_params.get('coverage', 20),
+            extra = khmer_prog_params.get('extra', '')
         threads: 10
         log: join(logs_dir, 'khmer/{sample}_{unit}.pe.diginorm.log')
         benchmark: join(logs_dir, 'khmer/{sample}_{unit}.pe.diginorm.benchmark')
@@ -63,16 +62,16 @@ if diginorm:
         kmer trim and diginorm with khmer
         """
         input: get_reads
-        output: join(output_dir, '{sample}_{unit}.se.khmer.fq.gz'),
+        output: join(khmer_output_dir, '{sample}_{unit}.se.khmer.fq.gz'),
         message:
             """--- khmer trimming of low-abundance kmers and digital normalization ---"""
         params:
-            k = prog_params['ksize'],
-            Z = prog_params['Z'],
-            C = prog_params['C'],
-            memory = prog_params['memory'],
-            cov = prog_params['coverage'],
-            extra = prog_params['extra']
+            k = khmer_prog_params['ksize'],
+            Z = khmer_prog_params['Z'],
+            C = khmer_prog_params['C'],
+            memory = khmer_prog_params['memory'],
+            cov = khmer_prog_params['coverage'],
+            extra = khmer_prog_params['extra']
         threads: 2
         log: join(logs_dir, 'khmer/{sample}_{unit}.se.diginorm.log')
         benchmark: join(logs_dir, 'khmer/{sample}_{unit}.se.diginorm.benchmark')
@@ -88,15 +87,15 @@ else:
         """
         input: unpack(get_reads)
         output: 
-            paired=join(output_dir,'{sample}_{unit}.paired.khmer.fq.gz'),
-            single=join(output_dir,'{sample}_{unit}.single.khmer.fq.gz'),
+            paired=join(khmer_output_dir,'{sample}_{unit}.paired.khmer.fq.gz'),
+            single=join(khmer_output_dir,'{sample}_{unit}.single.khmer.fq.gz'),
         message: """--- khmer trimming of low-abundance kmers ---"""
         params:
-            k = prog_params.get('ksize', 20),
-            Z = prog_params.get('Z', 18), 
-            C = prog_params.get('C', 3), 
-            memory = prog_params.get('memory', 4e9),
-            extra = prog_params.get('extra', '')
+            k = khmer_prog_params.get('ksize', 20),
+            Z = khmer_prog_params.get('Z', 18),
+            C = khmer_prog_params.get('C', 3),
+            memory = khmer_prog_params.get('memory', 4e9),
+            extra = khmer_prog_params.get('extra', '')
         threads: 10
         log: join(logs_dir, 'khmer/{sample}_{unit}.pe.log')
         benchmark: join(logs_dir, 'khmer/{sample}_{unit}.pe.benchmark')
@@ -110,15 +109,15 @@ else:
         khmer trim se, no diginorm
         """
         input: get_reads
-        output: join(output_dir, '{sample}_{unit}.se.khmer.fq.gz'),
+        output: join(khmer_output_dir, '{sample}_{unit}.se.khmer.fq.gz'),
         message:
             """--- khmer trimming of low-abundance kmers ---"""
         params:
-            k = prog_params['ksize'],
-            Z = prog_params['Z'],
-            C = prog_params['C'],
-            memory = prog_params['memory'],
-            extra = prog_params['extra']
+            k = khmer_prog_params['ksize'],
+            Z = khmer_prog_params['Z'],
+            C = khmer_prog_params['C'],
+            memory = khmer_prog_params['memory'],
+            extra = khmer_prog_params['extra']
         threads: 2
         log: join(logs_dir, 'khmer/{sample}_{unit}.se.log')
         benchmark: join(logs_dir, 'khmer/{sample}_{unit}.se.benchmark')
@@ -130,10 +129,10 @@ else:
 
 
 rule khmer_split_paired:
-    input: join(output_dir,'{sample}_{unit}.paired.khmer.fq.gz'),
+    input: join(khmer_output_dir,'{sample}_{unit}.paired.khmer.fq.gz'),
     output:
-        r1=join(output_dir, '{sample}_{unit}_1.khmer.fq.gz'),
-        r2=join(output_dir, '{sample}_{unit}_2.khmer.fq.gz'),
+        r1=join(khmer_output_dir, '{sample}_{unit}_1.khmer.fq.gz'),
+        r2=join(khmer_output_dir, '{sample}_{unit}_2.khmer.fq.gz'),
     threads: 2 
     log: join(logs_dir, 'khmer/{sample}_{unit}.split_pe.log')
     benchmark: join(logs_dir, 'khmer/{sample}_{unit}.split_pe.benchmark')

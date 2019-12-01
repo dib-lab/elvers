@@ -1,20 +1,20 @@
 from os import path
 
 logs_dir  = config['elvers_directories']['logs']
-elvers_params = config['trinity']['elvers_params']
-prog_params = config['trinity']['program_params']
+trinity_elvers_params = config['trinity']['elvers_params']
+trinity_prog_params = config['trinity']['program_params']
 
-assembly_dir = elvers_params['outputs']['outdir']
-assembly_extension = elvers_params['outputs']['fasta']['extensions']['reference_extensions'][0] # should only be a single entry here, default: '_trinity'
+assembly_dir = trinity_elvers_params['outputs']['outdir']
+trinity_assembly_extension = trinity_elvers_params['outputs']['fasta']['extensions']['reference_extensions'][0] # should only be a single entry here, default: '_trinity'
 
 # set default input dir, extensions
-input_dir = config['elvers_directories']['outdirs']['preprocess']
-ext = ['.trim.fq.gz']
+#input_dir = config['elvers_directories']['outdirs']['preprocess']
+#ext = ['.trim.fq.gz']
 # get input we're using in this case
-input_name = prog_params.get('inputs', ['kmer_trimmed'])[0]
+trinity_input_name = trinity_prog_params.get('inputs', ['kmer_trimmed'])[0]
 # update input_dir, ext
-input_dir = elvers_params['input_options'][input_name].get('indir', input_dir )
-ext = elvers_params['input_options'][input_name]['extensions']['read'].get('common_ext', ext)[0]
+trinity_input_dir = trinity_elvers_params['input_options'][trinity_input_name].get('indir')
+trinity_ext = trinity_elvers_params['input_options'][trinity_input_name]['extensions']['read'].get('common_ext')[0]
 BASE = config['basename']
 
 # handle "associated_samples"
@@ -25,7 +25,7 @@ if 'assembly_info' in config.keys():
 #in #config['get_reference']['program_params']['reference_list'].items():#config['reference_info'].items()
 
 for ref_ext, ref_info in assemb_info.items(): 
-    if assembly_extension in ref_ext:
+    if trinity_assembly_extension in ref_ext:
         if ref_info.get('associated_samples'):
             sample_list = ref_info['associated_samples']
             if not ref_ext.startswith('_'):
@@ -50,11 +50,11 @@ def get_assembly_input(w):
             if sample not in assembly_subset:
                 continue
         if is_single_end(sample, unit):
-            single+=[join(input_dir, f"{sample}_{unit}_se{ext}")]
+            single+=[join(trinity_input_dir, f"{sample}_{unit}_se{trinity_ext}")]
         else:
-            r1+= [join(input_dir, f"{sample}_{unit}_1{ext}")]
-            r2+= [join(input_dir, f"{sample}_{unit}_2{ext}")]
-    add_single = prog_params.get('add_single_to_paired', False)
+            r1+= [join(trinity_input_dir, f"{sample}_{unit}_1{trinity_ext}")]
+            r2+= [join(trinity_input_dir, f"{sample}_{unit}_2{trinity_ext}")]
+    add_single = trinity_prog_params.get('add_single_to_paired', False)
     if len(r1) > 0:
         if add_single == True:
             r1 = r1 + single
@@ -80,9 +80,9 @@ rule trinity:
         """--- Assembling read data with Trinity --- """
     params:
         # optional parameters
-        max_memory=prog_params.get('max_memory', '10G'),
-        seqtype=prog_params.get('seqtype', 'fq'),
-        extra=prog_params.get('extra', '')
+        max_memory=trinity_prog_params.get('max_memory', '10G'),
+        seqtype=trinity_prog_params.get('seqtype', 'fq'),
+        extra=trinity_prog_params.get('extra', '')
     wildcard_constraints:
         assembly="\S*_trinity"
     threads: 4

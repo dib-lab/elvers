@@ -376,7 +376,7 @@ To build an editable configfile to start work on your own data, run:
         with CaptureStdout(passthru=passthru) as output:
             # run!!
             # params file becomes snakemake configfile
-            status = snakemake.snakemake(snakefile, configfile=paramsfile, use_conda=True,
+            status = snakemake.snakemake(snakefile, configfiles=[paramsfile], use_conda=True,
                                      targets=['elvers'], printshellcmds=True,
                                      cores=args.threads, cleanup_conda= args.cleanup_conda,
                                      dryrun=args.dry_run, lock=not args.nolock,
@@ -417,7 +417,7 @@ To build an editable configfile to start work on your own data, run:
                 print(f"\tPrinted workflow dag to png file {args.dagpng}\n\n ")
 
         if status and reportfile and not args.dry_run and not args.unlock and not building_dag and not args.create_envs_only:
-            snakemake.snakemake(snakefile, configfile=paramsfile, report=reportfile)
+            snakemake.snakemake(snakefile, configfiles=paramsfile, report=reportfile)
             print(f"\t see the report file at {reportfile}\n\n ")
 
         if status: # translate "success" into shell exit code of 0
