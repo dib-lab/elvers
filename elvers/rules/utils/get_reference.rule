@@ -123,7 +123,7 @@ rule link_input_reference:
     
 #if 'gene_trans_map' in samples.columns:
 rule link_input_gene_trans_map:
-    input: lambda wildcards:"f{link_gtm[wildcards.name]}"
+    input: lambda wildcards:f"{link_gtm[wildcards.name]}"
     output: os.path.join(ref_dir,"{name}.gene_trans_map")
     log: os.path.join(logs_dir, 'get_reference/link_gtmap_{name}.log')
     params: ref_dir = ref_dir

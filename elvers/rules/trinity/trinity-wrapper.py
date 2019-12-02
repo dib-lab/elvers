@@ -41,12 +41,12 @@ if not seqtype:
 outdir = os.path.dirname(snakemake.output[0])
 default_outdir = os.path.join(outdir, 'trinity_out_dir')
 default_fasta =  os.path.join(default_outdir, 'Trinity.fasta')
-default_gtm =  os.path.join(default_outdir, 'Trinity.gene_trans_map')
+default_gtm =  os.path.join(default_outdir, 'Trinity.fasta.gene_trans_map')
 
 log = snakemake.log_fmt_shell(stdout=True, stderr=True)
 
 # execute trinity
-shell("Trinity {input_cmd} --CPU {snakemake.threads} --max_memory {max_memory} --seqType {seqtype} --output {outdir} {snakemake.params.extra} {log}")
+shell("Trinity {input_cmd} --CPU {snakemake.threads} --max_memory {max_memory} --seqType {seqtype} --output {default_outdir} {snakemake.params.extra} {log}")
 
 # copy the fasta, gtmap to their final locations
 shell("cp {default_fasta} {snakemake.output.fasta}")
