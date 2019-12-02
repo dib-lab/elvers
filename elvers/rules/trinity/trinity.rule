@@ -1,4 +1,4 @@
-from os import path
+from os.path import join
 
 logs_dir  = config['elvers_directories']['logs']
 trinity_elvers_params = config['trinity']['elvers_params']

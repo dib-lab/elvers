@@ -5,7 +5,7 @@ __copyright__ = "Copyright 2018, Tessa Pierce"
 __email__ = "ntpierce@gmail.com"
 __license__ = "MIT"
 
-from os import path
+import os
 from snakemake.shell import shell
 
 extra = snakemake.params.get("extra", "")
@@ -38,7 +38,7 @@ if not seqtype:
         assert seqtype is not None, "cannot infer 'fq' or 'fa' seqtype from input files. Please specify 'fq' or 'fa' in 'seqtype' parameter"
 
 #assert 'trinity' in outdir, "output directory name must contain 'trinity'"
-outdir = path.dirname(snakemake.output[0])
+outdir = os.path.dirname(snakemake.output[0])
 default_outdir = os.path.join(outdir, 'trinity_out_dir')
 default_fasta =  os.path.join(default_outdir, 'Trinity.fasta')
 default_gtm =  os.path.join(default_outdir, 'Trinity.gene_trans_map')
