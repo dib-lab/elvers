@@ -59,7 +59,7 @@ rule ftp_get_fasta:
 
 rule ftp_get_gene_trans_map:
     input: lambda wildcards: FTP.remote(f"{ftp_gtm[wildcards.name]}", static=True, keep_local=True, immediate_close=True)
-    output: os.path.join(ref_dir, "{name}.gene_trans_map")
+    output: os.path.join(ref_dir, "{name}.fasta.gene_trans_map")
     log: os.path.join(logs_dir, 'get_reference/ftpget_gtmap_{name}.log')
     #shell: "mv {input} {output} 2> {log}"
     params: ref_dir = ref_dir
@@ -89,7 +89,7 @@ rule http_get_fasta:
     
 rule http_get_gene_trans_map:
     input: lambda wildcards: HTTP.remote(f"{http_gtm[wildcards.name]}", static=True, keep_local=True, allow_redirects=True)
-    output: os.path.join(ref_dir, "{name}.gene_trans_map")
+    output: os.path.join(ref_dir, "{name}.fasta.gene_trans_map")
     log: os.path.join(logs_dir, 'get_reference/httpget_gtmap_{name}.log')
     #shell: "mv {input} {output} 2> {log}"
     params: ref_dir = ref_dir
@@ -124,7 +124,7 @@ rule link_input_reference:
 #if 'gene_trans_map' in samples.columns:
 rule link_input_gene_trans_map:
     input: lambda wildcards:f"{link_gtm[wildcards.name]}"
-    output: os.path.join(ref_dir,"{name}.gene_trans_map")
+    output: os.path.join(ref_dir,"{name}.fasta.gene_trans_map")
     log: os.path.join(logs_dir, 'get_reference/link_gtmap_{name}.log')
     params: ref_dir = ref_dir
     run:
