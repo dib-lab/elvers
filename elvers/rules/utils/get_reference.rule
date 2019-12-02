@@ -10,58 +10,41 @@ ref_dir = ep_params['outputs']['outdir']
 basename = config['basename']
 reference_extension = prog_params.get('reference_extension', '')
 
-## Just use reference info. Don't need to use the samples file, bc we've already checked all the reference info in the utils file!
-
 # build reference dictionaries
 if config.get('reference_info'):
-    ftp_fa,ftp_gtm,http_fa,http_gtm,link_fa,link_gtm = {},{},{},{},{},{}
+    get_fa,get_gtm,get_fa,get_gtm,get_fa,get_gtm = {},{},{},{},{},{}
     ref_info = config['reference_info']
     for extension, info in ref_info.items():
         if extension == "no_extension":
             extension = ""
-        name = basename + extension # + '.fasta'
+        name = basename + extension
+        print(name)
         ref = info['reference']
+        print(ref)
         if ref.startswith("http"):
-            http_fa[name] = ref
+            get_fa[name] = f"HTTP.remote({ref}, static=True, keep_local=True, allow_redirects=True)"
         elif ref.startswith("ftp"):
-            ftp_fa[name] = ref
+            get_fa[name] = f"FTP.remote({ref}, static=True, keep_local=True, immediate_close=True)"
         else:
-            link_fa[name] = ref
+            get_fa[name] = ref
         if info.get("gene_trans_map"):
             gtm = info["gene_trans_map"]
+            print(gtm)
             if gtm.startswith("http"):
-                http_gtm[name] = gtm
+                get_gtm[name] = f"HTTP.remote({gtm}, static=True, keep_local=True, allow_redirects=True)"
             elif gtm.startswith("ftp"):
-                ftp_gtm[name] = gtm
+                get_gtm[name] = f"FTP.remote({gtm}, static=True, keep_local=True, immediate_close=True)"
             else:
-                link_gtm[name] = gtm
+                get_gtm[name] = gtm
 
 GZIP_MAGIC_NUMBER = "1f8b"
 
-localrules: ftp_get_fasta, ftp_get_gene_trans_map, http_get_fasta, http_get_gene_trans_map, link_input_reference, link_input_gene_trans_map
+localrules: get_fasta
 
-rule ftp_get_fasta:
-    input: lambda wildcards: FTP.remote(f"{ftp_fa[wildcards.name]}", static=True, keep_local=True, immediate_close=True)
+rule get_fasta:
+    input: lambda w: get_fa[w.name]
     output: os.path.join(ref_dir, "{name}.fasta")
-    log: os.path.join(logs_dir, 'get_reference/ftpget_ref_{name}.log')
-    params: ref_dir = ref_dir
-    run: 
-        shell("mkdir -p {params.ref_dir}")
-        with open({input}) as f:
-            if f.read(2).encode("hex") == GZIP_MAGIC_NUMBER:
-                shell("gunzip -c {input} > {output} 2> {log}")
-            else:
-                #shutil.move({input} {output})
-                #shutil.copyfile({input} {output})
-                os.rename({input}, {output})
-
-   # shell: "mv {input} {output} 2> {log}"
-
-rule ftp_get_gene_trans_map:
-    input: lambda wildcards: FTP.remote(f"{ftp_gtm[wildcards.name]}", static=True, keep_local=True, immediate_close=True)
-    output: os.path.join(ref_dir, "{name}.fasta.gene_trans_map")
-    log: os.path.join(logs_dir, 'get_reference/ftpget_gtmap_{name}.log')
-    #shell: "mv {input} {output} 2> {log}"
+    log: os.path.join(logs_dir, 'get_reference/get_ref_{name}.log')
     params: ref_dir = ref_dir
     run: 
         shell("mkdir -p {params.ref_dir}")
@@ -70,76 +53,20 @@ rule ftp_get_gene_trans_map:
                 shell("gunzip -c {input} > {output} 2> {log}")
             else:
                 os.rename({input}, {output})
-                #shutil.move({input} {output})
 
-rule http_get_fasta:
-    input: lambda wildcards: HTTP.remote(f"{http_fa[wildcards.name]}", static=True, keep_local=True, allow_redirects=True)
-    output: os.path.join(ref_dir, "{name}.fasta")
-    log: os.path.join(logs_dir, 'get_reference/httpget_ref_{name}.log')
-    #shell: "mv {input} {output} 2> {log}"
-    params: ref_dir = ref_dir
-    run: 
-        shell("mkdir -p {params.ref_dir}")
-        with open({input}) as f:
-            if f.read(2).encode("hex") == GZIP_MAGIC_NUMBER:
-                shell("gunzip -c {input} > {output} 2> {log}")
-            else:
-                #shutil.move({input} {output})
-                os.rename({input}, {output})
+if get_gtm:
+
+    localrules: get_gene_trans_map 
     
-rule http_get_gene_trans_map:
-    input: lambda wildcards: HTTP.remote(f"{http_gtm[wildcards.name]}", static=True, keep_local=True, allow_redirects=True)
-    output: os.path.join(ref_dir, "{name}.fasta.gene_trans_map")
-    log: os.path.join(logs_dir, 'get_reference/httpget_gtmap_{name}.log')
-    #shell: "mv {input} {output} 2> {log}"
-    params: ref_dir = ref_dir
-    run: 
-        shell("mkdir -p {params.ref_dir}")
-        with open({input}) as f:
-            if f.read(2).encode("hex") == GZIP_MAGIC_NUMBER:
-                shell("gunzip -c {input} > {output} 2> {log}")
-            else:
-                #shutil.move({input} {output})
-                os.rename({input}, {output})
-
-rule link_input_reference:
-    input: lambda wildcards:f"{link_fa[wildcards.name]}"
-    output: os.path.join(ref_dir, "{name}.fasta")
-    log: os.path.join(logs_dir, 'get_reference/link_ref_{name}.log')
-    params: ref_dir = ref_dir
-    #shell:
-    #    """
-    #    mkdir -p {params.ref_dir}
-    #    ln -s {input} {output} 2> {log}
-    #    """
-    run: 
-        shell("mkdir -p {params.ref_dir}")
-        with open({input}) as f:
-            if f.read(2).encode("hex") == GZIP_MAGIC_NUMBER:
-                shell("gunzip -c {input} > {output} 2> {log}")
-            else:
-                #shutil.move({input} {output})
-                os.rename({input}, {output})
-    
-#if 'gene_trans_map' in samples.columns:
-rule link_input_gene_trans_map:
-    input: lambda wildcards:f"{link_gtm[wildcards.name]}"
-    output: os.path.join(ref_dir,"{name}.fasta.gene_trans_map")
-    log: os.path.join(logs_dir, 'get_reference/link_gtmap_{name}.log')
-    params: ref_dir = ref_dir
-    run:
-        shell("mkdir -p {params.ref_dir}")
-        with open({input}) as f:
-            if f.read(2).encode("hex") == GZIP_MAGIC_NUMBER:
-                shell("gunzip -c {input} > {output} 2> {log}")
-            else:
-                #shutil.move({input} {output})
-                os.rename({input}, {output})
-
-    #shell:
-    #    """
-    #    mkdir -p {params.ref_dir}
-    #    ln -s {input} {output} 2> {log}
-    #    """
-## check if gzipped:
-# https://kite.com/python/examples/4945/gzip-check-if-a-file-is-gzip-compressed
+    rule get_gene_trans_map:
+        input: lambda w: get_gtm[w.name]
+        output: os.path.join(ref_dir, "{name}.gene_trans_map")
+        log: os.path.join(logs_dir, 'get_reference/get_gtmap_{name}.log')
+        params: ref_dir = ref_dir
+        run: 
+            shell("mkdir -p {params.ref_dir}")
+            with open({input}) as f:
+                if f.read(2).encode("hex") == GZIP_MAGIC_NUMBER:
+                    shell("gunzip -c {input} > {output} 2> {log}")
+                else:
+                    os.rename({input}, {output})

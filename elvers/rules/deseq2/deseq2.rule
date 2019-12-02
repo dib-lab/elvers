@@ -9,15 +9,37 @@ ep_params = config['deseq2']['elvers_params']
 deseq_dir = config['deseq2']['elvers_params']['outputs']['outdir']
 
 # this is handled in elvers main, but redundancy doesn't hurt
-if config.get('no_gene_trans_map', False):
-    deseq_params['gene_trans_map'] = False
+#if config.get('no_gene_trans_map', False):
+#    deseq_params['gene_trans_map'] = False
+
+# handle "associated_samples"
+associated_samples = {}
+refs = {}
+if 'get_reference' in config.keys():
+    refs = config.get('reference_info', {})
+if 'assembly_info' in config.keys():
+    assemb_info = config['assembly_info']
+    refs.update(assemb_info)
+
+gene_trans_map = set()
+for ref_ext, ref_info in refs.items():
+    if ref_info.get('gene_trans_map'):
+        refname = basename + ref_ext
+        gene_trans_map.add(refname)
+
+    if ref_info.get('associated_samples'):
+        sample_list = ref_info['associated_samples']
+        if not ref_ext.startswith('_'):
+            ref_ext = '_' + ref_ext
+        refname = basename + ref_ext
+        associated_samples[refname] = sample_list
+
 
 def get_deseq2_threads(wildcards=None):
     # https://github.com/snakemake-workflows/rna-seq-star-deseq2
     # https://twitter.com/mikelove/status/918770188568363008
     few_coeffs = False if wildcards is None else len(get_contrast(wildcards)) < 10
     return 1 if len(samples) < 100 or few_coeffs else 6
-
 
 combine_units = ep_params['outputs'].get('combine_units')
 ignore_units =  config.get('ignore_units', False)
@@ -34,7 +56,9 @@ def get_quant(w):
             sample, unit = u['sample'],u['unit']
             quant+=[join(quant_dir, f"{sample}_{unit}_x_{w.assembly}.salmon/quant.sf")]
     inputD['quant'] = quant
-    if deseq_params.get('gene_trans_map'):
+    print(refs)
+    if w.assembly in gene_trans_map:
+    #if deseq_params.get('gene_trans_map'):
         inputD['gene_trans_map'] = join(assembly_dir, f"{w.assembly}.fasta.gene_trans_map")
     return inputD
 

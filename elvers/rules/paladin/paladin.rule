@@ -1,15 +1,13 @@
 import os
 from os.path import join
 
-prog = 'paladin'
-
 logs_dir  = config['elvers_directories']['logs']
 assembly_dir  = config['elvers_directories']['outdirs']['assemble']
 
-elvers_params = config[prog]['elvers_params']
-prog_params = config[prog]['program_params']
-index_params = prog_params['index_params']
-alignment_params = prog_params['alignment_params']
+paladin_elvers_params = config["paladin"]['elvers_params']
+paladin_prog_params = config["paladin"]['program_params']
+index_params = paladin_prog_params['index_params']
+alignment_params = paladin_prog_params['alignment_params']
 
 # set output dir
 output_dir = elvers_params['outputs']['outdir']
@@ -19,7 +17,7 @@ output_dir = elvers_params['outputs']['outdir']
 # get input we're using in this case
 # update input_dir, ext
 #assembly_extension = elvers_params['outputs']['paladin_mapped']['extensions']['reference_extensions'][0]
-inputs = prog_params.get('inputs')
+inputs = paladin_prog_params.get('inputs')
 
 # handle "associated_samples"
 associated_samples = {}
