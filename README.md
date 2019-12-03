@@ -2,6 +2,9 @@
 
 [![Build Status](https://travis-ci.org/dib-lab/elvers.svg?branch=master)](https://travis-ci.org/dib-lab/elvers)
 
+[![DOI](https://zenodo.org/badge/136940237.svg)](https://zenodo.org/badge/latestdoi/136940237)
+
+
 
 ```
                            ___
