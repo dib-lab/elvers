@@ -16,13 +16,13 @@ sourmash:
             - .fasta.sig
           read:
             pe:
-              - .paired.khmer.fq.sig
+              - .fq.sig
             se:
-              - .se.khmer.fq.sig 
+              - .fq.sig 
   program_params:
     inputs: 
       - kmer_trimmed
       - fasta
-    k_size: 31
+    k_size: 21 #,31,51
     scaled: 1000
     extra: ''

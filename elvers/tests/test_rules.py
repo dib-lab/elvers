@@ -13,7 +13,6 @@ from .const import (here, test_config_yaml, elvers_cmd)
 
 elvers_dir = os.path.dirname(os.path.dirname(here))
 
-
 def run_ruletest(rulename, extra_configD = {}, protein_ref = False, short = True, envs_only=False): # can we pass in rulename, paramsD here, testdata, short yes/no?
     """ test a rule or workflow"""
     # set up dirs
@@ -141,10 +140,10 @@ def test_rcorrector_short():
 def test_rcorrector_long():
     run_ruletest('rcorrector', short = False)
 
-#def test_sourmash_short():
-#    run_ruletest('sourmash')
+def test_sourmash_short():
+    run_ruletest('sourmash')
 
-#@pytest.mark.long
-#def test_sourmash_long():
-#    run_ruletest('sourmash', short = False)
+@pytest.mark.long
+def test_sourmash_long():
+    run_ruletest('sourmash', short=False)
 

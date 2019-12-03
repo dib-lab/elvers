@@ -9,15 +9,10 @@ paladin_prog_params = config["paladin"]['program_params']
 index_params = paladin_prog_params['index_params']
 alignment_params = paladin_prog_params['alignment_params']
 
-# set output dir
-output_dir = elvers_params['outputs']['outdir']
-# set default input dir, extensions
-#input_dir = config['elvers_directories']['outdirs']['preprocess']
-#ext = '.trim.fq.gz'
-# get input we're using in this case
-# update input_dir, ext
-#assembly_extension = elvers_params['outputs']['paladin_mapped']['extensions']['reference_extensions'][0]
-inputs = paladin_prog_params.get('inputs')
+# set output dir. 
+paladin_output_dir = paladin_elvers_params['outputs']['outdir']
+# get default or user-specified inputs. handle these on a sample-by-sample basis (in get_paladin_input). Currently limited to pear_merged, trimmed, or raw. 
+paladin_inputs = paladin_prog_params.get('inputs')
 
 # handle "associated_samples"
 associated_samples = {}
@@ -44,38 +39,43 @@ def get_paladin_input(w):
         sample_list = associated_samples[w.assembly]
     else: # assume we want to map all samples to this assembly
         sample_list = samples['sample'].tolist()
+    #### paladin does not accept PE files - they must be merged with PEAR first.
+    #### here, we need to do some checking. if PE, use pear-merged if possible, or
+    #### if not, use the *_1 file (trimmed or raw). if SE, use trimmed or raw
     # if paired end:
     if not is_single_end(**w): 
         # figure out directories and extensions
-        if 'pear_merged' in inputs:
-            input_dir = join(config['elvers_directories']['outdirs']['preprocess'], 'pear')
-            ext = '.pear_assembled.fq.gz' # requires pear merging of pe reads
-        elif 'trimmed' in inputs:
-            input_dir = config['elvers_directories']['outdirs']['preprocess']
-            ext = '_1.trim.fq.gz'
-        elif 'raw' in inputs:
-            ext = '_1.fq.gz'
-            input_dir = config['elvers_directories']['outdirs']['input_data']
-        #input_dir = elvers_params['input_options'][input_name].get('indir', input_dir )
-        #ext = elvers_params['input_options'][input_name]['extensions']['read'].get('common_ext', ext)
+        if 'pear_merged' in paladin_inputs:
+            paladin_input_dir = paladin_elvers_params['input_options']["pear_merged"].get('indir')
+            paladin_ext = paladin_elvers_params['input_options']["pear_merged"]['extensions']['read'].get('common_ext')[0]
+        elif 'trimmed' in paladin_inputs:
+            paladin_input_dir = paladin_elvers_params['input_options']["trimmed"].get('indir')
+            paladin_ext = paladin_elvers_params['input_options']["trimmed"]['extensions']['read'].get('common_ext')[0]
+            paladin_ext = "_1" + paladin_ext
+        elif 'raw' in paladin_inputs:
+            paladin_input_dir = paladin_elvers_params['input_options']["raw"].get('indir')
+            paladin_ext = paladin_elvers_params['input_options']["raw"]['extensions']['read'].get('common_ext')[0]
+            paladin_ext = "_1" + paladin_ext
+        # are we using this sample for this assembly?    
         if w.sample in sample_list:
-            readsD['r'] = join(input_dir, f'{w.sample}_{w.unit}{ext}')
+            readsD['r'] = join(paladin_input_dir, f'{w.sample}_{w.unit}{paladin_ext}')
         return readsD
     # if single end:
     else:
-        if 'trimmed' in inputs: 
-            input_dir = config['elvers_directories']['outdirs']['preprocess']
-            ext = '_se.trim.fq.gz'
-        elif 'raw' in inputs:
-            ext = '_1.fq.gz'
-            input_dir = config['elvers_directories']['outdirs']['input_data']
-    if w.sample in sample_list:
-        readsD['r'] = join(input_dir, f'{w.sample}_{w.unit}{ext}')
+        if 'trimmed' in paladin_inputs: 
+            paladin_input_dir = paladin_elvers_params['input_options']["trimmed"].get('indir')
+            paladin_ext = paladin_elvers_params['input_options']["trimmed"]['extensions']['read'].get('se_ext')[0]
+        elif 'raw' in paladin_inputs:
+            paladin_input_dir = paladin_elvers_params['input_options']["raw"].get('indir')
+            paladin_ext = paladin_elvers_params['input_options']["raw"]['extensions']['read'].get('se_ext')[0]
+        # are we using this sample for this assembly?
+        if w.sample in sample_list:
+            readsD['r'] = join(paladin_input_dir, f'{w.sample}_{w.unit}{paladin_ext}')
     return readsD
 
 rule paladin_index:
     input: join(assembly_dir, "{assembly}.fasta")
-    output: join(output_dir, "{assembly}.fasta.bwt"),
+    output: join(paladin_output_dir, "{assembly}.fasta.bwt"),
     params: 
         reference_type= index_params.get('reference_type', '3'),
         gff = index_params.get('gff_file', '')
@@ -87,9 +87,9 @@ rule paladin_index:
 rule paladin_align:
     input:  
         unpack(get_paladin_input),
-        index = join(output_dir, "{assembly}.fasta.bwt"), 
+        index = join(paladin_output_dir, "{assembly}.fasta.bwt"), 
     output: 
-        join(output_dir,"{sample}_{unit}_x_{assembly}.paladin.bam"),
+        join(paladin_output_dir,"{sample}_{unit}_x_{assembly}.paladin.bam"),
     threads: 20
     params:
         f = alignment_params.get('f','125'),
@@ -100,8 +100,8 @@ rule paladin_align:
     script: 'paladin-align.py'
     
 rule samtools_sort_paladin:
-    input: join(output_dir,"{sample}_{unit}_x_{assembly}.paladin.bam")
-    output: join(output_dir,"{sample}_{unit}_x_{assembly}.paladin.sort.bam") 
+    input: join(paladin_output_dir,"{sample}_{unit}_x_{assembly}.paladin.bam")
+    output: join(paladin_output_dir,"{sample}_{unit}_x_{assembly}.paladin.sort.bam") 
     conda: "environment.yml"
     log: join(logs_dir, 'paladin',"{sample}_{unit}_x_{assembly}.paladin.sort.bam.log")
     benchmark: join(logs_dir, 'paladin',"{sample}_{unit}_x_{assembly}.paladin.sort.bam.benchmark")
@@ -111,8 +111,8 @@ rule samtools_sort_paladin:
     """
 
 rule samtools_flagstat_paladin:
-    input: join(output_dir,"{sample}_{unit}_x_{assembly}.paladin.sort.bam") 
-    output: join(output_dir,"{sample}_{unit}_x_{assembly}.paladin.sort.bam.flagstat")
+    input: join(paladin_output_dir,"{sample}_{unit}_x_{assembly}.paladin.sort.bam") 
+    output: join(paladin_output_dir,"{sample}_{unit}_x_{assembly}.paladin.sort.bam.flagstat")
     log: join(logs_dir, 'paladin',"{sample}_{unit}_x_{assembly}.paladin.sort.bam.flagstat.log")
     benchmark: join(logs_dir, 'paladin',"{sample}_{unit}_x_{assembly}.paladin.sort.bam.flagstat.benchmark")
     conda: "environment.yml"
@@ -121,8 +121,8 @@ rule samtools_flagstat_paladin:
     """
     
 rule samtools_index_paladin:
-    input: join(output_dir,"{sample}_{unit}_x_{assembly}.paladin.sort.bam") 
-    output: join(output_dir,"{sample}_{unit}_x_{assembly}.paladin.sort.bam.bai")
+    input: join(paladin_output_dir,"{sample}_{unit}_x_{assembly}.paladin.sort.bam") 
+    output: join(paladin_output_dir,"{sample}_{unit}_x_{assembly}.paladin.sort.bam.bai")
     conda: "environment.yml"
     log: join(logs_dir, 'paladin',"{sample}_{unit}_x_{assembly}.paladin.sort.bam.index.log")
     benchmark: join(logs_dir, 'paladin',"{sample}_{unit}_x_{assembly}.paladin.sort.bam.index.benchmark")

@@ -23,7 +23,7 @@ available_extensions:
         base:
         - .fasta
       outdir: assembly
-    paladin_mapped: &id001
+    paladin_mapped:
       extensions:
         base:
         - .fasta.bwt
@@ -50,7 +50,7 @@ available_extensions:
         - _plass
       input: any
       outdir: assembly
-    salmon_quant: &id002
+    salmon_quant:
       extensions:
         base:
         - .salmonindex
@@ -64,15 +64,15 @@ available_extensions:
           - _x___reference__.salmon/lib_format_counts.json
       input: any
       outdir: quant
-    sourmash_signature: &id003
+    sourmash_signature:
       extensions:
         base:
         - .fasta.sig
         read:
           pe:
-          - .paired.khmer.fq.sig
+          - .fq.sig
           se:
-          - .se.khmer.fq.sig
+          - .fq.sig
       input: any
       outdir: sourmash
   other:
@@ -115,6 +115,20 @@ available_extensions:
           - _se.trim_fastqc.html
       input: trimmed
       outdir: preprocess/fastqc
+    kmer_raw:
+      extensions:
+        read:
+          common_ext:
+          - .khmer.fq.gz
+          pe:
+          - _1.khmer.fq.gz
+          - _2.khmer.fq.gz
+          - .paired.khmer.fq.gz
+          - .single.khmer.fq.gz
+          se:
+          - .se.khmer.fq.gz
+      input: raw
+      outdir: preprocess/khmer
     kmer_trimmed:
       extensions:
         read:
@@ -128,8 +142,26 @@ available_extensions:
           se:
           - .se.khmer.fq.gz
       input: trimmed
-      outdir: preprocess
-    paladin_mapped: *id001
+      outdir: preprocess/khmer
+    paladin_mapped:
+      extensions:
+        base:
+        - .fasta.bwt
+        read:
+          pe:
+          - _x___reference__.paladin.bam
+          - _x___reference__.paladin.sort.bam
+          - _x___reference__.paladin.sort.bam.flagstat
+          - _x___reference__.paladin.sort.bam.bai
+          se:
+          - _x___reference__.paladin.bam
+          - _x___reference__.paladin.sort.bam
+          - _x___reference__.paladin.sort.bam.flagstat
+          - _x___reference__.paladin.sort.bam.bai
+        reference_extensions:
+        - _plass
+      input: any
+      outdir: paladin
     pear_merged:
       extensions:
         read:
@@ -138,12 +170,13 @@ available_extensions:
           - .pear_discarded.fq.gz
           - .pear_unassembled_r1.fq.gz
           - .pear_unassembled_r2.fq.gz
-      input: trimmed
+      input: any
       outdir: preprocess/pear
     raw:
       extensions:
-        common_ext: .fq.gz
         read:
+          common_ext:
+          - .fq.gz
           pe:
           - _1.fq.gz
           - _2.fq.gz
@@ -161,7 +194,7 @@ available_extensions:
           - _2.rcorr.fq.gz
           se:
           - .se.rcorr.fq.gz
-      input: trimmed
+      input: raw
       outdir: preprocess/rcorrector
     rcorrector_trimmed:
       extensions:
@@ -176,8 +209,31 @@ available_extensions:
           - .se.rcorr.fq.gz
       input: trimmed
       outdir: preprocess/rcorrector
-    salmon_quant: *id002
-    sourmash_signature: *id003
+    salmon_quant:
+      extensions:
+        base:
+        - .salmonindex
+        read:
+          combine_units: true
+          pe:
+          - _x___reference__.salmon/quant.sf
+          - _x___reference__.salmon/lib_format_counts.json
+          se:
+          - _x___reference__.salmon/quant.sf
+          - _x___reference__.salmon/lib_format_counts.json
+      input: any
+      outdir: quant
+    sourmash_signature:
+      extensions:
+        base:
+        - .fasta.sig
+        read:
+          pe:
+          - .fq.sig
+          se:
+          - .fq.sig
+      input: any
+      outdir: sourmash
     trimmed:
       extensions:
         read:

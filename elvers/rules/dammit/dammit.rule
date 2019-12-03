@@ -8,44 +8,22 @@ dammit_params = config['dammit']['program_params']
 
 basename = config['basename']
 
-if config.get('per_sample_reference_files', False):
-    rule per_sample_dammit_annotate:
-        input: 
-            join(assembly_dir, basename + "_{sample}.fasta")
-        output: 
-            gff3 = join(dammit_dir, basename + "_{sample}.dammit.gff3"),
-            fasta = join(dammit_dir, basename + "_{sample}.dammit.fasta"),
-        params:
-            db_dir = dammit_params.get('db_dir', 'databases'),
-            db_extra= dammit_params.get('db_extra', ""),
-            annot_extra= dammit_params.get('annot_extra', "--quick"),
-            busco_dbs= dammit_params.get('busco_group', ["metazoa"]),
-            db_install_only = dammit_params.get('db_install_only', False)
-        log:
-            join(logs_dir, 'dammit', basename + '_{sample}_dammit.log')
-        benchmark:
-            join(logs_dir, 'dammit', basename + '_{sample}_dammit.benchmark')
-        threads: 32 
-        conda: "environment.yml"
-        script: "dammit-wrapper.py"
-
-else:
-    rule dammit_annotate:
-        input: 
-            join(assembly_dir, "{assembly}.fasta")
-        output: 
-            gff3 = join(dammit_dir, "{assembly}.dammit.gff3"),
-            fasta = join(dammit_dir, "{assembly}.dammit.fasta"),
-        params:
-            db_dir = dammit_params.get('db_dir', 'databases'),
-            db_extra= dammit_params.get('db_extra', ""),
-            annot_extra= dammit_params.get('annot_extra', "--quick"),
-            busco_dbs= dammit_params.get('busco_group', ["metazoa"]),
-            db_install_only = dammit_params.get('db_install_only', False)
-        log:
-            join(logs_dir, 'dammit', '{assembly}_dammit.log')
-        benchmark:
-            join(logs_dir, 'dammit', '{assembly}_dammit.benchmark')
-        threads: 32 
-        conda: "environment.yml"
-        script: "dammit-wrapper.py"
+rule dammit_annotate:
+    input: 
+        join(assembly_dir, "{assembly}.fasta")
+    output: 
+        gff3 = join(dammit_dir, "{assembly}.dammit.gff3"),
+        fasta = join(dammit_dir, "{assembly}.dammit.fasta"),
+    params:
+        db_dir = dammit_params.get('db_dir', 'databases'),
+        db_extra= dammit_params.get('db_extra', ""),
+        annot_extra= dammit_params.get('annot_extra', "--quick"),
+        busco_dbs= dammit_params.get('busco_group', ["metazoa"]),
+        db_install_only = dammit_params.get('db_install_only', False)
+    log:
+        join(logs_dir, 'dammit', '{assembly}_dammit.log')
+    benchmark:
+        join(logs_dir, 'dammit', '{assembly}_dammit.benchmark')
+    threads: 32 
+    conda: "environment.yml"
+    script: "dammit-wrapper.py"

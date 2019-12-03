@@ -1,0 +1,7 @@
+
+# Additional parameters required for testing the khmer rule
+
+sourmash:
+  inputs:
+    - raw
+    - fasta

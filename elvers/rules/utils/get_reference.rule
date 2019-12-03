@@ -17,10 +17,10 @@ if config.get('reference_info'):
     for extension, info in ref_info.items():
         if extension == "no_extension":
             extension = ""
+        elif not extension.startswith("_"):
+            extension = "_" + extension
         name = basename + extension
-        print(name)
         ref = info['reference']
-        print(ref)
         if ref.startswith("http"):
             get_fa[name] = f"HTTP.remote({ref}, static=True, keep_local=True, allow_redirects=True)"
         elif ref.startswith("ftp"):

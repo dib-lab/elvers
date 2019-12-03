@@ -4,10 +4,17 @@ logs_dir  = config['elvers_directories']['logs']
 plass_elvers_params = config['plass']['elvers_params']
 plass_params = config['plass']['program_params']
 
-assembly_dir = plass_elvers_params['outputs']['outdir']
+# set output dir
+plass_output_dir = plass_elvers_params['outputs']['outdir']
 assembly_plass_extension = plass_elvers_params['outputs']['plass_fasta']['extensions']['reference_extensions'][0] # should only be a single entry here, default: '_plass'
 
 BASE = config['basename']
+
+# get input we're using in this case (raw, trimmed, kmer_trimmed, etc)
+plass_input_name = plass_params.get('inputs', ['kmer_trimmed'])[0]
+# set input_dir, ext
+plass_input_dir = plass_elvers_params['input_options'][plass_input_name].get('indir')
+plass_ext = plass_elvers_params['input_options'][plass_input_name]['extensions']['read'].get('common_ext')[0]
 
 # handle "associated_samples"
 associated_samples = {}
@@ -26,16 +33,6 @@ for ref_ext, ref_info in assemb_info.items():
 def get_assembly_input(w):
     r1,r2,single =[],[],[]
     readsD = {}
-    plass_inputs = plass_params['inputs']
-    if 'kmer_trimmed' in plass_inputs:
-        plass_ext = '.khmer.fq.gz'
-        plass_input_dir = config['elvers_directories']['outdirs']['preprocess']
-    elif 'trimmed' in plass_inputs:
-        plass_ext = '.trim.fq.gz'
-        plass_input_dir = config['elvers_directories']['outdirs']['preprocess']
-    elif 'raw' in plass_inputs:
-        plass_ext = '.fq.gz'
-        plass_input_dir = config['elvers_directories']['outdirs']['input_data']
     if w.assembly in associated_samples.keys():
         # this assembly has some associated samples
         assembly_subset = associated_samples[w.assembly]
@@ -69,7 +66,7 @@ rule plass:
     input:
         unpack(get_assembly_input)
     output:
-        fasta = join(assembly_dir,'{assembly}.fasta')
+        fasta = join(plass_output_dir,'{assembly}.fasta')
     message:
         """--- Assembling read data with PLASS --- """
     params:
