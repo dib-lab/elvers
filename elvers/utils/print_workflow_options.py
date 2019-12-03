@@ -11,6 +11,8 @@ import argparse
 from .utils import read_yaml
 from .pretty_config import pretty_name
 
+elvers_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 def print_available_workflows_and_tools(paramsD, print_workflows=True, print_rules=False, only_rules=False):
     if only_rules:
         print_workflows = False
@@ -20,13 +22,12 @@ def print_available_workflows_and_tools(paramsD, print_workflows=True, print_rul
         ep_flows = paramsD.get('elvers_workflows')
         for workflow, tools in ep_flows.items():
             sys.stdout.write('\n  ' + workflow + ':\n\t')
-            for t in tools.values():
-                sys.stdout.write('\n\t'.join(t) + '\n\t')
+            sys.stdout.write('\n\t'.join(tools) + '\n\t')
 
     if print_rules:
         # print available rules
         sys.stdout.write(pretty_name("Advanced usage: all available rules") + '\n\t')
-        rules_dir = paramsD['elvers_directories'].get('rules', 'rules')
+        rules_dir = os.path.join(elvers_dir, os.path.basename(paramsD['elvers_directories'].get('rules', 'rules')))
         rules = glob.glob(os.path.join( rules_dir, '*', '*.rule'))
         rule_names = [os.path.basename(r).split('.rule')[0] for r in rules]
         sys.stdout.write('\n\t'.join(rule_names) + '\n\n\n')

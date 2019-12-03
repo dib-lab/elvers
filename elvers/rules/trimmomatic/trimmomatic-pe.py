@@ -11,6 +11,7 @@ log = snakemake.log_fmt_shell(stdout=True, stderr=True)
 trimmer = " ".join(snakemake.params.trimmer)
 
 shell("trimmomatic PE {snakemake.params.extra} "
+      " -threads {snakemake.threads} "
       "{snakemake.input.r1} {snakemake.input.r2} "
       "{snakemake.output.r1} {snakemake.output.r1_unpaired} "
       "{snakemake.output.r2} {snakemake.output.r2_unpaired} "

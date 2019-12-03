@@ -21,7 +21,6 @@ elvers_workflows:
   default:
     - trimmomatic
     - fastqc
-    - multiqc
     - khmer
     - trinity
     - dammit
@@ -30,7 +29,6 @@ elvers_workflows:
   protein_assembly:
     - trimmomatic
     - fastqc
-    - multiqc
     - khmer
     - plass
     - pear
@@ -39,7 +37,6 @@ elvers_workflows:
   preprocess:
     - trimmomatic
     - fastqc
-    - multiqc
   kmer_trim:
     - trimmomatic
     - khmer

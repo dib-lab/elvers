@@ -62,7 +62,7 @@ localrules: elvers
 onstart: 
     shell('cat {octopus}')
     print('-----------------------------------------------------------------')
-    print('Welcome to the Eel Pond, de novo transcriptome assembly pipeline.')
+    print('Welcome to elvers, an automated RNA-Seq workflow system')
     print('-----------------------------------------------------------------')
 
 
