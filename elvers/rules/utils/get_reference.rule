@@ -3,16 +3,16 @@ import shutil
 
 logs_dir = config['elvers_directories']['logs']
 
-prog_params = config['get_reference']['program_params']
-ep_params = config['get_reference']['elvers_params']
+getref_ep_params = config['get_reference']['elvers_params']
+getref_params = config['get_reference']['program_params']
 
-ref_dir = ep_params['outputs']['outdir']
+getref_dir = getref_ep_params['outputs']['outdir']
 basename = config['basename']
-reference_extension = prog_params.get('reference_extension', '')
+reference_extension = getref_params.get('reference_extension', '')
 
 # build reference dictionaries
 if config.get('reference_info'):
-    get_fa,get_gtm,get_fa,get_gtm,get_fa,get_gtm = {},{},{},{},{},{}
+    get_fa,get_gtm={},{}
     ref_info = config['reference_info']
     for extension, info in ref_info.items():
         if extension == "no_extension":
@@ -29,7 +29,6 @@ if config.get('reference_info'):
             get_fa[name] = ref
         if info.get("gene_trans_map"):
             gtm = info["gene_trans_map"]
-            print(gtm)
             if gtm.startswith("http"):
                 get_gtm[name] = f"HTTP.remote({gtm}, static=True, keep_local=True, allow_redirects=True)"
             elif gtm.startswith("ftp"):
@@ -37,22 +36,48 @@ if config.get('reference_info'):
             else:
                 get_gtm[name] = gtm
 
-GZIP_MAGIC_NUMBER = "1f8b"
+#GZIP_MAGIC_NUMBER = "1f8b"
+#https://stackoverflow.com/questions/13044562/python-mechanism-to-identify-compressed-file-type-and-uncompress?rq=1
+magic_dict = {
+    "\x1f\x8b\x08": "gz",
+    "\x42\x5a\x68": "bz2",
+    "\x50\x4b\x03\x04": "zip"
+    }
+
+max_len = max(len(x) for x in magic_dict)
+
+def file_type(filename):
+    with open(filename) as f:
+        try:
+            file_start = f.read(max_len)
+            for magic, filetype in magic_dict.items():
+                if file_start.startswith(magic):
+                    return filetype
+        except:
+            return "gz"
 
 localrules: get_fasta
 
 rule get_fasta:
     input: lambda w: get_fa[w.name]
-    output: os.path.join(ref_dir, "{name}.fasta")
+    output: os.path.join(getref_dir, "{name}.fasta")
     log: os.path.join(logs_dir, 'get_reference/get_ref_{name}.log')
-    params: ref_dir = ref_dir
+    params: getref_dir = getref_dir
     run: 
-        shell("mkdir -p {params.ref_dir}")
-        with open({input}) as f:
-            if f.read(2).encode("hex") == GZIP_MAGIC_NUMBER:
-                shell("gunzip -c {input} > {output} 2> {log}")
-            else:
-                os.rename({input}, {output})
+        shell("mkdir -p {params.getref_dir}")
+        filetype = file_type 
+        if filetype == "gz":
+            shell("gunzip -c {input} > {output} 2> {log}")
+        elif filetype == "bz2":
+            shell("bunzip2 -c {input} > {output} 2> {log}")
+        elif filetype == "zip":
+            shell("unzip -c {input} > {output} 2> {log}")
+        else:
+            shell("cp {input} {output} 2> {log}")
+#            if f.read(2).encode("hex") == GZIP_MAGIC_NUMBER:
+            #else:
+             #   shell("cp {input} {output} 2> {log}")
+                #os.rename(input[0], output[0])
 
 if get_gtm:
 
@@ -60,11 +85,11 @@ if get_gtm:
     
     rule get_gene_trans_map:
         input: lambda w: get_gtm[w.name]
-        output: os.path.join(ref_dir, "{name}.gene_trans_map")
+        output: os.path.join(getref_dir, "{name}.gene_trans_map")
         log: os.path.join(logs_dir, 'get_reference/get_gtmap_{name}.log')
-        params: ref_dir = ref_dir
+        params: getref_dir = getref_dir
         run: 
-            shell("mkdir -p {params.ref_dir}")
+            shell("mkdir -p {params.getref_dir}")
             with open({input}) as f:
                 if f.read(2).encode("hex") == GZIP_MAGIC_NUMBER:
                     shell("gunzip -c {input} > {output} 2> {log}")

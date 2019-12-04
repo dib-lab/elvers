@@ -57,40 +57,22 @@ def get_quant(w):
     return inputD
 
 
-if deseq_params.get('gene_trans_map'):
-    rule deseq2_init_tx2gene:
-        input:
-            unpack(get_quant),
-        output:
-            rds =join(deseq_dir, "{assembly}.deseq2.rds") #r data object
-        params:
-            samples=config["get_data"]["program_params"]["samples"]
-        conda:
-            "env_1.18.yml"
-        log:
-            join(logs_dir,  'deseq2', "{assembly}.deseq2.init.log")
-        benchmark:
-            join(logs_dir,  'deseq2', "{assembly}.deseq2.init.benchmark")
-        threads: get_deseq2_threads()
-        script:
-            "deseq2-init-tx2gene.R"
-else:
-    rule deseq2_init_txOut:
-        input:
-            unpack(get_quant),
-        output:
-            rds =join(deseq_dir, "{assembly}.deseq2.rds") #r data object
-        params:
-            samples=config["get_data"]["program_params"]["samples"]
-        conda:
-            "env_1.18.yml" 
-        log:
-            join(logs_dir,  'deseq2', "{assembly}.deseq2.init.log")
-        benchmark:
-            join(logs_dir,  'deseq2', "{assembly}.deseq2.init.benchmark")
-        threads: get_deseq2_threads()
-        script:
-            "deseq2-init-txOut.R"
+rule deseq2_init:
+    input:
+        unpack(get_quant),
+    output:
+        rds =join(deseq_dir, "{assembly}.deseq2.rds") #r data object
+    params:
+        samples=config["get_data"]["program_params"]["samples"]
+    conda:
+        "env_1.18.yml"
+    log:
+        join(logs_dir,  'deseq2', "{assembly}.deseq2.init.log")
+    benchmark:
+        join(logs_dir,  'deseq2', "{assembly}.deseq2.init.benchmark")
+    threads: get_deseq2_threads()
+    script:
+        "deseq2-init-try.R"
 
 rule deseq2_pca:
     input:

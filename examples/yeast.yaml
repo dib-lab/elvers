@@ -3,6 +3,9 @@
 basename: yeast
 
   ####################  quantify  ####################  
+workflows:
+  - quantify
+  - diffexp
 get_data:
   samples: yeast.samples.tsv
   download_data: true
@@ -34,5 +37,5 @@ deseq2:
 
 # define the location of the (already existing) reference transcriptome
 get_reference:
-  reference: 'orf_coding.fasta.gz'
+  reference: "orf_coding.fasta.gz"
 

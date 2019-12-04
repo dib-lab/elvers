@@ -21,7 +21,6 @@ deseq2:
   program_params:
     inputs: 
       - salmon_quant
-    gene_trans_map: True
     # contrasts for the deseq2 results method
     contrasts:
       time0-vs-time6:
