@@ -1,55 +1,82 @@
 from os.path import join
 
 logs_dir  = config['elvers_directories']['logs']
-ep_params = config['plass']['elvers_params']
-assembly_params = config['plass']['program_params']
+plass_elvers_params = config['plass']['elvers_params']
+plass_params = config['plass']['program_params']
 
-assembly_dir = ep_params['outputs']['outdir']
-assembly_extension = ep_params['outputs']['extensions']['reference_extensions'][0] # should only be a single entry here, default: '_plass'
+# set output dir
+plass_output_dir = plass_elvers_params['outputs']['outdir']
+assembly_plass_extension = plass_elvers_params['outputs']['plass_fasta']['extensions']['reference_extensions'][0] # should only be a single entry here, default: '_plass'
 
 BASE = config['basename']
+
+# get input we're using in this case (raw, trimmed, kmer_trimmed, etc)
+plass_input_name = plass_params.get('inputs', ['kmer_trimmed'])[0]
+# set input_dir, ext
+plass_input_dir = plass_elvers_params['input_options'][plass_input_name].get('indir')
+plass_ext = plass_elvers_params['input_options'][plass_input_name]['extensions']['read'].get('common_ext')[0]
+
+# handle "associated_samples"
+associated_samples = {}
+if 'assembly_info' in config.keys():
+    assemb_info = config['assembly_info']
+
+for ref_ext, ref_info in assemb_info.items():
+    if assembly_plass_extension in ref_ext: # check that "_plass" is in the extension
+        if ref_info.get('associated_samples'):
+            sample_list = ref_info['associated_samples']
+            if not ref_ext.startswith('_'):
+                ref_ext = '_' + ref_ext
+            refname = BASE + ref_ext
+            associated_samples[refname] = sample_list
 
 def get_assembly_input(w):
     r1,r2,single =[],[],[]
     readsD = {}
-    if assembly_params.get('input_kmer_trimmed', True):
-        ext = '.khmer.fq.gz' 
-        input_dir = config['elvers_directories']['outdirs']['preprocess']
-    elif assembly_params.get('input_trimmed', True):
-        ext = '.trim.fq.gz'
-        input_dir = config['elvers_directories']['outdirs']['preprocess']
-    else:
-        ext = '.fq.gz'
-        input_dir = config['elvers_directories']['outdirs']['input_data']
+    if w.assembly in associated_samples.keys():
+        # this assembly has some associated samples
+        assembly_subset = associated_samples[w.assembly]
+    else: # assume we want to use all samples for this assembly
+        assembly_subset = samples['sample'].tolist()
     for s, u in samples.iterrows():
         sample, unit = u['sample'],u['unit']
+        if assembly_subset:
+            if sample not in assembly_subset:
+                continue
         if is_single_end(sample, unit):
-            single+=[join(input_dir, f"{sample}_{unit}{ext}")]
+            single+=[join(plass_input_dir, f"{sample}_{unit}_se{plass_ext}")]
         else:
-            r1+= [join(input_dir, f"{sample}_{unit}_1{ext}")]
-            r2+= [join(input_dir, f"{sample}_{unit}_2{ext}")]
-    add_single = assembly_params.get('add_single_to_paired', False)
+            r1+= [join(plass_input_dir, f"{sample}_{unit}_1{plass_ext}")]
+            r2+= [join(plass_input_dir, f"{sample}_{unit}_2{plass_ext}")]
+    add_single = plass_params.get('add_single_to_paired', False)
     if len(r1) > 0:
         if add_single == True:
             r1 = r1 + single
         readsD['left'] = r1
         readsD['right'] = r2
     else:
-        readsD['left'] = single
+        if len(single) > 0:
+            readsD['left'] = single
+        else:
+           sys.stderr.write("\t No samples to assemble. If subsetting, please check that the values of `assembly_subset` match your sample names. See https://dib-lab.github.io/elvers/trinity for details.\n")
+           sys.exit(-1)
     return readsD
 
 rule plass:
     input:
         unpack(get_assembly_input)
     output:
-        fasta = join(assembly_dir, BASE + assembly_extension + '.fasta') 
+        fasta = join(plass_output_dir,'{assembly}.fasta')
     message:
         """--- Assembling read data with PLASS --- """
     params:
         # optional parameters
-        extra=assembly_params.get('extra', '')
-    log: join(logs_dir, 'plass','plass.log')
-    benchmark: join(logs_dir, 'plass','plass.benchmark')
+        tmp=plass_params.get('tmpdir', ''),
+        extra=plass_params.get('extra', '')
+    wildcard_constraints:
+        assembly="\S*_plass"
+    log: join(logs_dir, 'plass','{assembly}.log')
+    benchmark: join(logs_dir, 'plass','{assembly}.benchmark')
     threads: 32
     conda: "environment.yml"
 	script: "plass-wrapper.py"

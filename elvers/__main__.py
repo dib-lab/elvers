@@ -46,7 +46,6 @@ def build_default_params(workdir, targets):
     required_rules = []
     for rule_list in workflows_to_run.values():
         required_rules += rule_list
-    ruleParamsFiles = []
     includeRules = []
     reference_extensions = []
     rules_dir = defaultParams['elvers_directories']['rules']
@@ -55,14 +54,11 @@ def build_default_params(workdir, targets):
         try:
             rule = glob.glob(os.path.join(workdir, rules_dir, '*', rule_name + '.rule'))[0]
             defaultParams[rule_name] = get_params(rule_name, os.path.dirname(rule))
-            ref_exts = defaultParams[rule_name]['elvers_params']['outputs']['extensions'].get('reference_extensions', [])
-            reference_extensions+=ref_exts
             includeRules += [rule]
-        except: # if allows user workflow input, can't do this here (check extra targs later?)
+        except:
             sys.stderr.write(f"\n\tError: Can't add rules for extra target {rule_name}. Please fix.\n\n")
             sys.exit(-1)
     defaultParams['include_rules'] = list(set(includeRules))
-    defaultParams['reference_extensions'] = list(set(reference_extensions))
     return defaultParams
 
 
@@ -107,8 +103,9 @@ def build_dirs(ep_dir, params):
     for rule in included_rules:
         prog = os.path.basename(rule).split('.rule')[0]
         # if no outdir, just use program name
-        prog_dir = params[prog]['elvers_params']['outputs'].get('outdir', prog)
-        params[prog]['elvers_params']['outputs']['outdir'] = os.path.join(outdir, prog_dir)
+        for out_name, out_info in params[prog]['elvers_params']['outputs'].items():
+            prog_dir = out_info.get('outdir', prog)
+            params[prog]['elvers_params']['outputs'][out_name]['outdir'] = os.path.join(outdir, prog_dir)
     return params
 
 def main():
@@ -165,6 +162,7 @@ To build an editable configfile to start work on your own data, run:
     parser.add_argument('--nolock', action='store_true')
     parser.add_argument('--unlock', action='store_true')
     parser.add_argument('--cleanup_conda', action='store_true')
+    parser.add_argument('--force_incomplete', action='store_true')
     parser.add_argument('--forcetargets', action='store_true', help='force given targets to be re-created (default False)')
     parser.add_argument('--forceall', action='store_true', help='force all output files to be re-created (default False)')
     parser.add_argument('--restart_times',type=int, default=0, help='let snakemake try rerunning any failed tools (input number of times to try rerunning). default = 0')
@@ -228,37 +226,49 @@ To build an editable configfile to start work on your own data, run:
                 sys.stderr.write(f"\n\tWarning: out_path specified both in config and on command line. Choosing command input {out_path}")
             configD['out_path'] = args.out_path
         if configD.get('workflows', None):
-            # how do we want to handle the 'default'? Here: If nothing specified, use `default`. If any workflows specified (commandline or config), do not add default.
+            # If no targets specified, use `default`. If any workflows specified (commandline or config), do not add default.
             if targs == ['default']:
                 targs = configD['workflows']
             else:
                 targs = targs + configD['workflows']
-        # build info for get_reference
-        refInput = configD.get('get_reference', None)
-        if refInput:
-            targs+=['get_reference']
-            configD, refinput_ext = handle_reference_input(configD, configfile)
-        else:
-            refinput_ext = None
-        if 'get_reference' in targs and not refInput:
-            sys.stderr.write("\n\tError: trying to get reference via `get_reference` rule, but there's no reference file specified in your configfile. Please fix.\n\n")
-            sys.exit(-1)
-        # check that samples file exists, targs include get_data, and build fullpath to samples file
+
+        ## Handle sample inputs
         samples = None
         if configD.get('get_data', None):
             targs+=['get_data']
             try:
                 configD = handle_samples_input(configD, configfile)
-                samples, configD = read_samples(configD)
             except Exception as e:
-                sys.stderr.write("\n\tError: trying to get input data, but can't find the samples file. Please fix.\n\n")
                 print(e)
                 sys.exit(-1)
+            try:
+                samples, configD = read_samples(configD)
+            except:
+                print(e)
+                sys.exit(-1)
+
+        # Handle reference inputs
+        refinput_exts = None
+        if configD.get('get_reference', None):
+            targs+=['get_reference']
+            try:
+                configD, refinput_exts = handle_reference_input(configD, configfile, samples)
+            except Exception as e:
+                print(e)
+                sys.exit(-1)
+
         targs = list(set(targs))
+
         # next, grab all elvers defaults, including rule-specific default parameters (*_params.yaml files)
         paramsD = build_default_params(thisdir, targs)
-       ###############
+
+
         # Handle additional configuration modification
+
+        # note: as of snakemake 5.8.1, you can directly input multiple config files on the commandline, circumventing the need for this merging
+        # we *could* just pass the extra configs along to the `configfiles` directive, and the `config_dict` to the `config` directive.
+        # prefer this way, though, as all params are then recorded in our elvers .ep_* paramsfile
+
         # 1. extra config files
         extra_configs = {}
         if args.extra_config:
@@ -276,7 +286,7 @@ To build an editable configfile to start work on your own data, run:
 
         # if we're adding any additional contrasts, get rid of the example ones!
         # check extra configs
-        if 'deseq2' in targs:
+        if any(["deseq2" in targs, "diffexp" in targs]):
             if extra_configs.get('deseq2'):
                if extra_configs['deseq2']['program_params'].get('contrasts'):
                    paramsD['deseq2']['program_params']['contrasts'] = {} # get rid of default contrasts
@@ -285,6 +295,8 @@ To build an editable configfile to start work on your own data, run:
             if configD.get('deseq2'):
                 if configD['deseq2']['program_params'].get('contrasts'):
                     paramsD['deseq2']['program_params']['contrasts'] = {} # get rid of default contrasts
+        if configD.get('get_reference'):
+            paramsD['get_reference']['program_params'] = {} # get rid of default test assembly
 
         # first update with extra configs, then with main configfile
         update_nested_dict(paramsD,extra_configs)
@@ -293,18 +305,19 @@ To build an editable configfile to start work on your own data, run:
         update_nested_dict(paramsD,configD) # configD takes priority over default params
 
         # add extension to overall reference_extensions info
-        if refinput_ext: # note, need to do it here to prevent override with defaults
-            paramsD['reference_extensions'] = list(set(paramsD.get('reference_extensions', []) + [refinput_ext]))
+        if refinput_exts: # note, need to do it here to prevent override with defaults. Do this differently now?
+            paramsD['reference_extensions'] = list(set(paramsD.get('reference_extensions', []) + refinput_exts))
 
-        # This is now handled in the deseq2 rule, can remove from here. Do we need the sys.stderr notification?
-        if paramsD.get('no_gene_trans_map', False):
-            if paramsD.get('deseq2'):
-                paramsD['deseq2']['program_params']['gene_trans_map'] = False
-                sys.stderr.write("\tYou're using `get_reference` without specifying a gene-trans-map. Setting differential expression to transcript-level only. See https://dib-lab.github.io/elvers/deseq2/for details.\n")
+        ## handle assemblies
+        paramsD = handle_assemblies(paramsD, samples)
+
+        # build desired outputs from output options
+        paramsD = select_outputs(paramsD)
+
         # use params to build directory structure
         paramsD = build_dirs(thisdir, paramsD)
 
-        # okay, now lets generate targs and check all required inputs are available
+        # okay, now lets generate targets for all outputs and check all required inputs are available
         paramsD = generate_inputs_outputs(paramsD, samples)
 
         # aggregate the yaml schema for the pipeline (and all included rules) so we can validate against it
@@ -317,17 +330,21 @@ To build an editable configfile to start work on your own data, run:
         except Exception as e:
            print(e)
            sys.exit(-1)
+        # don't think we need this bit. checking inputs/outputs internally above.
         #import pdb;pdb.set_trace()
         #try:
         #    check_workflow(paramsD)
         #except Exception as e:
         #    print(e)
         #    sys.exit(-1)
+
         # Note: Passing a configfile allows nested yaml/dictionary format.
         # Passing these params in via `config` would require a flat dictionary.
         paramsfile = os.path.join(os.path.dirname(configfile), '.ep_' + os.path.basename(configfile))
         sys.stderr.write('\tAdded default parameters from rule-specific params files.\n\tWriting full params to {}\n'.format(paramsfile))
         write_yaml(paramsD, paramsfile)
+
+        # are we printing a report?
         reportfile = None
         if args.report:
             if os.path.isabs(args.report):
@@ -356,7 +373,7 @@ To build an editable configfile to start work on your own data, run:
         with CaptureStdout(passthru=passthru) as output:
             # run!!
             # params file becomes snakemake configfile
-            status = snakemake.snakemake(snakefile, configfile=paramsfile, use_conda=True,
+            status = snakemake.snakemake(snakefile, configfiles=[paramsfile], use_conda=True,
                                      targets=['elvers'], printshellcmds=True,
                                      cores=args.threads, cleanup_conda= args.cleanup_conda,
                                      dryrun=args.dry_run, lock=not args.nolock,
@@ -367,6 +384,7 @@ To build an editable configfile to start work on your own data, run:
                                      cluster=args.cluster_cmd,
                                      create_envs_only=args.create_envs_only,
                                      restart_times=args.restart_times,
+                                     force_incomplete=args.force_incomplete,
                                      printdag=building_dag, keepgoing=args.keep_going,
                                      forcetargets=args.forcetargets,forceall=args.forceall)
 
@@ -396,7 +414,7 @@ To build an editable configfile to start work on your own data, run:
                 print(f"\tPrinted workflow dag to png file {args.dagpng}\n\n ")
 
         if status and reportfile and not args.dry_run and not args.unlock and not building_dag and not args.create_envs_only:
-            snakemake.snakemake(snakefile, configfile=paramsfile, report=reportfile)
+            snakemake.snakemake(snakefile, configfiles=[paramsfile], report=reportfile)
             print(f"\t see the report file at {reportfile}\n\n ")
 
         if status: # translate "success" into shell exit code of 0
@@ -404,6 +422,5 @@ To build an editable configfile to start work on your own data, run:
         return 1
 
 
-# TODO: would be good to pull available rules from elvers_pipeline in default config or a separate workflow file!
 if __name__ == '__main__':
     sys.exit(main())

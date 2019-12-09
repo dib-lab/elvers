@@ -6,6 +6,8 @@ dammit_dir = config['dammit']['elvers_params']['outputs']['outdir']
 
 dammit_params = config['dammit']['program_params']
 
+basename = config['basename']
+
 rule dammit_annotate:
     input: 
         join(assembly_dir, "{assembly}.fasta")

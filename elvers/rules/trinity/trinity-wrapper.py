@@ -5,7 +5,7 @@ __copyright__ = "Copyright 2018, Tessa Pierce"
 __email__ = "ntpierce@gmail.com"
 __license__ = "MIT"
 
-from os import path
+import os
 from snakemake.shell import shell
 
 extra = snakemake.params.get("extra", "")
@@ -37,9 +37,17 @@ if not seqtype:
     else: # assertion is redundant - warning or error instead?
         assert seqtype is not None, "cannot infer 'fq' or 'fa' seqtype from input files. Please specify 'fq' or 'fa' in 'seqtype' parameter"
 
-outdir = path.dirname(snakemake.output[0])
-assert 'trinity' in outdir, "output directory name must contain 'trinity'"
+#assert 'trinity' in outdir, "output directory name must contain 'trinity'"
+outdir = os.path.dirname(snakemake.output[0])
+default_outdir = os.path.join(outdir, 'trinity_out_dir')
+default_fasta =  os.path.join(default_outdir, 'Trinity.fasta')
+default_gtm =  os.path.join(default_outdir, 'Trinity.fasta.gene_trans_map')
 
 log = snakemake.log_fmt_shell(stdout=True, stderr=True)
 
-shell("Trinity {input_cmd} --CPU {snakemake.threads} --max_memory {max_memory} --seqType {seqtype} --output {outdir} {snakemake.params.extra} {log}")
+# execute trinity
+shell("Trinity {input_cmd} --CPU {snakemake.threads} --max_memory {max_memory} --seqType {seqtype} --output {default_outdir} {snakemake.params.extra} {log}")
+
+# copy the fasta, gtmap to their final locations
+shell("cp {default_fasta} {snakemake.output.fasta}")
+shell("cp {default_gtm} {snakemake.output.gene_trans_map}")

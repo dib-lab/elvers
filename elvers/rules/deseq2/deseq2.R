@@ -16,8 +16,6 @@ if (snakemake@threads > 1) {
 ## Open pdf file to contain any figure generated below
 #pdf(gsub("rds$", "pdf", outrds))
 
-log <- file(snakemake@log[[1]], open="wt")
-
 # deseq2 portion
 dds <- readRDS(snakemake@input[[1]])
 

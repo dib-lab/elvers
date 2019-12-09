@@ -2,21 +2,27 @@ sourmash:
   elvers_params:
     input_options:
       read:
+        - kmer_trimmed
         - trimmed
         - raw
-      reference:
+      base:
         - fasta
-    outputs:
-      outdir: sourmash 
-      extensions: 
-        base:
-          - .sig
-        read:
-          pe:
-            - .paired.khmer.fq.sig
-          se:
-            - .se.khmer.fq.sig 
+    output_options:
+      sourmash_signature:
+        input: any
+        outdir: sourmash 
+        extensions: 
+          base:
+            - .fasta.sig
+          read:
+            pe:
+              - .fq.sig
+            se:
+              - .fq.sig 
   program_params:
-    k_size: 31
+    inputs: 
+      - kmer_trimmed
+      - fasta
+    k_size: 21 #,31,51
     scaled: 1000
     extra: ''

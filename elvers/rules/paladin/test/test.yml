@@ -1,5 +1,6 @@
 # Additional parameters required for testing the paladin rule
 
 paladin:
-  input_pear_merged: False
-  input_trimmed: False
+  inputs:
+    - raw
+    - plass_fasta

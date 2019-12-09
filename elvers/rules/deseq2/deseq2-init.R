@@ -17,17 +17,35 @@ if (snakemake@threads > 1) {
 quant_files <- snakemake@input[["quant"]]
 names(quant_files) <- basename(dirname(quant_files)) # dirname to drop quant.sf, basename to drop rest of path
 
-#create tx2gene from trinity gene_trans_map
-gene2tx <- read.table(snakemake@input[["gene_trans_map"]], header=FALSE, col.names=c('gene','transcript'))
-tx2gene <- gene2tx[,c('transcript', 'gene')]
+init_gtm <- function(gtm, quant_files){
+    gene2tx <- read.table(gtm, header=FALSE, col.names=c('gene','transcript'))
+    tx2gene <- gene2tx[,c('transcript', 'gene')]
+    ## Read Salmon abundances, summarize to gene level
+    txi <- tximport(files = quant_files, type = "salmon", txOut = FALSE, tx2gene = tx2gene)
+    return(txi)
+}
 
-## Read Salmon abundances
-txi <- tximport(files = quant_files, type = "salmon", txOut = FALSE, tx2gene = tx2gene)
+init_txout <- function(qfiles){
+    ## Read Salmon abundances, transcript level
+    txi <- tximport(files = qfiles, type = "salmon", txOut = TRUE)
+    print("txOut")
+    print(txi)
+    return(txi)
+}
+
+txi <- tryCatch(
+    {
+    init_gtm(snakemake@input[["gene_trans_map"]], quant_files)
+    },
+    error = function(e){
+        init_txout(quant_files)
+    }
+)
 
 # read in sample:condition info; ensure correct ordering
-sample_info <- read.table(snakemake@params[["samples"]], header=TRUE)
+sample_info <- read.delim(snakemake@params[["samples"]], header=TRUE) 
 
-# remove excess from sample names 
+# remove excess from sample names
 colnames(txi$counts) <- str_extract(colnames(txi$counts), "[^_]+")
 
 # check all samples are present in both

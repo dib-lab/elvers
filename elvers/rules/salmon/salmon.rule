@@ -1,22 +1,17 @@
 from os.path import join
 import pandas as pd
 
-salmon_params = config['salmon']['program_params']
+prog_params = config['salmon']['program_params']
 ep_params = config['salmon']['elvers_params']
 logs_dir  = config['elvers_directories']['logs']
 
+basename = config['basename']
+
 # get inputs
 assembly_dir  = config['elvers_directories']['outdirs']['assemble']
-combine_units = ep_params['outputs']['extensions']['read']['combine_units']
+combine_units = ep_params['outputs']['salmon_quant']['extensions']['read']['combine_units']
 
-if salmon_params.get('input_trimmed', True):
-    input_dir = config['elvers_directories']['outdirs']['preprocess']
-    ext = '.trim.fq.gz'
-    se_ext = 'se'
-else:
-    input_dir = config['elvers_directories']['outdirs']['input_data']
-    ext = '.fq.gz'
-    se_ext = '1'
+inputs = prog_params['inputs']
 
 if config.get('ignore_units'):
     combine_units = False
@@ -24,32 +19,80 @@ if config.get('ignore_units'):
 # get outdir
 quant_dir     = ep_params['outputs']['outdir']
 
+# handle "associated_samples"
+associated_samples = {}
+refs = {}
+if 'get_reference' in config.keys():
+    refs = config.get('reference_info', {})
+#    refs = config['get_reference']['program_params'].get('reference_list', {})
+if 'assembly_info' in config.keys():
+    assemb_info = config['assembly_info']
+    refs.update(assemb_info)
+
+for ref_ext, ref_info in refs.items(): #in #config['get_reference']['program_params']['reference_list'].items():#config['reference_info'].items():
+#for ref_ext, ref_info in config['reference_info'].items():
+    if ref_info.get('associated_samples'):
+        sample_list = ref_info['associated_samples']
+        if not ref_ext.startswith('_'):
+            ref_ext = '_' + ref_ext
+        refname = basename + ref_ext
+        associated_samples[refname] = sample_list
+
 # use if you don't want to collapse technical replicates ("units" column; deseq2 not supported)
 def get_sample_no_combine(w):
     readsD = {}
-    if not is_single_end(**w): # note, this requires unit to be in outputs!
-        readsD['r1'] = join(input_dir, f'{w.sample}_{w.unit}_1{ext}')
-        readsD['r2'] = join(input_dir, f'{w.sample}_{w.unit}_2{ext}')
-        return readsD
-    readsD['r'] = join(input_dir, f'{w.sample}_{w.unit}_se{ext}')
+    if 'trimmed' in inputs:
+        input_dir = config['elvers_directories']['outdirs']['preprocess']
+        ext = '.trim.fq.gz'
+        se_ext = 'se'
+    elif 'raw' in inputs:
+        input_dir = config['elvers_directories']['outdirs']['input_data']
+        ext = '.fq.gz'
+        se_ext = '1'
+
+    if w.assembly in associated_samples.keys():
+        # this assembly has some associated samples
+        sample_list = associated_samples[w.assembly]
+    else: # assume we want to map all samples to this assembly
+        sample_list = samples['sample'].tolist()
+    if w.sample in sample_list:
+        if not is_single_end(**w): # note, this requires unit to be in outputs!
+            readsD['r1'] = join(input_dir, f'{w.sample}_{w.unit}_1{ext}')
+            readsD['r2'] = join(input_dir, f'{w.sample}_{w.unit}_2{ext}')
+            return readsD
+        readsD['r'] = join(input_dir, f'{w.sample}_{w.unit}_{se_ext}{ext}')
     return readsD
 
 def get_sample_combine_units(w):
     readsD = {}
     r1,r2,r = [],[],[]
-    unit_list = samples.groupby(level=0).get_group(w.sample)['unit'].tolist()
-    for unit in unit_list:
-        if not is_single_end(w.sample, unit):
-            r1+= [join(input_dir, f"{w.sample}_{unit}_1{ext}")]
-            r2+= [join(input_dir, f"{w.sample}_{unit}_2{ext}")]
-        else:
-            r+= [join(input_dir, f"{w.sample}_{unit}_{se_ext}{ext}")]
-    if r1:
-        readsD['r1'] = r1
-        readsD['r2'] = r2
-    elif r:
-        # salmon can't handle mixed pe/se samples, so if there are samples with some se, some pe, this will only do quant for pe
-        readsD['r'] = r
+    if 'trimmed' in inputs:
+        input_dir = config['elvers_directories']['outdirs']['preprocess']
+        ext = '.trim.fq.gz'
+        se_ext = 'se'
+    elif 'raw' in inputs:
+        input_dir = config['elvers_directories']['outdirs']['input_data']
+        ext = '.fq.gz'
+        se_ext = '1'
+    if w.assembly in associated_samples.keys():
+        # this assembly has some associated samples
+        sample_list = associated_samples[w.assembly]
+    else: # assume we want to map all samples to this assembly
+        sample_list = samples['sample'].tolist()
+    if w.sample in sample_list:
+        unit_list = samples.groupby(level=0).get_group(w.sample)['unit'].tolist()
+        for unit in unit_list:
+            if not is_single_end(w.sample, unit):
+                r1+= [join(input_dir, f"{w.sample}_{unit}_1{ext}")]
+                r2+= [join(input_dir, f"{w.sample}_{unit}_2{ext}")]
+            else:
+                r+= [join(input_dir, f"{w.sample}_{unit}_{se_ext}{ext}")]
+        if r1:
+            readsD['r1'] = r1
+            readsD['r2'] = r2
+        elif r:
+            # salmon can't handle mixed pe/se samples, so if there are samples with some se, some pe, this will only do quant for pe
+            readsD['r'] = r
     return readsD
 
 ############
@@ -65,7 +108,7 @@ rule salmon_index:
         """--- Indexing the transcriptome with Salmon ---"""
     threads: 10
     params:
-        extra = salmon_params['index_params'].get('extra', '')
+        extra = prog_params['index_params'].get('extra', '')
     log:join(logs_dir, 'salmon','{assembly}_index.log')
     benchmark:join(logs_dir, 'salmon','{assembly}_index.benchmark')
     conda: "environment.yml"
@@ -85,8 +128,8 @@ if combine_units:
         message:
             """--- Quantifying transcripts with Salmon ---"""
         params:
-            libtype = salmon_params['quant_params'].get('libtype', 'A'),
-            extra = salmon_params['quant_params'].get('extra', '')
+            libtype = prog_params['quant_params'].get('libtype', 'A'),
+            extra = prog_params['quant_params'].get('extra', '')
         threads: 20
         log: join(logs_dir, 'salmon/{sample}_x_{assembly}.log')
         benchmark: join(logs_dir, 'salmon/{sample}_x_{assembly}.benchmark')
@@ -106,8 +149,8 @@ else:
         message:
             """--- Quantifying transcripts with Salmon ---"""
         params:
-            libtype = salmon_params['quant_params'].get('libtype', 'A'),
-            extra = salmon_params['quant_params'].get('extra', '')
+            libtype = prog_params['quant_params'].get('libtype', 'A'),
+            extra = prog_params['quant_params'].get('extra', '')
         threads: 20
         log:join(logs_dir, 'salmon/{sample}_{unit}_x_{assembly}.log')
         benchmark:join(logs_dir, 'salmon/{sample}_{unit}_x_{assembly}.benchmark')

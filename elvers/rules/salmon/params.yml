@@ -1,26 +1,34 @@
 salmon:
   elvers_params:
+    help: "salmon quantifies transcripts"
+    citations:
+      - "Patro, R., Duggal, G., & Kingsford, C. (2015). Salmon: accurate, versatile and ultrafast quantification from RNA-seq data using lightweight-alignment. Biorxiv, 9, 021592."
+      - "Patro, R., Duggal, G., Love, M. I., Irizarry, R. A., & Kingsford, C. (2017). Salmon provides fast and bias-aware quantification of transcript expression. Nature methods, 14(4), 417."
     input_options:
       read:
         - trimmed
         - raw
-      reference:
+      base:
         - fasta
-    outputs:
-      outdir: quant
-      extensions: 
-        read:
-          combine_units: True
-          pe:
-            - _x___reference__.salmon/quant.sf
-            - _x___reference__.salmon/lib_format_counts.json
-          se:
-            - _x___reference__.salmon/quant.sf
-            - _x___reference__.salmon/lib_format_counts.json
-        base:
-          - .salmonindex
+    output_options:
+      salmon_quant:
+        input: any
+        outdir: quant
+        extensions: 
+          read:
+            combine_units: True
+            pe:
+              - _x___reference__.salmon/quant.sf
+              - _x___reference__.salmon/lib_format_counts.json
+            se:
+              - _x___reference__.salmon/quant.sf
+              - _x___reference__.salmon/lib_format_counts.json
+          base:
+            - .salmonindex
   program_params:
-    input_trimmed: True
+    inputs: 
+      - trimmed
+      - fasta
     index_params:
       extra: '' # extra info for the program
     quant_params:

@@ -1,27 +1,36 @@
 get_data:
   elvers_params:
-    outputs:
-      outdir: input_data
-      extensions:
-        read:
-          pe:
-            - "_1.fq.gz"
-            - "_2.fq.gz"
-          se:
-            - "_1.fq.gz"
+    output_options:
+      raw:
+        outdir: input_data
+        extensions:
+          read:
+            common_ext: 
+              - ".fq.gz"
+            pe:
+              - "_1.fq.gz"
+              - "_2.fq.gz"
+            se:
+              - "_1.fq.gz"
   program_params:
+    inputs:
+      - samples_file
     download_data: False
     use_ftp: False
 get_reference:
   elvers_params:
-    outputs:
-      outdir: assembly
-      extensions:
-        base:
-          - '.fasta'
+    output_options:
+      fasta:
+        outdir: assembly
+        extensions:
+          base:
+            - '.fasta'
   program_params:
+    inputs:
+      - fasta
     reference: examples/nema.assembly.fasta
     gene_trans_map:  examples/nema.assembly.fasta.gene_trans_map
+    per_sample_reference_files: False
     reference_extension: ''
     download_ref: False
     use_ftp: False

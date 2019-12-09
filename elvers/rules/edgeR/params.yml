@@ -1,32 +1,28 @@
 edgeR:  
   elvers_params:
     input_options:
-         counts:
+      read:
+        - salmon_quants
+    output_options:
+      edgeR_diffexp:
+        input: salmon_quants
+        outdir: diffexp
+        combine_units: True # needs to match with salmon's combine_units
         extensions:
-          # need to specify assembly/reference required in here.
-          read:
-            pe:
-              - 'salmon/quant.sf'
-            se:
-              - 'salmon/quant.sf'
           base:
-           - '.fasta'
-    outputs:
-      outdir: diffexp
-      combine_units: True # needs to match with salmon's combine_units
-      extensions:
-        base:
-          - .edgeR.rds
-          - .edgeR.pca.pdf
-          - .c__contrast__.edgeR.tsv
-          - .c__contrast__.edgeR.padj_0.1.tsv
-          - .c__contrast__.edgeR.ma-plot.pdf 
+            - .edgeR.rds
+            - .edgeR.pca.pdf
+            - .c__contrast__.edgeR.tsv
+            - .c__contrast__.edgeR.padj_0.1.tsv
+            - .c__contrast__.edgeR.ma-plot.pdf 
     help: "edgeR can be used to conduct differential expression analysis for RNAseq data"
     citations:
       - "Robinson MD, McCarthy DJ, Smyth GK (2010). 'edgeR: a Bioconductor package for differential expression analysis of digital gene expression data.' Bioinformatics, 26(1), 139-140."
       - "McCarthy, J. D, Chen, Yunshun, Smyth, K. G (2012). 'Differential expression analysis of multifactor RNA-Seq experiments with respect to biological variation.' Nucleic Acids Research, 40(10), 4288-4297"
 
   program_params:
+    inputs:
+      - salmon_quant
     # contrasts for the edgeR results method
     contrasts:
       treated-vs-untreated:

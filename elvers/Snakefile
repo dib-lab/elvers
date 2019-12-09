@@ -53,6 +53,12 @@ includeRules = config['include_rules']
 for r in includeRules:
     include: r
 
+# If using a batch submission system (e.g. slurm), still run rules to be run locally (don't submit as jobs)
+# Reasoning: elvers just manages other jobs, and ftp/http actually download first, then submit a "job" that 
+# is the "mv downloaded_file output_location" command. Thus the job submission wouldn't capture the longest
+# part of the job.
+localrules: elvers 
+
 onstart: 
     shell('cat {octopus}')
     print('-----------------------------------------------------------------')
@@ -70,7 +76,7 @@ onsuccess:
     for key, val in config.items():
         if isinstance(val, dict):
             if val.get('elvers_params', None):
-                outdir = val['elvers_params']['outputs']['outdir']
+                outdir = os.path.dirname(val['elvers_params']['outputs']['output_files'][0])
                 sys.stdout.write(f"\t{key}: {outdir}\n")
                 docs = documentation_base + key
                 sys.stdout.write(f"\t\t     for explanation of this step, see: {docs} \n\n")

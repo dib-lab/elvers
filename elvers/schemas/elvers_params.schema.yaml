@@ -27,4 +27,4 @@ required:
   - elvers_directories
   - elvers_workflows
   - include_rules
-  - reference_extensions
+#  - reference_extensions

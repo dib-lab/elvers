@@ -40,15 +40,13 @@ Job counts:
 	10	khmer_pe_diginorm
 	10	khmer_split_paired
 	1	multiqc
-	1	rename_trinity_fasta
-	1	rename_trinity_gene_trans_map
 	1	salmon_index
 	4	salmon_quant_combine_units
 	1	sourmash_compute_assembly
-	10	sourmash_compute_pe_interleaved
+	10	sourmash_compute_reads
 	10	trimmomatic_pe
 	1	trinity
-	112'''
+	110'''
         # Skip the first element b/c empty line
         for line in verify_present.split("\n")[1:]:
             self.assertIn(line,p_out)
@@ -58,7 +56,7 @@ Job counts:
         verify_jobs = '''
 --- Quality trimming PE read data with Trimmomatic. ---
 --- khmer trimming of low-abundance kmers and digital normalization ---
---- Computing a MinHash signature of the kmer-trimmed reads with Sourmash ---
+--- Computing a MinHash signature of reads with Sourmash ---
 --- Assembling read data with Trinity ---
 --- Indexing the transcriptome with Salmon ---'''
         # Skip the first element b/c empty line

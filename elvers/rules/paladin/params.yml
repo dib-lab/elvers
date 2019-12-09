@@ -2,34 +2,38 @@ paladin:
   elvers_params:
     input_options:
       read:
+        - pear_merged
         - trimmed
         - raw
-      reference:
+      base:
         - plass_fasta
-    outputs:
-      outdir: paladin
-      extensions:
-        reference_extensions: # use this extension only for all output of this assembler
-          - _plass
-        base:
-          - '.fasta.bwt'
-        read:
-          pe:
-            - _x___reference__.paladin.bam
-            - _x___reference__.paladin.sort.bam
-            - _x___reference__.paladin.sort.bam.flagstat
-            - _x___reference__.paladin.sort.bam.bai
-          se:
-            - _x___reference__.paladin.bam
-            - _x___reference__.paladin.sort.bam
-            - _x___reference__.paladin.sort.bam.flagstat
-            - _x___reference__.paladin.sort.bam.bai
+    output_options:
+      paladin_mapped:
+        input: any
+        outdir: paladin
+        extensions:
+          reference_extensions: # use this extension only for all output of this assembler
+            - _plass
+          base:
+            - '.fasta.bwt'
+          read:
+            pe:
+              - _x___reference__.paladin.bam
+              - _x___reference__.paladin.sort.bam
+              - _x___reference__.paladin.sort.bam.flagstat
+              - _x___reference__.paladin.sort.bam.bai
+            se:
+              - _x___reference__.paladin.bam
+              - _x___reference__.paladin.sort.bam
+              - _x___reference__.paladin.sort.bam.flagstat
+              - _x___reference__.paladin.sort.bam.bai
     help: "PALADIN is a protein sequence alignment tool designed for the accurate functional characterization of metagenomes."
     citations:
       - "Westbrook, Anthony et al. 'PALADIN: protein alignment for functional profiling whole metagenome shotgun data' Bioinformatics (Oxford, England) vol. 33,10 (2017): 1473-1478"
   program_params:
-    input_pear_merged: True
-    input_trimmed: False
+    inputs:
+      - pear_merged
+      - plass_fasta
     index_params:
       reference_type: '3'
     alignment_params:
