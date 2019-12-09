@@ -72,7 +72,7 @@ rule deseq2_init:
         join(logs_dir,  'deseq2', "{assembly}.deseq2.init.benchmark")
     threads: get_deseq2_threads()
     script:
-        "deseq2-init-try.R"
+        "deseq2-init.R"
 
 rule deseq2_pca:
     input:
