@@ -356,7 +356,7 @@ To build an editable configfile to start work on your own data, run:
         with CaptureStdout(passthru=passthru) as output:
             # run!!
             # params file becomes snakemake configfile
-            status = snakemake.snakemake(snakefile, configfile=paramsfile, use_conda=True,
+            status = snakemake.snakemake(snakefile, configfiles=[paramsfile], use_conda=True,
                                      targets=['elvers'], printshellcmds=True,
                                      cores=args.threads, cleanup_conda= args.cleanup_conda,
                                      dryrun=args.dry_run, lock=not args.nolock,
