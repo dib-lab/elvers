@@ -4,7 +4,7 @@ channels:
   - conda-forge
 dependencies:
   - python >=3.6
-  - snakemake >=5.10.2
+  - snakemake =5.14
   - yaml
   - pandas
   - graphviz
