@@ -15,6 +15,7 @@ docs_dir: docs
 site_dir: site
 
 theme:
+  name: material
 
   # pretty colors! see https://squidfunk.github.io/mkdocs-material/getting-started/#primary-colors
   palette:
