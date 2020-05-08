@@ -1,5 +1,5 @@
 site_name: elvers
-site_url: http://dib-lab.github.io/elvers/
+site_url: http://dib-lab.github.io/elvers
 repo_name: elvers
 repo_url: https://github.com/dib-lab/elvers
 edit_uri: ""
@@ -16,10 +16,6 @@ site_dir: site
 
 theme:
 
-  # the next 2 lines are required to use the DIB version
-  name: null
-  custom_dir: 'mkdocs-material-dib/material'
-
   # pretty colors! see https://squidfunk.github.io/mkdocs-material/getting-started/#primary-colors
   palette:
     primary: 'darkblue'
@@ -32,9 +28,9 @@ theme:
     text: 'Roboto'
     code: 'Roboto Mono'
 
-# this will add docs/css/custom.css to all your docs
-extra_css:
-  - css/custom.css
+  features:
+    - instant
+   #- tabs
 
 # give a title for each page
 nav:
