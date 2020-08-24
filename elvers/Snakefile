@@ -70,7 +70,7 @@ onsuccess:
     for key, val in config.items():
         if isinstance(val, dict):
             if val.get('elvers_params', None):
-                outdir = val['elvers_params']['outputs']['outdir']
+                outdir = os.path.dirname(val['elvers_params']['outputs']['output_files'][0])
                 sys.stdout.write(f"\t{key}: {outdir}\n")
                 docs = documentation_base + key
                 sys.stdout.write(f"\t\t     for explanation of this step, see: {docs} \n\n")

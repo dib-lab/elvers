@@ -4,7 +4,7 @@ rule push_sigs:
     """
     Pushing MinHash signature of the transcriptome assembly generated with Sourmash
     to a public GitHub repository
-    https://github.com/dib-lab/eelpond-sourmash
+    https://github.com/dib-lab/elvers-sourmash
     OSF repository: https://osf.io/5rvxf/
     """
     input:
