@@ -9,7 +9,5 @@ from snakemake.shell import shell
 extra = snakemake.params.get("extra", "")
 log = snakemake.log_fmt_shell(stdout=True, stderr=True)
 
-index = snakemake.output[0]
-index_basename = index.split('.1.bt2',1)[0]
-
-shell("bowtie2-build --threads {snakemake.threads} {snakemake.params.extra} {snakemake.input} {index_basename} {log}" ) 
+shell("bowtie2-build --threads {snakemake.threads} {snakemake.params.extra} {snakemake.input} {snakemake.params.index} {log}" )
+shell("touch {snakemake.output.donefile}")

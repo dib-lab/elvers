@@ -141,3 +141,11 @@ def test_rcorrector_short():
 def test_rcorrector_long():
     run_ruletest('rcorrector', short = False)
 
+def test_bowtie2_short():
+    run_ruletest('bowtie2')
+
+@pytest.mark.long
+def test_bowtie2_long():
+    run_ruletest('bowtie2', short = False)
+
+

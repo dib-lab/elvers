@@ -4,16 +4,25 @@ bowtie2:
       read:
         - trimmed
         - raw
+      reference:
+        - fasta
     outputs:
-      outdir: 'bowtie2'
+      outdir: bowtie2
       extensions:
         read:
+          combine_units: True
           pe:
-            - '.pe.bam'
+            - _x___reference__.bt2.bam
           se:
-            - '.se.bam'
+            - _x___reference__.bt2.bam
+        base:
+          - .bowtie2index.done
     help: "To run the bowtie2 rule, please provide input data, and either 1) run reference generation, or 2) provide a reference via the `get_reference` utility"
     citations:
       - "Langmead B, Salzberg S. Fast gapped-read alignment with Bowtie 2. Nature Methods. 2012, 9:357-359"
   program_params:
-    extra: ''
+    input_trimmed: True
+    index_params:
+      extra: '' # extra info for the program
+    map_params:
+      extra: ' --local '

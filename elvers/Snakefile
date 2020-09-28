@@ -51,7 +51,12 @@ failwhale = animalsD['failwhale']
 # include all rule files
 includeRules = config['include_rules']
 for r in includeRules:
-    include: r
+    try:
+        include: r
+    except:
+        rule_name = os.path.basename(r).split('.rule')[0]
+        sys.stderr.write(f"\n\tError: Can't use the {rule_name} rule. Please check rule file code at {r} or file an issue on github!\n\n")
+        sys.exit(-1)
 
 onstart: 
     shell('cat {octopus}')
