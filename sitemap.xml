@@ -1,123 +1,123 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url>
      <loc>http://dib-lab.github.io/elvers/</loc>
-     <lastmod>2020-08-27</lastmod>
+     <lastmod>2020-09-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://dib-lab.github.io/elvers/about/</loc>
-     <lastmod>2020-08-27</lastmod>
+     <lastmod>2020-09-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://dib-lab.github.io/elvers/quickstart/</loc>
-     <lastmod>2020-08-27</lastmod>
+     <lastmod>2020-09-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://dib-lab.github.io/elvers/configure/</loc>
-     <lastmod>2020-08-27</lastmod>
+     <lastmod>2020-09-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://dib-lab.github.io/elvers/eel_pond_workflow/</loc>
-     <lastmod>2020-08-27</lastmod>
+     <lastmod>2020-09-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://dib-lab.github.io/elvers/protein_assembly_workflow/</loc>
-     <lastmod>2020-08-27</lastmod>
+     <lastmod>2020-09-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://dib-lab.github.io/elvers/preprocess/</loc>
-     <lastmod>2020-08-27</lastmod>
+     <lastmod>2020-09-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://dib-lab.github.io/elvers/kmer_trim/</loc>
-     <lastmod>2020-08-27</lastmod>
+     <lastmod>2020-09-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://dib-lab.github.io/elvers/assemble/</loc>
-     <lastmod>2020-08-27</lastmod>
+     <lastmod>2020-09-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://dib-lab.github.io/elvers/annotate/</loc>
-     <lastmod>2020-08-27</lastmod>
+     <lastmod>2020-09-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://dib-lab.github.io/elvers/quantify/</loc>
-     <lastmod>2020-08-27</lastmod>
+     <lastmod>2020-09-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://dib-lab.github.io/elvers/diffexp/</loc>
-     <lastmod>2020-08-27</lastmod>
+     <lastmod>2020-09-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://dib-lab.github.io/elvers/sourmash_compute/</loc>
-     <lastmod>2020-08-27</lastmod>
+     <lastmod>2020-09-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://dib-lab.github.io/elvers/plass_assemble/</loc>
-     <lastmod>2020-08-27</lastmod>
+     <lastmod>2020-09-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://dib-lab.github.io/elvers/paladin_map/</loc>
-     <lastmod>2020-08-27</lastmod>
+     <lastmod>2020-09-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://dib-lab.github.io/elvers/get_data/</loc>
-     <lastmod>2020-08-27</lastmod>
+     <lastmod>2020-09-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://dib-lab.github.io/elvers/fastqc/</loc>
-     <lastmod>2020-08-27</lastmod>
+     <lastmod>2020-09-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://dib-lab.github.io/elvers/trimmomatic/</loc>
-     <lastmod>2020-08-27</lastmod>
+     <lastmod>2020-09-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://dib-lab.github.io/elvers/khmer/</loc>
-     <lastmod>2020-08-27</lastmod>
+     <lastmod>2020-09-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://dib-lab.github.io/elvers/trinity/</loc>
-     <lastmod>2020-08-27</lastmod>
+     <lastmod>2020-09-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://dib-lab.github.io/elvers/get_reference/</loc>
-     <lastmod>2020-08-27</lastmod>
+     <lastmod>2020-09-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://dib-lab.github.io/elvers/dammit/</loc>
-     <lastmod>2020-08-27</lastmod>
+     <lastmod>2020-09-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://dib-lab.github.io/elvers/sourmash/</loc>
-     <lastmod>2020-08-27</lastmod>
+     <lastmod>2020-09-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://dib-lab.github.io/elvers/salmon/</loc>
-     <lastmod>2020-08-27</lastmod>
+     <lastmod>2020-09-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://dib-lab.github.io/elvers/deseq2/</loc>
-     <lastmod>2020-08-27</lastmod>
+     <lastmod>2020-09-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://dib-lab.github.io/elvers/plass/</loc>
-     <lastmod>2020-08-27</lastmod>
+     <lastmod>2020-09-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://dib-lab.github.io/elvers/pear/</loc>
-     <lastmod>2020-08-27</lastmod>
+     <lastmod>2020-09-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://dib-lab.github.io/elvers/paladin/</loc>
-     <lastmod>2020-08-27</lastmod>
+     <lastmod>2020-09-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://dib-lab.github.io/elvers/rcorrector/</loc>
-     <lastmod>2020-08-27</lastmod>
+     <lastmod>2020-09-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>http://dib-lab.github.io/elvers/under_the_hood/</loc>
-     <lastmod>2020-08-27</lastmod>
+     <lastmod>2020-09-28</lastmod>
      <changefreq>daily</changefreq>
     </url>
 </urlset>
