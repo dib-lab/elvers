@@ -1,0 +1,49 @@
+preprocess_dir = config["elvers_directories"]["outdirs"]["preprocess"]
+sigsketch_dir = os.path.join(out_dir, config['sourmash_sketch_reads']['output_dir'])
+
+sigsketch_params = config['sourmash_sketch_reads']['params']
+
+def get_reads(wildcards):
+    if not is_single_end(**wildcards):
+        return expand(os.path.join(preprocess_dir, "khmer", '{sample}.paired.khmer.fq.gz'), **wildcards)
+    return expand(os.path.join(preprocess_dir, "khmer, "'{sample}.se.khmer.fq.gz'), **wildcards)
+
+rule sourmash_compute_pe_interleaved:
+    """
+    Computing a MinHash signature of the kmer-trimmed with Sourmash
+    """
+    input: get_reads 
+    output: os.path.join(sigsketch_dir, "{sample}.paired.khmer.fq.sig")
+    message:
+        """--- Computing a MinHash signature of the kmer-trimmed reads with Sourmash ---"""
+    threads: 6
+    params:
+        k_size = sigsketch_params.get('k_size', 31),
+        scaled  = sigsketch_params.get('scaled', 1000),
+        extra = sigsketch_params.get('extra', '')
+    log: os.path.join(logs_dir, 'sourmash', '{sample}_paired.log')
+    benchmark: os.path.join(benchmarks_dir, 'sourmash', '{sample}_paired.benchmark')
+    conda: 
+        'environment.yml'
+    script: 
+        'sourmash-wrapper.py'
+
+rule sourmash_compute_se:
+    """
+    Computing a MinHash signature of the kmer-trimmed reads with Sourmash
+    """
+    input: get_reads 
+    output: os.path.join(sigsketch_dir, "{sample}.se.khmer.fq.sig")
+    message:
+        """--- Computing a MinHash signature of the kmer-trimmed reads with Sourmash ---"""
+    threads: 6
+    params:
+        k_size = sigsketch_params.get('k_size', 31),
+        scaled  = sigsketch_params.get('scaled', 1000),
+        extra = sigsketch_params.get('extra', '')
+    log: os.path.join(logs_dir, 'sourmash', '{sample}.log')
+    benchmark: os.path.join(benchmarks_dir, 'sourmash', '{sample}_se.benchmark')
+    conda: 
+        'environment.yml'
+    script: 
+        'sourmash-wrapper.py'

@@ -1,0 +1,26 @@
+assembly_dir= config['elvers_directories']['outdirs']['assemble']
+sketch_dir = os.path.join(out_dir, config['sourmash_sketch_reference']['output_dir'])
+
+sketch_params = config['sourmash_sketch_reference']['params']
+
+rule sourmash_compute_assembly:
+    """
+    Computing a MinHash signature of the transcriptome assembly with Sourmash
+    """
+    input:
+        os.path.join(assembly_dir, "{assembly}.fasta")
+    output:
+        os.path.join(sketch_dir, "{assembly}.sig")
+    message:
+        """--- Computing a MinHash signature of the transcriptome with Sourmash ---"""
+    threads: 2
+    params:
+        k_size = sketch_params.get('k_size', 31),
+        scaled  = sketch_params.get('scaled', 1000),
+        extra = sketch_params.get('extra', '')
+    log: os.path.join(logs_dir, 'sourmash', '{assembly}.log')
+    benchmark: os.path.join(benchmarks_dir, 'sourmash', '{assembly}.benchmark')
+    conda: 
+        'environment.yml'
+    script: 
+        'sourmash-wrapper.py'

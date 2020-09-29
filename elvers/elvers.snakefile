@@ -5,7 +5,7 @@ import glob
 from snakemake.workflow import srcdir
 import elvers.utils.utils as ep
 
-out_dir = config["output_dir"]
+out_dir = os.path.abspath(config["output_dir"])
 ddir = config["get_data"]["output_dir"]
 data_dir = os.path.join("output_dir", ddir)
 logs_dir = os.path.join(out_dir, "logs")
@@ -47,15 +47,15 @@ onsuccess:
     print("\n--- Workflow executed successfully! ---\n")
     shell('cat {octopus}')
     
-    print("Outputs for all workflow steps:\n")
+    print(f"Outputs for all workflow steps can be found in {out_dir}:\n")
     pipeline = config["pipeline"]
-    print(f"All outputs can be found in {out_dir}")
+    #print(f"Outputs can be found in {out_dir}")
     steps = config["elvers_pipelines"][pipeline]["steps"]
     for step in steps:
-        step_dir = step["output_dir"]
+        step_dir = os.path.join(out_dir, config[step]["output_dir"])
         print(f"\t{step}: {step_dir}")
         step_docs = documentation_base + step
-        print(f"\t\t\tfor explanation of this step, see: {step_docs} \n\n")
+        print(f"\t\tdocs: {step_docs} \n\n")
 
 onerror:
     print("  Oh no! Something went wrong here\n")
@@ -83,16 +83,16 @@ rule showconf:
         print('# full aggregated configuration:')
         generalP = {}
         generalP['basename'] = config["basename"]
-        generalP['experiment'] = config['experiment']
+        generalP['experiment_suffix'] = config['experiment_suffix']
         print(yaml.dump(generalP, indent=2,  default_flow_style=False).strip())
-        print(f"Workflow: {workflow}")
-        workflow_params, program_params = {},{}
+        pipeline = config["pipeline"]
+        print(f"Workflow: {pipeline}")
+        step_params, all_program_params = {},{}
 
-        for step in config["workflow_steps"]:
-            workflow_params[step] = config["step"]["params"]
-            workflow = config["pipeline"]
+        for step in config["elvers_pipelines"][pipeline]["steps"]:
+            step_params[step] = config[step]["params"]
 
-        program_params["program_params"] = workflow_params
-        print(yaml.dump(program_params, indent=2,  default_flow_style=False).strip())
-        #print(yaml.dump(config).strip())
+        all_program_params["program_params"] = step_params
+        print(yaml.dump(all_program_params, indent=2,  default_flow_style=False).strip())
+        #print(yaml.dump(all_program_params).strip())
         print('# END')

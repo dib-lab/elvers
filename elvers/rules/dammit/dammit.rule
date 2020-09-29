@@ -1,17 +1,15 @@
-from os.path import join
+assembly_dir = config["elvers_directories"]["outdirs"]["assemble"]
+ddir = config['dammit']['output_dir']
+dammit_dir = os.path.join(out_dir, ddir)
 
-logs_dir  = config['elvers_directories']['logs']
-assembly_dir= config['elvers_directories']['outdirs']['assemble']
-dammit_dir = config['dammit']['elvers_params']['outputs']['outdir']
-
-dammit_params = config['dammit']['program_params']
+dammit_params = config['dammit']['params']
 
 rule dammit_annotate:
     input: 
-        join(assembly_dir, "{assembly}.fasta")
+        os.path.join(assembly_dir, "{assembly}.fasta")
     output: 
-        gff3 = join(dammit_dir, "{assembly}.dammit.gff3"),
-        fasta = join(dammit_dir, "{assembly}.dammit.fasta"),
+        gff3 = os.path.join(dammit_dir, "{assembly}.dammit.gff3"),
+        fasta = os.path.join(dammit_dir, "{assembly}.dammit.fasta"),
     params:
         db_dir = dammit_params.get('db_dir', 'databases'),
         db_extra= dammit_params.get('db_extra', ""),
@@ -19,9 +17,9 @@ rule dammit_annotate:
         busco_dbs= dammit_params.get('busco_group', ["metazoa"]),
         db_install_only = dammit_params.get('db_install_only', False)
     log:
-        join(logs_dir, 'dammit', '{assembly}_dammit.log')
+        os.path.join(logs_dir, 'dammit', '{assembly}_dammit.log')
     benchmark:
-        join(logs_dir, 'dammit', '{assembly}_dammit.benchmark')
-    threads: 32 
+        os.path.join(benchmarks_dir, 'dammit', '{assembly}_dammit.benchmark')
+    threads: 4
     conda: "environment.yml"
     script: "dammit-wrapper.py"

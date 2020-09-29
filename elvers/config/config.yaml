@@ -3,7 +3,18 @@ basename: elvers
 experiment_suffix: ""
 logs_dir: logs
 benchmarks_dir: benchmarks
-rules_dir: rules
+
+elvers_directories:
+  rules: rules
+  animals: utils/animals
+  logs: logs
+  outdirs:
+    input_data: input_data
+    preprocess: preprocess
+    assemble: assembly
+    annotate: annotation
+    quantify: quant
+    diffexp: diffexp
 
 urls_begin: ["http", "ftp"]
 
@@ -48,7 +59,7 @@ get_reference:
 
 fastp:
   rulefile: fastp/fastp.rule
-  output_dir: preprocess/fastp
+  output_dir: preprocess
   output_files:
     - "{sample}_{end}.fastp.fq.gz"
     - "{sample}.fastp.json"
@@ -106,8 +117,11 @@ salmon:
     - "{reference}.salmonindex"
     - "{sample}.x.{reference}.salmon/quant.sf"
   params:
-    extra: ""
-    #combine_units: True
+    index_params:
+      extra: ""
+    quant_params:
+      libtype: A
+      extra: ""
 
 deseq2:
   rulefile: deseq2/deseq2.rule
@@ -178,7 +192,7 @@ pear:
     - "{sample}.pear_assembled.fq.gz"
     - "{sample}.pear_discarded.fq.gz"
     - "{sample}.pear_unassembled_{end}.fq.gz"
-  program_params:
+  params:
     pval: .01
     max_memory: 4G
     extra: ''
@@ -202,7 +216,7 @@ paladin:
 
 # enable additional alphabets here? or just rm sourmash altogether?
 sourmash_sketch_reads:
-  rulefile: sourmash/sourmash_sketch_signatures.rule
+  rulefile: sourmash/sourmash_sketch_reads.rule
   output_dir: sourmash
   output_files:
     - "{sample}.khmer.fq.sig"
@@ -212,7 +226,7 @@ sourmash_sketch_reads:
     extra: ''
 
 sourmash_sketch_reference:
-  rulefile: sourmash/sourmash_sketch_assembly.rule
+  rulefile: sourmash/sourmash_sketch_reference.rule
   output_dir: sourmash
   output_files:
     - "{reference}.fa.sig"

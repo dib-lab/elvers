@@ -1,115 +1,53 @@
-from os.path import join
-import pandas as pd
+assembly_dir = config["elvers_directories"]["outdirs"]["assemble"]
+preprocess_dir = config["elvers_directories"]["outdirs"]["preprocess"]
+salmon_dir = os.path.join(out_dir, config['salmon']['output_dir'])
 
-salmon_params = config['salmon']['program_params']
-ep_params = config['salmon']['elvers_params']
-logs_dir  = config['elvers_directories']['logs']
+salmon_params = config['salmon']['params']
 
-# get inputs
-assembly_dir  = config['elvers_directories']['outdirs']['assemble']
-combine_units = ep_params['outputs']['extensions']['read']['combine_units']
-
-if salmon_params.get('input_trimmed', True):
-    input_dir = config['elvers_directories']['outdirs']['preprocess']
-    ext = '.trim.fq.gz'
-    se_ext = 'se'
-else:
-    input_dir = config['elvers_directories']['outdirs']['input_data']
-    ext = '.fq.gz'
-    se_ext = '1'
-
-if config.get('ignore_units'):
-    combine_units = False
-
-# get outdir
-quant_dir     = ep_params['outputs']['outdir']
-
-# use if you don't want to collapse technical replicates ("units" column; deseq2 not supported)
-def get_sample_no_combine(w):
+def get_fastp_trimmed(w):
     readsD = {}
-    if not is_single_end(**w): # note, this requires unit to be in outputs!
-        readsD['r1'] = join(input_dir, f'{w.sample}_{w.unit}_1{ext}')
-        readsD['r2'] = join(input_dir, f'{w.sample}_{w.unit}_2{ext}')
+    if not is_single_end(**w):
+        readsD['r1'] = os.path.join(preprocess_dir, f'{w.sample}_1.fastp.fq.gz')
+        readsD['r2'] = os.path.join(preprocess_dir, f'{w.sample}_2.fastp.fq.gz')
         return readsD
-    readsD['r'] = join(input_dir, f'{w.sample}_{w.unit}_se{ext}')
+    readsD['r'] = os.path.join(preprocess_dir, f'{w.sample}_1.fastp.fq.gz')
     return readsD
 
-def get_sample_combine_units(w):
-    readsD = {}
-    r1,r2,r = [],[],[]
-    unit_list = samples.groupby(level=0).get_group(w.sample)['unit'].tolist()
-    for unit in unit_list:
-        if not is_single_end(w.sample, unit):
-            r1+= [join(input_dir, f"{w.sample}_{unit}_1{ext}")]
-            r2+= [join(input_dir, f"{w.sample}_{unit}_2{ext}")]
-        else:
-            r+= [join(input_dir, f"{w.sample}_{unit}_{se_ext}{ext}")]
-    if r1:
-        readsD['r1'] = r1
-        readsD['r2'] = r2
-    elif r:
-        # salmon can't handle mixed pe/se samples, so if there are samples with some se, some pe, this will only do quant for pe
-        readsD['r'] = r
-    return readsD
-
-############
 rule salmon_index:
     """
     Index the transcriptome for salmon quantification
     """
     input:
-        join(assembly_dir, "{assembly}.fasta") 
+        os.path.join(assembly_dir, "{assembly}.fasta") 
     output:
-        directory(join(quant_dir, "{assembly}.salmonindex"))
+        directory(os.path.join(salmon_dir, "{assembly}.salmonindex"))
     message:
         """--- Indexing the transcriptome with Salmon ---"""
     threads: 10
     params:
         extra = salmon_params['index_params'].get('extra', '')
-    log:join(logs_dir, 'salmon','{assembly}_index.log')
-    benchmark:join(logs_dir, 'salmon','{assembly}_index.benchmark')
+    log:os.path.join(logs_dir, 'salmon','{assembly}_index.log')
+    benchmark:os.path.join(benchmarks_dir, 'salmon','{assembly}_index.benchmark')
     conda: "environment.yml"
 	script: "index-wrapper.py"
 
-if combine_units:
-    rule salmon_quant_combine_units:
-        """
-        Quantify transcripts with Salmon
-        """
-        input:
-            unpack(get_sample_combine_units),
-            index = join(quant_dir, "{assembly}.salmonindex")
-        output:
-            quant = join(quant_dir,"{sample}_x_{assembly}.salmon", "quant.sf"),
-            lib = join(quant_dir, "{sample}_x_{assembly}.salmon", "lib_format_counts.json")
-        message:
-            """--- Quantifying transcripts with Salmon ---"""
-        params:
-            libtype = salmon_params['quant_params'].get('libtype', 'A'),
-            extra = salmon_params['quant_params'].get('extra', '')
-        threads: 20
-        log: join(logs_dir, 'salmon/{sample}_x_{assembly}.log')
-        benchmark: join(logs_dir, 'salmon/{sample}_x_{assembly}.benchmark')
-        conda: "environment.yml"
-        script: "quant-wrapper.py"
-else:
-    rule salmon_quant_no_combine:
-        """
-        Quantify transcripts with Salmon
-        """
-        input: 
-            unpack(get_sample_no_combine),
-            index = join(quant_dir, "{assembly}.salmonindex") 
-        output:
-            quant = join(quant_dir,"{sample}_{unit}_x_{assembly}.salmon", "quant.sf"),
-            lib = join(quant_dir, "{sample}_{unit}_x_{assembly}.salmon", "lib_format_counts.json")
-        message:
-            """--- Quantifying transcripts with Salmon ---"""
-        params:
-            libtype = salmon_params['quant_params'].get('libtype', 'A'),
-            extra = salmon_params['quant_params'].get('extra', '')
-        threads: 20
-        log:join(logs_dir, 'salmon/{sample}_{unit}_x_{assembly}.log')
-        benchmark:join(logs_dir, 'salmon/{sample}_{unit}_x_{assembly}.benchmark')
-        conda: "environment.yml"
-        script: "quant-wrapper.py"
+rule salmon_quant_no_combine:
+    """
+    Quantify transcripts with Salmon
+    """
+    input: 
+        unpack(get_fastp_trimmed),
+        index = os.path.join(salmon_dir, "{assembly}.salmonindex") 
+    output:
+        quant = os.path.join(salmon_dir,"{sample}.x.{assembly}.salmon", "quant.sf"),
+        lib = os.path.join(salmon_dir, "{sample}.x.{assembly}.salmon", "lib_format_counts.json")
+    message:
+        """--- Quantifying transcripts with Salmon ---"""
+    params:
+        libtype = salmon_params['quant_params'].get('libtype', 'A'),
+        extra = salmon_params['quant_params'].get('extra', '')
+    threads: 20
+    log: os.path.join(logs_dir, 'salmon/{sample}.x.{assembly}.log')
+    benchmark: os.path.join(benchmarks_dir, 'salmon/{sample}.x.{assembly}.benchmark')
+    conda: "environment.yml"
+    script: "quant-wrapper.py"

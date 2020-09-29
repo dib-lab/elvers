@@ -128,7 +128,7 @@ def handle_references(config, pipeline):
         gtmaps.append("refinput")
 
     # handle assembler-generated references
-    steps = config["elvers_workflows"][pipeline]["steps"]
+    steps = config["elvers_pipelines"][pipeline]["steps"]
     for step in steps:
         if config[step].get("generates_reference"):
             references.append(step)
@@ -143,11 +143,14 @@ def handle_references(config, pipeline):
     #add reference names to config
     config["references"] = references
     output_dir= config["output_dir"]
+    basename = config["basename"]
     # build reference targets
-    ref_targets = expand(os.path.join(output_dir, refdir, reference_targets, basename = config["basename"], reference = references))
-    gtm_targets = expand(os.path.join(output_dir, refdir, genetransmap_targets, basename = config["basename"], reference = references))
+    ref_targets = expand(reference_targets, basename = basename, reference = references)
+    gtm_targets = expand(genetransmap_targets, basename = basename, reference = references)
+    targets = ref_targets + gtm_targets
+    targs = [os.path.join(output_dir, refdir, targ) for targ in targets]
 
-    return ref_targets + gtm_targets
+    return targs
 
 # sample checks
 def is_single_end(sample, end = '', assembly = ''):
@@ -188,7 +191,7 @@ def generate_targets(config):
     config["include_rules"] = []
 
     if config["elvers_pipelines"][pipeline]["reference_required"]:
-        reference_targets = handle_references(config)
+        reference_targets = handle_references(config, pipeline)
     if config["elvers_pipelines"][pipeline]["samples_required"]:
         handle_samples_input(config)
         workflow_targets = generate_pipeline_targets(config, pipeline, config["samples"])

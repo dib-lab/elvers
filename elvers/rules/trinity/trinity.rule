@@ -1,23 +1,20 @@
-from os import path
-
-tdir = config['trinity']['output_dir']
-assembly_dir = os.path.join(out_dir, tdir)
+preprocess_dir = config["elvers_directories"]["outdirs"]["preprocess"]
+trinity_dir = os.path.join(out_dir, config['trinity']['output_dir'])
 trinity_params = config['trinity']['params']
 
 def get_assembly_input(w):
     r1,r2,single =[],[],[]
     readsD = {}
     assembly_subset = trinity_params.get('assembly_subset')
-    for s, u in samples.iterrows():
-        sample, unit = u['sample'],u['unit']
+    for name in samples.iterrows():
         if assembly_subset:
-            if sample not in assembly_subset:
+            if name not in assembly_subset:
                 continue
-        if is_single_end(sample):
-            single+=[os.path.join(khmer_dir, f"{sample}_se.khmer.fq.gz")]
+        if is_single_end(name):
+            single+=[os.path.join(preprocess_dir, "khmer", f"{name}.se.khmer.fq.gz")]
         else:
-            r1+= [os.path.join(khmer_dir, f"{sample}_1.khmer.fq.gz")]
-            r2+= [os.path.join(khmer_dir, f"{sample}_2.khmer.fq.gz")]
+            r1+= [os.path.join(preprocess_dir, "khmer", f"{name}_1.khmer.fq.gz")]
+            r2+= [os.path.join(preprocess_dir, "khmer", f"{name}_2.khmer.fq.gz")]
     add_single = trinity_params.get('add_single_to_paired', False)
     if len(r1) > 0:
         if add_single == True:
@@ -36,8 +33,8 @@ rule trinity:
     input:
         unpack(get_assembly_input)
     output:
-        fasta = os.path.join(assembly_dir,"trinity_out_dir/Trinity.fasta"),
-        gene_trans_map = os.path.join(assembly_dir,"trinity_out_dir/Trinity.fasta.gene_trans_map"),
+        fasta = os.path.join(trinity_dir,"trinity_out_dir/Trinity.fasta"),
+        gene_trans_map = os.path.join(trinity_dir,"trinity_out_dir/Trinity.fasta.gene_trans_map"),
     message:
         """--- Assembling read data with Trinity --- """
     params:
@@ -55,12 +52,12 @@ localrules: rename_trinity_fasta,rename_trinity_gene_trans_map
 
 rule rename_trinity_fasta:
     input: rules.trinity.output.fasta
-    output: os.path.join(assembly_dir, basename + '_trinity.fasta')
+    output: os.path.join(trinity_dir, basename + '_trinity.fasta')
     log: os.path.join(logs_dir, 'trinity/cp_assembly.log')
     shell: ("cp {input} {output}") 
 
 rule rename_trinity_gene_trans_map:
     input: rules.trinity.output.gene_trans_map
-    output: os.path.join(assembly_dir, basename + '_trinity.fasta.gene_trans_map')
+    output: os.path.join(trinity_dir, basename + '_trinity.fasta.gene_trans_map')
     log: os.path.join(logs_dir, 'trinity/cp_gt_map.log')
     shell: ("cp {input} {output}") 

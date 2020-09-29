@@ -1,55 +1,46 @@
-from os.path import join
-
-logs_dir  = config['elvers_directories']['logs']
-ep_params = config['plass']['elvers_params']
-assembly_params = config['plass']['program_params']
-
-assembly_dir = ep_params['outputs']['outdir']
-assembly_extension = ep_params['outputs']['extensions']['reference_extensions'][0] # should only be a single entry here, default: '_plass'
-
-BASE = config['basename']
+preprocess_dir = config["elvers_directories"]["outdirs"]["preprocess"]
+plass_dir = os.path.join(out_dir, config['plass']['output_dir'])
+plass_params = config['plass']['params']
 
 def get_assembly_input(w):
     r1,r2,single =[],[],[]
     readsD = {}
-    if assembly_params.get('input_kmer_trimmed', True):
-        ext = '.khmer.fq.gz' 
-        input_dir = config['elvers_directories']['outdirs']['preprocess']
-    elif assembly_params.get('input_trimmed', True):
-        ext = '.trim.fq.gz'
-        input_dir = config['elvers_directories']['outdirs']['preprocess']
-    else:
-        ext = '.fq.gz'
-        input_dir = config['elvers_directories']['outdirs']['input_data']
-    for s, u in samples.iterrows():
-        sample, unit = u['sample'],u['unit']
-        if is_single_end(sample, unit):
-            single+=[join(input_dir, f"{sample}_{unit}{ext}")]
+    assembly_subset = plass_params.get('assembly_subset')
+    for name in samples.iterrows():
+        if assembly_subset:
+            if name not in assembly_subset:
+                continue
+        if is_single_end(name):
+            single+=[os.path.join(preprocess_dir, "khmer", f"{name}.se.khmer.fq.gz")]
         else:
-            r1+= [join(input_dir, f"{sample}_{unit}_1{ext}")]
-            r2+= [join(input_dir, f"{sample}_{unit}_2{ext}")]
-    add_single = assembly_params.get('add_single_to_paired', False)
+            r1+= [os.path.join(preprocess_dir, "khmer", f"{name}_1.khmer.fq.gz")]
+            r2+= [os.path.join(preprocess_dir, "khmer", f"{name}_2.khmer.fq.gz")]
+    add_single = plass_params.get('add_single_to_paired', False)
     if len(r1) > 0:
         if add_single == True:
             r1 = r1 + single
         readsD['left'] = r1
         readsD['right'] = r2
     else:
-        readsD['left'] = single
+        if len(single) > 0:
+            readsD['left'] = single
+        else:
+           sys.stderr.write("\t No samples to assemble. If subsetting, please check that the values of `assembly_subset` match your sample names. See https://dib-lab.github.io/elvers/plass for details.\n")
+           sys.exit(-1)
     return readsD
 
 rule plass:
     input:
         unpack(get_assembly_input)
     output:
-        fasta = join(assembly_dir, BASE + assembly_extension + '.fasta') 
+        fasta = os.path.join(plass_dir, basename + '_plass.fasta') 
     message:
         """--- Assembling read data with PLASS --- """
     params:
         # optional parameters
-        extra=assembly_params.get('extra', '')
-    log: join(logs_dir, 'plass','plass.log')
-    benchmark: join(logs_dir, 'plass','plass.benchmark')
+        extra=plass_params.get('extra', '')
+    log: os.path.join(logs_dir, 'plass','plass.log')
+    benchmark: os.path.join(benchmarks_dir, 'plass','plass.benchmark')
     threads: 32
     conda: "environment.yml"
 	script: "plass-wrapper.py"

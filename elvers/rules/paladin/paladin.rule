@@ -1,94 +1,82 @@
-import os
-from os.path import join
+assembly_dir = config["elvers_directories"]["outdirs"]["assemble"]
+preprocess_dir = config["elvers_directories"]["outdirs"]["preprocess"]
+paladin_dir = os.path.join(out_dir, config['paladin']['output_dir'])
 
-logs_dir  = config['elvers_directories']['logs']
-assembly_dir  = config['elvers_directories']['outdirs']['assemble']
-
-ep_params = config['paladin']['elvers_params']
-paladin_params = config['paladin']['program_params']
+paladin_params = config['paladin']['params']
 index_params = paladin_params['index_params']
 alignment_params = paladin_params['alignment_params']
-
-# get outdir
-paladin_dir = ep_params['outputs']['outdir']
-assembly_extension = ep_params['outputs']['extensions']['reference_extensions'][0]
 
 def get_paladin_input(w):
     readsD = {}
     if not is_single_end(**w): 
-        if paladin_params.get('input_pear_merged', True):
-            input_dir = join(config['elvers_directories']['outdirs']['preprocess'], 'pear')
-            ext = '.pear_assembled.fq.gz' # requires pear merging of pe reads
-        elif paladin_params.get('input_trimmed', True):
-            input_dir = config['elvers_directories']['outdirs']['preprocess']
-            ext = '_1.trim.fq.gz'
-        else:
-            ext = '_1.fq.gz'
-            input_dir = config['elvers_directories']['outdirs']['input_data']
-        readsD['r'] = join(input_dir, f'{w.sample}_{w.unit}{ext}')
-        return readsD
-    elif paladin_params.get('input_trimmed', True):
-        input_dir = config['elvers_directories']['outdirs']['preprocess']
-        ext = '.trim.fq.gz'
-    else:
-        ext = '_1.fq.gz'
-        input_dir = config['elvers_directories']['outdirs']['input_data']
-    readsD['r'] = join(input_dir, f'{w.sample}_{w.unit}{ext}')
-    return readsD
+        pear_dir = os.path.join(preprocess_dir, 'pear')
+        return os.path.join(pear_dir, f'{w.sample}.pear_assembled.fq.gz')
+    return os.path.join(preprocess_dir, f'{w.sample}_1.fastp.fq.gz')
 
 rule paladin_index:
-    input: join(assembly_dir, "{assembly}.fasta")
-    output: join(paladin_dir, "{assembly}.fasta.bwt"),
+    input: os.path.join(assembly_dir, "{assembly}.fasta")
+    output: os.path.join(paladin_dir, "{assembly}.fasta.bwt"),
     params: 
         reference_type= index_params.get('reference_type', '3'),
         gff = index_params.get('gff_file', '')
-    log: join(logs_dir, 'paladin', "{assembly}_index.log"),
-    benchmark: join(logs_dir, 'paladin', "{assembly}_index.benchmark"),
+    wildcard_constraints:
+        assembly="\w+_plass"
+    log: os.path.join(logs_dir, 'paladin', "{assembly}_index.log"),
+    benchmark: os.path.join(logs_dir, 'paladin', "{assembly}_index.benchmark"),
     conda: "environment.yml"
     script: 'paladin-index.py'
    
 rule paladin_align:
     input:  
-        unpack(get_paladin_input),
-        index = join(paladin_dir, "{assembly}.fasta.bwt"), 
+        reads = get_paladin_input,
+        index = os.path.join(paladin_dir, "{assembly}.fasta.bwt"), 
     output: 
-        join(paladin_dir,"{sample}_{unit}_x_{assembly}.paladin.bam"),
+        os.path.join(paladin_dir,"{sample}.x.{assembly}.paladin.bam"),
     threads: 20
     params:
         f = alignment_params.get('f','125'),
         extra = alignment_params.get('extra', '')
-    log: join(logs_dir, 'paladin', "{sample}_{unit}_x_{assembly}.paladin.log"),
-    benchmark: join(logs_dir, 'paladin', "{sample}_{unit}_x_{assembly}.paladin.benchmark"),
+    wildcard_constraints:
+        assembly="\w+_plass"
+    log: os.path.join(logs_dir, 'paladin', "{sample}.x.{assembly}.paladin.log"),
+    benchmark: os.path.join(logs_dir, 'paladin', "{sample}.x.{assembly}.paladin.benchmark"),
     conda: "environment.yml"
     script: 'paladin-align.py'
     
 rule samtools_sort_paladin:
-    input: join(paladin_dir,"{sample}_{unit}_x_{assembly}.paladin.bam")
-    output: join(paladin_dir,"{sample}_{unit}_x_{assembly}.paladin.sort.bam") 
+    input: os.path.join(paladin_dir,"{sample}.x.{assembly}.paladin.bam")
+    output: os.path.join(paladin_dir,"{sample}.x.{assembly}.paladin.sort.bam") 
     conda: "environment.yml"
-    log: join(logs_dir, 'paladin',"{sample}_{unit}_x_{assembly}.paladin.sort.bam.log")
-    benchmark: join(logs_dir, 'paladin',"{sample}_{unit}_x_{assembly}.paladin.sort.bam.benchmark")
+    log: os.path.join(logs_dir, 'paladin',"{sample}.x.{assembly}.paladin.sort.bam.log")
+    benchmark: os.path.join(logs_dir, 'paladin',"{sample}.x.{assembly}.paladin.sort.bam.benchmark")
     threads: 5
-    shell:"""
-    samtools sort -@ {threads} {input} -o {output}
-    """
+    shell:
+        """
+        samtools sort -@ {threads} {input} -o {output}
+        """
 
 rule samtools_flagstat_paladin:
-    input: join(paladin_dir,"{sample}_{unit}_x_{assembly}.paladin.sort.bam") 
-    output: join(paladin_dir,"{sample}_{unit}_x_{assembly}.paladin.sort.bam.flagstat")
-    log: join(logs_dir, 'paladin',"{sample}_{unit}_x_{assembly}.paladin.sort.bam.flagstat.log")
-    benchmark: join(logs_dir, 'paladin',"{sample}_{unit}_x_{assembly}.paladin.sort.bam.flagstat.benchmark")
+    input: os.path.join(paladin_dir,"{sample}.x.{assembly}.paladin.sort.bam") 
+    output: os.path.join(paladin_dir,"{sample}.x.{assembly}.paladin.sort.bam.flagstat")
+    wildcard_constraints:
+        assembly="\w+_plass"
+    log: os.path.join(logs_dir, 'paladin',"{sample}.x.{assembly}.paladin.sort.bam.flagstat.log")
+    benchmark: os.path.join(logs_dir, 'paladin',"{sample}.x.{assembly}.paladin.sort.bam.flagstat.benchmark")
     conda: "environment.yml"
-    shell:"""
-    samtools flagstat {input} > {output}
-    """
+    shell:
+        """
+        samtools flagstat {input} > {output}
+        """
     
 rule samtools_index_paladin:
-    input: join(paladin_dir,"{sample}_{unit}_x_{assembly}.paladin.sort.bam") 
-    output: join(paladin_dir,"{sample}_{unit}_x_{assembly}.paladin.sort.bam.bai")
+    input: os.path.join(paladin_dir,"{sample}.x.{assembly}.paladin.sort.bam") 
+    output: os.path.join(paladin_dir,"{sample}.x.{assembly}.paladin.sort.bam.bai")
+    wildcard_constraints:
+        assembly="\w+_plass"
     conda: "environment.yml"
-    log: join(logs_dir, 'paladin',"{sample}_{unit}_x_{assembly}.paladin.sort.bam.index.log")
-    benchmark: join(logs_dir, 'paladin',"{sample}_{unit}_x_{assembly}.paladin.sort.bam.index.benchmark")
-    shell:"""
-    samtools index {input}
-    """
+    log: os.path.join(logs_dir, 'paladin',"{sample}.x.{assembly}.paladin.sort.bam.index.log")
+    benchmark: os.path.join(logs_dir, 'paladin',"{sample}.x.{assembly}.paladin.sort.bam.index.benchmark")
+    shell:
+        """
+        samtools index {input}
+        """
