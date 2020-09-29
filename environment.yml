@@ -1,4 +1,4 @@
-name: thumper
+name: elvers
 channels:
   - conda-forge
   - bioconda
@@ -9,11 +9,5 @@ dependencies:
   - pandas=1.1.1
   - python>=3.7
   - snakemake=5.24.1
-#   - yaml
-#   - graphviz
-#   - networkx
-#  - pygments
-#   - pygraphviz
-#   - psutil
-#   - pytest
-#   - jinja2
+  - pytest
+  - yaml

@@ -6,9 +6,10 @@ from snakemake.workflow import srcdir
 import elvers.utils.utils as ep
 
 out_dir = config["output_dir"]
+ddir = config["get_data"]["output_dir"]
+data_dir = os.path.join("output_dir", ddir)
 logs_dir = os.path.join(out_dir, "logs")
 benchmarks_dir = os.path.join(out_dir, "benchmarks")
-data_dir = config['data_dir'].rstrip('/')
 #report_dir = os.path.join(out_dir, "reports")
 basename = config["basename"]
 
@@ -64,8 +65,34 @@ rule elvers:
     input: ep.generate_targets(config)
 
 
-include: srcdir("rules/utils/common.snakefile")
 include_rules = config["include_rules"]
-for r in includeRules:
+for r in include_rules:
     include: r
 
+# check config files only
+rule check:
+    input:
+        config["sample_info"]                  # do nothing - this file should exist
+
+# print out the configuration
+rule showconf:
+    input:
+        config["sample_info"]
+    run:
+        import yaml
+        print('# full aggregated configuration:')
+        generalP = {}
+        generalP['basename'] = config["basename"]
+        generalP['experiment'] = config['experiment']
+        print(yaml.dump(generalP, indent=2,  default_flow_style=False).strip())
+        print(f"Workflow: {workflow}")
+        workflow_params, program_params = {},{}
+
+        for step in config["workflow_steps"]:
+            workflow_params[step] = config["step"]["params"]
+            workflow = config["pipeline"]
+
+        program_params["program_params"] = workflow_params
+        print(yaml.dump(program_params, indent=2,  default_flow_style=False).strip())
+        #print(yaml.dump(config).strip())
+        print('# END')

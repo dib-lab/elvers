@@ -4,8 +4,8 @@
 # this sets the output directory name:
 basename: 'nema'
 
-get_data:
-  # this says to download samples specified as Web URLs:
-  download_data: True
-  # this describes the samples:
-  samples: "nema.samples.tsv"
+sample_info: examples/nema.samples.csv
+
+program_parameters:
+  trinity:
+    max_memory: 100G

@@ -24,6 +24,7 @@ pipeline: default
 
 ## rule params ##
 get_data:
+  rulefile: utils/get_data.rule
   output_dir: input_data
   output_files:
     - "{sample}_{end}.fq.gz"
@@ -31,6 +32,7 @@ get_data:
     extra: ""
 
 get_reference:
+  rulefile: utils/get_reference.rule
   output_dir: assembly
   output_files:
     - "{basename}_refinput.fasta"
@@ -199,7 +201,7 @@ paladin:
       extra: ''
 
 # enable additional alphabets here? or just rm sourmash altogether?
-sourmash_sketch_signatures:
+sourmash_sketch_reads:
   rulefile: sourmash/sourmash_sketch_signatures.rule
   output_dir: sourmash
   output_files:
@@ -209,7 +211,7 @@ sourmash_sketch_signatures:
     scaled: 1000
     extra: ''
 
-sourmash_sketch_assembly:
+sourmash_sketch_reference:
   rulefile: sourmash/sourmash_sketch_assembly.rule
   output_dir: sourmash
   output_files:

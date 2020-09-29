@@ -6,11 +6,12 @@ import pandas as pd
 from os.path import join
 from snakemake.utils import validate
 from snakemake.workflow import srcdir
+from snakemake.io import expand
 
 def update_nested_dict(d, other):
-# Can't just update at top level, need to update nested params
-# Note that this only keeps keys that already exist in other
-#https://code.i-harness.com/en/q/3154af
+    # Can't just update at top level, need to update nested params
+    # Note that this only keeps keys that already exist in other
+    #https://code.i-harness.com/en/q/3154af
     for k, v in other.items():
         if isinstance(v, collections.Mapping):
             d_v = d.get(k)
@@ -21,8 +22,10 @@ def update_nested_dict(d, other):
         else:
             d[k] = v
 
-def read_samples(config):
-    samples_file = find_input_file(config["sample_info"], "sample info", add_suffixes = ['.tsv'. '.csv', '.xls', '.xlsx'])
+def read_samples(config, sample_info, strict_mode = False, urls_begin = ["http", "ftp"]):
+    samples_suffixes = [".tsv", ".csv", ".xls", ".xlsx"]
+    samples_file = find_input_file(sample_info, "sample info", add_suffixes = samples_suffixes)
+    samples = ""
     if '.tsv' in samples_file or '.csv' in samples_file:
         separator = '\t'
         if '.csv' in samples_file:
@@ -45,34 +48,38 @@ def read_samples(config):
             sys.stderr.write(f"\n\tError: {samples_file} file is not properly formatted. Please fix.\n\n")
             print(e)
     # column 4 is "condition", but can change name --> LOCK INTO CONDITION
-    if (samples.iloc[:, 4].value_counts() < 2).any():
+    if (samples["condition"].value_counts() < 2).any():
         config['all_replicated'] = False
     # now verify they exist
-    data_dir = config.get("data_dir", "")
-    if data_dir:
-        data_dir = sanitize_path(data_dir)
+    input_data_dir = config.get("input_data_dir", "")
+    if input_data_dir:
+        input_data_dir = sanitize_path(input_data_dir)
     #sample_list = samples["fq1"].tolist() + samples["fq2"].tolist()
-    for sample in samples.index:
-        fq1 = samples.at[sample, "fq1"]
-        fullpath_fq1 = os.path.join(data_dir, fq1)
-        fq2 = samples.at[sample, "fq2"]
-        fullpath_fq2 = os.path.join(data_dir, fq2)
-        if not os.path.exists(fullpath_fq1):
-            print(f'** ERROR: {sample} fastq1 file {fq1} does not exist in {data_dir}')
-            if strict_mode:
-                print('** exiting.')
-                sys.exit(-1)
-            else:
-                print(f'** Strict mode is off. Removing this sample and proceeding.')
-                samples.drop(sample, inplace=True)
-        elif fq2 and not os.path.exists(fullpath_fq2):
-            print(f'** ERROR: sample {sample} fastq2 file {fq2} does not exist in {data_dir}')
-            if strict_mode:
-                print('** exiting.')
-                sys.exit(-1)
-            else:
-                print(f'** Strict mode is off. Treating this sample as single-end and proceeding.')
-                samples.at[sample, "fq2"] = ""
+    sample_names= samples.index.to_list()
+    for name in sample_names:
+        fq1 = samples.at[name, "fq1"]
+        fq2 = samples.at[name, "fq2"]
+        if fq1.startswith(tuple(urls_begin)):
+            pass
+        else:
+            fullpath_fq1 = os.path.join(input_data_dir, fq1)
+            fullpath_fq2 = os.path.join(input_data_dir, fq2)
+            if not os.path.exists(fullpath_fq1):
+                print(f'** ERROR: {name} fastq1 file {fq1} does not exist in {input_data_dir}')
+                if strict_mode:
+                    print('** exiting.')
+                    sys.exit(-1)
+                else:
+                    print(f'** Strict mode is off. Removing this sample and proceeding.')
+                    samples.drop(name, inplace=True)
+            elif fq2 and not os.path.exists(fullpath_fq2):
+                print(f'** ERROR: sample {name} fastq2 file {fq2} does not exist in {input_data_dir}')
+                if strict_mode:
+                    print('** exiting.')
+                    sys.exit(-1)
+                else:
+                    print(f'** Strict mode is off. Treating this sample as single-end and proceeding.')
+                    samples.at[name, "fq2"] = ""
 
     config["samples"] = samples
 
@@ -105,11 +112,11 @@ def find_input_file(filename, name="input file", add_paths=[], add_suffixes = ['
 def handle_references(config, pipeline):
     references = []
     gtmaps = []
-    input_reference = config.get("input_reference", None)
     urls_begin = config["urls_begin"]
     ref_rule = srcdir("rules/utils/get_reference.rule")
     # handle user-input reference (singular)
-    if input_reference and not input_reference.startswith(tuple(urls_begin):
+    input_reference = config.get("input_reference", None)
+    if input_reference and not input_reference.startswith(tuple(urls_begin)):
         # check that the input file exists
         input_reference = find_input_file(input_reference, name="input reference", add_suffixes = ['.fa', '.fasta'])
         references.append("refinput")
@@ -137,8 +144,8 @@ def handle_references(config, pipeline):
     config["references"] = references
     output_dir= config["output_dir"]
     # build reference targets
-    ref_targets = expand(os.path.join(output_dir, refdir, reference_targets, basename = config["basename"], reference = references)
-    gtm_targets = expand(os.path.join(output_dir, refdir, genetransmap_targets, basename = config["basename"], reference = references)
+    ref_targets = expand(os.path.join(output_dir, refdir, reference_targets, basename = config["basename"], reference = references))
+    gtm_targets = expand(os.path.join(output_dir, refdir, genetransmap_targets, basename = config["basename"], reference = references))
 
     return ref_targets + gtm_targets
 
@@ -147,12 +154,13 @@ def is_single_end(sample, end = '', assembly = ''):
     return pd.isnull(samples.at[sample, "fq2"])
 
 def handle_samples_input(config):
-    program_params = config['get_data'].get('program_params')
+    program_params = config['get_data'].get('params')
     urls_begin = config["urls_begin"]
     data_rule = srcdir("rules/utils/get_data.rule")
     samples_file = config.get('sample_info', None)
+    strict_mode=config.get("strict", 1)
     if samples_file:
-        read_samples(samples_file)
+        read_samples(config, samples_file, strict_mode)
         config["include_rules"].append(data_rule)
     else:
         sys.stderr.write("\n\tError: this workflow needs samples files, but no 'samples_info' file is provided in the configfile. Please fix.\n\n")
@@ -165,7 +173,7 @@ def handle_user_program_params(config):
     for program, user_params in user_program_params.items():
         if program not in config.keys():
             sys.stderr.write(f"\nWarning: New parameters for program {program} provided in the configfile, but this program name doesn't match any in this pipeline. Ignoring.\n\n")
-             continue
+            continue
         params = config[program].get("params", {})
         update_nested_dict(params, user_params)
         config[program]["params"] = params
@@ -190,36 +198,43 @@ def generate_targets(config):
 def generate_pipeline_targets(config, pipeline, samples):
     pipeline_targets=[]
     pipeline_rules = []
+    sample_names = ""
+    output_dir = config["output_dir"]
+    basename = config["basename"]
     # generate targets for each step
     steps = config["elvers_pipelines"][pipeline]["steps"]
     config["workflow_steps"] = steps
-
-    if samples:
-
+    if isinstance(samples, pd.DataFrame):
+        steps.append("get_data")
+        sample_names = samples.index.to_list()
     for step in steps:
-        rulefile = config[step]["rulefile"]
-        r = srcdir(f"rules/{rulefile}")
+        ruleF = config[step]["rulefile"]
+        r = srcdir(f"rules/{ruleF}")
         config['include_rules'].append(r)
 
         step_outdir = config[step]["output_dir"]
         step_files = config[step]["output_files"]
 
-        references = config["references"]
+        references = config.get("references", [])
         pe_ends = config['fq_ends']["paired"]
         pe_pairing = config['pairing']["paired"]
         contrasts = ""
+        if config[step]["params"].get("contrasts", None):
+            contrasts = step["params"]["contrasts"].keys()
 
-        for stepF in step_files:
-            if stepF["params"].get("contrasts", None):
-                contrasts = stepF["params"]["contrasts"].keys()
-            for sample in samples:
-                # "ends", ""pairing" will be different for se, pe files
+        if sample_names:
+            for name in sample_names:
+            # "ends", ""pairing" will be different for se, pe files
                 pairing = pe_pairing
                 ends = pe_ends
-                if is_single_end(sample, end = '', assembly = ''):
+                if pd.isnull(samples.at[name, "fq2"]):
                     pairing = se_pairing
                     ends = se_ends
-                pipeline_targets += expand(os.path.join(output_dir, step_outdir, stepF), sample=sample, reference=references, basename=basename, pairing=pairing, end=ends, contrast=contrasts)
+                for stepF in step_files:
+                    pipeline_targets += expand(os.path.join(output_dir, step_outdir, stepF), sample=name, reference=references, basename=basename, pairing=pairing, end=ends, contrast=contrasts)
+        else:
+            for stepF in step_files:
+                pipeline_targets += expand(os.path.join(output_dir, step_outdir, stepF), reference=references, basename=basename)
 
     return pipeline_targets
 

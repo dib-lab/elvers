@@ -12,7 +12,8 @@ elvers_pipelines:
       - trinity
       - dammit
       - salmon
-      - sourmash
+      - sourmash_sketch_reads
+      - sourmash_sketch_reference
   protein_assembly:
     samples_required: True
     reference_required: False
@@ -22,7 +23,8 @@ elvers_pipelines:
       - plass
       - pear
       - paladin
-      - sourmash
+      - sourmash_sketch_reads
+      - sourmash_sketch_reference
   preprocess:
     samples_required: True
     reference_required: False
@@ -65,12 +67,12 @@ elvers_pipelines:
     steps:
       - fastp
       - khmer
-      - sourmash
+      - sourmash_sketch_reads
   sourmash_compute_reference:
     samples_required: False
     reference_required: True
     steps:
-      - sourmash
+      - sourmash_sketch_reference
   plass_assemble:
     samples_required: True
     reference_required: False

@@ -20,13 +20,13 @@ def get_package_configfile(filename):
 
 
 def run_snakemake(configfile, no_use_conda=False, no_use_mamba=False,
-                  snakefile_name='Snakefile',
+                  snakefile_name='elvers.snakefile',
                   outdir=None, verbose=False, extra_args=[]):
-    # find the Snakefile relative to package path
+    # find the elvers.snakefile relative to package path
     snakefile = get_snakefile_path(snakefile_name)
 
     # basic command
-    cmd = ["snakemake"]
+    cmd = ["snakemake", "-s", snakefile]
 
     # add --use-conda
     if not no_use_conda:
@@ -80,7 +80,7 @@ def cli():
     pass
 
 # create a run subcommand that by default passes all of its arguments
-# on to snakemake (after setting Snakefile and config)
+# on to snakemake (after setting elvers.snakefile and config)
 @click.command(context_settings={"ignore_unknown_options": True})
 @click.argument('configfile', type=click.Path(exists=True))
 @click.option('--no-use-conda', is_flag=True, default=False)
@@ -90,8 +90,8 @@ def cli():
 @click.option('--verbose', is_flag=True)
 @click.argument('snakemake_args', nargs=-1)
 def run(configfile, snakemake_args, no_use_conda, no_use_mamba, verbose, outdir):
-    "execute thumper workflow (using snakemake underneath)"
-    run_snakemake(configfile, snakefile_name='thumper.snakefile',
+    "execute elvers workflow (using snakemake underneath)"
+    run_snakemake(configfile, snakefile_name='elvers.snakefile',
                   no_use_conda=no_use_conda, no_use_mamba=no_use_mamba,
                   verbose=verbose,outdir=outdir,
                   extra_args=snakemake_args)
@@ -101,7 +101,7 @@ def run(configfile, snakemake_args, no_use_conda, no_use_mamba, verbose, outdir)
 @click.argument('configfile', type=click.Path(exists=True))
 def check(configfile):
     "check configuration"
-    run_snakemake(configfile, extra_args=['check'])
+    run_snakemake(configfile, snakefile_name='elvers.snakefile', extra_args=['check'])
 
 # 'showconf' command
 @click.command()
@@ -116,11 +116,11 @@ def info():
     "provide basic install/config file info"
     from .version import version
     print(f"""
-This is thumper version v{version}
+This is elvers version v{version}
 
 Package install path: {os.path.dirname(__file__)}
 Install-wide config file: {get_package_configfile('config.yaml')}
-snakemake Snakefile: {get_snakefile_path('thumper.snakefile')}
+snakemake elvers.snakefile: {get_snakefile_path('elvers.snakefile')}
 """)
 
 # 'init' command
