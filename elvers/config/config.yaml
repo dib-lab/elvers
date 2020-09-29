@@ -1,0 +1,205 @@
+output_dir: output.elvers
+basename: elvers
+experiment_suffix: ""
+logs_dir: logs
+benchmarks_dir: benchmarks
+rules_dir: rules
+
+urls_begin: ["http", "ftp"]
+
+# useful for paired, single end samples
+fq_ends:
+  paired:
+    - 1
+    - 2
+  single:
+    - 1
+pairing:
+  paired:
+    - pe
+  single:
+    - se
+
+workflows:
+  - default
+
+## rule params ##
+get_data:
+  output_dir: input_data
+  output_files:
+    - "{sample}_{end}.fq.gz"
+  params:
+    extra: ""
+
+get_reference:
+  output_dir: assembly
+  output_files:
+    - "{basename}.fasta"
+  output_gene_trans_map:
+    - "{basename}.fasta.gene_trans_map"
+  params:
+    #reference: examples/nema.assembly.fasta
+    #gene_trans_map:  examples/nema.assembly.fasta.gene_trans_map
+    #reference_extension: ''
+    download_ref: False
+    use_ftp: False
+
+fastp:
+  output_dir: preprocess/fastp
+  output_files:
+    - "{sample}_{end}.fastp.fq.gz"
+    - "{sample}.fastp.json"
+    - "{sample}.fastp.html"
+  params:
+    extra: ""
+
+khmer:
+  output_dir: preprocess/khmer
+  output_files:
+    - "{sample}.{pairing}.khmer.fq.gz" # if paired, this is interleaved file. If single end = just se. does this matter?
+  params:
+    diginorm: True
+    ksize: 20
+    Z: 18
+    C: 3
+    memory: 4e9
+    coverage: 20
+    extra: ""
+
+trinity:
+  output_dir: assembly
+  output_files:
+    - "{basename}_trinity.fasta"
+    - "{basename}_trinity.fasta.gene_trans_map"
+  generates_reference: True
+  params:
+    # do we want to assemble the single reads with pe reads?
+    add_single_to_paired: False
+    max_memory: 4G
+    seqtype: fq
+    extra: ''
+
+dammit:
+  output_dir: annotation
+  output_files:
+    - "{reference}.dammit.gff3"
+    - "{reference}.dammit.fasta"
+  params:
+    db_dir: databases
+    db_extra: ''
+    db_install_only: False
+    annot_extra: " --quick "
+    busco_group:
+      - metazoa
+      - eukaryota
+
+salmon:
+  output_dir: salmon
+  output_files:
+    - "{reference}.salmonindex"
+    - "{sample}.x.{reference}.salmon/quant.sf"
+  params:
+    combine_units: True
+
+deseq2:
+  output_dir: deseq2
+  output_files:
+    - "{basename}.x.{reference}.deseq2.rds"
+    - "{basename}.x.{reference}.deseq2.pca.pdf"
+    - "{basename}.x.{reference}.{contrast}.deseq2.tsv"
+    - "{basename}.x.{reference}.{contrast}.deseq.padj_0.1.tsv"
+    - "{basename}.x.{reference}.{contrast}.deseq2.ma-plot.pdf"
+  params:
+    combine_units: True # needs to match with salmon's combine_units
+    gene_trans_map: True
+    # contrasts for the deseq2 results method
+    contrasts:
+      time0-vs-time6:
+        - time0
+        - time6
+    pca:
+      labels:
+      # columns of sample sheet to use for PCA
+        - condition
+
+edgeR:
+  output_dir: edgeR
+  output_files:
+    - "{basename}.x.{reference}.edgeR.rds"
+    - "{basename}.x.{reference}.edgeR.pca.pdf"
+    - "{basename}.x.{reference}.{contrast}.edgeR.tsv"
+    - "{basename}.x.{reference}.{contrast}.edgeR.padj_0.1.tsv"
+    - "{basename}.x.{reference}.{contrast}.edgeR.ma-plot.pdf"
+  params:
+    # contrasts for the edgeR results method
+    combine_units: True # needs to match with salmon's combine_units
+    contrasts:
+      treated-vs-untreated:
+        - treated
+        - untreated
+    mds:
+      labels:
+      # columns of sample sheet to use for PCA
+        - condition
+
+bowtie2:
+  output_dir: bowtie2
+  output_files:
+    - "{sample}.x.{reference}.{pairing}.bam"
+  params:
+    extra: ''
+
+plass:
+  output_dir: assemly
+  output_files:
+    - "{basename}_plass.fasta"
+  generates_reference: True
+  params:
+    # do we want to assemble the single reads with pe reads?
+    add_single_to_paired: False
+    extra: ''
+
+pear:
+  output_dir: preprocess/pear
+  output_files:
+    - "{sample}.pear_assembled.fq.gz"
+    - "{sample}.pear_discarded.fq.gz"
+    - "{sample}.pear_unassembled_{end}.fq.gz"
+  program_params:
+    pval: .01
+    max_memory: 4G
+    extra: ''
+
+paladin:
+  output_dir: paladin
+  output_files:
+    - "{reference}_plass.paladin.fasta.bwt"
+    - "{sample}.x.{reference}_plass.paladin.bam"
+    - "{sample}.x.{reference}_plass.paladin.sort.bam"
+    - "{sample}.x.{reference}_plass.paladin.sort.bam.flagstat"
+    - "{sample}.x.{reference}_plass.paladin.sort.bam.bai"
+  params:
+    index_params:
+      reference_type: '3'
+    alignment_params:
+      f: 125
+      extra: ''
+
+# enable additional alphabets here? or just rm sourmash altogether?
+sourmash_sketch_signatures:
+  output_dir: sourmash
+  output_files:
+    - "{sample}.khmer.fq.sig"
+  params:
+    k_size: 31
+    scaled: 1000
+    extra: ''
+
+sourmash_sketch_assembly:
+  output_dir: sourmash
+  output_files:
+    - "{reference}.fa.sig"
+  params:
+    k_size: 31
+    scaled: 1000
+    extra: ""

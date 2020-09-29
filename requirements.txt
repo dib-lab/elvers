@@ -1,9 +1,0 @@
-pyyaml
-snakemake
-pytest
-numpy
-pandas
-graphviz
-networkx
-psutil
-ftputil

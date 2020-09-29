@@ -1,16 +1,19 @@
+name: thumper
 channels:
-  - bioconda
-  - defaults
   - conda-forge
+  - bioconda
+  - anaconda
+  - defaults
 dependencies:
-  - python >=3.6
-  - snakemake =5.14
-  - yaml
-  - pandas
-  - graphviz
-  - networkx
-  - pygments
-  - pygraphviz
-  - psutil
-  - pytest
-  - jinja2
+  - mamba
+  - pandas=1.1.1
+  - python>=3.7
+  - snakemake=5.24.1
+#   - yaml
+#   - graphviz
+#   - networkx
+#  - pygments
+#   - pygraphviz
+#   - psutil
+#   - pytest
+#   - jinja2

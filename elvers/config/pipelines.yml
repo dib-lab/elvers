@@ -1,0 +1,89 @@
+# Available pipelines
+
+# rules to be run for each workflow Add or change 
+# these only if you're sure you have new prog params right.
+elvers_pipelines:
+  default:
+    samples_required: True
+    reference_required: False
+    steps:
+      - fastp
+      - khmer
+      - trinity
+      - dammit
+      - salmon
+      - sourmash
+  protein_assembly:
+    samples_required: True
+    reference_required: False
+    steps:
+      - fastp
+      - khmer
+      - plass
+      - pear
+      - paladin
+      - sourmash
+  preprocess:
+    samples_required: True
+    reference_required: False
+    steps:
+      - fastp
+  kmer_trim:
+    samples_required: True
+    reference_required: False
+    steps:
+      - fastp
+      - khmer
+  assemble:
+    samples_required: True
+    reference_required: False
+    steps:
+      - fastp
+      - khmer
+      - trinity
+  annotate:
+    samples_required: False
+    reference_required: True
+    steps:
+      - dammit
+  quantify:
+    samples_required: True
+    reference_required: True
+    steps:
+      - fastp
+      - salmon
+  diffexp:
+    samples_required: True
+    reference_required: True
+    steps:
+      - fastp
+      - salmon
+      - deseq2
+  sourmash_compute_samples:
+    samples_required: True
+    reference_required: False
+    steps:
+      - fastp
+      - khmer
+      - sourmash
+  sourmash_compute_reference:
+    samples_required: False
+    reference_required: True
+    steps:
+      - sourmash
+  plass_assemble:
+    samples_required: True
+    reference_required: False
+    steps:
+      - fastp
+      - khmer
+      - plass
+  paladin_map:
+    samples_required: True
+    reference_required: True
+    steps:
+      - fastp
+      - khmer
+      - plass
+      - pear
+      - paladin
