@@ -1,19 +1,19 @@
-preprocess_dir = config["elvers_directories"]["outdirs"]["preprocess"]
+preprocess_dir = config["elvers_directories"]["preprocess"]
 sigsketch_dir = os.path.join(out_dir, config['sourmash_sketch_reads']['output_dir'])
 
 sigsketch_params = config['sourmash_sketch_reads']['params']
 
-def get_reads(wildcards):
-    if not is_single_end(**wildcards):
-        return expand(os.path.join(preprocess_dir, "khmer", '{sample}.paired.khmer.fq.gz'), **wildcards)
-    return expand(os.path.join(preprocess_dir, "khmer, "'{sample}.se.khmer.fq.gz'), **wildcards)
+def get_reads(w):
+    if not is_single_end(w.sample):
+        return os.path.join(preprocess_dir, "khmer", f'{w.sample}.paired.khmer.fq.gz')
+    return os.path.join(preprocess_dir, "khmer", f'{w.sample}.se.khmer.fq.gz')
 
 rule sourmash_compute_pe_interleaved:
     """
     Computing a MinHash signature of the kmer-trimmed with Sourmash
     """
     input: get_reads 
-    output: os.path.join(sigsketch_dir, "{sample}.paired.khmer.fq.sig")
+    output: os.path.join(sigsketch_dir, "{sample}.paired.fq.sig")
     message:
         """--- Computing a MinHash signature of the kmer-trimmed reads with Sourmash ---"""
     threads: 6
@@ -33,7 +33,7 @@ rule sourmash_compute_se:
     Computing a MinHash signature of the kmer-trimmed reads with Sourmash
     """
     input: get_reads 
-    output: os.path.join(sigsketch_dir, "{sample}.se.khmer.fq.sig")
+    output: os.path.join(sigsketch_dir, "{sample}.se.fq.sig")
     message:
         """--- Computing a MinHash signature of the kmer-trimmed reads with Sourmash ---"""
     threads: 6

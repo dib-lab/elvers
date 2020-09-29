@@ -1,4 +1,4 @@
-assembly_dir = config["elvers_directories"]["outdirs"]["assemble"]
+assembly_dir = config["elvers_directories"]["assemble"]
 ddir = config['dammit']['output_dir']
 dammit_dir = os.path.join(out_dir, ddir)
 

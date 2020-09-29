@@ -1,4 +1,4 @@
-assembly_dir= config['elvers_directories']['outdirs']['assemble']
+assembly_dir= config['elvers_directories']['assemble']
 sketch_dir = os.path.join(out_dir, config['sourmash_sketch_reference']['output_dir'])
 
 sketch_params = config['sourmash_sketch_reference']['params']
@@ -10,7 +10,7 @@ rule sourmash_compute_assembly:
     input:
         os.path.join(assembly_dir, "{assembly}.fasta")
     output:
-        os.path.join(sketch_dir, "{assembly}.sig")
+        os.path.join(sketch_dir, "{assembly}.fasta.sig")
     message:
         """--- Computing a MinHash signature of the transcriptome with Sourmash ---"""
     threads: 2

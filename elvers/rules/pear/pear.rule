@@ -1,4 +1,4 @@
-preprocess_dir = config["elvers_directories"]["outdirs"]["preprocess"]
+preprocess_dir = config["elvers_directories"]["preprocess"]
 pear_dir = os.path.join(out_dir, config['pear']['output_dir'])
 
 pear_params = config['pear']['params']

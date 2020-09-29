@@ -1,20 +1,16 @@
 output_dir: output.elvers
 basename: elvers
 experiment_suffix: ""
-logs_dir: logs
-benchmarks_dir: benchmarks
 
 elvers_directories:
-  rules: rules
-  animals: utils/animals
   logs: logs
-  outdirs:
-    input_data: input_data
-    preprocess: preprocess
-    assemble: assembly
-    annotate: annotation
-    quantify: quant
-    diffexp: diffexp
+  benchmarks: benchmarks
+  input_data: input_data
+  preprocess: preprocess
+  assemble: assembly
+  annotate: annotation
+  quantify: quant
+  diffexp: diffexp
 
 urls_begin: ["http", "ftp"]
 
@@ -24,10 +20,10 @@ fq_ends:
     - 1
     - 2
   single:
-    - 1
+    - se
 pairing:
   paired:
-    - pe
+    - paired
   single:
     - se
 
@@ -67,6 +63,7 @@ khmer:
   output_dir: preprocess/khmer
   output_files:
     - "{sample}.{pairing}.khmer.fq.gz" # if paired, this is interleaved file. If single end = just se. does this matter?
+    - "{sample}_{end}.khmer.fq.gz" # if paired, this is interleaved file. If single end = just se. does this matter?
   params:
     diginorm: True
     ksize: 20
@@ -212,7 +209,7 @@ sourmash_sketch_reads:
   rulefile: sourmash/sourmash_sketch_reads.rule
   output_dir: sourmash
   output_files:
-    - "{sample}.khmer.fq.sig"
+    - "{sample}.{pairing}.fq.sig"
   params:
     k_size: 31
     scaled: 1000
@@ -222,7 +219,7 @@ sourmash_sketch_reference:
   rulefile: sourmash/sourmash_sketch_reference.rule
   output_dir: sourmash
   output_files:
-    - "{reference}.fa.sig"
+    - "{reference}.fasta.sig"
   params:
     k_size: 31
     scaled: 1000

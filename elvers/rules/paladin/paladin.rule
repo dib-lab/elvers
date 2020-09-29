@@ -1,5 +1,5 @@
-assembly_dir = config["elvers_directories"]["outdirs"]["assemble"]
-preprocess_dir = config["elvers_directories"]["outdirs"]["preprocess"]
+assembly_dir = config["elvers_directories"]["assemble"]
+preprocess_dir = config["elvers_directories"]["preprocess"]
 paladin_dir = os.path.join(out_dir, config['paladin']['output_dir'])
 
 paladin_params = config['paladin']['params']

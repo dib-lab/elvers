@@ -1,25 +1,24 @@
-kdir = config['khmer']['output_dir']
-khmer_dir = os.path.join(out_dir, kdir)
+khmer_dir = os.path.join(out_dir, config['khmer']['output_dir'])
 khmer_params = config['khmer']['params']
 diginorm = khmer_params.get('diginorm', True)
 
 def get_trimmed(w):
     readsD = {}
-    if not is_single_end(**w):
-        readsD['r1'] = expand(os.path.join(fastp_dir, '{sample}_1.fastp.fq.gz'),**w,)
-        readsD['r2'] = expand(os.path.join(fastp_dir, '{sample}_2.fastp.fq.gz'),**w,)
+    if not is_single_end(w.sample):
+        readsD['r1'] = os.path.join(fastp_dir, f'{w.sample}_1.fastp.fq.gz')
+        readsD['r2'] = os.path.join(fastp_dir, f'{w.sample}_2.fastp.fq.gz')
         return readsD
-    return expand(os.path.join(input_dir, '{sample}_1.fastp.fq.gz'), **w)
+    return os.path.join(input_dir, f'{sample}_se.fastp.fq.gz')
 
 
 if diginorm:
-    rule khmer_pe_diginorm:
+    rule khmer_paired_diginorm:
         """
         kmer trim and diginorm with khmer
         """
         input: unpack(get_trimmed)
         output: 
-            paired=os.path.join(khmer_dir,'{sample}.pe.khmer.fq.gz'),
+            paired=os.path.join(khmer_dir,'{sample}.paired.khmer.fq.gz'),
             single=os.path.join(khmer_dir,'{sample}.se.khmer.fq.gz'),
         message:
             """--- khmer trimming of low-abundance kmers and digital normalization ---"""
@@ -31,8 +30,8 @@ if diginorm:
             cov = khmer_params.get('coverage', 20),
             extra = khmer_params.get('extra', '')
         threads: 10
-        log: os.path.join(logs_dir, 'khmer/{sample}.pe.diginorm.log')
-        benchmark: os.path.join(benchmarks_dir, 'khmer/{sample}.pe.diginorm.benchmark')
+        log: os.path.join(logs_dir, 'khmer/{sample}.paired.diginorm.log')
+        benchmark: os.path.join(benchmarks_dir, 'khmer/{sample}.paired.diginorm.benchmark')
         conda:  'environment.yml'
         shell: " (interleave-reads.py {input.r1} {input.r2} ) | "
                " (trim-low-abund.py -V -k {params.k} -Z {params.Z} -C {params.C} - -o - -M {params.memory} "
@@ -64,13 +63,13 @@ if diginorm:
                " -M {params.memory} --diginorm --diginorm-coverage={params.cov} ) "
     
 else:
-    rule khmer_pe_no_diginorm:
+    rule khmer_paired_no_diginorm:
         """
         kmer trim with khmer, no diginorm
         """
         input: unpack(get_trimmed)
         output: 
-            paired=os.path.join(khmer_dir,'{sample}.pe.khmer.fq.gz'),
+            paired=os.path.join(khmer_dir,'{sample}.paired.khmer.fq.gz'),
             single=os.path.join(khmer_dir,'{sample}.se.khmer.fq.gz'),
         message: """--- khmer trimming of low-abundance kmers ---"""
         params:
@@ -80,8 +79,8 @@ else:
             memory = khmer_params.get('memory', 4e9),
             extra = khmer_params.get('extra', '')
         threads: 10
-        log: os.path.join(logs_dir, 'khmer/{sample}.pe.log')
-        benchmark: os.path.join(benchmarks_dir, 'khmer/{sample}.pe.benchmark')
+        log: os.path.join(logs_dir, 'khmer/{sample}.paired.log')
+        benchmark: os.path.join(benchmarks_dir, 'khmer/{sample}.paired.benchmark')
         conda:  'environment.yml'
         shell: " (interleave-reads.py {input.r1} {input.r2} )| "
                " (trim-low-abund.py -V -k {params.k} -Z {params.Z} -C {params.C} - -o - -M {params.memory})"
@@ -110,15 +109,14 @@ else:
                " -M {params.memory}) "
 
 
-
 rule khmer_split_paired:
-    input: os.path.join(khmer_dir,'{sample}.pe.khmer.fq.gz'),
+    input: os.path.join(khmer_dir,'{sample}.paired.khmer.fq.gz'),
     output:
         r1=os.path.join(khmer_dir, '{sample}_1.khmer.fq.gz'),
         r2=os.path.join(khmer_dir, '{sample}_2.khmer.fq.gz'),
     threads: 2 
-    log: os.path.join(logs_dir, 'khmer/{sample}.split_pe.log')
-    benchmark: os.path.join(benchmarks_dir, 'khmer/{sample}.split_pe.benchmark')
+    log: os.path.join(logs_dir, 'khmer/{sample}.split_paired.log')
+    benchmark: os.path.join(benchmarks_dir, 'khmer/{sample}.split_paired.benchmark')
     conda: "environment.yml"
     shell: """
         split-paired-reads.py {input} --gzip -1 {output.r1} -2 {output.r2} >> {log}

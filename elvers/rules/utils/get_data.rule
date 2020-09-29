@@ -1,8 +1,3 @@
-import os, sys
-import elvers.utils.utils as ep
-
-# should carry over from main snakefile.
-# keeping here in case we want to use as standalone snake
 
 urls_begin = ["http", "ftp"]
 

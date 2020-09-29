@@ -1,4 +1,4 @@
-preprocess_dir = config["elvers_directories"]["outdirs"]["preprocess"]
+preprocess_dir = config["elvers_directories"]["preprocess"]
 plass_dir = os.path.join(out_dir, config['plass']['output_dir'])
 plass_params = config['plass']['params']
 

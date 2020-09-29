@@ -5,12 +5,12 @@ fastp_params = config['fastp']['params']
 
 
 def get_rawdata(w):
-    readsD = {}
-    if not is_single_end(**w):
-        readsD['r1'] = expand(os.path.join(data_dir, '{sample}_1.fq.gz'),**w)
-        readsD['r2'] = expand(os.path.join(data_dir, '{sample}_2.fq.gz'),**w)
+    if not is_single_end(w.sample):
+        readsD = {}
+        readsD['r1'] = os.path.join(data_dir, f'{w.sample}_1.fq.gz')
+        readsD['r2'] = os.path.join(data_dir, f'{w.sample}_2.fq.gz')
         return readsD
-    return expand(join(data_dir, '{sample}_1.fq.gz'), **w)
+    return os.path.join(data_dir, f'{w.sample}_se.fq.gz')
 
 
 rule fastp_paired:
@@ -23,7 +23,7 @@ rule fastp_paired:
     conda: "environment.yml"
     shell:
         """
-        fastp --in1 {input.in1}  --in2 {input.in2}  \
+        fastp --in1 {input.r1}  --in2 {input.r2}  \
         --out1 {output.out1} --out2 {output.out2}  \
         --detect_adapter_for_pe  --qualified_quality_phred 4 \
         --low_complexity_filter \
@@ -34,9 +34,9 @@ rule fastp_paired:
 rule fastp_single:
     input: get_rawdata
     output:
-        out1=os.path.join(fastp_dir, "{sample}_1.fastp.fq.gz"),
-        json=os.path.join(fastp_dir, "{sample}.fastp.json"),
-        html=os.path.join(fastp_dir, "{sample}.fastp.html"),
+        out1=os.path.join(fastp_dir, "{sample}_se.fastp.fq.gz"),
+        json=os.path.join(fastp_dir, "{sample}_se.fastp.json"),
+        html=os.path.join(fastp_dir, "{sample}_se.fastp.html"),
     conda: "environment.yml"
     shell:
         """

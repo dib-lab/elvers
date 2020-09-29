@@ -8,6 +8,13 @@ from snakemake.utils import validate
 from snakemake.workflow import srcdir
 from snakemake.io import expand
 
+
+def sanitize_path(path):
+    # expand `~`, get absolute path
+    path = os.path.expanduser(path)
+    path = os.path.abspath(path)
+    return path
+
 def update_nested_dict(d, other):
     # Can't just update at top level, need to update nested params
     # Note that this only keeps keys that already exist in other
@@ -180,6 +187,14 @@ def handle_user_program_params(config):
         params = config[program].get("params", {})
         update_nested_dict(params, user_params)
         config[program]["params"] = params
+
+def generate_dir_fullpaths(config):
+    outdir = sanitize_path(config["output_dir"])
+    config["output_dir"] = outdir
+    elvers_dirs = config["elvers_directories"]
+    for dirname, dirpath in elvers_dirs.items():
+        elvers_dirs[dirname] = os.path.join(outdir, dirpath)
+    config["elvers_directories"] = elvers_dirs
 
 
 # make sure we have sample and /or reference info

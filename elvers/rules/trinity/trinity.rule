@@ -1,4 +1,4 @@
-preprocess_dir = config["elvers_directories"]["outdirs"]["preprocess"]
+preprocess_dir = config["elvers_directories"]["preprocess"]
 trinity_dir = os.path.join(out_dir, config['trinity']['output_dir'])
 trinity_params = config['trinity']['params']
 
@@ -6,7 +6,7 @@ def get_assembly_input(w):
     r1,r2,single =[],[],[]
     readsD = {}
     assembly_subset = trinity_params.get('assembly_subset')
-    for name in samples.iterrows():
+    for name in samples.index.to_list():
         if assembly_subset:
             if name not in assembly_subset:
                 continue

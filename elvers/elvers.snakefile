@@ -5,12 +5,12 @@ import glob
 from snakemake.workflow import srcdir
 import elvers.utils.utils as ep
 
-out_dir = os.path.abspath(config["output_dir"])
-ddir = config["get_data"]["output_dir"]
-data_dir = os.path.join("output_dir", ddir)
-logs_dir = os.path.join(out_dir, "logs")
-benchmarks_dir = os.path.join(out_dir, "benchmarks")
-#report_dir = os.path.join(out_dir, "reports")
+
+ep.generate_dir_fullpaths(config)
+out_dir = config["output_dir"]
+data_dir = config["elvers_directories"]["input_data"]
+logs_dir = config["elvers_directories"]["logs"]
+benchmarks_dir = config["elvers_directories"]["benchmarks"]
 basename = config["basename"]
 
 strict_val = config.get('strict', '1')
@@ -27,8 +27,8 @@ if force:
 # snakemake workflow
 
 # note, this function *needs* to be in this file, or added somewhere it can be accessed by all rules
-def is_single_end(sample, end = '', assembly = ''):
-    return pd.isnull(samples.at[sample, "fq2"])
+def is_single_end(name):
+    return pd.isnull(samples.at[name, "fq2"])
 
 documentation_base = "https://dib-lab.github.io/elvers/"
 
