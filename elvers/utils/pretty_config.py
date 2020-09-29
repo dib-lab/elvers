@@ -13,7 +13,7 @@ def pretty_name(targ):
     print_name = '\n#\n# '+ targ + '\n#\n\n'
     return print_name
 
-def write_config(paramsD, targets, out = None):
+def write_config(config, out = None):
     if out:
         print('\n\tprinting editable configfile to {}'.format(out))
         outConfig = open(out, 'w')
@@ -27,30 +27,22 @@ def write_config(paramsD, targets, out = None):
         sys.stdout.write('\n\n')
 
     # write program-specific parameters
-    seen_rules = []
-    for targ in targets:
-       # grab all rules, their params for target pipeliness
-        include_rules = paramsD['elvers_workflows'].get(targ, [])
-        all_rules = include_rules #+targets
-        targ_params = {}
-        for r in all_rules:
-            if r not in seen_rules:
-                seen_rules+=[r]
-                if paramsD[r].get('program_params', None):
-                   targ_params[r] = paramsD[r]['program_params']
-        # write to file
-        if out:
-            outConfig.write(pretty_name(targ + ' workflow'))
-            yaml.dump(targ_params, stream=outConfig, indent=2,  default_flow_style=False)
-        else:
-            sys.stdout.write(pretty_name(targ + ' workflow'))
-            yaml.dump(targ_params, stream=sys.stdout, indent=2,  default_flow_style=False)
+    workflow_params = {}
+    for step in config["workflow_steps"]:
+        workflow_params[step] = config["step"]["params"]
+
+    # write to file
     if out:
-        print('\n\tdone! Now edit parameters in the {}, and rerun run_elvers without the "--build_config" option.\n\n'.format(out))
+        outConfig.write(pretty_name(config["pipeline"] + ' workflow'))
+        yaml.dump(step_params, stream=outConfig, indent=2,  default_flow_style=False)
+    else:
+        sys.stdout.write(pretty_name(targ + ' workflow'))
+        yaml.dump(targ_params, stream=sys.stdout, indent=2,  default_flow_style=False)
+    if out:
+        print(f'\n\tdone! Now edit parameters in {out}, and rerun run_elvers without the "--build_config" option.\n\n')
         outConfig.close()
     else:
         sys.stdout.write('\n\n')
-        #sys.stdout.write('  #######################################################\n\n')
 
 
 if __name__ == '__main__':

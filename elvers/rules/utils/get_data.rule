@@ -1,52 +1,47 @@
-import os
+import os, sys
+import elvers.utils.utils as ep
 
-logs_dir  = config['elvers_directories']['logs']
-data_dir = config['elvers_directories']['outdirs']['input_data']
-# alternate, valid way to specify same dir:
-#data_dir = config['get_data']['elvers_params']['outputs']['outdir']
+# should carry over from main snakefile.
+# keeping here in case we want to use as standalone snake
 
-get_data_params = config['get_data']['program_params']
+urls_begin = ["http", "ftp"]
 
-if get_data_params.get('download_data'):
-    if get_data_params.get('use_ftp'):
-        rule ftp_get_fq1:
-            input: lambda wildcards: FTP.remote("{}".format(samples.loc[(wildcards.sample,wildcards.unit), "fq1"]), static=True, keep_local=True, immediate_close=True)
-            output: join(data_dir,"{sample}_{unit}_1.fq.gz")
-            log: join(logs_dir,"get_data", "{sample}_{unit}_1.ftp")
-            shell: "mv {input} {output} 2> {log}"
-        rule ftp_get_fq2:
-            input: lambda wildcards: FTP.remote("{}".format(samples.loc[(wildcards.sample,wildcards.unit), "fq2"]), static=True, keep_local=True, immediate_close=True)
-            output: join(data_dir,"{sample}_{unit}_2.fq.gz")
-            log: join(logs_dir,"get_data", "{sample}_{unit}_2.ftp")
-            shell: "mv {input} {output} 2> {log}"
-    else:
-        rule http_get_fq1:
-            input: lambda wildcards: HTTP.remote("{}".format(samples.loc[(wildcards.sample,wildcards.unit), "fq1"]), static=True, keep_local=True, allow_redirects=True)
-            output: join(data_dir,"{sample}_{unit}_1.fq.gz")
-            log: join(logs_dir,"get_data", "{sample}_{unit}_1.http")
-            shell: "mv {input} {output} 2> {log}"
+samples = config["samples"]
 
-        rule http_get_fq2:
-            input: lambda wildcards: HTTP.remote("{}".format(samples.loc[(wildcards.sample,wildcards.unit), "fq2"]), static=True, keep_local=True, allow_redirects=True)
-            output: join(data_dir,"{sample}_{unit}_2.fq.gz")
-            log: join(logs_dir,"get_data", "{sample}_{unit}_2.http")
-            shell: "mv {input} {output} 2> {log}"
 
-else:
-    rule link_fq1:
-        input: lambda wildcards:"{}".format(samples.loc[(wildcards.sample,wildcards.unit), "fq1"])
-        output: join(data_dir,"{sample}_{unit}_1.fq.gz")
-        log: join(logs_dir,"get_data", "{sample}_{unit}_1.link")
-        run:
-            full_input = os.path.abspath(str(input))
+localrules: get_dbinfo, get_sbt
+
+rule get_data_fq1:
+    output: os.path.join(data_dir, "{sample}_1.fq.gz")
+    params:
+         filepath= lambda w: samples.at[w.sample,"fq1"]
+    log: os.path.join(logs_dir, "get_data", "{sample}_1.get.log")
+    threads: 1
+    resources:
+        mem_mb=1000,
+        runtime=60
+    run:
+        if params.filepath.startswith(tuple(urls_begin)):
+            shell("curl -L {params.filepath}  > {output}")
+        else:
+            full_input = os.path.abspath(str(params.fq_info))
             full_output = os.path.abspath(str(output))
             shell("ln -s {full_input} {full_output} 2> {log}")
 
-    rule link_fq2:
-        input: lambda wildcards:"{}".format(samples.loc[(wildcards.sample,wildcards.unit), "fq2"])
-        output: join(data_dir,"{sample}_{unit}_2.fq.gz")
-        log: join(logs_dir,"get_data", "{sample}_{unit}_2.link")
-        run:
-            full_input = os.path.abspath(str(input))
+
+rule get_data_fq2:
+    output: os.path.join(data_dir, "{sample}_2.fq.gz")
+    params:
+         filepath= lambda w: samples.at[w.sample,"fq2"]
+    log: os.path.join(logs_dir, "get_data", "{sample}_2.get.log")
+    threads: 1
+    resources:
+        mem_mb=1000,
+        runtime=60
+    run:
+        if params.filepath.startswith(tuple(urls_begin)):
+            shell("curl -L {params.filepath}  > {output}")
+        else:
+            full_input = os.path.abspath(str(params.fq_info))
             full_output = os.path.abspath(str(output))
             shell("ln -s {full_input} {full_output} 2> {log}")

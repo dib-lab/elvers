@@ -7,6 +7,20 @@ from os.path import join
 from snakemake.utils import validate
 from snakemake.workflow import srcdir
 
+def update_nested_dict(d, other):
+# Can't just update at top level, need to update nested params
+# Note that this only keeps keys that already exist in other
+#https://code.i-harness.com/en/q/3154af
+    for k, v in other.items():
+        if isinstance(v, collections.Mapping):
+            d_v = d.get(k)
+            if isinstance(d_v, collections.Mapping):
+                update_nested_dict(d_v, v)
+            else:
+                d[k] = v.copy()
+        else:
+            d[k] = v
+
 def read_samples(config):
     samples_file = find_input_file(config["sample_info"], "sample info", add_suffixes = ['.tsv'. '.csv', '.xls', '.xlsx'])
     if '.tsv' in samples_file or '.csv' in samples_file:
@@ -37,7 +51,7 @@ def read_samples(config):
     data_dir = config.get("data_dir", "")
     if data_dir:
         data_dir = sanitize_path(data_dir)
-    sample_list = samples["fq1"].tolist() + samples["fq2"].tolist()
+    #sample_list = samples["fq1"].tolist() + samples["fq2"].tolist()
     for sample in samples.index:
         fq1 = samples.at[sample, "fq1"]
         fullpath_fq1 = os.path.join(data_dir, fq1)
@@ -93,16 +107,18 @@ def handle_references(config, pipeline):
     gtmaps = []
     input_reference = config.get("input_reference", None)
     urls_begin = config["urls_begin"]
+    ref_rule = srcdir("rules/utils/get_reference.rule")
     # handle user-input reference (singular)
     if input_reference and not input_reference.startswith(tuple(urls_begin):
         # check that the input file exists
-        input_reference = find_input_file(input_reference, name="input reference", add_paths = [os.path.realpath(os.path.dirname(configfile))], add_suffixes = ['.fa', '.fasta'])
-        references.append("userinput")
+        input_reference = find_input_file(input_reference, name="input reference", add_suffixes = ['.fa', '.fasta'])
+        references.append("refinput")
+        config["include_rules"] = [ref_rule]
     gtmap = config.get('input_gene_trans_map', '')
     if gtmap:
         # check that the input file exists
-        gtmap = find_input_file(gtmap,"input reference gene_trans_map", add_paths = [os.path.realpath(os.path.dirname(configfile))], add_suffixes = [''])
-        gtmaps.append("userinput")
+        gtmap = find_input_file(gtmap,"input reference gene_trans_map", add_suffixes = [''])
+        gtmaps.append("refinput")
 
     # handle assembler-generated references
     steps = config["elvers_workflows"][pipeline]["steps"]
@@ -127,18 +143,33 @@ def handle_references(config, pipeline):
     return ref_targets + gtm_targets
 
 # sample checks
-def is_single_end(sample, unit, end = '', assembly = ''):
-    return pd.isnull(samples.loc[(sample, unit), "fq2"])
+def is_single_end(sample, end = '', assembly = ''):
+    return pd.isnull(samples.at[sample, "fq2"])
 
-def handle_samples_input(config, configfile):
+def handle_samples_input(config):
     program_params = config['get_data'].get('program_params')
     urls_begin = config["urls_begin"]
+    data_rule = srcdir("rules/utils/get_data.rule")
     samples_file = config.get('sample_info', None)
     if samples_file:
         read_samples(samples_file)
+        config["include_rules"].append(data_rule)
     else:
         sys.stderr.write("\n\tError: this workflow needs samples files, but no 'samples_info' file is provided in the configfile. Please fix.\n\n")
         sys.exit(-1)
+
+def handle_user_program_params(config):
+    # snakemake doesn't properly handle nested configuration dictionaries
+    # handle manually instead:
+    user_program_params = config.get("program_params", {})
+    for program, user_params in user_program_params.items():
+        if program not in config.keys():
+            sys.stderr.write(f"\nWarning: New parameters for program {program} provided in the configfile, but this program name doesn't match any in this pipeline. Ignoring.\n\n")
+             continue
+        params = config[program].get("params", {})
+        update_nested_dict(params, user_params)
+        config[program]["params"] = params
+
 
 # make sure we have sample and /or reference info
 def generate_targets(config):
@@ -146,7 +177,7 @@ def generate_targets(config):
     pipeline = config["pipeline"]
     basename = config["basename"]
     reference_targets, workflow_targets=[],[]
-    config["includeRules"] = []
+    config["include_rules"] = []
 
     if config["elvers_pipelines"][pipeline]["reference_required"]:
         reference_targets = handle_references(config)
@@ -156,28 +187,20 @@ def generate_targets(config):
 
     return reference_targets + workflow_targets
 
-
-# make "includeRules" in config!
-## TO DO
- #- add get_data, get_reference rules in relevant handle_ bit
- #- add rule during pipeline targets generateion
-
-
-# include all required rules
-
-# include the databases, index, common utility snakefiles
-#include: "get_.snakefile"
-#include: "common.snakefile"
-
-
-
-
 def generate_pipeline_targets(config, pipeline, samples):
     pipeline_targets=[]
-
+    pipeline_rules = []
     # generate targets for each step
     steps = config["elvers_pipelines"][pipeline]["steps"]
+    config["workflow_steps"] = steps
+
+    if samples:
+
     for step in steps:
+        rulefile = config[step]["rulefile"]
+        r = srcdir(f"rules/{rulefile}")
+        config['include_rules'].append(r)
+
         step_outdir = config[step]["output_dir"]
         step_files = config[step]["output_files"]
 
@@ -193,10 +216,11 @@ def generate_pipeline_targets(config, pipeline, samples):
                 # "ends", ""pairing" will be different for se, pe files
                 pairing = pe_pairing
                 ends = pe_ends
-                if is_single_end(sample, unit, end = '', assembly = ''):
+                if is_single_end(sample, end = '', assembly = ''):
                     pairing = se_pairing
                     ends = se_ends
                 pipeline_targets += expand(os.path.join(output_dir, step_outdir, stepF), sample=sample, reference=references, basename=basename, pairing=pairing, end=ends, contrast=contrasts)
 
     return pipeline_targets
+
 

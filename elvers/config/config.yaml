@@ -20,8 +20,7 @@ pairing:
   single:
     - se
 
-workflows:
-  - default
+pipeline: default
 
 ## rule params ##
 get_data:
@@ -34,17 +33,19 @@ get_data:
 get_reference:
   output_dir: assembly
   output_files:
-    - "{basename}.fasta"
+    - "{basename}_refinput.fasta"
   output_gene_trans_map:
-    - "{basename}.fasta.gene_trans_map"
+    - "{basename}_refinput.fasta.gene_trans_map"
   params:
+    extra: ""
     #reference: examples/nema.assembly.fasta
     #gene_trans_map:  examples/nema.assembly.fasta.gene_trans_map
     #reference_extension: ''
-    download_ref: False
-    use_ftp: False
+    #downlsad_ref: False
+    #use_ftp: False
 
 fastp:
+  rulefile: fastp/fastp.rule
   output_dir: preprocess/fastp
   output_files:
     - "{sample}_{end}.fastp.fq.gz"
@@ -54,6 +55,7 @@ fastp:
     extra: ""
 
 khmer:
+  rulefile: khmer/khmer.rule
   output_dir: preprocess/khmer
   output_files:
     - "{sample}.{pairing}.khmer.fq.gz" # if paired, this is interleaved file. If single end = just se. does this matter?
@@ -67,6 +69,7 @@ khmer:
     extra: ""
 
 trinity:
+  rulefile: trinity/trinity.rule
   output_dir: assembly
   output_files:
     - "{basename}_trinity.fasta"
@@ -80,6 +83,7 @@ trinity:
     extra: ''
 
 dammit:
+  rulefile: dammit/dammit.rule
   output_dir: annotation
   output_files:
     - "{reference}.dammit.gff3"
@@ -94,14 +98,17 @@ dammit:
       - eukaryota
 
 salmon:
+  rulefile: salmon/salmon.rule
   output_dir: salmon
   output_files:
     - "{reference}.salmonindex"
     - "{sample}.x.{reference}.salmon/quant.sf"
   params:
-    combine_units: True
+    extra: ""
+    #combine_units: True
 
 deseq2:
+  rulefile: deseq2/deseq2.rule
   output_dir: deseq2
   output_files:
     - "{basename}.x.{reference}.deseq2.rds"
@@ -123,6 +130,7 @@ deseq2:
         - condition
 
 edgeR:
+  rulefile: edgeR/edgeR.rule
   output_dir: edgeR
   output_files:
     - "{basename}.x.{reference}.edgeR.rds"
@@ -143,6 +151,7 @@ edgeR:
         - condition
 
 bowtie2:
+  rulefile: bowtie2/bowtie2.rule
   output_dir: bowtie2
   output_files:
     - "{sample}.x.{reference}.{pairing}.bam"
@@ -150,6 +159,7 @@ bowtie2:
     extra: ''
 
 plass:
+  rulefile: plass/plass.rule
   output_dir: assemly
   output_files:
     - "{basename}_plass.fasta"
@@ -160,6 +170,7 @@ plass:
     extra: ''
 
 pear:
+  rulefile: pear/pear.rule
   output_dir: preprocess/pear
   output_files:
     - "{sample}.pear_assembled.fq.gz"
@@ -171,13 +182,15 @@ pear:
     extra: ''
 
 paladin:
+  rulefile: paladin/paladin.rule
   output_dir: paladin
   output_files:
-    - "{reference}_plass.paladin.fasta.bwt"
-    - "{sample}.x.{reference}_plass.paladin.bam"
-    - "{sample}.x.{reference}_plass.paladin.sort.bam"
-    - "{sample}.x.{reference}_plass.paladin.sort.bam.flagstat"
-    - "{sample}.x.{reference}_plass.paladin.sort.bam.bai"
+    # for now, ONLY plass assemblies are allowed
+    - "{basename}_plass.paladin.fasta.bwt"
+    - "{sample}.x.{basename}_plass.paladin.bam"
+    - "{sample}.x.{basename}_plass.paladin.sort.bam"
+    - "{sample}.x.{basename}_plass.paladin.sort.bam.flagstat"
+    - "{sample}.x.{basename}_plass.paladin.sort.bam.bai"
   params:
     index_params:
       reference_type: '3'
@@ -187,6 +200,7 @@ paladin:
 
 # enable additional alphabets here? or just rm sourmash altogether?
 sourmash_sketch_signatures:
+  rulefile: sourmash/sourmash_sketch_signatures.rule
   output_dir: sourmash
   output_files:
     - "{sample}.khmer.fq.sig"
@@ -196,6 +210,7 @@ sourmash_sketch_signatures:
     extra: ''
 
 sourmash_sketch_assembly:
+  rulefile: sourmash/sourmash_sketch_assembly.rule
   output_dir: sourmash
   output_files:
     - "{reference}.fa.sig"

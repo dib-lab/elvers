@@ -15,18 +15,18 @@ def get_snakefile_path(name):
 
 def get_package_configfile(filename):
     thisdir = os.path.dirname(__file__)
-    configfile = os.path.join(thisdir, '.config', filename)
+    configfile = os.path.join(thisdir, 'config', filename)
     return configfile
 
 
 def run_snakemake(configfile, no_use_conda=False, no_use_mamba=False,
-                  snakefile_name='elvers.snakefile',
+                  snakefile_name='Snakefile',
                   outdir=None, verbose=False, extra_args=[]):
     # find the Snakefile relative to package path
     snakefile = get_snakefile_path(snakefile_name)
 
     # basic command
-    cmd = ["snakemake", "-s", snakefile]
+    cmd = ["snakemake"]
 
     # add --use-conda
     if not no_use_conda:
@@ -96,19 +96,6 @@ def run(configfile, snakemake_args, no_use_conda, no_use_mamba, verbose, outdir)
                   verbose=verbose,outdir=outdir,
                   extra_args=snakemake_args)
 
-# get databases
-#@click.command()
-#@click.option('--configfile', type=click.Path(exists=True), default=None)
-#@click.option('--verbose', is_flag=True)
-# does this outdir need to exist?
-#@click.option('--outdir', nargs=1, type=click.Path(exists=True), default=None)
-#def download_databases(configfile, verbose, outdir):
-#    "get the necessary databases"
-#    run_snakemake(configfile, snakefile_name='get_databases.snakefile',
-#                  no_use_conda=True,
-#                  verbose=verbose, outdir=outdir,
-#                  extra_args=['download_databases'])
-
 # 'check' command
 @click.command()
 @click.argument('configfile', type=click.Path(exists=True))
@@ -140,13 +127,14 @@ snakemake Snakefile: {get_snakefile_path('thumper.snakefile')}
 @click.command()
 @click.argument('configfile', type=click.Path(exists=False))
 @click.option('--data-dir', nargs=1)
-#@click.option('--lineages', nargs=1, default="")
 @click.option('-f', '--force', is_flag=True)
 def init(configfile, data_dir, force):
     "create a new, empty config file."
     stubname = os.path.basename(configfile)
     if configfile.endswith('.yaml'):
         stubname = stubname[:-5]
+    elif configfile.endswith(".yml"):
+        stubname = stubname[:-4]
     else:
         configfile += '.yaml'
 
@@ -154,7 +142,7 @@ def init(configfile, data_dir, force):
         print(f"** ERROR: configfile '{configfile}' already exists.")
         return -1
 
-    sample_list = f'{stubname}.sample-list.txt'
+    sample_list = f'{stubname}.samples.csv'
     if data_dir:
         if os.path.exists(sample_list) and not force:
             print(f"** ERROR: sample list file '{sample_list}' already exists.")
@@ -162,21 +150,18 @@ def init(configfile, data_dir, force):
         samples = glob.glob(f'{data_dir}/*.fa')
         samples += glob.glob(f'{data_dir}/*.fna')
         samples += glob.glob(f'{data_dir}/*.faa')
-        samples += glob.glob(f'{data_dir}/*.pep')
         samples += glob.glob(f'{data_dir}/*.fa.gz')
         samples += glob.glob(f'{data_dir}/*.fna.gz')
         samples += glob.glob(f'{data_dir}/*.faa.gz')
-        samples += glob.glob(f'{data_dir}/*.pep.gz')
         print(f'found {len(samples)} samples in {data_dir}/*.{{fa,fna,faa,pep}}{{,.gz}}')
-        samples = [ os.path.basename(g) for g in samples ]
+        samplefiles= [ os.path.basename(g) for g in samples ]
+        samplenames = [s.rsplit(".f",1)[0] for s in samplefiles]
         with open(sample_list, 'wt') as fp:
+            for s in samplefiles:
+                name = s.rsplit(".fa", 1)[0]
+                fp.write(name + "," + samplefile + "\n")
             fp.write("\n".join(samples))
-        print(f"created '{sample_list}' with {len(samples)} samples in it.")
-
-    #if lineages:
-    #    print(f"Using provided lineages from '{lineages}'")
-    #else:
-    #    print("(No provided lineages file given.)")
+        print(f"created '{sample_list}' with {len(samplefiles)} samples in it.")
 
     print(f"creating configfile '{configfile}' for project '{stubname}'")
     with open(configfile, 'wt') as fp:
@@ -186,7 +171,7 @@ f"""\
 output_dir: output.{stubname}/
 
 # list of sample filenames to use
-sample_list: {stubname}.sample-list.txt
+sample_info: {stubname}.sample-list.txt
 
 # directory in which sample filenames live
 data_dir: {data_dir}
@@ -198,7 +183,6 @@ cli.add_command(check)
 cli.add_command(showconf)
 cli.add_command(info)
 cli.add_command(init)
-#cli.add_command(download_databases)
 
 def main():
     cli()

@@ -5,18 +5,12 @@ import glob
 from snakemake.workflow import srcdir
 import elvers.utils.utils as ep
 
-from snakemake.remote import FTP, HTTP
-FTP = FTP.RemoteProvider()
-HTTP = HTTP.RemoteProvider()
-
 out_dir = config["output_dir"]
 logs_dir = os.path.join(out_dir, "logs")
 benchmarks_dir = os.path.join(out_dir, "benchmarks")
-database_dir = config['database_dir']
 data_dir = config['data_dir'].rstrip('/')
-report_dir = os.path.join(out_dir, "reports")
+#report_dir = os.path.join(out_dir, "reports")
 basename = config["basename"]
-
 
 strict_val = config.get('strict', '1')
 strict_mode = int(strict_val)
@@ -31,63 +25,47 @@ if force:
 
 # snakemake workflow
 
-#wildcard_constraints:
-    #alphabet="protein|dayhoff|hp|nucleotide", #|dna|rna",
-    #ksize="\d+",
-    #sample="\w+"
-    #database = "(?!x\.).+"
-
 # note, this function *needs* to be in this file, or added somewhere it can be accessed by all rules
-def is_single_end(sample, unit, end = '', assembly = ''):
-    return pd.isnull(samples.loc[(sample, unit), "fq2"])
+def is_single_end(sample, end = '', assembly = ''):
+    return pd.isnull(samples.at[sample, "fq2"])
 
+documentation_base = "https://dib-lab.github.io/elvers/"
 
-#documentation_base = "https://dib-lab.github.io/elvers/"
+octopus = srcdir("utils/animals/octopus")
+failwhale = srcdir("utils/animals/failwhale")
+fish = srcdir("utils/animals/fish")
 
 onstart:
     print("----------------------------------------------------------")
     print("Elvers, a system for conducting  de novo RNA-Seq Analyses")
     print("----------------------------------------------------------")
+    shell('cat {fish}')
 
-ascii_octopus = srcdir("utils/animals/octopus")
-failwhale = srcdir("utils/animals/failwhale")
 
 onsuccess:
     print("\n--- Workflow executed successfully! ---\n")
-    shell('cat {ascii_octopus}')
+    shell('cat {octopus}')
     
-    #print("  Outputs for all workflow steps:\n")
-    #for key, val in config.items():
-    #    if isinstance(val, dict):
-    #        if val.get('elvers_params', None):
-    #            outdir = val['elvers_params']['outputs']['outdir']
-    #            sys.stdout.write(f"\t{key}: {outdir}\n")
-    #            docs = documentation_base + key
-    #            sys.stdout.write(f"\t\t     for explanation of this step, see: {docs} \n\n")
+    print("Outputs for all workflow steps:\n")
+    pipeline = config["pipeline"]
+    print(f"All outputs can be found in {out_dir}")
+    steps = config["elvers_pipelines"][pipeline]["steps"]
+    for step in steps:
+        step_dir = step["output_dir"]
+        print(f"\t{step}: {step_dir}")
+        step_docs = documentation_base + step
+        print(f"\t\t\tfor explanation of this step, see: {step_docs} \n\n")
 
 onerror:
     print("  Oh no! Something went wrong here\n")
     shell('cat {failwhale}')
 
 rule elvers:
-    input: ep.generate_targets(config, sample_names, out_dir, generate_db_targets=False)
+    input: ep.generate_targets(config)
 
 
-includeRules = config["includeRules"]
+include: srcdir("rules/utils/common.snakefile")
+include_rules = config["include_rules"]
 for r in includeRules:
     include: r
-
-# include all required rules
-#pipeline = config["pipeline"]
-#steps = config[elvers_pipelines][pipeline]["steps"]
-#for step in steps:
-#    r = srcdir(f"rules/{step}/{step}.rule")
-#    include: r
-#
-## include the databases, index, common utility snakefiles
-#include: "get_.snakefile"
-#include: "common.snakefile"
-
-
-
 

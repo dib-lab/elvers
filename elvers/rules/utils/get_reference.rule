@@ -1,89 +1,53 @@
 import os
 
-logs_dir = config['elvers_directories']['logs']
-
-getRef_params = config['get_reference']['program_params']
-ep_params = config['get_reference']['elvers_params']
-
-ref_dir = ep_params['outputs']['outdir']
-basename = config['basename']
-reference_extension = getRef_params.get('reference_extension', '')
-
-# set up the vars we use in each of these options
-if getRef_params.get('download_ref'):
-    ref_in =getRef_params['reference']
-else:
-    ref_in = os.path.realpath(getRef_params['reference'])
+ref_dir = config["get_reference"]["output_dir"]
+ref_in = config['input_reference']
 
 gunzip_ref = False
-ref_out    =  os.path.join(ref_dir, basename + reference_extension + '.fasta')
 if ref_in.endswith('.gz'):
     gunzip_ref = True
-    ref_out_gunzip = ref_out
-    ref_out = ref_out + '.gz'
 
-if getRef_params.get('gene_trans_map', None):
-    gtmap_in   =  os.path.realpath(getRef_params['gene_trans_map'])
-    gtmap_out  =  os.path.join(ref_dir, basename + reference_extension + '.fasta.gene_trans_map') 
+rule get_reference:
+    input: config["input_reference"]
+    output: os.path.join(ref_dir, basename + '_refinput.fasta')
+    log: os.path.join(logs_dir, 'get_reference/get_reference.log')
+    threads: 1
+    resources:
+        mem_mb=1000,
+        runtime=60
+    run:
+        if gunzip_ref:
+            tmp_out = str(output).rsplit(".gz")[0]
+            if str(input).startswith(tuple(urls_begin)):
+                shell("curl -L {input} > {tmp_out}")
+                shell("gunzip -c {tmp_out} > {full_output}  2> {log}")
+            else:
+                full_input = os.path.abspath(str(input))
+                full_output = os.path.abspath(str(output))
+                shell("cp {full_input} {full_output} 2> {log}")
+                shell("gunzip -c {tmp_out} > {full_output} 2> {log}")
+        else:
+            if str(input).startswith(tuple(urls_begin)):
+                shell("curl -L {input}  > {output}")
+            else:
+                full_input = os.path.abspath(str(input))
+                full_output = os.path.abspath(str(output))
+                shell("cp {full_input} {full_output} 2> {log}")
 
-if getRef_params.get('download_ref'):
-    if getRef_params.get('use_ftp'):
-        rule ftp_get_fasta:
-            input: FTP.remote(f"{ref_in}", static=True, keep_local=True, immediate_close=True)
-            output: ref_out 
-            log: os.path.join(logs_dir, 'get_reference/ftpget_reference.log')
-            shell: "mv {input} {output} 2> {log}"
-        
-        if getRef_params.get('gene_trans_map', None): 
-            rule ftp_get_gene_trans_map:
-                input: FTP.remote(f"{gtmap_in}", static=True, keep_local=True, immediate_close=True)
-                output: gtmap_out
-                log: os.path.join(logs_dir, 'get_reference/ftpget_gtmap.log')
-                shell: "mv {input} {output} 2> {log}"
-    
-    else:
-        rule http_get_fasta:
-            input: HTTP.remote(f"{ref_in}", static=True, keep_local=True, allow_redirects=True)
-            output: ref_out 
-            log: os.path.join(logs_dir, 'get_reference/httpget_reference.log')
-            shell: "mv {input} {output} 2> {log}"
 
-        if getRef_params.get('gene_trans_map', None): 
-            rule http_get_gene_trans_map:
-                input: HTTP.remote(f"{gtmap_in}", static=True, keep_local=True, allow_redirects=True)
-                output: gtmap_out
-                log: os.path.join(logs_dir, 'get_reference/httpget_gtmap.log')
-                shell: "mv {input} {output} 2> {log}"
 
-else:
-    rule link_input_reference:
-        input: ref_in 
-        output: ref_out 
-        log: os.path.join(logs_dir, 'get_reference/link_reference.log')
-        params: ref_dir = ref_dir
-        shell:
-            """
-            mkdir -p {params.ref_dir}
-            ln -s {input} {output} 2> {log}
-            """
-    if getRef_params.get('gene_trans_map', None):
-        rule link_input_gene_trans_map:
-            input: gtmap_in 
-            output: gtmap_out 
-            log: os.path.join(logs_dir, 'get_reference/link_gtmap.log')
-            params: ref_dir = ref_dir
-            shell:
-                """
-                mkdir -p {params.ref_dir}
-                ln -s {input} {output} 2> {log}
-                """
-
-if gunzip_ref:
-    rule gunzip_input_reference:
-        input: ref_out
-        output: ref_out_gunzip
-        log: os.path.join(logs_dir, 'get_reference/gunzip_reference.log')
-        shell:
-            """
-            gunzip -c {input} > {output} 2> {log}
-            """
+rule get_gene_trans_map:
+    input: config.get("input_gene_trans_map")
+    output: os.path.join(ref_dir, basename + '_refinput.fasta.gene_trans_map')
+    log: os.path.join(logs_dir, 'get_reference/get_genetransmap.log')
+    threads: 1
+    resources:
+        mem_mb=1000,
+        runtime=60
+    run:
+        if str(input).startswith(tuple(urls_begin)):
+            shell("curl -L {input}  > {output}")
+        else:
+            full_input = os.path.abspath(str(params.fq_info))
+            full_output = os.path.abspath(str(output))
+            shell("ln -s {full_input} {full_output} 2> {log}")

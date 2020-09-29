@@ -1,2 +1,27 @@
-def is_single_end(sample, unit, end = ''):
-    return pd.isnull(units.loc[(sample, unit), "fq2"])
+# check config files only
+rule check:
+    input:
+        config["sample_info"]                  # do nothing - this file should exist
+
+# print out the configuration
+rule showconf:
+    input:
+        config["sample_info"]
+    run:
+        import yaml
+        print('# full aggregated configuration:')
+        generalP = {}
+        generalP['basename'] = config["basename"]
+        generalP['experiment'] = config['experiment']
+        print(yaml.dump(generalP, indent=2,  default_flow_style=False).strip())
+        print(f"Workflow: {workflow}")
+        workflow_params, program_params = {},{}
+
+        for step in config["workflow_steps"]:
+            workflow_params[step] = config["step"]["params"]
+            workflow = config["pipeline"]
+
+        program_params["program_params"] = workflow_params
+        print(yaml.dump(program_params, indent=2,  default_flow_style=False).strip())
+        #print(yaml.dump(config).strip())
+        print('# END')
