@@ -1,0 +1,48 @@
+
+fp_dir = config["fastp"]["output_dir"]
+fastp_dir = os.path.join(out_dir, fp_dir)
+fastp_params = config['fastp']['params']
+
+
+def get_rawdata(w):
+    readsD = {}
+    if not is_single_end(**w):
+        readsD['r1'] = expand(os.path.join(data_dir, '{sample}_1.fq.gz'),**w)
+        readsD['r2'] = expand(os.path.join(data_dir, '{sample}_2.fq.gz'),**w)
+        return readsD
+    return expand(join(data_dir, '{sample}_1.fq.gz'), **w)
+
+
+rule fastp_paired:
+    input: unpack(get_rawdata)
+    output:
+        out1=os.path.join(fastp_dir, "{sample}_1.fastp.fq.gz"),
+        out2=os.path.join(fastp_dir, "{sample}_2.fastp.fq.gz"),
+        json=os.path.join(fastp_dir, "{sample}.fastp.json"),
+        html=os.path.join(fastp_dir, "{sample}.fastp.html"),
+    conda: "environment.yml"
+    shell:
+        """
+        fastp --in1 {input.in1}  --in2 {input.in2}  \
+        --out1 {output.out1} --out2 {output.out2}  \
+        --detect_adapter_for_pe  --qualified_quality_phred 4 \
+        --low_complexity_filter \
+        --length_required 31 --correction \
+        --json {output.json} --html {output.html}
+        """
+
+rule fastp_single:
+    input: get_rawdata
+    output:
+        out1=os.path.join(fastp_dir, "{sample}_1.fastp.fq.gz"),
+        json=os.path.join(fastp_dir, "{sample}.fastp.json"),
+        html=os.path.join(fastp_dir, "{sample}.fastp.html"),
+    conda: "environment.yml"
+    shell:
+        """
+        fastp --in1 {input} --out1 {output.out1} \
+        --detect_adapter_for_se  --qualified_quality_phred 4 \
+        --low_complexity_filter \
+        --length_required 31 --correction \
+        --json {output.json} --html {output.html}
+        """

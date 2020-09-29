@@ -1,31 +1,15 @@
-from os.path import join
-
-logs_dir  = config['elvers_directories']['logs']
-
-khmer_dir = config['khmer']['elvers_params']['outputs']['outdir']
-khmer_params = config['khmer']['program_params']
+kdir = config['khmer']['output_dir']
+khmer_dir = os.path.join(out_dir, kdir)
+khmer_params = config['khmer']['params']
 diginorm = khmer_params.get('diginorm', True)
-
-if khmer_params.get('input_trimmed', True):
-    input_dir = config['elvers_directories']['outdirs']['preprocess']
-    ext = '.trim.fq.gz'
-elif khmer_params.get('input_rcorrector_trimmed', False):
-    input_dir = os.path.join(config['elvers_directories']['outdirs']['preprocess'], 'rcorrector')
-    ext = '.rcorr.fq.gz'
-else:
-    input_dir = config['elvers_directories']['outdirs']['input_data']
-    ext = '.fq.gz'
 
 def get_trimmed(w):
     readsD = {}
     if not is_single_end(**w):
-        readsD['r1'] = expand(join(input_dir, '{sample}_{unit}_1{ext}'),**w, ext=ext)
-        readsD['r2'] = expand(join(input_dir, '{sample}_{unit}_2{ext}'),**w, ext=ext)
-        # conflict with se pattern matching. Also just take extra time for little benefit
-        #readsD['r1_unpaired'] = expand(join(input_dir, "{sample}_{unit}_1.se.trim.fq.gz"),**w)
-        #readsD['r2_unpaired'] = expand(join(input_dir, "{sample}_{unit}_2.se.trim.fq.gz") **w)
+        readsD['r1'] = expand(os.path.join(fastp_dir, '{sample}_1.fastp.fq.gz'),**w,)
+        readsD['r2'] = expand(os.path.join(fastp_dir, '{sample}_2.fastp.fq.gz'),**w,)
         return readsD
-    return expand(join(input_dir, '{sample}_{unit}.se{ext}z'), **w, ext=ext)
+    return expand(os.path.join(input_dir, '{sample}_1.fastp.fq.gz'), **w)
 
 
 if diginorm:
@@ -35,8 +19,8 @@ if diginorm:
         """
         input: unpack(get_trimmed)
         output: 
-            paired=join(khmer_dir,'{sample}_{unit}.paired.khmer.fq.gz'),
-            single=join(khmer_dir,'{sample}_{unit}.single.khmer.fq.gz'),
+            paired=os.path.join(khmer_dir,'{sample}.pe.khmer.fq.gz'),
+            single=os.path.join(khmer_dir,'{sample}.se.khmer.fq.gz'),
         message:
             """--- khmer trimming of low-abundance kmers and digital normalization ---"""
         params:
@@ -47,8 +31,8 @@ if diginorm:
             cov = khmer_params.get('coverage', 20),
             extra = khmer_params.get('extra', '')
         threads: 10
-        log: join(logs_dir, 'khmer/{sample}_{unit}.pe.diginorm.log')
-        benchmark: join(logs_dir, 'khmer/{sample}_{unit}.pe.diginorm.benchmark')
+        log: os.path.join(logs_dir, 'khmer/{sample}.pe.diginorm.log')
+        benchmark: os.path.join(benchmarks_dir, 'khmer/{sample}.pe.diginorm.benchmark')
         conda:  'environment.yml'
         shell: " (interleave-reads.py {input.r1} {input.r2} ) | "
                " (trim-low-abund.py -V -k {params.k} -Z {params.Z} -C {params.C} - -o - -M {params.memory} "
@@ -61,7 +45,7 @@ if diginorm:
         kmer trim and diginorm with khmer
         """
         input: get_trimmed
-        output: join(khmer_dir, '{sample}_{unit}.se.khmer.fq.gz'),
+        output: os.path.join(khmer_dir, '{sample}.se.khmer.fq.gz'),
         message:
             """--- khmer trimming of low-abundance kmers and digital normalization ---"""
         params:
@@ -72,8 +56,8 @@ if diginorm:
             cov = khmer_params['coverage'],
             extra = khmer_params['extra']
         threads: 2
-        log: join(logs_dir, 'khmer/{sample}_{unit}.se.diginorm.log')
-        benchmark: join(logs_dir, 'khmer/{sample}_{unit}.se.diginorm.benchmark')
+        log: os.path.join(logs_dir, 'khmer/{sample}.se.diginorm.log')
+        benchmark: os.path.join(benchmarks_dir, 'khmer/{sample}.se.diginorm.benchmark')
         conda: 'environment.yml'
         shell:
                "(trim-low-abund.py {input} -V -k {params.k} -Z {params.Z} -C {params.C} -o {output} "
@@ -86,8 +70,8 @@ else:
         """
         input: unpack(get_trimmed)
         output: 
-            paired=join(khmer_dir,'{sample}_{unit}.paired.khmer.fq.gz'),
-            single=join(khmer_dir,'{sample}_{unit}.single.khmer.fq.gz'),
+            paired=os.path.join(khmer_dir,'{sample}.pe.khmer.fq.gz'),
+            single=os.path.join(khmer_dir,'{sample}.se.khmer.fq.gz'),
         message: """--- khmer trimming of low-abundance kmers ---"""
         params:
             k = khmer_params.get('ksize', 20),
@@ -96,8 +80,8 @@ else:
             memory = khmer_params.get('memory', 4e9),
             extra = khmer_params.get('extra', '')
         threads: 10
-        log: join(logs_dir, 'khmer/{sample}_{unit}.pe.log')
-        benchmark: join(logs_dir, 'khmer/{sample}_{unit}.pe.benchmark')
+        log: os.path.join(logs_dir, 'khmer/{sample}.pe.log')
+        benchmark: os.path.join(benchmarks_dir, 'khmer/{sample}.pe.benchmark')
         conda:  'environment.yml'
         shell: " (interleave-reads.py {input.r1} {input.r2} )| "
                " (trim-low-abund.py -V -k {params.k} -Z {params.Z} -C {params.C} - -o - -M {params.memory})"
@@ -108,7 +92,7 @@ else:
         khmer trim se, no diginorm
         """
         input: get_trimmed
-        output: join(khmer_dir, '{sample}_{unit}.se.khmer.fq.gz'),
+        output: os.path.join(khmer_dir, '{sample}.se.khmer.fq.gz'),
         message:
             """--- khmer trimming of low-abundance kmers ---"""
         params:
@@ -118,8 +102,8 @@ else:
             memory = khmer_params['memory'],
             extra = khmer_params['extra']
         threads: 2
-        log: join(logs_dir, 'khmer/{sample}_{unit}.se.log')
-        benchmark: join(logs_dir, 'khmer/{sample}_{unit}.se.benchmark')
+        log: os.path.join(logs_dir, 'khmer/{sample}.se.log')
+        benchmark: os.path.join(benchmarks_dir, 'khmer/{sample}.se.benchmark')
         conda: 'environment.yml'
         shell:
                "(trim-low-abund.py {input} -V -k {params.k} -Z {params.Z} -C {params.C} -o {output} "
@@ -128,13 +112,13 @@ else:
 
 
 rule khmer_split_paired:
-    input: join(khmer_dir,'{sample}_{unit}.paired.khmer.fq.gz'),
+    input: os.path.join(khmer_dir,'{sample}.pe.khmer.fq.gz'),
     output:
-        r1=join(khmer_dir, '{sample}_{unit}_1.khmer.fq.gz'),
-        r2=join(khmer_dir, '{sample}_{unit}_2.khmer.fq.gz'),
+        r1=os.path.join(khmer_dir, '{sample}_1.khmer.fq.gz'),
+        r2=os.path.join(khmer_dir, '{sample}_2.khmer.fq.gz'),
     threads: 2 
-    log: join(logs_dir, 'khmer/{sample}_{unit}.split_pe.log')
-    benchmark: join(logs_dir, 'khmer/{sample}_{unit}.split_pe.benchmark')
+    log: os.path.join(logs_dir, 'khmer/{sample}.split_pe.log')
+    benchmark: os.path.join(benchmarks_dir, 'khmer/{sample}.split_pe.benchmark')
     conda: "environment.yml"
     shell: """
         split-paired-reads.py {input} --gzip -1 {output.r1} -2 {output.r2} >> {log}

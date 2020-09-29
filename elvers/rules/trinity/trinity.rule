@@ -1,39 +1,24 @@
 from os import path
 
-ep_params = config['trinity']['elvers_params']
-logs_dir  = config['elvers_directories']['logs']
-prog_params = config['trinity']['program_params']
-
-assembly_dir = ep_params['outputs']['outdir']
-assembly_extension = ep_params['outputs']['extensions']['reference_extensions'][0] # should only be a single entry here, default: '_trinity'
-
-BASE = config['basename']
+tdir = config['trinity']['output_dir']
+assembly_dir = os.path.join(out_dir, tdir)
+trinity_params = config['trinity']['params']
 
 def get_assembly_input(w):
     r1,r2,single =[],[],[]
     readsD = {}
-    if prog_params.get('input_kmer_trimmed', True):
-        ext = '.khmer.fq.gz' 
-        input_dir = config['elvers_directories']['outdirs']['preprocess']
-    elif prog_params.get('input_trimmed', True):
-        ext = '.trim.fq.gz'
-        input_dir = config['elvers_directories']['outdirs']['preprocess']
-    else:
-        ext = '.fq.gz'
-        input_dir = config['elvers_directories']['outdirs']['input_data']
-    
-    assembly_subset = prog_params.get('assembly_subset')
+    assembly_subset = trinity_params.get('assembly_subset')
     for s, u in samples.iterrows():
         sample, unit = u['sample'],u['unit']
         if assembly_subset:
             if sample not in assembly_subset:
                 continue
-        if is_single_end(sample, unit):
-            single+=[join(input_dir, f"{sample}_{unit}_se{ext}")]
+        if is_single_end(sample):
+            single+=[os.path.join(khmer_dir, f"{sample}_se.khmer.fq.gz")]
         else:
-            r1+= [join(input_dir, f"{sample}_{unit}_1{ext}")]
-            r2+= [join(input_dir, f"{sample}_{unit}_2{ext}")]
-    add_single = prog_params.get('add_single_to_paired', False)
+            r1+= [os.path.join(khmer_dir, f"{sample}_1.khmer.fq.gz")]
+            r2+= [os.path.join(khmer_dir, f"{sample}_2.khmer.fq.gz")]
+    add_single = trinity_params.get('add_single_to_paired', False)
     if len(r1) > 0:
         if add_single == True:
             r1 = r1 + single
@@ -51,18 +36,18 @@ rule trinity:
     input:
         unpack(get_assembly_input)
     output:
-        fasta = join(assembly_dir,"trinity_out_dir/Trinity.fasta"),
-        gene_trans_map = join(assembly_dir,"trinity_out_dir/Trinity.fasta.gene_trans_map"),
+        fasta = os.path.join(assembly_dir,"trinity_out_dir/Trinity.fasta"),
+        gene_trans_map = os.path.join(assembly_dir,"trinity_out_dir/Trinity.fasta.gene_trans_map"),
     message:
         """--- Assembling read data with Trinity --- """
     params:
         # optional parameters
-        max_memory=prog_params.get('max_memory', '10G'),
-        seqtype=prog_params.get('seqtype', 'fq'),
-        extra=prog_params.get('extra', '')
+        max_memory=trinity_params.get('max_memory', '10G'),
+        seqtype=trinity_params.get('seqtype', 'fq'),
+        extra=trinity_params.get('extra', '')
     threads: 32
-    log: join(logs_dir, 'trinity', 'trinity.log')
-    benchmark: join(logs_dir, 'trinity', 'trinity.benchmark')
+    log: os.path.join(logs_dir, 'trinity', 'trinity.log')
+    benchmark: os.path.join(logs_dir, 'trinity', 'trinity.benchmark')
     conda: "environment.yml"
 	script: "trinity-wrapper.py"
 
@@ -70,12 +55,12 @@ localrules: rename_trinity_fasta,rename_trinity_gene_trans_map
 
 rule rename_trinity_fasta:
     input: rules.trinity.output.fasta
-    output: join(assembly_dir, BASE + assembly_extension + '.fasta')
-    log: join(logs_dir, 'trinity/cp_assembly.log')
+    output: os.path.join(assembly_dir, basename + '_trinity.fasta')
+    log: os.path.join(logs_dir, 'trinity/cp_assembly.log')
     shell: ("cp {input} {output}") 
 
 rule rename_trinity_gene_trans_map:
     input: rules.trinity.output.gene_trans_map
-    output: join(assembly_dir, BASE + assembly_extension + '.fasta.gene_trans_map')
-    log: join(logs_dir, 'trinity/cp_gt_map.log')
+    output: os.path.join(assembly_dir, basename + '_trinity.fasta.gene_trans_map')
+    log: os.path.join(logs_dir, 'trinity/cp_gt_map.log')
     shell: ("cp {input} {output}") 
