@@ -51,11 +51,6 @@ get_reference:
     - "{basename}_refinput.fasta.gene_trans_map"
   params:
     extra: ""
-    #reference: examples/nema.assembly.fasta
-    #gene_trans_map:  examples/nema.assembly.fasta.gene_trans_map
-    #reference_extension: ''
-    #downlsad_ref: False
-    #use_ftp: False
 
 fastp:
   rulefile: fastp/fastp.rule
@@ -133,7 +128,6 @@ deseq2:
     - "{basename}.x.{reference}.{contrast}.deseq.padj_0.1.tsv"
     - "{basename}.x.{reference}.{contrast}.deseq2.ma-plot.pdf"
   params:
-    combine_units: True # needs to match with salmon's combine_units
     gene_trans_map: True
     # contrasts for the deseq2 results method
     contrasts:
@@ -156,7 +150,6 @@ edgeR:
     - "{basename}.x.{reference}.{contrast}.edgeR.ma-plot.pdf"
   params:
     # contrasts for the edgeR results method
-    combine_units: True # needs to match with salmon's combine_units
     contrasts:
       treated-vs-untreated:
         - treated

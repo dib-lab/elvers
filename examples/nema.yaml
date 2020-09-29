@@ -4,6 +4,8 @@
 # this sets the output directory name:
 basename: 'nema'
 
+pipeline: default
+
 sample_info: examples/nema.samples.csv
 
 program_parameters:

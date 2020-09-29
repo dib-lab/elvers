@@ -80,19 +80,20 @@ rule showconf:
         config["sample_info"]
     run:
         import yaml
+        import json
         print('# full aggregated configuration:')
         generalP = {}
         generalP['basename'] = config["basename"]
         generalP['experiment_suffix'] = config['experiment_suffix']
-        print(yaml.dump(generalP, indent=2,  default_flow_style=False).strip())
         pipeline = config["pipeline"]
-        print(f"Workflow: {pipeline}")
-        step_params, all_program_params = {},{}
+        generalP['pipeline'] = pipeline
+        step_params = {}
 
         for step in config["elvers_pipelines"][pipeline]["steps"]:
-            step_params[step] = config[step]["params"]
+            # json hack to convert ordered dict to regular dict
+            param_dict = json.loads(json.dumps(config[step]["params"]))
+            step_params[step] = param_dict
+        generalP['program_params'] = step_params
+        print(yaml.safe_dump(generalP, indent=2, default_flow_style=False).strip())
 
-        all_program_params["program_params"] = step_params
-        print(yaml.dump(all_program_params, indent=2,  default_flow_style=False).strip())
-        #print(yaml.dump(all_program_params).strip())
         print('# END')
