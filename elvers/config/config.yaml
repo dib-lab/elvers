@@ -126,6 +126,7 @@ deseq2:
     - "{basename}.x.{reference}.{contrast}.deseq2.ma-plot.pdf"
   params:
     gene_trans_map: True
+    extra: ""
     # contrasts for the deseq2 results method
     contrasts:
       time0-vs-time6:
@@ -147,6 +148,7 @@ edgeR:
     - "{basename}.x.{reference}.{contrast}.edgeR.ma-plot.pdf"
   params:
     # contrasts for the edgeR results method
+    extra: ""
     contrasts:
       treated-vs-untreated:
         - treated
