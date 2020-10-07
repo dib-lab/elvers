@@ -33,5 +33,5 @@ setup(
     setup_requires = [ "setuptools>=38.6.0",
                        'setuptools_scm', 'setuptools_scm_git_archive' ],
     use_scm_version = {"write_to": "elvers/version.py"},
-    install_requires = ['snakemake>=5.25', 'click>=7']
+    install_requires = ['snakemake>=5.26', 'click>=7', 'pandas>=1.1.2']
 )

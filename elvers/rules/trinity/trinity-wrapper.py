@@ -5,7 +5,7 @@ __copyright__ = "Copyright 2018, Tessa Pierce"
 __email__ = "ntpierce@gmail.com"
 __license__ = "MIT"
 
-from os import path
+import os
 from snakemake.shell import shell
 
 extra = snakemake.params.get("extra", "")
@@ -37,7 +37,7 @@ if not seqtype:
     else: # assertion is redundant - warning or error instead?
         assert seqtype is not None, "cannot infer 'fq' or 'fa' seqtype from input files. Please specify 'fq' or 'fa' in 'seqtype' parameter"
 
-outdir = path.dirname(snakemake.output[0])
+outdir = os.path.dirname(snakemake.output[0])
 assert 'trinity' in outdir, "output directory name must contain 'trinity'"
 
 log = snakemake.log_fmt_shell(stdout=True, stderr=True)

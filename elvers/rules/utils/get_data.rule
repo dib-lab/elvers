@@ -3,8 +3,6 @@ urls_begin = ["http", "ftp"]
 
 samples = config["samples"]
 
-localrules: get_dbinfo, get_sbt
-
 rule get_data_fq1:
     output: os.path.join(data_dir, "{sample}_1.fq.gz")
     params:
