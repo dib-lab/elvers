@@ -1,14 +1,16 @@
+preprocess_dir = config["elvers_directories"]["preprocess"]
 khmer_dir = os.path.join(out_dir, config['khmer']['output_dir'])
 khmer_params = config['khmer']['params']
 diginorm = khmer_params.get('diginorm', True)
 
 def get_trimmed(w):
-    readsD = {}
+    #readsD = {}
     if not is_single_end(w.sample):
-        readsD['r1'] = os.path.join(fastp_dir, f'{w.sample}_1.fastp.fq.gz')
-        readsD['r2'] = os.path.join(fastp_dir, f'{w.sample}_2.fastp.fq.gz')
-        return readsD
-    return os.path.join(input_dir, f'{sample}_se.fastp.fq.gz')
+        #readsD['r1'] = os.path.join(fastp_dir, f'{w.sample}_1.fastp.fq.gz')
+        #readsD['r2'] = os.path.join(fastp_dir, f'{w.sample}_2.fastp.fq.gz')
+        #return readsD
+        return os.path.join(preprocess_dir, f'{w.sample}_paired.fastp.fq.gz')
+    return os.path.join(preprocess_dir, f'{w.sample}_se.fastp.fq.gz')
 
 
 if diginorm:
@@ -16,7 +18,8 @@ if diginorm:
         """
         kmer trim and diginorm with khmer
         """
-        input: unpack(get_trimmed)
+        #input: unpack(get_trimmed)
+        input: get_trimmed
         output: 
             paired=os.path.join(khmer_dir,'{sample}.paired.khmer.fq.gz'),
             single=os.path.join(khmer_dir,'{sample}.se.khmer.fq.gz'),
@@ -33,10 +36,14 @@ if diginorm:
         log: os.path.join(logs_dir, 'khmer/{sample}.paired.diginorm.log')
         benchmark: os.path.join(benchmarks_dir, 'khmer/{sample}.paired.diginorm.benchmark')
         conda:  'environment.yml'
-        shell: " (interleave-reads.py {input.r1} {input.r2} ) | "
-               " (trim-low-abund.py -V -k {params.k} -Z {params.Z} -C {params.C} - -o - -M {params.memory} "
+        shell: "(trim-low-abund.py -V -k {params.k} -Z {params.Z} -C {params.C} {input} -o - -M {params.memory} "
                " --diginorm --diginorm-coverage={params.cov}) | (extract-paired-reads.py --gzip "
                " -p {output.paired} -s {output.single}) > {log}"
+
+     #   shell: " (interleave-reads.py {input.r1} {input.r2} ) | "
+     #          " (trim-low-abund.py -V -k {params.k} -Z {params.Z} -C {params.C} - -o - -M {params.memory} "
+     #          " --diginorm --diginorm-coverage={params.cov}) | (extract-paired-reads.py --gzip "
+     #          " -p {output.paired} -s {output.single}) > {log}"
         #shell: " (interleave-reads.py {input.r1} {input.r2} && zcat {input.r1_unpaired} {input.r2_unpaired}) | "
 
     rule khmer_se_diginorm:

@@ -16,19 +16,20 @@ def get_rawdata(w):
 rule fastp_paired:
     input: unpack(get_rawdata)
     output:
-        out1=os.path.join(fastp_dir, "{sample}_1.fastp.fq.gz"),
-        out2=os.path.join(fastp_dir, "{sample}_2.fastp.fq.gz"),
+        #out1=os.path.join(fastp_dir, "{sample}_1.fastp.fq.gz"),
+        #out2=os.path.join(fastp_dir, "{sample}_2.fastp.fq.gz"),
+        out=os.path.join(fastp_dir, "{sample}_paired.fastp.fq.gz"),
         json=os.path.join(fastp_dir, "{sample}.fastp.json"),
         html=os.path.join(fastp_dir, "{sample}.fastp.html"),
     conda: "environment.yml"
     shell:
+        #--out1 {output.out1} --out2 {output.out2}  \
         """
         fastp --in1 {input.r1}  --in2 {input.r2}  \
-        --out1 {output.out1} --out2 {output.out2}  \
+        --stdout --low_complexity_filter \
         --detect_adapter_for_pe  --qualified_quality_phred 4 \
-        --low_complexity_filter \
         --length_required 31 --correction \
-        --json {output.json} --html {output.html}
+        --json {output.json} --html {output.html} > {output.out}
         """
 
 rule fastp_single:

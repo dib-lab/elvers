@@ -52,7 +52,7 @@ fastp:
   rulefile: fastp/fastp.rule
   output_dir: preprocess
   output_files:
-    - "{sample}_{end}.fastp.fq.gz"
+    - "{sample}_{pairing}.fastp.fq.gz"
     - "{sample}.fastp.json"
     - "{sample}.fastp.html"
   params:
