@@ -2,5 +2,5 @@
 # Additional parameters required for testing the plass rule
 
 plass:
-  input_kmer_trimmed: False
-  input_trimmed: False
+  inputs:
+    - raw

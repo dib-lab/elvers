@@ -2,4 +2,5 @@
 # Additional parameters required for testing the khmer rule
 
 khmer:
-  input_trimmed: False
+  inputs:
+    - raw

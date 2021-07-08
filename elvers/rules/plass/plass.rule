@@ -2,23 +2,24 @@ from os.path import join
 
 logs_dir  = config['elvers_directories']['logs']
 ep_params = config['plass']['elvers_params']
-assembly_params = config['plass']['program_params']
+prog_params = config['plass']['program_params']
 
 assembly_dir = ep_params['outputs']['outdir']
-assembly_extension = ep_params['outputs']['extensions']['reference_extensions'][0] # should only be a single entry here, default: '_plass'
+assembly_extension = ep_params['outputs']['plass_fasta']['extensions']['reference_extensions'][0] # should only be a single entry here, default: '_plass'
 
 BASE = config['basename']
 
 def get_assembly_input(w):
     r1,r2,single =[],[],[]
     readsD = {}
-    if assembly_params.get('input_kmer_trimmed', True):
+    inputs = prog_params['inputs']
+    if 'kmer_trimmed' in inputs:
         ext = '.khmer.fq.gz' 
         input_dir = config['elvers_directories']['outdirs']['preprocess']
-    elif assembly_params.get('input_trimmed', True):
+    elif 'trimmed' in inputs:
         ext = '.trim.fq.gz'
         input_dir = config['elvers_directories']['outdirs']['preprocess']
-    else:
+    elif 'raw' in inputs:
         ext = '.fq.gz'
         input_dir = config['elvers_directories']['outdirs']['input_data']
     for s, u in samples.iterrows():
@@ -28,7 +29,7 @@ def get_assembly_input(w):
         else:
             r1+= [join(input_dir, f"{sample}_{unit}_1{ext}")]
             r2+= [join(input_dir, f"{sample}_{unit}_2{ext}")]
-    add_single = assembly_params.get('add_single_to_paired', False)
+    add_single = prog_params.get('add_single_to_paired', False)
     if len(r1) > 0:
         if add_single == True:
             r1 = r1 + single
@@ -47,7 +48,7 @@ rule plass:
         """--- Assembling read data with PLASS --- """
     params:
         # optional parameters
-        extra=assembly_params.get('extra', '')
+        extra=prog_params.get('extra', '')
     log: join(logs_dir, 'plass','plass.log')
     benchmark: join(logs_dir, 'plass','plass.benchmark')
     threads: 32

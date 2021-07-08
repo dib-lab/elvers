@@ -8,9 +8,10 @@ get_data:
   download_data: true
   use_ftp: false
 salmon:
+  inputs:
+    - trimmed
   index_params:
     extra: ''
-  input_trimmed: true
   quant_params:
     extra: ''
     libtype: A

@@ -1,49 +1,85 @@
 import os, re
 from os.path import join
 
+prog = "fastqc"
+
 logs_dir  = config['elvers_directories']['logs']
-#input dirs
-data_dir = config['elvers_directories']['outdirs']['input_data']
-trim_dir = config['elvers_directories']['outdirs']['preprocess']
-#outdir
-qc_dir   = config['fastqc']['elvers_params']['outputs']['outdir']
-# program params
-fastqc_params = config['fastqc']['program_params']
+elvers_params = config[prog]['elvers_params']
+prog_params = config[prog]['program_params']
 
-def get_trimmed(wildcards):
-    if not is_single_end(**wildcards): 
-        return expand(join(trim_dir, '{sample}_{unit}_{end}.fq.gz'), **wildcards) 
-    return expand(join(trim_dir, '{sample}_{unit}_{end}.fq.gz'), **wildcards)
+inputs = prog_params['inputs']
 
-def get_pretrim(wildcards):
-    if not is_single_end(**wildcards): 
-        return expand(join(data_dir, '{sample}_{unit}_{end}.fq.gz'), **wildcards)
-    return expand(join(data_dir, '{sample}_{unit}_{end}.fq.gz'), **wildcards)
+# set output dir
+output_dir = os.path.dirname(elvers_params['outputs']['output_files'][0])
 
-rule fastqc_trimmed:
-    input:
-       get_trimmed
-    output:
-        html=join(qc_dir,'{sample}_{unit}_{end}_fastqc.html'),
-        zip=join(qc_dir,'{sample}_{unit}_{end}_fastqc.zip')
-    params: fastqc_params.get('extra', "")
-    log: 
-        join(logs_dir, 'fastqc/{sample}_{unit}_{end}.log')
-    benchmark:
-        join(logs_dir, 'fastqc/{sample}_{unit}_{end}.benchmark')
-    conda: "environment.yml"
-	script: "wrapper.py"
+if "raw" in inputs:
+    raw_dir = os.path.dirname(elvers_params['input_options']['raw']['input_files'][0])
+ 
+    def get_pretrim(wildcards):
+        if not is_single_end(**wildcards): 
+            return expand(join(raw_dir, '{sample}_{unit}_{end}.fq.gz'), **wildcards)
+        return expand(join(raw_dir, '{sample}_{unit}_{end}.fq.gz'), **wildcards)
+    
+    rule fastqc_pretrim:
+        input: get_pretrim
+        output:
+            html=join(output_dir,'{sample}_{unit}_{end}_fastqc.html'),
+            zip=join(output_dir,'{sample}_{unit}_{end}_fastqc.zip')
+        params: 
+            prog_params.get('extra', "")
+        wildcard_constraints:
+            end = ['1', '2', 'se']
+        log: 
+            join(logs_dir, 'fastqc/{sample}_{unit}_{end}.log')
+        benchmark:
+            join(logs_dir, 'fastqc/{sample}_{unit}_{end}.benchmark')
+        conda: "environment.yml"
+        script: "wrapper.py"
 
-rule fastqc_pretrim:
-    input:
-        get_pretrim
-    output:
-        html=join(qc_dir,'{sample}_{unit}_{end}_fastqc.html'),
-        zip=join(qc_dir,'{sample}_{unit}_{end}_fastqc.zip')
-    params: fastqc_params.get('extra', "")
-    log: 
-        join(logs_dir, 'fastqc/{sample}_{unit}_{end}.log') 
-    benchmark:
-        join(logs_dir, 'fastqc/{sample}_{unit}_{end}.benchmark')
-    conda: "environment.yml"
-	script: "wrapper.py"
+if "trimmed" in inputs:
+    trim_dir = os.path.dirname(elvers_params['input_options']['trimmed']['input_files'][0])
+
+    def get_trimmed(wildcards):
+        if not is_single_end(**wildcards): 
+            return expand(join(trim_dir, '{sample}_{unit}_{end}.fq.gz'), **wildcards)
+        return expand(join(trim_dir, '{sample}_{unit}_{end}.fq.gz'), **wildcards)
+
+    rule fastqc_trimmed:
+        input:
+           get_trimmed
+        output:
+            html=join(output_dir,'{sample}_{unit}_{end}_fastqc.html'),
+            zip=join(output_dir,'{sample}_{unit}_{end}_fastqc.zip')
+        params: prog_params.get('extra', "")
+        #wildcard_constraints: # this makes it fail! 
+        #    end = ['1.trim', '2.trim', 'se.trim']
+        log: 
+            join(logs_dir, 'fastqc/{sample}_{unit}_{end}.log')
+        benchmark:
+            join(logs_dir, 'fastqc/{sample}_{unit}_{end}.benchmark')
+        conda: "environment.yml"
+        script: "wrapper.py"
+
+
+if "rcorrector_trimmed" in inputs:
+    rcorr_dir = os.path.dirname(elvers_params['input_options']['rcorrector_trimmed']['input_files'][0])
+ 
+    def get_rcorr(wildcards):
+        if not is_single_end(**wildcards): 
+            return expand(join(rcorr_dir, '{sample}_{unit}_{end}.rcorr.fq.gz'), **wildcards)
+        return expand(join(rcorr_dir, '{sample}_{unit}_{end}.rcorr.fq.gz'), **wildcards)
+
+    rule fastqc_rcorr:
+        input: get_rcorr
+        output:
+            html=join(output_dir,'{sample}_{unit}_{end}_fastqc.html'),
+            zip=join(output_dir,'{sample}_{unit}_{end}_fastqc.zip')
+        params: prog_params.get('extra', "")
+    #    wildcard_constraints:
+     #       end = ['1.rcorr', '2.rcorr', 'se.rcorr']
+        log: 
+            join(logs_dir, 'fastqc/{sample}_{unit}_{end}.log')
+        benchmark:
+            join(logs_dir, 'fastqc/{sample}_{unit}_{end}.benchmark')
+        conda: "environment.yml"
+        script: "wrapper.py"

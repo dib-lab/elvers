@@ -46,7 +46,7 @@ def build_rule_params_schema(full_schema, params_schema_template, paramsfile, ex
             input_options = params[name]['elvers_params']['input_options']
             for input_type, options in input_options.items(): # read, reference, other
                 for option in options:
-                    in_exts[option] = ext_info['default_extensions'][input_type][option]
+                    in_exts[option] = ext_info['available_extensions'][input_type][option]
             params[name]['elvers_params']['input_options'] = in_exts
             prog_schema['properties']['elvers_params']['properties']['input_options'] = build_schema(in_exts)
         # program_params
